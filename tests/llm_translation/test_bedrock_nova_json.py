@@ -6,12 +6,12 @@ import os
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
+import dheera_ai
 
 
 class TestBedrockNovaJson(BaseLLMChatTest):
     def get_base_completion_call_args(self) -> dict:
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         return {
             "model": "bedrock/converse/us.amazon.nova-micro-v1:0",
         }
@@ -23,7 +23,7 @@ class TestBedrockNovaJson(BaseLLMChatTest):
         pass
 
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
         pass
 
     def test_prompt_caching(self):

@@ -1,12 +1,12 @@
 name: 🚀 Feature Request 
-description: Submit a proposal/request for a new LiteLLM feature.
+description: Submit a proposal/request for a new Dheera AI feature.
 title: "[Feature]: "
 labels: ["enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for making LiteLLM better! 
+        Thanks for making Dheera AI better! 
   - type: textarea
     id: the-feature
     attributes:
@@ -25,9 +25,9 @@ body:
   - type: dropdown
     id: component
     attributes:
-      label: What part of LiteLLM is this about?
+      label: What part of Dheera AI is this about?
       options:
-        - "SDK (litellm Python package)"
+        - "SDK (dheera_ai Python package)"
         - "Proxy"
         - "UI Dashboard"
         - "Docs"
@@ -37,8 +37,8 @@ body:
   - type: dropdown
     id: hiring-interest
     attributes:
-      label: LiteLLM is hiring a founding backend engineer, are you interested in joining us and shipping to all our users?
-      description: If yes, apply here - https://www.ycombinator.com/companies/litellm/jobs/6uvoBp3-founding-backend-engineer
+      label: Dheera AI is hiring a founding backend engineer, are you interested in joining us and shipping to all our users?
+      description: If yes, apply here - https://www.ycombinator.com/companies/dheera_ai/jobs/6uvoBp3-founding-backend-engineer
       options:
         - "No"
         - "Yes"

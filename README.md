@@ -1,9 +1,9 @@
 <h1 align="center">
-        🚅 LiteLLM
+        🚅 Dheera AI
     </h1>
     <p align="center">
         <p align="center">
-        <a href="https://render.com/deploy?repo=https://github.com/BerriAI/litellm" target="_blank" rel="nofollow"><img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render"></a>
+        <a href="https://render.com/deploy?repo=https://github.com/BerriAI/dheera_ai" target="_blank" rel="nofollow"><img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render"></a>
         <a href="https://railway.app/template/HLP0Ub?referralCode=jch2ME">
           <img src="https://railway.app/button.svg" alt="Deploy on Railway">
         </a>
@@ -11,10 +11,10 @@
         <p align="center">Call all LLM APIs using the OpenAI format [Bedrock, Huggingface, VertexAI, TogetherAI, Azure, OpenAI, Groq etc.]
         <br>
     </p>
-<h4 align="center"><a href="https://docs.litellm.ai/docs/simple_proxy" target="_blank">LiteLLM Proxy Server (LLM Gateway)</a> | <a href="https://docs.litellm.ai/docs/enterprise#hosted-litellm-proxy" target="_blank"> Hosted Proxy</a> | <a href="https://docs.litellm.ai/docs/enterprise"target="_blank">Enterprise Tier</a></h4>
+<h4 align="center"><a href="https://docs.dheera_ai.ai/docs/simple_proxy" target="_blank">Dheera AI Proxy Server (LLM Gateway)</a> | <a href="https://docs.dheera_ai.ai/docs/enterprise#hosted-dheera_ai-proxy" target="_blank"> Hosted Proxy</a> | <a href="https://docs.dheera_ai.ai/docs/enterprise"target="_blank">Enterprise Tier</a></h4>
 <h4 align="center">
-    <a href="https://pypi.org/project/litellm/" target="_blank">
-        <img src="https://img.shields.io/pypi/v/litellm.svg" alt="PyPI Version">
+    <a href="https://pypi.org/project/dheera_ai/" target="_blank">
+        <img src="https://img.shields.io/pypi/v/dheera_ai.svg" alt="PyPI Version">
     </a>
     <a href="https://www.ycombinator.com/companies/berriai">
         <img src="https://img.shields.io/badge/Y%20Combinator-W23-orange?style=flat-square" alt="Y Combinator W23">
@@ -25,39 +25,39 @@
     <a href="https://discord.gg/wuPM9dRgDw">
         <img src="https://img.shields.io/static/v1?label=Chat%20on&message=Discord&color=blue&logo=Discord&style=flat-square" alt="Discord">
     </a>
-    <a href="https://www.litellm.ai/support">
+    <a href="https://www.dheera_ai.ai/support">
         <img src="https://img.shields.io/static/v1?label=Chat%20on&message=Slack&color=black&logo=Slack&style=flat-square" alt="Slack">
     </a>
 </h4>
 
-LiteLLM manages:
+Dheera AI manages:
 
 - Translate inputs to provider's `completion`, `embedding`, and `image_generation` endpoints
-- [Consistent output](https://docs.litellm.ai/docs/completion/output), text responses will always be available at `['choices'][0]['message']['content']`
-- Retry/fallback logic across multiple deployments (e.g. Azure/OpenAI) - [Router](https://docs.litellm.ai/docs/routing)
-- Set Budgets & Rate limits per project, api key, model [LiteLLM Proxy Server (LLM Gateway)](https://docs.litellm.ai/docs/simple_proxy)
+- [Consistent output](https://docs.dheera_ai.ai/docs/completion/output), text responses will always be available at `['choices'][0]['message']['content']`
+- Retry/fallback logic across multiple deployments (e.g. Azure/OpenAI) - [Router](https://docs.dheera_ai.ai/docs/routing)
+- Set Budgets & Rate limits per project, api key, model [Dheera AI Proxy Server (LLM Gateway)](https://docs.dheera_ai.ai/docs/simple_proxy)
 
-LiteLLM Performance: **8ms P95 latency** at 1k RPS (See benchmarks [here](https://docs.litellm.ai/docs/benchmarks))
+Dheera AI Performance: **8ms P95 latency** at 1k RPS (See benchmarks [here](https://docs.dheera_ai.ai/docs/benchmarks))
 
-[**Jump to LiteLLM Proxy (LLM Gateway) Docs**](https://github.com/BerriAI/litellm?tab=readme-ov-file#litellm-proxy-server-llm-gateway---docs) <br>
-[**Jump to Supported LLM Providers**](https://docs.litellm.ai/docs/providers)
+[**Jump to Dheera AI Proxy (LLM Gateway) Docs**](https://github.com/BerriAI/dheera_ai?tab=readme-ov-file#dheera_ai-proxy-server-llm-gateway---docs) <br>
+[**Jump to Supported LLM Providers**](https://docs.dheera_ai.ai/docs/providers)
 
-🚨 **Stable Release:** Use docker images with the `-stable` tag. These have undergone 12 hour load tests, before being published. [More information about the release cycle here](https://docs.litellm.ai/docs/proxy/release_cycle)
+🚨 **Stable Release:** Use docker images with the `-stable` tag. These have undergone 12 hour load tests, before being published. [More information about the release cycle here](https://docs.dheera_ai.ai/docs/proxy/release_cycle)
 
-Support for more providers. Missing a provider or LLM Platform, raise a [feature request](https://github.com/BerriAI/litellm/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.yml&title=%5BFeature%5D%3A+).
+Support for more providers. Missing a provider or LLM Platform, raise a [feature request](https://github.com/BerriAI/dheera_ai/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.yml&title=%5BFeature%5D%3A+).
 
-# Usage ([**Docs**](https://docs.litellm.ai/docs/))
+# Usage ([**Docs**](https://docs.dheera_ai.ai/docs/))
 
-<a target="_blank" href="https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/liteLLM_Getting_Started.ipynb">
+<a target="_blank" href="https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/liteLLM_Getting_Started.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 
 ```shell
-pip install litellm
+pip install dheera_ai
 ```
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 ## set ENV variables
@@ -110,14 +110,14 @@ print(response)
 }
 ```
 
-> **Note:** LiteLLM also supports the [Responses API](https://docs.litellm.ai/docs/response_api) (`litellm.responses()`)
+> **Note:** Dheera AI also supports the [Responses API](https://docs.dheera_ai.ai/docs/response_api) (`dheera_ai.responses()`)
 
-Call any model supported by a provider, with `model=<provider_name>/<model_name>`. There might be provider-specific details here, so refer to [provider docs for more information](https://docs.litellm.ai/docs/providers)
+Call any model supported by a provider, with `model=<provider_name>/<model_name>`. There might be provider-specific details here, so refer to [provider docs for more information](https://docs.dheera_ai.ai/docs/providers)
 
-## Async ([Docs](https://docs.litellm.ai/docs/completion/stream#async-completion))
+## Async ([Docs](https://docs.dheera_ai.ai/docs/completion/stream#async-completion))
 
 ```python
-from litellm import acompletion
+from dheera_ai import acompletion
 import asyncio
 
 async def test_get_response():
@@ -130,13 +130,13 @@ response = asyncio.run(test_get_response())
 print(response)
 ```
 
-## Streaming ([Docs](https://docs.litellm.ai/docs/completion/stream))
+## Streaming ([Docs](https://docs.dheera_ai.ai/docs/completion/stream))
 
-LiteLLM supports streaming the model response back, pass `stream=True` to get a streaming iterator in response.
+Dheera AI supports streaming the model response back, pass `stream=True` to get a streaming iterator in response.
 Streaming is supported for all models (Bedrock, Huggingface, TogetherAI, Azure, OpenAI, etc.)
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 messages = [{"content": "Hello, how are you?", "role": "user"}]
 
@@ -181,12 +181,12 @@ for part in response:
 }
 ```
 
-## Logging Observability ([Docs](https://docs.litellm.ai/docs/observability/callbacks))
+## Logging Observability ([Docs](https://docs.dheera_ai.ai/docs/observability/callbacks))
 
-LiteLLM exposes pre defined callbacks to send data to Lunary, MLflow, Langfuse, DynamoDB, s3 Buckets, Helicone, Promptlayer, Traceloop, Athina, Slack
+Dheera AI exposes pre defined callbacks to send data to Lunary, MLflow, Langfuse, DynamoDB, s3 Buckets, Helicone, Promptlayer, Traceloop, Athina, Slack
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 ## set env variables for logging tools (when using MLflow, no API key set up is required)
 os.environ["LUNARY_PUBLIC_KEY"] = "your-lunary-public-key"
@@ -198,38 +198,38 @@ os.environ["ATHINA_API_KEY"] = "your-athina-api-key"
 os.environ["OPENAI_API_KEY"] = "your-openai-key"
 
 # set callbacks
-litellm.success_callback = ["lunary", "mlflow", "langfuse", "athina", "helicone"] # log input/output to lunary, langfuse, supabase, athina, helicone etc
+dheera_ai.success_callback = ["lunary", "mlflow", "langfuse", "athina", "helicone"] # log input/output to lunary, langfuse, supabase, athina, helicone etc
 
 #openai call
 response = completion(model="openai/gpt-4o", messages=[{"role": "user", "content": "Hi 👋 - i'm openai"}])
 ```
 
-# LiteLLM Proxy Server (LLM Gateway) - ([Docs](https://docs.litellm.ai/docs/simple_proxy))
+# Dheera AI Proxy Server (LLM Gateway) - ([Docs](https://docs.dheera_ai.ai/docs/simple_proxy))
 
 Track spend + Load Balance across multiple projects
 
-[Hosted Proxy](https://docs.litellm.ai/docs/enterprise#hosted-litellm-proxy)
+[Hosted Proxy](https://docs.dheera_ai.ai/docs/enterprise#hosted-dheera_ai-proxy)
 
 The proxy provides:
 
-1. [Hooks for auth](https://docs.litellm.ai/docs/proxy/virtual_keys#custom-auth)
-2. [Hooks for logging](https://docs.litellm.ai/docs/proxy/logging#step-1---create-your-custom-litellm-callback-class)
-3. [Cost tracking](https://docs.litellm.ai/docs/proxy/virtual_keys#tracking-spend)
-4. [Rate Limiting](https://docs.litellm.ai/docs/proxy/users#set-rate-limits)
+1. [Hooks for auth](https://docs.dheera_ai.ai/docs/proxy/virtual_keys#custom-auth)
+2. [Hooks for logging](https://docs.dheera_ai.ai/docs/proxy/logging#step-1---create-your-custom-dheera_ai-callback-class)
+3. [Cost tracking](https://docs.dheera_ai.ai/docs/proxy/virtual_keys#tracking-spend)
+4. [Rate Limiting](https://docs.dheera_ai.ai/docs/proxy/users#set-rate-limits)
 
-## 📖 Proxy Endpoints - [Swagger Docs](https://litellm-api.up.railway.app/)
+## 📖 Proxy Endpoints - [Swagger Docs](https://dheera_ai-api.up.railway.app/)
 
 
 ## Quick Start Proxy - CLI
 
 ```shell
-pip install 'litellm[proxy]'
+pip install 'dheera_ai[proxy]'
 ```
 
-### Step 1: Start litellm proxy
+### Step 1: Start dheera_ai proxy
 
 ```shell
-$ litellm --model huggingface/bigcode/starcoder
+$ dheera_ai --model huggingface/bigcode/starcoder
 
 #INFO: Proxy running on http://0.0.0.0:4000
 ```
@@ -238,12 +238,12 @@ $ litellm --model huggingface/bigcode/starcoder
 
 
 > [!IMPORTANT]
-> 💡 [Use LiteLLM Proxy with Langchain (Python, JS), OpenAI SDK (Python, JS) Anthropic SDK, Mistral SDK, LlamaIndex, Instructor, Curl](https://docs.litellm.ai/docs/proxy/user_keys)
+> 💡 [Use Dheera AI Proxy with Langchain (Python, JS), OpenAI SDK (Python, JS) Anthropic SDK, Mistral SDK, LlamaIndex, Instructor, Curl](https://docs.dheera_ai.ai/docs/proxy/user_keys)
 
 ```python
 import openai # openai v1.0.0+
 client = openai.OpenAI(api_key="anything",base_url="http://0.0.0.0:4000") # set proxy to base_url
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(model="gpt-3.5-turbo", messages = [
     {
         "role": "user",
@@ -254,25 +254,25 @@ response = client.chat.completions.create(model="gpt-3.5-turbo", messages = [
 print(response)
 ```
 
-## Proxy Key Management ([Docs](https://docs.litellm.ai/docs/proxy/virtual_keys))
+## Proxy Key Management ([Docs](https://docs.dheera_ai.ai/docs/proxy/virtual_keys))
 
 Connect the proxy with a Postgres DB to create proxy keys
 
 ```bash
 # Get the code
-git clone https://github.com/BerriAI/litellm
+git clone https://github.com/BerriAI/dheera_ai
 
 # Go to folder
-cd litellm
+cd dheera_ai
 
 # Add the master key - you can change this after setup
-echo 'LITELLM_MASTER_KEY="sk-1234"' > .env
+echo 'DHEERA_AI_MASTER_KEY="sk-1234"' > .env
 
-# Add the litellm salt key - you cannot change this after adding a model
+# Add the dheera_ai salt key - you cannot change this after adding a model
 # It is used to encrypt / decrypt your LLM API Key credentials
 # We recommend - https://1password.com/password-generator/
-# password generator to get a random hash for litellm salt key
-echo 'LITELLM_SALT_KEY="sk-1234"' >> .env
+# password generator to get a random hash for dheera_ai salt key
+echo 'DHEERA_AI_SALT_KEY="sk-1234"' >> .env
 
 # Start
 docker compose up
@@ -280,7 +280,7 @@ docker compose up
 
 
 UI on `/ui` on your proxy server
-![ui_3](https://github.com/BerriAI/litellm/assets/29436595/47c97d5e-b9be-4839-b28c-43d7f4f10033)
+![ui_3](https://github.com/BerriAI/dheera_ai/assets/29436595/47c97d5e-b9be-4839-b28c-43d7f4f10033)
 
 Set budgets and rate limits across multiple projects
 `POST /key/generate`
@@ -303,110 +303,110 @@ curl 'http://0.0.0.0:4000/key/generate' \
 }
 ```
 
-## Supported Providers ([Website Supported Models](https://models.litellm.ai/) | [Docs](https://docs.litellm.ai/docs/providers))
+## Supported Providers ([Website Supported Models](https://models.dheera_ai.ai/) | [Docs](https://docs.dheera_ai.ai/docs/providers))
 
 | Provider                                                                            | `/chat/completions` | `/messages` | `/responses` | `/embeddings` | `/image/generations` | `/audio/transcriptions` | `/audio/speech` | `/moderations` | `/batches` | `/rerank` |
 |-------------------------------------------------------------------------------------|---------------------|-------------|--------------|---------------|----------------------|-------------------------|-----------------|----------------|-----------|-----------|
-| [AI/ML API (`aiml`)](https://docs.litellm.ai/docs/providers/aiml) | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |
-| [AI21 (`ai21`)](https://docs.litellm.ai/docs/providers/ai21) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [AI21 Chat (`ai21_chat`)](https://docs.litellm.ai/docs/providers/ai21) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Aleph Alpha](https://docs.litellm.ai/docs/providers/aleph_alpha) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Anthropic (`anthropic`)](https://docs.litellm.ai/docs/providers/anthropic) | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |  |
-| [Anthropic Text (`anthropic_text`)](https://docs.litellm.ai/docs/providers/anthropic) | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |  |
-| [Anyscale](https://docs.litellm.ai/docs/providers/anyscale) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [AssemblyAI (`assemblyai`)](https://docs.litellm.ai/docs/pass_through/assembly_ai) | ✅ | ✅ | ✅ |  |  | ✅ |  |  |  |  |
-| [Auto Router (`auto_router`)](https://docs.litellm.ai/docs/proxy/auto_routing) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [AWS - Bedrock (`bedrock`)](https://docs.litellm.ai/docs/providers/bedrock) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |
-| [AWS - Sagemaker (`sagemaker`)](https://docs.litellm.ai/docs/providers/aws_sagemaker) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [Azure (`azure`)](https://docs.litellm.ai/docs/providers/azure) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
-| [Azure AI (`azure_ai`)](https://docs.litellm.ai/docs/providers/azure_ai) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
-| [Azure Text (`azure_text`)](https://docs.litellm.ai/docs/providers/azure) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
-| [Baseten (`baseten`)](https://docs.litellm.ai/docs/providers/baseten) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Bytez (`bytez`)](https://docs.litellm.ai/docs/providers/bytez) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Cerebras (`cerebras`)](https://docs.litellm.ai/docs/providers/cerebras) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Clarifai (`clarifai`)](https://docs.litellm.ai/docs/providers/clarifai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Cloudflare AI Workers (`cloudflare`)](https://docs.litellm.ai/docs/providers/cloudflare_workers) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Codestral (`codestral`)](https://docs.litellm.ai/docs/providers/codestral) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Cohere (`cohere`)](https://docs.litellm.ai/docs/providers/cohere) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |
-| [Cohere Chat (`cohere_chat`)](https://docs.litellm.ai/docs/providers/cohere) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [CometAPI (`cometapi`)](https://docs.litellm.ai/docs/providers/cometapi) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [CompactifAI (`compactifai`)](https://docs.litellm.ai/docs/providers/compactifai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Custom (`custom`)](https://docs.litellm.ai/docs/providers/custom_llm_server) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Custom OpenAI (`custom_openai`)](https://docs.litellm.ai/docs/providers/openai_compatible) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
-| [Dashscope (`dashscope`)](https://docs.litellm.ai/docs/providers/dashscope) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Databricks (`databricks`)](https://docs.litellm.ai/docs/providers/databricks) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [DataRobot (`datarobot`)](https://docs.litellm.ai/docs/providers/datarobot) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Deepgram (`deepgram`)](https://docs.litellm.ai/docs/providers/deepgram) | ✅ | ✅ | ✅ |  |  | ✅ |  |  |  |  |
-| [DeepInfra (`deepinfra`)](https://docs.litellm.ai/docs/providers/deepinfra) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Deepseek (`deepseek`)](https://docs.litellm.ai/docs/providers/deepseek) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [ElevenLabs (`elevenlabs`)](https://docs.litellm.ai/docs/providers/elevenlabs) | ✅ | ✅ | ✅ |  |  |  | ✅ |  |  |  |
-| [Empower (`empower`)](https://docs.litellm.ai/docs/providers/empower) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Fal AI (`fal_ai`)](https://docs.litellm.ai/docs/providers/fal_ai) | ✅ | ✅ | ✅ |  | ✅ |  |  |  |  |  |
-| [Featherless AI (`featherless_ai`)](https://docs.litellm.ai/docs/providers/featherless_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Fireworks AI (`fireworks_ai`)](https://docs.litellm.ai/docs/providers/fireworks_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [FriendliAI (`friendliai`)](https://docs.litellm.ai/docs/providers/friendliai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Galadriel (`galadriel`)](https://docs.litellm.ai/docs/providers/galadriel) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [GitHub Copilot (`github_copilot`)](https://docs.litellm.ai/docs/providers/github_copilot) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [GitHub Models (`github`)](https://docs.litellm.ai/docs/providers/github) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Google - PaLM](https://docs.litellm.ai/docs/providers/palm) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Google - Vertex AI (`vertex_ai`)](https://docs.litellm.ai/docs/providers/vertex) | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |
-| [Google AI Studio - Gemini (`gemini`)](https://docs.litellm.ai/docs/providers/gemini) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [GradientAI (`gradient_ai`)](https://docs.litellm.ai/docs/providers/gradient_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Groq AI (`groq`)](https://docs.litellm.ai/docs/providers/groq) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Heroku (`heroku`)](https://docs.litellm.ai/docs/providers/heroku) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Hosted VLLM (`hosted_vllm`)](https://docs.litellm.ai/docs/providers/vllm) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Huggingface (`huggingface`)](https://docs.litellm.ai/docs/providers/huggingface) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |
-| [Hyperbolic (`hyperbolic`)](https://docs.litellm.ai/docs/providers/hyperbolic) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [IBM - Watsonx.ai (`watsonx`)](https://docs.litellm.ai/docs/providers/watsonx) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [Infinity (`infinity`)](https://docs.litellm.ai/docs/providers/infinity) |  |  |  | ✅ |  |  |  |  |  |  |
-| [Jina AI (`jina_ai`)](https://docs.litellm.ai/docs/providers/jina_ai) |  |  |  | ✅ |  |  |  |  |  |  |
-| [Lambda AI (`lambda_ai`)](https://docs.litellm.ai/docs/providers/lambda_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Lemonade (`lemonade`)](https://docs.litellm.ai/docs/providers/lemonade) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [LiteLLM Proxy (`litellm_proxy`)](https://docs.litellm.ai/docs/providers/litellm_proxy) | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |
-| [Llamafile (`llamafile`)](https://docs.litellm.ai/docs/providers/llamafile) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [LM Studio (`lm_studio`)](https://docs.litellm.ai/docs/providers/lm_studio) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Maritalk (`maritalk`)](https://docs.litellm.ai/docs/providers/maritalk) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Meta - Llama API (`meta_llama`)](https://docs.litellm.ai/docs/providers/meta_llama) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Mistral AI API (`mistral`)](https://docs.litellm.ai/docs/providers/mistral) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [Moonshot (`moonshot`)](https://docs.litellm.ai/docs/providers/moonshot) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Morph (`morph`)](https://docs.litellm.ai/docs/providers/morph) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Nebius AI Studio (`nebius`)](https://docs.litellm.ai/docs/providers/nebius) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [NLP Cloud (`nlp_cloud`)](https://docs.litellm.ai/docs/providers/nlp_cloud) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Novita AI (`novita`)](https://novita.ai/models/llm?utm_source=github_litellm&utm_medium=github_readme&utm_campaign=github_link) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Nscale (`nscale`)](https://docs.litellm.ai/docs/providers/nscale) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Nvidia NIM (`nvidia_nim`)](https://docs.litellm.ai/docs/providers/nvidia_nim) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [OCI (`oci`)](https://docs.litellm.ai/docs/providers/oci) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Ollama (`ollama`)](https://docs.litellm.ai/docs/providers/ollama) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [Ollama Chat (`ollama_chat`)](https://docs.litellm.ai/docs/providers/ollama) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Oobabooga (`oobabooga`)](https://docs.litellm.ai/docs/providers/openai_compatible) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
-| [OpenAI (`openai`)](https://docs.litellm.ai/docs/providers/openai) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
-| [OpenAI-like (`openai_like`)](https://docs.litellm.ai/docs/providers/openai_compatible) |  |  |  | ✅ |  |  |  |  |  |  |
-| [OpenRouter (`openrouter`)](https://docs.litellm.ai/docs/providers/openrouter) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [OVHCloud AI Endpoints (`ovhcloud`)](https://docs.litellm.ai/docs/providers/ovhcloud) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Perplexity AI (`perplexity`)](https://docs.litellm.ai/docs/providers/perplexity) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Petals (`petals`)](https://docs.litellm.ai/docs/providers/petals) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Predibase (`predibase`)](https://docs.litellm.ai/docs/providers/predibase) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Recraft (`recraft`)](https://docs.litellm.ai/docs/providers/recraft) |  |  |  |  | ✅ |  |  |  |  |  |
-| [Replicate (`replicate`)](https://docs.litellm.ai/docs/providers/replicate) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Sagemaker Chat (`sagemaker_chat`)](https://docs.litellm.ai/docs/providers/aws_sagemaker) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Sambanova (`sambanova`)](https://docs.litellm.ai/docs/providers/sambanova) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Snowflake (`snowflake`)](https://docs.litellm.ai/docs/providers/snowflake) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Text Completion Codestral (`text-completion-codestral`)](https://docs.litellm.ai/docs/providers/codestral) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Text Completion OpenAI (`text-completion-openai`)](https://docs.litellm.ai/docs/providers/text_completion_openai) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
-| [Together AI (`together_ai`)](https://docs.litellm.ai/docs/providers/togetherai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Topaz (`topaz`)](https://docs.litellm.ai/docs/providers/topaz) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Triton (`triton`)](https://docs.litellm.ai/docs/providers/triton-inference-server) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [V0 (`v0`)](https://docs.litellm.ai/docs/providers/v0) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Vercel AI Gateway (`vercel_ai_gateway`)](https://docs.litellm.ai/docs/providers/vercel_ai_gateway) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [VLLM (`vllm`)](https://docs.litellm.ai/docs/providers/vllm) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Volcengine (`volcengine`)](https://docs.litellm.ai/docs/providers/volcano) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Voyage AI (`voyage`)](https://docs.litellm.ai/docs/providers/voyage) |  |  |  | ✅ |  |  |  |  |  |  |
-| [WandB Inference (`wandb`)](https://docs.litellm.ai/docs/providers/wandb_inference) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Watsonx Text (`watsonx_text`)](https://docs.litellm.ai/docs/providers/watsonx) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [xAI (`xai`)](https://docs.litellm.ai/docs/providers/xai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Xinference (`xinference`)](https://docs.litellm.ai/docs/providers/xinference) |  |  |  | ✅ |  |  |  |  |  |  |
+| [AI/ML API (`aiml`)](https://docs.dheera_ai.ai/docs/providers/aiml) | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |
+| [AI21 (`ai21`)](https://docs.dheera_ai.ai/docs/providers/ai21) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [AI21 Chat (`ai21_chat`)](https://docs.dheera_ai.ai/docs/providers/ai21) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Aleph Alpha](https://docs.dheera_ai.ai/docs/providers/aleph_alpha) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Anthropic (`anthropic`)](https://docs.dheera_ai.ai/docs/providers/anthropic) | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |  |
+| [Anthropic Text (`anthropic_text`)](https://docs.dheera_ai.ai/docs/providers/anthropic) | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |  |
+| [Anyscale](https://docs.dheera_ai.ai/docs/providers/anyscale) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [AssemblyAI (`assemblyai`)](https://docs.dheera_ai.ai/docs/pass_through/assembly_ai) | ✅ | ✅ | ✅ |  |  | ✅ |  |  |  |  |
+| [Auto Router (`auto_router`)](https://docs.dheera_ai.ai/docs/proxy/auto_routing) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [AWS - Bedrock (`bedrock`)](https://docs.dheera_ai.ai/docs/providers/bedrock) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |
+| [AWS - Sagemaker (`sagemaker`)](https://docs.dheera_ai.ai/docs/providers/aws_sagemaker) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [Azure (`azure`)](https://docs.dheera_ai.ai/docs/providers/azure) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
+| [Azure AI (`azure_ai`)](https://docs.dheera_ai.ai/docs/providers/azure_ai) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
+| [Azure Text (`azure_text`)](https://docs.dheera_ai.ai/docs/providers/azure) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
+| [Baseten (`baseten`)](https://docs.dheera_ai.ai/docs/providers/baseten) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Bytez (`bytez`)](https://docs.dheera_ai.ai/docs/providers/bytez) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Cerebras (`cerebras`)](https://docs.dheera_ai.ai/docs/providers/cerebras) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Clarifai (`clarifai`)](https://docs.dheera_ai.ai/docs/providers/clarifai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Cloudflare AI Workers (`cloudflare`)](https://docs.dheera_ai.ai/docs/providers/cloudflare_workers) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Codestral (`codestral`)](https://docs.dheera_ai.ai/docs/providers/codestral) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Cohere (`cohere`)](https://docs.dheera_ai.ai/docs/providers/cohere) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |
+| [Cohere Chat (`cohere_chat`)](https://docs.dheera_ai.ai/docs/providers/cohere) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [CometAPI (`cometapi`)](https://docs.dheera_ai.ai/docs/providers/cometapi) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [CompactifAI (`compactifai`)](https://docs.dheera_ai.ai/docs/providers/compactifai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Custom (`custom`)](https://docs.dheera_ai.ai/docs/providers/custom_llm_server) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Custom OpenAI (`custom_openai`)](https://docs.dheera_ai.ai/docs/providers/openai_compatible) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
+| [Dashscope (`dashscope`)](https://docs.dheera_ai.ai/docs/providers/dashscope) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Databricks (`databricks`)](https://docs.dheera_ai.ai/docs/providers/databricks) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [DataRobot (`datarobot`)](https://docs.dheera_ai.ai/docs/providers/datarobot) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Deepgram (`deepgram`)](https://docs.dheera_ai.ai/docs/providers/deepgram) | ✅ | ✅ | ✅ |  |  | ✅ |  |  |  |  |
+| [DeepInfra (`deepinfra`)](https://docs.dheera_ai.ai/docs/providers/deepinfra) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Deepseek (`deepseek`)](https://docs.dheera_ai.ai/docs/providers/deepseek) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [ElevenLabs (`elevenlabs`)](https://docs.dheera_ai.ai/docs/providers/elevenlabs) | ✅ | ✅ | ✅ |  |  |  | ✅ |  |  |  |
+| [Empower (`empower`)](https://docs.dheera_ai.ai/docs/providers/empower) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Fal AI (`fal_ai`)](https://docs.dheera_ai.ai/docs/providers/fal_ai) | ✅ | ✅ | ✅ |  | ✅ |  |  |  |  |  |
+| [Featherless AI (`featherless_ai`)](https://docs.dheera_ai.ai/docs/providers/featherless_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Fireworks AI (`fireworks_ai`)](https://docs.dheera_ai.ai/docs/providers/fireworks_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [FriendliAI (`friendliai`)](https://docs.dheera_ai.ai/docs/providers/friendliai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Galadriel (`galadriel`)](https://docs.dheera_ai.ai/docs/providers/galadriel) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [GitHub Copilot (`github_copilot`)](https://docs.dheera_ai.ai/docs/providers/github_copilot) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [GitHub Models (`github`)](https://docs.dheera_ai.ai/docs/providers/github) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Google - PaLM](https://docs.dheera_ai.ai/docs/providers/palm) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Google - Vertex AI (`vertex_ai`)](https://docs.dheera_ai.ai/docs/providers/vertex) | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |
+| [Google AI Studio - Gemini (`gemini`)](https://docs.dheera_ai.ai/docs/providers/gemini) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [GradientAI (`gradient_ai`)](https://docs.dheera_ai.ai/docs/providers/gradient_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Groq AI (`groq`)](https://docs.dheera_ai.ai/docs/providers/groq) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Heroku (`heroku`)](https://docs.dheera_ai.ai/docs/providers/heroku) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Hosted VLLM (`hosted_vllm`)](https://docs.dheera_ai.ai/docs/providers/vllm) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Huggingface (`huggingface`)](https://docs.dheera_ai.ai/docs/providers/huggingface) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |
+| [Hyperbolic (`hyperbolic`)](https://docs.dheera_ai.ai/docs/providers/hyperbolic) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [IBM - Watsonx.ai (`watsonx`)](https://docs.dheera_ai.ai/docs/providers/watsonx) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [Infinity (`infinity`)](https://docs.dheera_ai.ai/docs/providers/infinity) |  |  |  | ✅ |  |  |  |  |  |  |
+| [Jina AI (`jina_ai`)](https://docs.dheera_ai.ai/docs/providers/jina_ai) |  |  |  | ✅ |  |  |  |  |  |  |
+| [Lambda AI (`lambda_ai`)](https://docs.dheera_ai.ai/docs/providers/lambda_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Lemonade (`lemonade`)](https://docs.dheera_ai.ai/docs/providers/lemonade) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Dheera AI Proxy (`dheera_ai_proxy`)](https://docs.dheera_ai.ai/docs/providers/dheera_ai_proxy) | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |
+| [Llamafile (`llamafile`)](https://docs.dheera_ai.ai/docs/providers/llamafile) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [LM Studio (`lm_studio`)](https://docs.dheera_ai.ai/docs/providers/lm_studio) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Maritalk (`maritalk`)](https://docs.dheera_ai.ai/docs/providers/maritalk) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Meta - Llama API (`meta_llama`)](https://docs.dheera_ai.ai/docs/providers/meta_llama) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Mistral AI API (`mistral`)](https://docs.dheera_ai.ai/docs/providers/mistral) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [Moonshot (`moonshot`)](https://docs.dheera_ai.ai/docs/providers/moonshot) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Morph (`morph`)](https://docs.dheera_ai.ai/docs/providers/morph) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Nebius AI Studio (`nebius`)](https://docs.dheera_ai.ai/docs/providers/nebius) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [NLP Cloud (`nlp_cloud`)](https://docs.dheera_ai.ai/docs/providers/nlp_cloud) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Novita AI (`novita`)](https://novita.ai/models/llm?utm_source=github_dheera_ai&utm_medium=github_readme&utm_campaign=github_link) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Nscale (`nscale`)](https://docs.dheera_ai.ai/docs/providers/nscale) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Nvidia NIM (`nvidia_nim`)](https://docs.dheera_ai.ai/docs/providers/nvidia_nim) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [OCI (`oci`)](https://docs.dheera_ai.ai/docs/providers/oci) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Ollama (`ollama`)](https://docs.dheera_ai.ai/docs/providers/ollama) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [Ollama Chat (`ollama_chat`)](https://docs.dheera_ai.ai/docs/providers/ollama) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Oobabooga (`oobabooga`)](https://docs.dheera_ai.ai/docs/providers/openai_compatible) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
+| [OpenAI (`openai`)](https://docs.dheera_ai.ai/docs/providers/openai) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
+| [OpenAI-like (`openai_like`)](https://docs.dheera_ai.ai/docs/providers/openai_compatible) |  |  |  | ✅ |  |  |  |  |  |  |
+| [OpenRouter (`openrouter`)](https://docs.dheera_ai.ai/docs/providers/openrouter) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [OVHCloud AI Endpoints (`ovhcloud`)](https://docs.dheera_ai.ai/docs/providers/ovhcloud) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Perplexity AI (`perplexity`)](https://docs.dheera_ai.ai/docs/providers/perplexity) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Petals (`petals`)](https://docs.dheera_ai.ai/docs/providers/petals) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Predibase (`predibase`)](https://docs.dheera_ai.ai/docs/providers/predibase) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Recraft (`recraft`)](https://docs.dheera_ai.ai/docs/providers/recraft) |  |  |  |  | ✅ |  |  |  |  |  |
+| [Replicate (`replicate`)](https://docs.dheera_ai.ai/docs/providers/replicate) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Sagemaker Chat (`sagemaker_chat`)](https://docs.dheera_ai.ai/docs/providers/aws_sagemaker) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Sambanova (`sambanova`)](https://docs.dheera_ai.ai/docs/providers/sambanova) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Snowflake (`snowflake`)](https://docs.dheera_ai.ai/docs/providers/snowflake) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Text Completion Codestral (`text-completion-codestral`)](https://docs.dheera_ai.ai/docs/providers/codestral) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Text Completion OpenAI (`text-completion-openai`)](https://docs.dheera_ai.ai/docs/providers/text_completion_openai) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
+| [Together AI (`together_ai`)](https://docs.dheera_ai.ai/docs/providers/togetherai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Topaz (`topaz`)](https://docs.dheera_ai.ai/docs/providers/topaz) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Triton (`triton`)](https://docs.dheera_ai.ai/docs/providers/triton-inference-server) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [V0 (`v0`)](https://docs.dheera_ai.ai/docs/providers/v0) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Vercel AI Gateway (`vercel_ai_gateway`)](https://docs.dheera_ai.ai/docs/providers/vercel_ai_gateway) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [VLLM (`vllm`)](https://docs.dheera_ai.ai/docs/providers/vllm) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Volcengine (`volcengine`)](https://docs.dheera_ai.ai/docs/providers/volcano) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Voyage AI (`voyage`)](https://docs.dheera_ai.ai/docs/providers/voyage) |  |  |  | ✅ |  |  |  |  |  |  |
+| [WandB Inference (`wandb`)](https://docs.dheera_ai.ai/docs/providers/wandb_inference) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Watsonx Text (`watsonx_text`)](https://docs.dheera_ai.ai/docs/providers/watsonx) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [xAI (`xai`)](https://docs.dheera_ai.ai/docs/providers/xai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Xinference (`xinference`)](https://docs.dheera_ai.ai/docs/providers/xinference) |  |  |  | ✅ |  |  |  |  |  |  |
 
-[**Read the Docs**](https://docs.litellm.ai/docs/)
+[**Read the Docs**](https://docs.dheera_ai.ai/docs/)
 
 ## Run in Developer mode
 ### Services
@@ -417,20 +417,20 @@ curl 'http://0.0.0.0:4000/key/generate' \
 1. (In root) create virtual environment `python -m venv .venv`
 2. Activate virtual environment `source .venv/bin/activate`
 3. Install dependencies `pip install -e ".[all]"`
-4. Start proxy backend `python litellm/proxy_cli.py`
+4. Start proxy backend `python dheera_ai/proxy_cli.py`
 
 ### Frontend
-1. Navigate to `ui/litellm-dashboard`
+1. Navigate to `ui/dheera_ai-dashboard`
 2. Install dependencies `npm install`
 3. Run `npm run dev` to start the dashboard
 
 # Enterprise
 For companies that need better security, user management and professional support
 
-[Talk to founders](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+[Talk to founders](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 This covers:
-- ✅ **Features under the [LiteLLM Commercial License](https://docs.litellm.ai/docs/proxy/enterprise):**
+- ✅ **Features under the [Dheera AI Commercial License](https://docs.dheera_ai.ai/docs/proxy/enterprise):**
 - ✅ **Feature Prioritization**
 - ✅ **Custom Integrations**
 - ✅ **Professional Support - Dedicated discord + slack**
@@ -439,15 +439,15 @@ This covers:
 
 # Contributing
 
-We welcome contributions to LiteLLM! Whether you're fixing bugs, adding features, or improving documentation, we appreciate your help.
+We welcome contributions to Dheera AI! Whether you're fixing bugs, adding features, or improving documentation, we appreciate your help.
 
 ## Quick Start for Contributors
 
 This requires poetry to be installed.
 
 ```bash
-git clone https://github.com/BerriAI/litellm.git
-cd litellm
+git clone https://github.com/BerriAI/dheera_ai.git
+cd dheera_ai
 make install-dev    # Install development dependencies
 make format         # Format your code
 make lint           # Run all linting checks
@@ -459,7 +459,7 @@ For detailed contributing guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Code Quality / Linting
 
-LiteLLM follows the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).
+Dheera AI follows the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).
 
 Our automated checks include:
 - **Black** for code formatting
@@ -474,9 +474,9 @@ All these checks must pass before your PR can be merged.
 
 # Support / talk with founders
 
-- [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-litellm-hosted-version)
+- [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-dheera_ai-hosted-version)
 - [Community Discord 💭](https://discord.gg/wuPM9dRgDw)
-- [Community Slack 💭](https://www.litellm.ai/support)
+- [Community Slack 💭](https://www.dheera_ai.ai/support)
 - Our numbers 📞 +1 (770) 8783-106 / ‭+1 (412) 618-6238‬
 - Our emails ✉️ ishaan@berri.ai / krrish@berri.ai
 
@@ -495,8 +495,8 @@ All these checks must pass before your PR can be merged.
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-<a href="https://github.com/BerriAI/litellm/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=BerriAI/litellm" />
+<a href="https://github.com/BerriAI/dheera_ai/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=BerriAI/dheera_ai" />
 </a>
 
 

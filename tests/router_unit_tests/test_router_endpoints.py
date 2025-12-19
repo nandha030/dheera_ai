@@ -11,8 +11,8 @@ from unittest.mock import AsyncMock, patch, MagicMock
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-from litellm import Router, CustomLogger
-from litellm.types.utils import StandardLoggingPayload
+from dheera_ai import Router, CustomLogger
+from dheera_ai.types.utils import StandardLoggingPayload
 
 ## Get the current directory of the file being run
 pwd = os.path.dirname(os.path.realpath(__file__))
@@ -22,7 +22,7 @@ file_path = os.path.join(pwd, "gettysburg.wav")
 
 audio_file = open(file_path, "rb")
 from pathlib import Path
-import litellm
+import dheera_ai
 import pytest
 import asyncio
 
@@ -32,35 +32,35 @@ def model_list():
     return [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-3.5-turbo",
                 "api_key": os.getenv("OPENAI_API_KEY"),
             },
         },
         {
             "model_name": "gpt-4o",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-4o",
                 "api_key": os.getenv("OPENAI_API_KEY"),
             },
         },
         {
             "model_name": "dall-e-3",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "dall-e-3",
                 "api_key": os.getenv("OPENAI_API_KEY"),
             },
         },
         {
             "model_name": "cohere-rerank",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "cohere/rerank-english-v3.0",
                 "api_key": os.getenv("COHERE_API_KEY"),
             },
         },
         {
             "model_name": "claude-3-5-sonnet-20240620",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-3.5-turbo",
                 "mock_response": "hi this is macintosh.",
             },
@@ -68,7 +68,7 @@ def model_list():
     ]
 
 
-# This file includes the custom callbacks for LiteLLM Proxy
+# This file includes the custom callbacks for DheeraAI Proxy
 # Once defined, these can be passed in proxy_config.yaml
 class MyCustomHandler(CustomLogger):
     def __init__(self):
@@ -88,26 +88,26 @@ class MyCustomHandler(CustomLogger):
             pass
 
 
-# Set litellm.callbacks = [proxy_handler_instance] on the proxy
-# need to set litellm.callbacks = [proxy_handler_instance] # on the proxy
+# Set dheera_ai.callbacks = [proxy_handler_instance] on the proxy
+# need to set dheera_ai.callbacks = [proxy_handler_instance] # on the proxy
 @pytest.mark.asyncio
 @pytest.mark.flaky(retries=6, delay=10)
 async def test_transcription_on_router():
     proxy_handler_instance = MyCustomHandler()
-    litellm.set_verbose = True
-    litellm.callbacks = [proxy_handler_instance]
+    dheera_ai.set_verbose = True
+    dheera_ai.callbacks = [proxy_handler_instance]
     print("\n Testing async transcription on router\n")
     try:
         model_list = [
             {
                 "model_name": "whisper",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "whisper-1",
                 },
             },
             {
                 "model_name": "whisper",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "azure/azure-whisper",
                     "api_base": "https://my-endpoint-europe-berri-992.openai.azure.com/",
                     "api_key": os.getenv("AZURE_EUROPE_API_KEY"),
@@ -155,16 +155,16 @@ async def test_transcription_on_router():
 @pytest.mark.parametrize("mode", ["iterator"])  # "file",
 @pytest.mark.asyncio
 async def test_audio_speech_router(mode):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     test_logger = MyCustomHandler()
-    litellm.callbacks = [test_logger]
-    from litellm import Router
+    dheera_ai.callbacks = [test_logger]
+    from dheera_ai import Router
 
     client = Router(
         model_list=[
             {
                 "model_name": "tts",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/tts-1",
                 },
             },
@@ -187,7 +187,7 @@ async def test_audio_speech_router(mode):
 
     await asyncio.sleep(3)
 
-    from litellm.llms.openai.openai import HttpxBinaryResponseContent
+    from dheera_ai.llms.openai.openai import HttpxBinaryResponseContent
 
     assert isinstance(response, HttpxBinaryResponseContent)
 
@@ -201,7 +201,7 @@ async def test_audio_speech_router(mode):
 
 @pytest.mark.asyncio()
 async def test_rerank_endpoint(model_list):
-    from litellm.types.utils import RerankResponse
+    from dheera_ai.types.utils import RerankResponse
 
     router = Router(model_list=model_list)
 
@@ -234,18 +234,18 @@ async def test_rerank_endpoint(model_list):
     "model", ["omni-moderation-latest", "openai/omni-moderation-latest", None]
 )
 async def test_moderation_endpoint(model):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     router = Router(
         model_list=[
             {
                 "model_name": "openai/*",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/*",
                 },
             },
             {
                 "model_name": "*",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/*",
                 },
             },
@@ -273,7 +273,7 @@ async def test_moderation_endpoint_with_api_base():
         model_list=[
             {
                 "model_name": "openai/omni-moderation-latest",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/omni-moderation-latest",
                     "api_base": custom_api_base,
                     "api_key": "test-key"
@@ -283,7 +283,7 @@ async def test_moderation_endpoint_with_api_base():
     )
 
     # Mock the OpenAI client to verify api_base is passed
-    with patch("litellm.main.openai_chat_completions._get_openai_client") as mock_get_client:
+    with patch("dheera_ai.main.openai_chat_completions._get_openai_client") as mock_get_client:
         mock_client = AsyncMock()
         mock_response = MagicMock()
         mock_response.model_dump.return_value = {
@@ -348,12 +348,12 @@ async def test_aaaaatext_completion_endpoint(model_list, sync_mode):
 @pytest.mark.asyncio
 async def test_router_with_empty_choices(model_list):
     """
-    https://github.com/BerriAI/litellm/issues/8306
+    https://github.com/BerriAI/dheera_ai/issues/8306
     """
     router = Router(model_list=model_list)
-    mock_response = litellm.ModelResponse(
+    mock_response = dheera_ai.ModelResponse(
         choices=[],
-        usage=litellm.Usage(
+        usage=dheera_ai.Usage(
             prompt_tokens=10,
             completion_tokens=10,
             total_tokens=20,
@@ -400,7 +400,7 @@ def test_generic_api_call_with_fallbacks_basic(sync_mode):
         model_list=[
             {
                 "model_name": "test-model-alias",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "anthropic/test-model",
                     "api_key": "fake-api-key",
                 },
@@ -464,7 +464,7 @@ async def test_aadapter_completion():
             model_list=[
                 {
                     "model_name": "test-adapter-model",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "model": "anthropic/test-model",
                         "api_key": "fake-api-key",
                     },
@@ -503,7 +503,7 @@ async def test__aadapter_completion():
     """
     Test the _aadapter_completion method directly
     """
-    # Create a mock response for litellm.aadapter_completion
+    # Create a mock response for dheera_ai.aadapter_completion
     mock_response = {
         "id": "adapter_resp_123",
         "object": "adapter.completion",
@@ -519,9 +519,9 @@ async def test__aadapter_completion():
         "usage": {"prompt_tokens": 10, "completion_tokens": 20, "total_tokens": 30},
     }
 
-    # Create a router with a mocked litellm.aadapter_completion
+    # Create a router with a mocked dheera_ai.aadapter_completion
     with patch(
-        "litellm.aadapter_completion", new_callable=AsyncMock
+        "dheera_ai.aadapter_completion", new_callable=AsyncMock
     ) as mock_adapter_completion:
         mock_adapter_completion.return_value = mock_response
 
@@ -529,7 +529,7 @@ async def test__aadapter_completion():
             model_list=[
                 {
                     "model_name": "test-adapter-model",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "model": "anthropic/test-model",
                         "api_key": "fake-api-key",
                     },
@@ -541,7 +541,7 @@ async def test__aadapter_completion():
         router.async_get_available_deployment = AsyncMock(
             return_value={
                 "model_name": "test-adapter-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "test-model",
                     "api_key": "fake-api-key",
                 },
@@ -565,7 +565,7 @@ async def test__aadapter_completion():
         # Verify the response
         assert response == mock_response
 
-        # Verify litellm.aadapter_completion was called with the right parameters
+        # Verify dheera_ai.aadapter_completion was called with the right parameters
         mock_adapter_completion.assert_called_once()
         call_kwargs = mock_adapter_completion.call_args.kwargs
         assert call_kwargs["adapter_id"] == "test-adapter-id"
@@ -592,7 +592,7 @@ def test_initialize_router_endpoints():
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "anthropic/test-model",
                     "api_key": "fake-api-key",
                 },
@@ -624,13 +624,13 @@ async def test_init_responses_api_endpoints():
     """
     A simpler test for _init_responses_api_endpoints that focuses on the basic functionality
     """
-    from litellm.responses.utils import ResponsesAPIRequestUtils
+    from dheera_ai.responses.utils import ResponsesAPIRequestUtils
     # Create a router with a basic model
     router = Router(
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/test-model",
                     "api_key": "fake-api-key",
                 },
@@ -683,7 +683,7 @@ async def test_init_vector_store_api_endpoints():
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/test-model",
                     "api_key": "fake-api-key",
                 },
@@ -780,7 +780,7 @@ def test_initialize_core_endpoints():
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "anthropic/test-model",
                     "api_key": "fake-api-key",
                 },
@@ -826,7 +826,7 @@ def test_initialize_specialized_endpoints():
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/test-model",
                     "api_key": "fake-api-key",
                 },
@@ -886,7 +886,7 @@ def test_initialize_vector_store_endpoints():
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/test-model",
                     "api_key": "fake-api-key",
                 },
@@ -916,7 +916,7 @@ def test_initialize_vector_store_file_endpoints():
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/test-model",
                     "api_key": "fake-api-key",
                 },
@@ -954,7 +954,7 @@ def test_initialize_google_genai_endpoints():
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/test-model",
                     "api_key": "fake-api-key",
                 },
@@ -984,7 +984,7 @@ def test_initialize_ocr_search_endpoints():
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/test-model",
                     "api_key": "fake-api-key",
                 },
@@ -1014,7 +1014,7 @@ def test_initialize_video_endpoints():
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/test-model",
                     "api_key": "fake-api-key",
                 },
@@ -1050,7 +1050,7 @@ def test_initialize_container_endpoints():
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/test-model",
                     "api_key": "fake-api-key",
                 },
@@ -1084,7 +1084,7 @@ def test_initialize_skills_endpoints():
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "anthropic/test-model",
                     "api_key": "fake-api-key",
                 },

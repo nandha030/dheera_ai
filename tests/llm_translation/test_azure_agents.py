@@ -17,7 +17,7 @@ Authentication: Uses Azure AD Bearer tokens (not API keys)
   Get token via: az account get-access-token --resource 'https://ai.azure.com'
 
 Example environment variables:
-  AZURE_AGENTS_API_BASE=https://litellm-ci-cd-prod.services.ai.azure.com/api/projects/litellm-ci-cd
+  AZURE_AGENTS_API_BASE=https://dheera_ai-ci-cd-prod.services.ai.azure.com/api/projects/dheera_ai-ci-cd
   AZURE_AGENTS_API_KEY=<Azure AD Bearer token>
 
 See: https://learn.microsoft.com/en-us/azure/ai-foundry/agents/quickstart
@@ -30,7 +30,7 @@ sys.path.insert(0, os.path.abspath("../.."))
 
 import pytest
 
-import litellm
+import dheera_ai
 
 
 @pytest.mark.asyncio
@@ -46,7 +46,7 @@ async def test_azure_ai_agents_acompletion_non_streaming():
     if not api_base or not api_key:
         pytest.skip("AZURE_AGENTS_API_BASE and AZURE_AGENTS_API_KEY environment variables required")
 
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model=f"azure_ai/agents/{agent_id}",
         messages=[{"role": "user", "content": "Hi Agent, what is 25 * 4?"}],
         api_base=api_base,
@@ -81,7 +81,7 @@ async def test_azure_ai_agents_acompletion_streaming():
     if not api_base or not api_key:
         pytest.skip("AZURE_AGENTS_API_BASE and AZURE_AGENTS_API_KEY environment variables required")
 
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model=f"azure_ai/agents/{agent_id}",
         messages=[{"role": "user", "content": "Hi Agent, what is 10 + 5?"}],
         api_base=api_base,
@@ -110,7 +110,7 @@ def test_azure_ai_agents_is_agents_route():
     """
     Test the is_azure_ai_agents_route detection method.
     """
-    from litellm.llms.azure_ai.agents.transformation import AzureAIAgentsConfig
+    from dheera_ai.llms.azure_ai.agents.transformation import AzureAIAgentsConfig
 
     # Should be recognized as agents route
     assert AzureAIAgentsConfig.is_azure_ai_agents_route("azure_ai/agents/asst_123") is True
@@ -125,7 +125,7 @@ def test_azure_ai_get_azure_ai_route():
     """
     Test the get_azure_ai_route dispatch method.
     """
-    from litellm.llms.azure_ai.common_utils import AzureFoundryModelInfo
+    from dheera_ai.llms.azure_ai.common_utils import AzureFoundryModelInfo
 
     # Should return "agents" for agents routes
     assert AzureFoundryModelInfo.get_azure_ai_route("agents/asst_123") == "agents"
@@ -141,7 +141,7 @@ def test_azure_ai_agents_get_agent_id_from_model():
     """
     Test agent ID extraction from model name.
     """
-    from litellm.llms.azure_ai.agents.transformation import AzureAIAgentsConfig
+    from dheera_ai.llms.azure_ai.agents.transformation import AzureAIAgentsConfig
 
     # Test with full model name
     agent_id = AzureAIAgentsConfig.get_agent_id_from_model("azure_ai/agents/asst_abc123")
@@ -160,7 +160,7 @@ def test_azure_ai_agents_config_get_agent_id():
     """
     Test agent ID extraction via config method.
     """
-    from litellm.llms.azure_ai.agents.transformation import AzureAIAgentsConfig
+    from dheera_ai.llms.azure_ai.agents.transformation import AzureAIAgentsConfig
 
     config = AzureAIAgentsConfig()
 
@@ -181,7 +181,7 @@ def test_azure_ai_agents_config_get_complete_url():
     """
     Test that AzureAIAgentsConfig correctly generates base URLs.
     """
-    from litellm.llms.azure_ai.agents.transformation import AzureAIAgentsConfig
+    from dheera_ai.llms.azure_ai.agents.transformation import AzureAIAgentsConfig
 
     config = AzureAIAgentsConfig()
 
@@ -191,7 +191,7 @@ def test_azure_ai_agents_config_get_complete_url():
         api_key=None,
         model="agents/asst_123",
         optional_params={},
-        litellm_params={},
+        dheera_ai_params={},
         stream=False,
     )
     assert url == "https://test-project.services.ai.azure.com"
@@ -202,7 +202,7 @@ def test_azure_ai_agents_config_get_complete_url():
         api_key=None,
         model="agents/asst_123",
         optional_params={},
-        litellm_params={},
+        dheera_ai_params={},
         stream=False,
     )
     assert url_with_slash == "https://test-project.services.ai.azure.com"
@@ -212,7 +212,7 @@ def test_azure_ai_agents_config_transform_request():
     """
     Test that AzureAIAgentsConfig correctly transforms requests.
     """
-    from litellm.llms.azure_ai.agents.transformation import AzureAIAgentsConfig
+    from dheera_ai.llms.azure_ai.agents.transformation import AzureAIAgentsConfig
 
     config = AzureAIAgentsConfig()
 
@@ -225,7 +225,7 @@ def test_azure_ai_agents_config_transform_request():
         model="azure_ai/agents/asst_123",
         messages=messages,
         optional_params={},
-        litellm_params={"stream": False},
+        dheera_ai_params={"stream": False},
         headers={},
     )
 
@@ -242,7 +242,7 @@ def test_azure_ai_agents_provider_detection():
     """
     Test that the azure_ai provider is correctly detected from model name.
     """
-    from litellm.litellm_core_utils.get_llm_provider_logic import get_llm_provider
+    from dheera_ai.dheera_ai_core_utils.get_llm_provider_logic import get_llm_provider
 
     model, provider, api_key, api_base = get_llm_provider(
         model="azure_ai/agents/asst_abc123",
@@ -259,7 +259,7 @@ def test_azure_ai_agents_validate_environment():
     
     Azure Foundry Agents uses Bearer token authentication (Azure AD tokens).
     """
-    from litellm.llms.azure_ai.agents.transformation import AzureAIAgentsConfig
+    from dheera_ai.llms.azure_ai.agents.transformation import AzureAIAgentsConfig
 
     config = AzureAIAgentsConfig()
 
@@ -268,7 +268,7 @@ def test_azure_ai_agents_validate_environment():
         model="agents/asst_123",
         messages=[],
         optional_params={},
-        litellm_params={},
+        dheera_ai_params={},
         api_key="test-azure-ad-token",
         api_base="https://test.services.ai.azure.com/api/projects/test-project",
     )
@@ -284,7 +284,7 @@ def test_azure_ai_agents_handler_url_builders():
     Azure Foundry Agents API uses direct paths without /openai/ prefix.
     See: https://learn.microsoft.com/en-us/azure/ai-foundry/agents/quickstart
     """
-    from litellm.llms.azure_ai.agents.handler import AzureAIAgentsHandler
+    from dheera_ai.llms.azure_ai.agents.handler import AzureAIAgentsHandler
 
     handler = AzureAIAgentsHandler()
     api_base = "https://test.services.ai.azure.com/api/projects/test-project"
@@ -313,7 +313,7 @@ def test_azure_ai_agents_extract_content_from_messages():
     """
     Test content extraction from Azure Agents message response.
     """
-    from litellm.llms.azure_ai.agents.handler import AzureAIAgentsHandler
+    from dheera_ai.llms.azure_ai.agents.handler import AzureAIAgentsHandler
 
     handler = AzureAIAgentsHandler()
 
@@ -366,7 +366,7 @@ async def test_azure_ai_agents_conversation_continuity():
 
     try:
         # First message
-        response1 = await litellm.acompletion(
+        response1 = await dheera_ai.acompletion(
             model=f"azure_ai/agents/{agent_id}",
             messages=[{"role": "user", "content": "My name is Alice. Remember this."}],
             api_base=api_base,
@@ -383,7 +383,7 @@ async def test_azure_ai_agents_conversation_continuity():
         
         if thread_id:
             # Second message using the same thread
-            response2 = await litellm.acompletion(
+            response2 = await dheera_ai.acompletion(
                 model=f"azure_ai/agents/{agent_id}",
                 messages=[{"role": "user", "content": "What is my name?"}],
                 api_base=api_base,

@@ -5,7 +5,7 @@
 | Property | Details |
 |-------|-------|
 | Description | Azure Document Intelligence (formerly Form Recognizer) provides advanced document analysis capabilities including text extraction, layout analysis, and structure recognition |
-| Provider Route on LiteLLM | `azure_ai/doc-intelligence/` |
+| Provider Route on Dheera AI | `azure_ai/doc-intelligence/` |
 | Supported Operations | `/ocr` |
 | Link to Provider Doc | [Azure Document Intelligence ↗](https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/)
 
@@ -13,10 +13,10 @@ Extract text and analyze document structure using Azure Document Intelligence's 
 
 ## Quick Start
 
-### **LiteLLM SDK**
+### **Dheera AI SDK**
 
 ```python showLineNumbers title="SDK Usage"
-import litellm
+import dheera_ai
 import os
 
 # Set environment variables
@@ -24,7 +24,7 @@ os.environ["AZURE_DOCUMENT_INTELLIGENCE_API_KEY"] = "your-api-key"
 os.environ["AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT"] = "https://your-resource.cognitiveservices.azure.com"
 
 # OCR with PDF URL
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/doc-intelligence/prebuilt-layout",
     document={
         "type": "document_url",
@@ -38,12 +38,12 @@ for page in response.pages:
     print(page.markdown)
 ```
 
-### **LiteLLM PROXY**
+### **Dheera AI PROXY**
 
 ```yaml showLineNumbers title="proxy_config.yaml"
 model_list:
   - model_name: azure-doc-intel
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/doc-intelligence/prebuilt-layout
       api_key: os.environ/AZURE_DOCUMENT_INTELLIGENCE_API_KEY
       api_base: os.environ/AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT
@@ -53,7 +53,7 @@ model_list:
 
 **Start Proxy**
 ```bash
-litellm --config proxy_config.yaml
+dheera_ai --config proxy_config.yaml
 ```
 
 **Call OCR via Proxy**
@@ -72,40 +72,40 @@ curl -X POST http://localhost:4000/ocr \
 
 ## How It Works
 
-Azure Document Intelligence uses an asynchronous API pattern. LiteLLM AI Gateway handles the request/response transformation and polling automatically.
+Azure Document Intelligence uses an asynchronous API pattern. Dheera AI AI Gateway handles the request/response transformation and polling automatically.
 
 ### Complete Flow Diagram
 
 ```mermaid
 sequenceDiagram
     participant Client
-    box rgb(200, 220, 255) LiteLLM AI Gateway
-        participant LiteLLM
+    box rgb(200, 220, 255) Dheera AI AI Gateway
+        participant Dheera AI
     end
     participant Azure as Azure Document Intelligence
 
-    Client->>LiteLLM: POST /ocr (Mistral format)
-    Note over LiteLLM: Transform to Azure format
+    Client->>Dheera AI: POST /ocr (Mistral format)
+    Note over Dheera AI: Transform to Azure format
     
-    LiteLLM->>Azure: POST :analyze
-    Azure-->>LiteLLM: 202 Accepted + polling URL
+    Dheera AI->>Azure: POST :analyze
+    Azure-->>Dheera AI: 202 Accepted + polling URL
     
-    Note over LiteLLM: Automatic Polling
+    Note over Dheera AI: Automatic Polling
     loop Every 2-10 seconds
-        LiteLLM->>Azure: GET polling URL
-        Azure-->>LiteLLM: Status: running
+        Dheera AI->>Azure: GET polling URL
+        Azure-->>Dheera AI: Status: running
     end
     
-    LiteLLM->>Azure: GET polling URL
-    Azure-->>LiteLLM: Status: succeeded + results
+    Dheera AI->>Azure: GET polling URL
+    Azure-->>Dheera AI: Status: succeeded + results
     
-    Note over LiteLLM: Transform to Mistral format
-    LiteLLM-->>Client: OCR Response (Mistral format)
+    Note over Dheera AI: Transform to Mistral format
+    Dheera AI-->>Client: OCR Response (Mistral format)
 ```
 
-### What LiteLLM Does For You
+### What Dheera AI Does For You
 
-When you call `litellm.ocr()` via SDK or `/ocr` via Proxy:
+When you call `dheera_ai.ocr()` via SDK or `/ocr` via Proxy:
 
 1. **Request Transformation**: Converts Mistral OCR format → Azure Document Intelligence format
 2. **Submits Document**: Sends transformed request to Azure DI API
@@ -141,13 +141,13 @@ import TabItem from '@theme/TabItem';
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers title="Layout Model - SDK"
-import litellm
+import dheera_ai
 import os
 
 os.environ["AZURE_DOCUMENT_INTELLIGENCE_API_KEY"] = "your-api-key"
 os.environ["AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT"] = "https://your-resource.cognitiveservices.azure.com"
 
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/doc-intelligence/prebuilt-layout",
     document={
         "type": "document_url",
@@ -162,7 +162,7 @@ response = litellm.ocr(
 ```yaml showLineNumbers title="proxy_config.yaml"
 model_list:
   - model_name: azure-layout
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/doc-intelligence/prebuilt-layout
       api_key: os.environ/AZURE_DOCUMENT_INTELLIGENCE_API_KEY
       api_base: os.environ/AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT
@@ -196,13 +196,13 @@ Optimized for reading text from documents - fastest and most cost-effective.
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers title="Read Model - SDK"
-import litellm
+import dheera_ai
 import os
 
 os.environ["AZURE_DOCUMENT_INTELLIGENCE_API_KEY"] = "your-api-key"
 os.environ["AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT"] = "https://your-resource.cognitiveservices.azure.com"
 
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/doc-intelligence/prebuilt-read",
     document={
         "type": "document_url",
@@ -217,7 +217,7 @@ response = litellm.ocr(
 ```yaml showLineNumbers title="proxy_config.yaml"
 model_list:
   - model_name: azure-read
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/doc-intelligence/prebuilt-read
       api_key: os.environ/AZURE_DOCUMENT_INTELLIGENCE_API_KEY
       api_base: os.environ/AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT
@@ -250,13 +250,13 @@ General-purpose document analysis with key-value pairs.
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers title="Document Model - SDK"
-import litellm
+import dheera_ai
 import os
 
 os.environ["AZURE_DOCUMENT_INTELLIGENCE_API_KEY"] = "your-api-key"
 os.environ["AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT"] = "https://your-resource.cognitiveservices.azure.com"
 
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/doc-intelligence/prebuilt-document",
     document={
         "type": "document_url",
@@ -271,7 +271,7 @@ response = litellm.ocr(
 ```yaml showLineNumbers title="proxy_config.yaml"
 model_list:
   - model_name: azure-document
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/doc-intelligence/prebuilt-document
       api_key: os.environ/AZURE_DOCUMENT_INTELLIGENCE_API_KEY
       api_base: os.environ/AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT
@@ -298,7 +298,7 @@ Azure Document Intelligence supports various document formats.
 ### PDF Documents
 
 ```python showLineNumbers title="PDF OCR"
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/doc-intelligence/prebuilt-layout",
     document={
         "type": "document_url",
@@ -310,7 +310,7 @@ response = litellm.ocr(
 ### Image Documents
 
 ```python showLineNumbers title="Image OCR"
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/doc-intelligence/prebuilt-layout",
     document={
         "type": "image_url",
@@ -330,7 +330,7 @@ import base64
 with open("document.pdf", "rb") as f:
     pdf_base64 = base64.b64encode(f.read()).decode()
 
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/doc-intelligence/prebuilt-layout",
     document={
         "type": "document_url",
@@ -362,11 +362,11 @@ for page in response.pages:
 ## Async Support
 
 ```python showLineNumbers title="Async Usage"
-import litellm
+import dheera_ai
 import asyncio
 
 async def process_document():
-    response = await litellm.aocr(
+    response = await dheera_ai.aocr(
         model="azure_ai/doc-intelligence/prebuilt-layout",
         document={
             "type": "document_url",
@@ -381,7 +381,7 @@ response = asyncio.run(process_document())
 
 ## Cost Tracking
 
-LiteLLM automatically tracks costs for Azure Document Intelligence OCR:
+Dheera AI automatically tracks costs for Azure Document Intelligence OCR:
 
 | Model | Cost per 1,000 Pages |
 |-------|---------------------|
@@ -390,7 +390,7 @@ LiteLLM automatically tracks costs for Azure Document Intelligence OCR:
 | prebuilt-document | $10.00 |
 
 ```python showLineNumbers title="View Cost"
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/doc-intelligence/prebuilt-layout",
     document={"type": "document_url", "document_url": "https://..."}
 )
@@ -404,5 +404,5 @@ print(f"Cost: ${response._hidden_params.get('response_cost', 0)}")
 - [Azure Document Intelligence Documentation](https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/)
 - [Pricing Details](https://azure.microsoft.com/en-us/pricing/details/ai-document-intelligence/)
 - [Supported File Formats](https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/concept-model-overview)
-- [LiteLLM OCR Documentation](https://docs.litellm.ai/docs/ocr)
+- [Dheera AI OCR Documentation](https://docs.dheera_ai.ai/docs/ocr)
 

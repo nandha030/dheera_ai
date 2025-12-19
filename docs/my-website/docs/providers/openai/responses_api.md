@@ -5,15 +5,15 @@ import TabItem from '@theme/TabItem';
 
 ## Usage
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 
 #### Non-streaming
 ```python showLineNumbers title="OpenAI Non-streaming Response"
-import litellm
+import dheera_ai
 
 # Non-streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/o1-pro",
     input="Tell me a three sentence bedtime story about a unicorn.",
     max_output_tokens=100
@@ -24,10 +24,10 @@ print(response)
 
 #### Streaming
 ```python showLineNumbers title="OpenAI Streaming Response"
-import litellm
+import dheera_ai
 
 # Streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/o1-pro",
     input="Tell me a three sentence bedtime story about a unicorn.",
     stream=True
@@ -39,11 +39,11 @@ for event in response:
 
 #### Image Generation with Streaming
 ```python showLineNumbers title="OpenAI Streaming Image Generation"
-import litellm
+import dheera_ai
 import base64
 
 # Streaming image generation with partial images
-stream = litellm.responses(
+stream = dheera_ai.responses(
     model="gpt-4.1",  # Use an actual image generation model
     input="Generate a gorgeous image of a river made of white owl feathers",
     stream=True,
@@ -62,10 +62,10 @@ for event in stream:
 
 #### GET a Response
 ```python showLineNumbers title="Get Response by ID"
-import litellm
+import dheera_ai
 
 # First, create a response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/o1-pro",
     input="Tell me a three sentence bedtime story about a unicorn.",
     max_output_tokens=100
@@ -75,22 +75,22 @@ response = litellm.responses(
 response_id = response.id
 
 # Retrieve the response by ID
-retrieved_response = litellm.get_responses(
+retrieved_response = dheera_ai.get_responses(
     response_id=response_id
 )
 
 print(retrieved_response)
 
 # For async usage
-# retrieved_response = await litellm.aget_responses(response_id=response_id)
+# retrieved_response = await dheera_ai.aget_responses(response_id=response_id)
 ```
 
 #### DELETE a Response
 ```python showLineNumbers title="Delete Response by ID"
-import litellm
+import dheera_ai
 
 # First, create a response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/o1-pro",
     input="Tell me a three sentence bedtime story about a unicorn.",
     max_output_tokens=100
@@ -100,38 +100,38 @@ response = litellm.responses(
 response_id = response.id
 
 # Delete the response by ID
-delete_response = litellm.delete_responses(
+delete_response = dheera_ai.delete_responses(
     response_id=response_id
 )
 
 print(delete_response)
 
 # For async usage
-# delete_response = await litellm.adelete_responses(response_id=response_id)
+# delete_response = await dheera_ai.adelete_responses(response_id=response_id)
 ```
 
 
-### LiteLLM Proxy with OpenAI SDK
+### Dheera AI Proxy with OpenAI SDK
 
 1. Set up config.yaml
 
 ```yaml showLineNumbers title="OpenAI Proxy Configuration"
 model_list:
   - model_name: openai/o1-pro
-    litellm_params:
+    dheera_ai_params:
       model: openai/o1-pro
       api_key: os.environ/OPENAI_API_KEY
 ```
 
-2. Start LiteLLM Proxy Server
+2. Start Dheera AI Proxy Server
 
-```bash title="Start LiteLLM Proxy Server"
-litellm --config /path/to/config.yaml
+```bash title="Start Dheera AI Proxy Server"
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
 
-3. Use OpenAI SDK with LiteLLM Proxy
+3. Use OpenAI SDK with Dheera AI Proxy
 
 #### Non-streaming
 ```python showLineNumbers title="OpenAI Proxy Non-streaming Response"
@@ -255,16 +255,16 @@ print(delete_response)
 
 | Provider | Supported Parameters |
 |----------|---------------------|
-| `openai` | [All Responses API parameters are supported](https://github.com/BerriAI/litellm/blob/7c3df984da8e4dff9201e4c5353fdc7a2b441831/litellm/llms/openai/responses/transformation.py#L23) |
+| `openai` | [All Responses API parameters are supported](https://github.com/BerriAI/dheera_ai/blob/7c3df984da8e4dff9201e4c5353fdc7a2b441831/dheera_ai/llms/openai/responses/transformation.py#L23) |
 
 ## Reusable Prompts
 
 Use the `prompt` parameter to reference a stored prompt template and optionally supply variables.
 
 ```python showLineNumbers title="Stored Prompt"
-import litellm
+import dheera_ai
 
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/o1-pro",
     prompt={
         "id": "pmpt_abc123",
@@ -279,7 +279,7 @@ response = litellm.responses(
 print(response)
 ```
 
-The same parameter is supported when calling the LiteLLM proxy with the OpenAI SDK:
+The same parameter is supported when calling the Dheera AI proxy with the OpenAI SDK:
 
 ```python showLineNumbers title="Stored Prompt via Proxy"
 from openai import OpenAI
@@ -304,13 +304,13 @@ print(response)
 ## Computer Use 
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python
-import litellm
+import dheera_ai
 
 # Non-streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="computer-use-preview",
     tools=[{
         "type": "computer_use_preview",
@@ -344,22 +344,22 @@ print(response.output)
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 1. Set up config.yaml
 
 ```yaml showLineNumbers title="OpenAI Proxy Configuration"
 model_list:
   - model_name: openai/o1-pro
-    litellm_params:
+    dheera_ai_params:
       model: openai/o1-pro
       api_key: os.environ/OPENAI_API_KEY
 ```
 
-2. Start LiteLLM Proxy Server
+2. Start Dheera AI Proxy Server
 
-```bash title="Start LiteLLM Proxy Server"
-litellm --config /path/to/config.yaml
+```bash title="Start Dheera AI Proxy Server"
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -417,10 +417,10 @@ print(response)
 ## MCP Tools 
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
-```python showLineNumbers title="MCP Tools with LiteLLM SDK"
-import litellm
+```python showLineNumbers title="MCP Tools with Dheera AI SDK"
+import dheera_ai
 from typing import Optional
 
 # Configure MCP Tools
@@ -434,7 +434,7 @@ MCP_TOOLS = [
 ]
 
 # Step 1: Make initial request - OpenAI will use MCP LIST and return MCP calls for approval
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/gpt-4.1",
     tools=MCP_TOOLS,
     input="What transport protocols does the 2025-03-26 version of the MCP spec support?"
@@ -448,7 +448,7 @@ for output in response.output:
         break
 
 # Step 2: Send followup with approval for the MCP call
-response_with_mcp_call = litellm.responses(
+response_with_mcp_call = dheera_ai.responses(
     model="openai/gpt-4.1",
     tools=MCP_TOOLS,
     input=[
@@ -465,29 +465,29 @@ print(response_with_mcp_call)
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 1. Set up config.yaml
 
 ```yaml showLineNumbers title="OpenAI Proxy Configuration"
 model_list:
   - model_name: openai/gpt-4.1
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1
       api_key: os.environ/OPENAI_API_KEY
 ```
 
-2. Start LiteLLM Proxy Server
+2. Start Dheera AI Proxy Server
 
-```bash title="Start LiteLLM Proxy Server"
-litellm --config /path/to/config.yaml
+```bash title="Start Dheera AI Proxy Server"
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
 
 3. Test it!
 
-```python showLineNumbers title="MCP Tools with OpenAI SDK via LiteLLM Proxy"
+```python showLineNumbers title="MCP Tools with OpenAI SDK via Dheera AI Proxy"
 from openai import OpenAI
 from typing import Optional
 
@@ -547,10 +547,10 @@ print(response_with_mcp_call)
 The `verbosity` parameter is supported for the `responses` API.
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python showLineNumbers title="Verbosity Parameter"
-from litellm import responses
+from dheera_ai import responses
 
 question = "Write a poem about a boy and his first pet dog."
 
@@ -565,7 +565,7 @@ for verbosity in ["low", "medium", "high"]:
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 ```python
 from openai import OpenAI
@@ -626,13 +626,13 @@ display(styled_df)
 ## Free-form Function Calling
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 
 ```python showLineNumbers title="Free-form Function Calling"
-import litellm
+import dheera_ai
 
-response = litellm.responses(
+response = dheera_ai.responses(
     response = client.responses.create(
     model="gpt-5-mini",
     input="Please use the code_exec tool to calculate the area of a circle with radius equal to the number of 'r's in strawberry",
@@ -649,7 +649,7 @@ print(response.output)
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 ```python showLineNumbers title="Free-form Function Calling"
 from openai import OpenAI
@@ -681,10 +681,10 @@ print(response.output)
 ## Context-Free Grammar 
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python showLineNumbers title="Context-Free Grammar"
-import litellm
+import dheera_ai
 
 import textwrap
 
@@ -727,7 +727,7 @@ sql_prompt_mssql = (
 )
 
 
-response = litellm.responses(
+response = dheera_ai.responses(
     model="gpt-5",
     input=sql_prompt_mssql,
     text={"format": {"type": "text"}},
@@ -751,7 +751,7 @@ print(response_mssql.output[1].input)
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 ```python showLineNumbers title="Context-Free Grammar"
 from openai import OpenAI
@@ -831,13 +831,13 @@ print(response_mssql.output[1].input)
 ## Minimal Reasoning
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 
 ```python showLineNumbers title="Minimal Reasoning"
-import litellm
+import dheera_ai
 
-response = litellm.responses(
+response = dheera_ai.responses(
     model="gpt-5",
     input= [{ 'role': 'developer', 'content': prompt }, 
             { 'role': 'user', 'content': 'The food that the restaurant was great! I recommend it to everyone.' }],
@@ -849,7 +849,7 @@ response = litellm.responses(
 print(response)
 ```
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 ```python showLineNumbers title="Minimal Reasoning"
 from openai import OpenAI

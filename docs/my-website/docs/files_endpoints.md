@@ -24,7 +24,7 @@ Use different OpenAI API keys for files and batches by specifying a `model` para
 
 1. Define models in `model_list` with different API keys
 2. Pass `model` parameter when creating files
-3. LiteLLM returns encoded IDs that contain routing information
+3. Dheera AI returns encoded IDs that contain routing information
 4. Use encoded IDs for all subsequent operations (retrieve, delete, batches)
 5. No need to specify model again - routing info is in the ID
 
@@ -32,15 +32,15 @@ Use different OpenAI API keys for files and batches by specifying a `model` para
 
 ```yaml
 model_list:
-  # litellm OpenAI Account
-  - model_name: "gpt-4o-litellm"
-    litellm_params:
+  # dheera_ai OpenAI Account
+  - model_name: "gpt-4o-dheera_ai"
+    dheera_ai_params:
       model: openai/gpt-4o
-      api_key: os.environ/OPENAI_LITELLM_API_KEY
+      api_key: os.environ/OPENAI_DHEERA_AI_API_KEY
   
   # Free OpenAI Account
   - model_name: "gpt-4o-free"
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_FREE_API_KEY
 ```
@@ -51,15 +51,15 @@ model_list:
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-1234",  # Your LiteLLM proxy key
+    api_key="sk-1234",  # Your Dheera AI proxy key
     base_url="http://0.0.0.0:4000"
 )
 
-# Create file using litellm account
+# Create file using dheera_ai account
 file_response = client.files.create(
     file=open("batch_data.jsonl", "rb"),
     purpose="batch",
-    extra_body={"model": "gpt-4o-litellm"}  # Routes to litellm key
+    extra_body={"model": "gpt-4o-dheera_ai"}  # Routes to dheera_ai key
 )
 print(f"File ID: {file_response.id}")
 # Returns encoded ID like: file-bGl0ZWxsbTpmaWxlLWFiYzEyMzttb2RlbCxncHQtNG8taWZvb2Q
@@ -85,22 +85,22 @@ files = client.files.list(
 
 # List batches for a specific account
 batches = client.batches.list(
-    extra_query={"model": "gpt-4o-litellm"}  # List litellm batches
+    extra_query={"model": "gpt-4o-dheera_ai"}  # List dheera_ai batches
 )
 ```
 
 ### Parameter Options
 
 You can pass the `model` parameter via:
-- **Request body**: `extra_body={"model": "gpt-4o-litellm"}`
-- **Query parameter**: `?model=gpt-4o-litellm`
-- **Header**: `x-litellm-model: gpt-4o-litellm`
+- **Request body**: `extra_body={"model": "gpt-4o-dheera_ai"}`
+- **Query parameter**: `?model=gpt-4o-dheera_ai`
+- **Header**: `x-dheera_ai-model: gpt-4o-dheera_ai`
 
 ### How Encoded IDs Work
 
-- When you create a file/batch with a `model` parameter, LiteLLM encodes the model name into the returned ID
+- When you create a file/batch with a `model` parameter, Dheera AI encodes the model name into the returned ID
 - The encoded ID is base64-encoded and looks like: `file-bGl0ZWxsbTpmaWxlLWFiYzEyMzttb2RlbCxncHQtNG8taWZvb2Q`
-- When you use this ID in subsequent operations (retrieve, delete, batch create), LiteLLM automatically:
+- When you use this ID in subsequent operations (retrieve, delete, batch create), Dheera AI automatically:
   1. Decodes the ID
   2. Extracts the model name
   3. Looks up the credentials
@@ -134,7 +134,7 @@ client.files.retrieve(file_id, extra_headers={"custom-llm-provider": "openai"})
 ```yaml
 model_list:
   - model_name: "gpt-4o-account1"
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_KEY
 ```
@@ -149,7 +149,7 @@ client.batches.create(input_file_id=file.id)  # Routes correctly
 ```
 
 <Tabs>
-<TabItem value="proxy" label="LiteLLM PROXY Server">
+<TabItem value="proxy" label="Dheera AI PROXY Server">
 
 1. Setup config.yaml
 
@@ -164,10 +164,10 @@ files_settings:
     api_key: os.environ/OPENAI_API_KEY
 ```
 
-2. Start LiteLLM PROXY Server
+2. Start Dheera AI PROXY Server
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 ## RUNNING on http://0.0.0.0:4000
 ```
@@ -252,12 +252,12 @@ print("content=", content)
 
 **Upload a File**
 ```python
-from litellm
+from dheera_ai
 import os 
 
 os.environ["OPENAI_API_KEY"] = "sk-.."
 
-file_obj = await litellm.acreate_file(
+file_obj = await dheera_ai.acreate_file(
     file=open("mydata.jsonl", "rb"),
     purpose="fine-tune",
     custom_llm_provider="openai",
@@ -267,7 +267,7 @@ print("Response from creating file=", file_obj)
 
 **List Files**
 ```python
-files = await litellm.alist_files(
+files = await dheera_ai.alist_files(
     custom_llm_provider="openai",
     limit=10
 )
@@ -276,7 +276,7 @@ print("files=", files)
 
 **Retrieve File Information**
 ```python
-file = await litellm.aretrieve_file(
+file = await dheera_ai.aretrieve_file(
     file_id="file-abc123",
     custom_llm_provider="openai"
 )
@@ -285,7 +285,7 @@ print("file=", file)
 
 **Delete File**
 ```python
-response = await litellm.adelete_file(
+response = await dheera_ai.adelete_file(
     file_id="file-abc123",
     custom_llm_provider="openai"
 )
@@ -294,7 +294,7 @@ print("delete response=", response)
 
 **Get File Content**
 ```python
-content = await litellm.afile_content(
+content = await dheera_ai.afile_content(
     file_id="file-abc123",
     custom_llm_provider="openai"
 )
@@ -304,7 +304,7 @@ print("file content=", content)
 **Get File Content (Bedrock)**
 ```python
 # For Bedrock batch output files stored in S3
-content = await litellm.afile_content(
+content = await dheera_ai.afile_content(
     file_id="s3://bucket-name/path/to/file.jsonl",  # S3 URI or unified file ID
     custom_llm_provider="bedrock",
     aws_region_name="us-west-2"
@@ -326,4 +326,4 @@ print("file content=", content.text)
 
 ### [Bedrock](./providers/bedrock_batches#4-retrieve-batch-results)
 
-## [Swagger API Reference](https://litellm-api.up.railway.app/#/files)
+## [Swagger API Reference](https://dheera_ai-api.up.railway.app/#/files)

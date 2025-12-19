@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # /v1/messages
 
-Use LiteLLM to call all your LLM APIs in the Anthropic `v1/messages` format. 
+Use Dheera AI to call all your LLM APIs in the Anthropic `v1/messages` format. 
 
 
 ## Overview 
@@ -17,20 +17,20 @@ Use LiteLLM to call all your LLM APIs in the Anthropic `v1/messages` format.
 | Fallbacks | ✅ | Works between supported models |
 | Loadbalancing | ✅ | Works between supported models |
 | Guardrails | ✅ | Applies to input and output text (non-streaming only) |
-| Supported Providers | **All LiteLLM supported providers** | `openai`, `anthropic`, `bedrock`, `vertex_ai`, `gemini`, `azure`, `azure_ai`, etc. |
+| Supported Providers | **All Dheera AI supported providers** | `openai`, `anthropic`, `bedrock`, `vertex_ai`, `gemini`, `azure`, `azure_ai`, etc. |
 
 ## Usage 
 ---
 
-### LiteLLM Python SDK 
+### Dheera AI Python SDK 
 
 <Tabs>
 <TabItem value="anthropic" label="Anthropic">
 
 #### Non-streaming example
-```python showLineNumbers title="Anthropic Example using LiteLLM Python SDK"
-import litellm
-response = await litellm.anthropic.messages.acreate(
+```python showLineNumbers title="Anthropic Example using Dheera AI Python SDK"
+import dheera_ai
+response = await dheera_ai.anthropic.messages.acreate(
     messages=[{"role": "user", "content": "Hello, can you tell me a short joke?"}],
     api_key=api_key,
     model="anthropic/claude-3-haiku-20240307",
@@ -39,9 +39,9 @@ response = await litellm.anthropic.messages.acreate(
 ```
 
 #### Streaming example
-```python showLineNumbers title="Anthropic Streaming Example using LiteLLM Python SDK"
-import litellm
-response = await litellm.anthropic.messages.acreate(
+```python showLineNumbers title="Anthropic Streaming Example using Dheera AI Python SDK"
+import dheera_ai
+response = await dheera_ai.anthropic.messages.acreate(
     messages=[{"role": "user", "content": "Hello, can you tell me a short joke?"}],
     api_key=api_key,
     model="anthropic/claude-3-haiku-20240307",
@@ -57,14 +57,14 @@ async for chunk in response:
 <TabItem value="openai" label="OpenAI">
 
 #### Non-streaming example
-```python showLineNumbers title="OpenAI Example using LiteLLM Python SDK"
-import litellm
+```python showLineNumbers title="OpenAI Example using Dheera AI Python SDK"
+import dheera_ai
 import os
 
 # Set API key
 os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
 
-response = await litellm.anthropic.messages.acreate(
+response = await dheera_ai.anthropic.messages.acreate(
     messages=[{"role": "user", "content": "Hello, can you tell me a short joke?"}],
     model="openai/gpt-4",
     max_tokens=100,
@@ -72,14 +72,14 @@ response = await litellm.anthropic.messages.acreate(
 ```
 
 #### Streaming example
-```python showLineNumbers title="OpenAI Streaming Example using LiteLLM Python SDK"
-import litellm
+```python showLineNumbers title="OpenAI Streaming Example using Dheera AI Python SDK"
+import dheera_ai
 import os
 
 # Set API key
 os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
 
-response = await litellm.anthropic.messages.acreate(
+response = await dheera_ai.anthropic.messages.acreate(
     messages=[{"role": "user", "content": "Hello, can you tell me a short joke?"}],
     model="openai/gpt-4",
     max_tokens=100,
@@ -94,14 +94,14 @@ async for chunk in response:
 <TabItem value="gemini" label="Google AI Studio">
 
 #### Non-streaming example
-```python showLineNumbers title="Google Gemini Example using LiteLLM Python SDK"
-import litellm
+```python showLineNumbers title="Google Gemini Example using Dheera AI Python SDK"
+import dheera_ai
 import os
 
 # Set API key
 os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"
 
-response = await litellm.anthropic.messages.acreate(
+response = await dheera_ai.anthropic.messages.acreate(
     messages=[{"role": "user", "content": "Hello, can you tell me a short joke?"}],
     model="gemini/gemini-2.0-flash-exp",
     max_tokens=100,
@@ -109,14 +109,14 @@ response = await litellm.anthropic.messages.acreate(
 ```
 
 #### Streaming example
-```python showLineNumbers title="Google Gemini Streaming Example using LiteLLM Python SDK"
-import litellm
+```python showLineNumbers title="Google Gemini Streaming Example using Dheera AI Python SDK"
+import dheera_ai
 import os
 
 # Set API key
 os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"
 
-response = await litellm.anthropic.messages.acreate(
+response = await dheera_ai.anthropic.messages.acreate(
     messages=[{"role": "user", "content": "Hello, can you tell me a short joke?"}],
     model="gemini/gemini-2.0-flash-exp",
     max_tokens=100,
@@ -131,8 +131,8 @@ async for chunk in response:
 <TabItem value="vertex" label="Vertex AI">
 
 #### Non-streaming example
-```python showLineNumbers title="Vertex AI Example using LiteLLM Python SDK"
-import litellm
+```python showLineNumbers title="Vertex AI Example using Dheera AI Python SDK"
+import dheera_ai
 import os
 
 # Set credentials - Vertex AI uses application default credentials
@@ -140,7 +140,7 @@ import os
 os.environ["VERTEXAI_PROJECT"] = "your-gcp-project-id"
 os.environ["VERTEXAI_LOCATION"] = "us-central1"
 
-response = await litellm.anthropic.messages.acreate(
+response = await dheera_ai.anthropic.messages.acreate(
     messages=[{"role": "user", "content": "Hello, can you tell me a short joke?"}],
     model="vertex_ai/gemini-2.0-flash-exp",
     max_tokens=100,
@@ -148,8 +148,8 @@ response = await litellm.anthropic.messages.acreate(
 ```
 
 #### Streaming example
-```python showLineNumbers title="Vertex AI Streaming Example using LiteLLM Python SDK"
-import litellm
+```python showLineNumbers title="Vertex AI Streaming Example using Dheera AI Python SDK"
+import dheera_ai
 import os
 
 # Set credentials - Vertex AI uses application default credentials
@@ -157,7 +157,7 @@ import os
 os.environ["VERTEXAI_PROJECT"] = "your-gcp-project-id"
 os.environ["VERTEXAI_LOCATION"] = "us-central1"
 
-response = await litellm.anthropic.messages.acreate(
+response = await dheera_ai.anthropic.messages.acreate(
     messages=[{"role": "user", "content": "Hello, can you tell me a short joke?"}],
     model="vertex_ai/gemini-2.0-flash-exp",
     max_tokens=100,
@@ -172,8 +172,8 @@ async for chunk in response:
 <TabItem value="bedrock" label="AWS Bedrock">
 
 #### Non-streaming example
-```python showLineNumbers title="AWS Bedrock Example using LiteLLM Python SDK"
-import litellm
+```python showLineNumbers title="AWS Bedrock Example using Dheera AI Python SDK"
+import dheera_ai
 import os
 
 # Set AWS credentials
@@ -181,7 +181,7 @@ os.environ["AWS_ACCESS_KEY_ID"] = "your-access-key-id"
 os.environ["AWS_SECRET_ACCESS_KEY"] = "your-secret-access-key"
 os.environ["AWS_REGION_NAME"] = "us-west-2"  # or your AWS region
 
-response = await litellm.anthropic.messages.acreate(
+response = await dheera_ai.anthropic.messages.acreate(
     messages=[{"role": "user", "content": "Hello, can you tell me a short joke?"}],
     model="bedrock/anthropic.claude-3-sonnet-20240229-v1:0",
     max_tokens=100,
@@ -189,8 +189,8 @@ response = await litellm.anthropic.messages.acreate(
 ```
 
 #### Streaming example
-```python showLineNumbers title="AWS Bedrock Streaming Example using LiteLLM Python SDK"
-import litellm
+```python showLineNumbers title="AWS Bedrock Streaming Example using Dheera AI Python SDK"
+import dheera_ai
 import os
 
 # Set AWS credentials
@@ -198,7 +198,7 @@ os.environ["AWS_ACCESS_KEY_ID"] = "your-access-key-id"
 os.environ["AWS_SECRET_ACCESS_KEY"] = "your-secret-access-key"
 os.environ["AWS_REGION_NAME"] = "us-west-2"  # or your AWS region
 
-response = await litellm.anthropic.messages.acreate(
+response = await dheera_ai.anthropic.messages.acreate(
     messages=[{"role": "user", "content": "Hello, can you tell me a short joke?"}],
     model="bedrock/anthropic.claude-3-sonnet-20240229-v1:0",
     max_tokens=100,
@@ -235,7 +235,7 @@ Example response:
 }
 ```
 
-### LiteLLM Proxy Server 
+### Dheera AI Proxy Server 
 
 <Tabs>
 <TabItem value="anthropic-proxy" label="Anthropic">
@@ -245,7 +245,7 @@ Example response:
 ```yaml
 model_list:
     - model_name: anthropic-claude
-      litellm_params:
+      dheera_ai_params:
         model: claude-3-7-sonnet-latest
         api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -253,15 +253,15 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
 
-```python showLineNumbers title="Anthropic Example using LiteLLM Proxy Server"
+```python showLineNumbers title="Anthropic Example using Dheera AI Proxy Server"
 import anthropic
 
-# point anthropic sdk to litellm proxy 
+# point anthropic sdk to dheera_ai proxy 
 client = anthropic.Anthropic(
     base_url="http://0.0.0.0:4000",
     api_key="sk-1234",
@@ -283,7 +283,7 @@ response = client.messages.create(
 ```yaml
 model_list:
     - model_name: openai-gpt4
-      litellm_params:
+      dheera_ai_params:
         model: openai/gpt-4
         api_key: os.environ/OPENAI_API_KEY
 ```
@@ -291,15 +291,15 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
 
-```python showLineNumbers title="OpenAI Example using LiteLLM Proxy Server"
+```python showLineNumbers title="OpenAI Example using Dheera AI Proxy Server"
 import anthropic
 
-# point anthropic sdk to litellm proxy 
+# point anthropic sdk to dheera_ai proxy 
 client = anthropic.Anthropic(
     base_url="http://0.0.0.0:4000",
     api_key="sk-1234",
@@ -321,7 +321,7 @@ response = client.messages.create(
 ```yaml
 model_list:
     - model_name: gemini-2-flash
-      litellm_params:
+      dheera_ai_params:
         model: gemini/gemini-2.0-flash-exp
         api_key: os.environ/GEMINI_API_KEY
 ```
@@ -329,15 +329,15 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
 
-```python showLineNumbers title="Google Gemini Example using LiteLLM Proxy Server"
+```python showLineNumbers title="Google Gemini Example using Dheera AI Proxy Server"
 import anthropic
 
-# point anthropic sdk to litellm proxy 
+# point anthropic sdk to dheera_ai proxy 
 client = anthropic.Anthropic(
     base_url="http://0.0.0.0:4000",
     api_key="sk-1234",
@@ -359,7 +359,7 @@ response = client.messages.create(
 ```yaml
 model_list:
     - model_name: vertex-gemini
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/gemini-2.0-flash-exp
         vertex_project: your-gcp-project-id
         vertex_location: us-central1
@@ -368,15 +368,15 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
 
-```python showLineNumbers title="Vertex AI Example using LiteLLM Proxy Server"
+```python showLineNumbers title="Vertex AI Example using Dheera AI Proxy Server"
 import anthropic
 
-# point anthropic sdk to litellm proxy 
+# point anthropic sdk to dheera_ai proxy 
 client = anthropic.Anthropic(
     base_url="http://0.0.0.0:4000",
     api_key="sk-1234",
@@ -398,7 +398,7 @@ response = client.messages.create(
 ```yaml
 model_list:
     - model_name: bedrock-claude
-      litellm_params:
+      dheera_ai_params:
         model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
         aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
         aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -408,15 +408,15 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
 
-```python showLineNumbers title="AWS Bedrock Example using LiteLLM Proxy Server"
+```python showLineNumbers title="AWS Bedrock Example using Dheera AI Proxy Server"
 import anthropic
 
-# point anthropic sdk to litellm proxy 
+# point anthropic sdk to dheera_ai proxy 
 client = anthropic.Anthropic(
     base_url="http://0.0.0.0:4000",
     api_key="sk-1234",
@@ -433,10 +433,10 @@ response = client.messages.create(
 
 <TabItem value="curl-proxy" label="curl">
 
-```bash showLineNumbers title="Example using LiteLLM Proxy Server"
+```bash showLineNumbers title="Example using Dheera AI Proxy Server"
 curl -L -X POST 'http://0.0.0.0:4000/v1/messages' \
 -H 'content-type: application/json' \
--H 'x-api-key: $LITELLM_API_KEY' \
+-H 'x-api-key: $DHEERA_AI_API_KEY' \
 -H 'anthropic-version: 2023-06-01' \
 -d '{
   "model": "anthropic-claude",
@@ -456,7 +456,7 @@ curl -L -X POST 'http://0.0.0.0:4000/v1/messages' \
 ## Request Format
 ---
 
-Request body will be in the Anthropic messages API format. **litellm follows the Anthropic messages specification for this endpoint.**
+Request body will be in the Anthropic messages API format. **dheera_ai follows the Anthropic messages specification for this endpoint.**
 
 #### Example request body
 

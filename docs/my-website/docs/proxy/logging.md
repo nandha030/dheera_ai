@@ -21,9 +21,9 @@ Log Proxy input, output, and exceptions using:
 
 
 
-## Getting the LiteLLM Call ID
+## Getting the Dheera AI Call ID
 
-LiteLLM generates a unique `call_id` for each request. This `call_id` can be
+Dheera AI generates a unique `call_id` for each request. This `call_id` can be
 used to track the request across the system. This can be very useful for finding
 the info for a particular request in a logging system like one of the systems
 mentioned in this page.
@@ -35,23 +35,23 @@ curl -i -sSL --location 'http://0.0.0.0:4000/chat/completions' \
     --data '{
       "model": "gpt-3.5-turbo",
       "messages": [{"role": "user", "content": "what llm are you"}]
-    }' | grep 'x-litellm'
+    }' | grep 'x-dheera_ai'
 ```
 
 The output of this is:
 
 ```output
-x-litellm-call-id: b980db26-9512-45cc-b1da-c511a363b83f
-x-litellm-model-id: cb41bc03f4c33d310019bae8c5afdb1af0a8f97b36a234405a9807614988457c
-x-litellm-model-api-base: https://x-example-1234.openai.azure.com
-x-litellm-version: 1.40.21
-x-litellm-response-cost: 2.85e-05
-x-litellm-key-tpm-limit: None
-x-litellm-key-rpm-limit: None
+x-dheera_ai-call-id: b980db26-9512-45cc-b1da-c511a363b83f
+x-dheera_ai-model-id: cb41bc03f4c33d310019bae8c5afdb1af0a8f97b36a234405a9807614988457c
+x-dheera_ai-model-api-base: https://x-example-1234.openai.azure.com
+x-dheera_ai-version: 1.40.21
+x-dheera_ai-response-cost: 2.85e-05
+x-dheera_ai-key-tpm-limit: None
+x-dheera_ai-key-rpm-limit: None
 ```
 
 A number of these headers could be useful for troubleshooting, but the
-`x-litellm-call-id` is the one that is most useful for tracking a request across
+`x-dheera_ai-call-id` is the one that is most useful for tracking a request across
 components in your system, including in logging tools.
 
 
@@ -60,7 +60,7 @@ components in your system, including in logging tools.
 
 ### Redact Messages, Response Content
 
-Set `litellm.turn_off_message_logging=True` This will prevent the messages and responses from being logged to your logging provider, but request metadata - e.g. spend, will still be tracked. Useful for privacy/compliance when handling sensitive data.
+Set `dheera_ai.turn_off_message_logging=True` This will prevent the messages and responses from being logged to your logging provider, but request metadata - e.g. spend, will still be tracked. Useful for privacy/compliance when handling sensitive data.
 
 <Tabs>
 
@@ -70,9 +70,9 @@ Set `litellm.turn_off_message_logging=True` This will prevent the messages and r
 ```yaml
 model_list:
  - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["langfuse"]
   turn_off_message_logging: True # 👈 Key Change
 ```
@@ -106,7 +106,7 @@ Dynamic request message redaction is in BETA.
 Pass in a request header to enable message redaction for a request.
 
 ```
-x-litellm-enable-message-redaction: true
+x-dheera_ai-enable-message-redaction: true
 ```
 
 Example config.yaml
@@ -116,7 +116,7 @@ Example config.yaml
 ```yaml
 model_list:
  - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
 ```
 
@@ -126,7 +126,7 @@ model_list:
 curl -L -X POST 'http://0.0.0.0:4000/v1/chat/completions' \
 -H 'Content-Type: application/json' \
 -H 'Authorization: Bearer sk-zV5HlSIm8ihj1F9C_ZbB1g' \
--H 'x-litellm-enable-message-redaction: true' \
+-H 'x-dheera_ai-enable-message-redaction: true' \
 -d '{
   "model": "gpt-3.5-turbo-testing",
   "messages": [
@@ -159,21 +159,21 @@ Redact information about the user api key (hashed token, user_id, team id, etc.)
 Currently supported for Langfuse, OpenTelemetry, Logfire, ArizeAI logging.
 
 ```yaml
-litellm_settings: 
+dheera_ai_settings: 
   callbacks: ["langfuse"]
   redact_user_api_key_info: true
 ```
 
 ### Disable Message Redaction
 
-If you have `litellm.turn_on_message_logging` turned on, you can override it for specific requests by
-setting a request header `LiteLLM-Disable-Message-Redaction: true`.
+If you have `dheera_ai.turn_on_message_logging` turned on, you can override it for specific requests by
+setting a request header `Dheera AI-Disable-Message-Redaction: true`.
 
 
 ```shell
 curl --location 'http://0.0.0.0:4000/chat/completions' \
     --header 'Content-Type: application/json' \
-    --header 'LiteLLM-Disable-Message-Redaction: true' \
+    --header 'Dheera AI-Disable-Message-Redaction: true' \
     --data '{
     "model": "gpt-3.5-turbo",
     "messages": [
@@ -195,7 +195,7 @@ For some use cases, you may want to turn off all tracking/logging. You can do th
 Disable this by setting `global_disable_no_log_param:true` in your config.yaml file.
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   global_disable_no_log_param: True
 ```
 :::
@@ -206,7 +206,7 @@ litellm_settings:
 ```bash
 curl -L -X POST 'http://0.0.0.0:4000/v1/chat/completions' \
 -H 'Content-Type: application/json' \
--H 'Authorization: Bearer <litellm-api-key>' \
+-H 'Authorization: Bearer <dheera_ai-api-key>' \
 -d '{
     "model": "openai/gpt-3.5-turbo",
     "messages": [
@@ -235,7 +235,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages = [
@@ -258,7 +258,7 @@ print(response)
 **Expected Console Log**  
 
 ```
-LiteLLM.Info: "no-log request, skipping logging"
+Dheera AI.Info: "no-log request, skipping logging"
 ```
 
 ### ✨ Dynamically Disable specific callbacks
@@ -267,13 +267,13 @@ LiteLLM.Info: "no-log request, skipping logging"
 
 This is an enterprise feature.
 
-[Proceed with LiteLLM Enterprise](https://www.litellm.ai/enterprise)
+[Proceed with Dheera AI Enterprise](https://www.dheera_ai.ai/enterprise)
 
 :::
 
-For some use cases, you may want to disable specific callbacks for a request. You can do this by passing `x-litellm-disable-callbacks: <callback_name>` in the request headers.
+For some use cases, you may want to disable specific callbacks for a request. You can do this by passing `x-dheera_ai-disable-callbacks: <callback_name>` in the request headers.
 
-Send the list of callbacks to disable in the request header `x-litellm-disable-callbacks`.
+Send the list of callbacks to disable in the request header `x-dheera_ai-disable-callbacks`.
 
 <Tabs>
 <TabItem value="Curl" label="Curl Request">
@@ -282,7 +282,7 @@ Send the list of callbacks to disable in the request header `x-litellm-disable-c
 curl --location 'http://0.0.0.0:4000/chat/completions' \
     --header 'Content-Type: application/json' \
     --header 'Authorization: Bearer sk-1234' \
-    --header 'x-litellm-disable-callbacks: langfuse' \
+    --header 'x-dheera_ai-disable-callbacks: langfuse' \
     --data '{
     "model": "claude-sonnet-4-20250514",
     "messages": [
@@ -314,7 +314,7 @@ response = client.chat.completions.create(
         }
     ],
     extra_headers={
-        "x-litellm-disable-callbacks": "langfuse"
+        "x-dheera_ai-disable-callbacks": "langfuse"
     }
 )
 
@@ -345,7 +345,7 @@ Found under `kwargs["standard_logging_object"]`. This is a standard payload, log
 
 ## Langfuse
 
-We will use the `--config` to set `litellm.success_callback = ["langfuse"]` this will log all successful LLM calls to langfuse. Make sure to set `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` in your environment
+We will use the `--config` to set `dheera_ai.success_callback = ["langfuse"]` this will log all successful LLM calls to langfuse. Make sure to set `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` in your environment
 
 **Step 1** Install langfuse
 
@@ -353,14 +353,14 @@ We will use the `--config` to set `litellm.success_callback = ["langfuse"]` this
 pip install langfuse>=2.0.0
 ```
 
-**Step 2**: Create a `config.yaml` file and set `litellm_settings`: `success_callback`
+**Step 2**: Create a `config.yaml` file and set `dheera_ai_settings`: `success_callback`
 
 ```yaml
 model_list:
  - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["langfuse"]
 ```
 
@@ -378,13 +378,13 @@ export LANGFUSE_HOST="https://xxx.langfuse.com"
 Start proxy
 
 ```shell
-litellm --config config.yaml --debug
+dheera_ai --config config.yaml --debug
 ```
 
 Test Request
 
 ```
-litellm --test
+dheera_ai --test
 ```
 
 Expected output on Langfuse
@@ -431,7 +431,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages = [
@@ -484,7 +484,7 @@ messages = [
         content="You are a helpful assistant that im using to make a test request to."
     ),
     HumanMessage(
-        content="test from litellm. tell me why it's amazing in 1 sentence"
+        content="test from dheera_ai. tell me why it's amazing in 1 sentence"
     ),
 ]
 response = chat(messages)
@@ -585,7 +585,7 @@ messages = [
         content="You are a helpful assistant that im using to make a test request to."
     ),
     HumanMessage(
-        content="test from litellm. tell me why it's amazing in 1 sentence"
+        content="test from dheera_ai. tell me why it's amazing in 1 sentence"
     ),
 ]
 response = chat(messages)
@@ -598,16 +598,16 @@ print(response)
 
 
 
-### LiteLLM Tags - `cache_hit`, `cache_key`
+### Dheera AI Tags - `cache_hit`, `cache_key`
 
-Use this if you want to control which LiteLLM-specific fields are logged as tags by the LiteLLM proxy. By default LiteLLM Proxy logs no LiteLLM-specific fields
+Use this if you want to control which Dheera AI-specific fields are logged as tags by the Dheera AI proxy. By default Dheera AI Proxy logs no Dheera AI-specific fields
 
-| LiteLLM specific field    | Description                                                                             | Example Value                           |
+| Dheera AI specific field    | Description                                                                             | Example Value                           |
 | ------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------- |
 | `cache_hit`               | Indicates whether a cache hit occurred (True) or not (False)                            | `true`, `false`                         |
 | `cache_key`               | The Cache key used for this request                                                     | `d2b758c****`                           |
 | `proxy_base_url`          | The base URL for the proxy server, the value of env var `PROXY_BASE_URL` on your server | `https://proxy.example.com`             |
-| `user_api_key_alias`      | An alias for the LiteLLM Virtual Key.                                                   | `prod-app1`                             |
+| `user_api_key_alias`      | An alias for the Dheera AI Virtual Key.                                                   | `prod-app1`                             |
 | `user_api_key_user_id`    | The unique ID associated with a user's API key.                                         | `user_123`, `user_456`                  |
 | `user_api_key_user_email` | The email associated with a user's API key.                                             | `user@example.com`, `admin@example.com` |
 | `user_api_key_team_alias` | An alias for a team associated with an API key.                                         | `team_alpha`, `dev_team`                |
@@ -615,27 +615,27 @@ Use this if you want to control which LiteLLM-specific fields are logged as tags
 
 **Usage**
 
-Specify `langfuse_default_tags` to control what litellm fields get logged on Langfuse
+Specify `langfuse_default_tags` to control what dheera_ai fields get logged on Langfuse
 
 Example config.yaml 
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
 
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["langfuse"]
 
   # 👇 Key Change
   langfuse_default_tags: ["cache_hit", "cache_key", "proxy_base_url", "user_api_key_alias", "user_api_key_user_id", "user_api_key_user_email", "user_api_key_team_alias", "semantic-similarity", "proxy_base_url"]
 ```
 
-### View POST sent from LiteLLM to provider
+### View POST sent from Dheera AI to provider
 
-Use this when you want to view the RAW curl request sent from LiteLLM to the LLM API 
+Use this when you want to view the RAW curl request sent from Dheera AI to the LLM API 
 
 <Tabs>
 
@@ -672,7 +672,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages = [
@@ -719,7 +719,7 @@ messages = [
         content="You are a helpful assistant that im using to make a test request to."
     ),
     HumanMessage(
-        content="test from litellm. tell me why it's amazing in 1 sentence"
+        content="test from dheera_ai. tell me why it's amazing in 1 sentence"
     ),
 ]
 response = chat(messages)
@@ -732,7 +732,7 @@ print(response)
 
 **Expected Output on Langfuse**
 
-You will see `raw_request` in your Langfuse Metadata. This is the RAW CURL command sent from LiteLLM to your LLM API provider
+You will see `raw_request` in your Langfuse Metadata. This is the RAW CURL command sent from Dheera AI to your LLM API provider
 
 <Image img={require('../../img/debug_langfuse.png')} />
 
@@ -743,8 +743,8 @@ You will see `raw_request` in your Langfuse Metadata. This is the RAW CURL comma
 [Optional] Customize OTEL Service Name and OTEL TRACER NAME by setting the following variables in your environment
 
 ```shell
-OTEL_TRACER_NAME=<your-trace-name>     # default="litellm"
-OTEL_SERVICE_NAME=<your-service-name>` # default="litellm"
+OTEL_TRACER_NAME=<your-trace-name>     # default="dheera_ai"
+OTEL_SERVICE_NAME=<your-service-name>` # default="dheera_ai"
 ```
 
 :::
@@ -761,10 +761,10 @@ Add the following to your env
 OTEL_EXPORTER="console"
 ```
 
-Add `otel` as a callback on your `litellm_config.yaml`
+Add `otel` as a callback on your `dheera_ai_config.yaml`
 
 ```shell
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["otel"]
 ```
 
@@ -773,7 +773,7 @@ litellm_settings:
 Start proxy
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 Test Request
@@ -798,7 +798,7 @@ This is the Span from OTEL Logging
 
 ```json
 {
-    "name": "litellm-acompletion",
+    "name": "dheera_ai-acompletion",
     "context": {
         "trace_id": "0x8d354e2346060032703637a0843b20a3",
         "span_id": "0xd8d3476a2eb12724",
@@ -818,7 +818,7 @@ This is the Span from OTEL Logging
     "links": [],
     "resource": {
         "attributes": {
-            "service.name": "litellm"
+            "service.name": "dheera_ai"
         },
         "schema_url": ""
     }
@@ -841,10 +841,10 @@ OTEL_ENDPOINT="https://api.honeycomb.io/v1/traces"
 OTEL_HEADERS="x-honeycomb-team=<your-api-key>"
 ```
 
-Add `otel` as a callback on your `litellm_config.yaml`
+Add `otel` as a callback on your `dheera_ai_config.yaml`
 
 ```shell
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["otel"]
 ```
 
@@ -853,7 +853,7 @@ litellm_settings:
 Start proxy
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 Test Request
@@ -890,7 +890,7 @@ OTEL_HEADERS="Authorization=Bearer%20<your-api-key>"
 **Step 2:** Add `otel` as a callbacks
 
 ```shell
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["otel"]
 ```
 
@@ -899,7 +899,7 @@ litellm_settings:
 Start proxy
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 Test Request
@@ -934,10 +934,10 @@ OTEL_ENDPOINT="http://0.0.0.0:4317"
 OTEL_HEADERS="x-honeycomb-team=<your-api-key>" # Optional
 ```
 
-Add `otel` as a callback on your `litellm_config.yaml`
+Add `otel` as a callback on your `dheera_ai_config.yaml`
 
 ```shell
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["otel"]
 ```
 
@@ -946,7 +946,7 @@ litellm_settings:
 Start proxy
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 Test Request
@@ -981,10 +981,10 @@ OTEL_ENDPOINT="http:/0.0.0.0:4317"
 OTEL_HEADERS="x-honeycomb-team=<your-api-key>" # Optional
 ```
 
-Add `otel` as a callback on your `litellm_config.yaml`
+Add `otel` as a callback on your `dheera_ai_config.yaml`
 
 ```shell
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["otel"]
 ```
 
@@ -993,7 +993,7 @@ litellm_settings:
 Start proxy
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 Test Request
@@ -1023,7 +1023,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 Set `message_logging=False` for `otel`, no messages / response will be logged
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["otel"]
 
 ## 👇 Key Change
@@ -1045,7 +1045,7 @@ traceparent: 00-80e1afed08e019fc1110464cfa66635c-7a085853722dc6d2-01
 
 Example Usage
 
-1. Make Request to LiteLLM Proxy with `traceparent` header
+1. Make Request to Dheera AI Proxy with `traceparent` header
 
 ```python
 import openai
@@ -1096,7 +1096,7 @@ Only use this for self hosted LLMs, this can cause Bedrock, VertexAI calls to fa
 :::
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   forward_traceparent_to_llm_provider: True
 ```
 
@@ -1106,7 +1106,7 @@ Log LLM Logs to [Google Cloud Storage Buckets](https://cloud.google.com/storage?
 
 :::info
 
-✨ This is an Enterprise only feature [Get Started with Enterprise here](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+✨ This is an Enterprise only feature [Get Started with Enterprise here](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
@@ -1114,23 +1114,23 @@ Log LLM Logs to [Google Cloud Storage Buckets](https://cloud.google.com/storage?
 | Property                     | Details                                                        |
 | ---------------------------- | -------------------------------------------------------------- |
 | Description                  | Log LLM Input/Output to cloud storage buckets                  |
-| Load Test Benchmarks         | [Benchmarks](https://docs.litellm.ai/docs/benchmarks)          |
+| Load Test Benchmarks         | [Benchmarks](https://docs.dheera_ai.ai/docs/benchmarks)          |
 | Google Docs on Cloud Storage | [Google Cloud Storage](https://cloud.google.com/storage?hl=en) |
 
 
 
 #### Usage
 
-1. Add `gcs_bucket` to LiteLLM Config.yaml
+1. Add `gcs_bucket` to Dheera AI Config.yaml
 ```yaml
 model_list:
-- litellm_params:
+- dheera_ai_params:
     api_base: https://exampleopenaiendpoint-production.up.railway.app/
     api_key: my-fake-key
     model: openai/my-fake-model
   model_name: fake-openai-endpoint
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["gcs_bucket"] # 👈 KEY CHANGE # 👈 KEY CHANGE
 ```
 
@@ -1144,7 +1144,7 @@ GCS_PATH_SERVICE_ACCOUNT="/Users/ishaanjaffer/Downloads/adroit-crow-413218-a956e
 3. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 4. Test it! 
@@ -1191,46 +1191,46 @@ Log LLM Logs/SpendLogs to [Google Cloud Storage PubSub Topic](https://cloud.goog
 
 :::info
 
-✨ This is an Enterprise only feature [Get Started with Enterprise here](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+✨ This is an Enterprise only feature [Get Started with Enterprise here](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
 
 | Property    | Details                                                            |
 | ----------- | ------------------------------------------------------------------ |
-| Description | Log LiteLLM `SpendLogs Table` to Google Cloud Storage PubSub Topic |
+| Description | Log Dheera AI `SpendLogs Table` to Google Cloud Storage PubSub Topic |
 
 When to use `gcs_pubsub`?
 
-- If your LiteLLM Database has crossed 1M+ spend logs and you want to send `SpendLogs` to a PubSub Topic that can be consumed by GCS BigQuery
+- If your Dheera AI Database has crossed 1M+ spend logs and you want to send `SpendLogs` to a PubSub Topic that can be consumed by GCS BigQuery
 
 
 #### Usage
 
-1. Add `gcs_pubsub` to LiteLLM Config.yaml
+1. Add `gcs_pubsub` to Dheera AI Config.yaml
 ```yaml
 model_list:
-- litellm_params:
+- dheera_ai_params:
     api_base: https://exampleopenaiendpoint-production.up.railway.app/
     api_key: my-fake-key
     model: openai/my-fake-model
   model_name: fake-openai-endpoint
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["gcs_pubsub"] # 👈 KEY CHANGE # 👈 KEY CHANGE
 ```
 
 2. Set required env variables
 
 ```shell
-GCS_PUBSUB_TOPIC_ID="litellmDB"
+GCS_PUBSUB_TOPIC_ID="dheera_aiDB"
 GCS_PUBSUB_PROJECT_ID="reliableKeys"
 ```
 
 3. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 4. Test it! 
@@ -1251,17 +1251,17 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 ```
 
 ## Deepeval
-LiteLLM supports logging on [Confidential AI](https://documentation.confident-ai.com/) (The Deepeval Platform):
+Dheera AI supports logging on [Confidential AI](https://documentation.confident-ai.com/) (The Deepeval Platform):
 
 ### Usage:
-1. Add `deepeval` in the LiteLLM `config.yaml`
+1. Add `deepeval` in the Dheera AI `config.yaml`
 
 ```yaml
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4o
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["deepeval"]
   failure_callback: ["deepeval"]
 ```
@@ -1276,7 +1276,7 @@ You can obtain your `CONFIDENT_API_KEY` by logging into [Confident AI](https://a
 
 3. Start your proxy server:
 ```shell
-litellm --config config.yaml --debug
+dheera_ai --config config.yaml --debug
 ```
 
 4. Make a request:
@@ -1307,7 +1307,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 
 We will use the `--config` to set 
 
-- `litellm.success_callback = ["s3"]` 
+- `dheera_ai.success_callback = ["s3"]` 
 
 This will log all successful LLM calls to s3 Bucket
 
@@ -1319,17 +1319,17 @@ AWS_SECRET_ACCESS_KEY = ""
 AWS_REGION_NAME = ""
 ```
 
-**Step 2**: Create a `config.yaml` file and set `litellm_settings`: `success_callback`
+**Step 2**: Create a `config.yaml` file and set `dheera_ai_settings`: `success_callback`
 
 ```yaml
 model_list:
  - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["s3_v2"]
   s3_callback_params:
-    s3_bucket_name: logs-bucket-litellm   # AWS Bucket Name for S3
+    s3_bucket_name: logs-bucket-dheera_ai   # AWS Bucket Name for S3
     s3_region_name: us-west-2              # AWS Region Name for S3
     s3_aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID  # us os.environ/<variable name> to pass environment variables. This is AWS Access Key ID for S3
     s3_aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY  # AWS Secret Access Key for S3
@@ -1343,7 +1343,7 @@ litellm_settings:
 Start proxy
 
 ```shell
-litellm --config config.yaml --debug
+dheera_ai --config config.yaml --debug
 ```
 
 Test Request
@@ -1370,10 +1370,10 @@ You can add the team alias to the object key by setting the `team_alias` in the 
 This will prefix the object key with the team alias.
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["s3_v2"]
   s3_callback_params:
-    s3_bucket_name: logs-bucket-litellm
+    s3_bucket_name: logs-bucket-dheera_ai
     s3_region_name: us-west-2
     s3_aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
     s3_aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -1389,10 +1389,10 @@ On s3 bucket, you will see the object key as `my-test-path/my-team-alias/...`
 You can add the user api key alias to the s3 object key by enabling s3_use_key_prefix.
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["s3_v2"]
   s3_callback_params:
-    s3_bucket_name: logs-bucket-litellm
+    s3_bucket_name: logs-bucket-dheera_ai
     s3_region_name: us-west-2
     s3_aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
     s3_aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -1413,14 +1413,14 @@ if both team alias and key alias are enabled then the path becomes
 | -------------------- | ------------------------------------------------------------------------------------- |
 | Description          | Log LLM Input/Output to AWS SQS Queue                                                 |
 | AWS Docs on SQS      | [AWS SQS](https://aws.amazon.com/sqs/)                                                |
-| Fields Logged to SQS | LiteLLM [Standard Logging Payload is logged for each LLM call](../proxy/logging_spec) |
+| Fields Logged to SQS | Dheera AI [Standard Logging Payload is logged for each LLM call](../proxy/logging_spec) |
 
 
 Log LLM Logs to [AWS Simple Queue Service (SQS)](https://aws.amazon.com/sqs/)
 
-We will use the litellm `--config` to set 
+We will use the dheera_ai `--config` to set 
 
-- `litellm.callbacks = ["aws_sqs"]` 
+- `dheera_ai.callbacks = ["aws_sqs"]` 
 
 This will log all successful LLM calls to AWS SQS Queue
 
@@ -1432,28 +1432,28 @@ AWS_SECRET_ACCESS_KEY = ""
 AWS_REGION_NAME = ""
 ```
 
-**Step 2**: Create a `config.yaml` file and set `litellm_settings`: `callbacks`
+**Step 2**: Create a `config.yaml` file and set `dheera_ai_settings`: `callbacks`
 
 ```yaml
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4o
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["aws_sqs"]
 
   aws_sqs_callback_params:
     # --- 🧱 Required Parameters ---
     sqs_queue_url: https://sqs.us-west-2.amazonaws.com/123456789012/my-queue
-    # The AWS SQS Queue URL to which LiteLLM will send log events.
+    # The AWS SQS Queue URL to which Dheera AI will send log events.
 
     sqs_region_name: us-west-2
     # AWS Region for your SQS queue (e.g., us-east-1, eu-central-1, etc.)
     
     # --- Logging Controls ---
     sqs_strip_base64_files: false
-    # If true, LiteLLM will remove or redact base64-encoded binary data (e.g., PDFs, images, audio)
+    # If true, Dheera AI will remove or redact base64-encoded binary data (e.g., PDFs, images, audio)
     # from logged messages to avoid large payloads. SQS has a 1 MB payload size limit.
     s3_use_team_prefix: false
     # If true, Litellm will add the team alias prefix to s3 path
@@ -1467,7 +1467,7 @@ litellm_settings:
 Start proxy
 
 ```shell
-litellm --config config.yaml --debug
+dheera_ai --config config.yaml --debug
 ```
 
 Test Request
@@ -1493,7 +1493,7 @@ Log LLM Logs to [Azure Data Lake Storage](https://learn.microsoft.com/en-us/azur
 
 :::info
 
-✨ This is an Enterprise only feature [Get Started with Enterprise here](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+✨ This is an Enterprise only feature [Get Started with Enterprise here](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
@@ -1507,16 +1507,16 @@ Log LLM Logs to [Azure Data Lake Storage](https://learn.microsoft.com/en-us/azur
 
 #### Usage
 
-1. Add `azure_storage` to LiteLLM Config.yaml
+1. Add `azure_storage` to Dheera AI Config.yaml
 ```yaml
 model_list:
   - model_name: fake-openai-endpoint
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["azure_storage"] # 👈 KEY CHANGE # 👈 KEY CHANGE
 ```
 
@@ -1524,8 +1524,8 @@ litellm_settings:
 
 ```shell
 # Required Environment Variables for Azure Storage
-AZURE_STORAGE_ACCOUNT_NAME="litellm2" # The name of the Azure Storage Account to use for logging
-AZURE_STORAGE_FILE_SYSTEM="litellm-logs" # The name of the Azure Storage File System to use for logging.  (Typically the Container name)
+AZURE_STORAGE_ACCOUNT_NAME="dheera_ai2" # The name of the Azure Storage Account to use for logging
+AZURE_STORAGE_FILE_SYSTEM="dheera_ai-logs" # The name of the Azure Storage File System to use for logging.  (Typically the Container name)
 
 # Authentication Variables
 # Option 1: Use Storage Account Key
@@ -1540,7 +1540,7 @@ AZURE_STORAGE_CLIENT_SECRET="uMS8Qxxxxxxxxxx" # The Application Client Secret to
 3. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 4. Test it! 
@@ -1572,14 +1572,14 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 
 ## [Datadog](../observability/datadog)
 
-👉 Go here for using [Datadog LLM Observability](../observability/datadog) with LiteLLM Proxy
+👉 Go here for using [Datadog LLM Observability](../observability/datadog) with Dheera AI Proxy
 
 
 ## Lunary
 #### Step1: Install dependencies and set your environment variables 
 Install the dependencies
 ```shell
-pip install litellm lunary
+pip install dheera_ai lunary
 ```
 
 Get you Lunary public key from from https://app.lunary.ai/settings 
@@ -1592,16 +1592,16 @@ export LUNARY_PUBLIC_KEY="<your-public-key>"
 ```yaml
 model_list:
   - model_name: "*"
-    litellm_params:
+    dheera_ai_params:
       model: "*"
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["lunary"]
   failure_callback: ["lunary"]
 ```
 
-#### Step 3: Start the LiteLLM proxy
+#### Step 3: Start the Dheera AI proxy
 ```shell
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 #### Step 4: Make a request
@@ -1626,7 +1626,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 
 ## MLflow
 
-👉 Follow the tutorial [here](../observability/mlflow) to get started with mlflow on LiteLLM Proxy Server
+👉 Follow the tutorial [here](../observability/mlflow) to get started with mlflow on Dheera AI Proxy Server
 
 
 
@@ -1634,19 +1634,19 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 
 Use this when you want to run custom callbacks in `python`
 
-#### Step 1 - Create your custom `litellm` callback class
+#### Step 1 - Create your custom `dheera_ai` callback class
 
-We use `litellm.integrations.custom_logger` for this, **more details about litellm custom callbacks [here](https://docs.litellm.ai/docs/observability/custom_callback)**
+We use `dheera_ai.integrations.custom_logger` for this, **more details about dheera_ai custom callbacks [here](https://docs.dheera_ai.ai/docs/observability/custom_callback)**
 
 Define your custom callback class in a python file.
 
 Here's an example custom logger for tracking `key, user, model, prompt, response, tokens, cost`. We create a file called `custom_callbacks.py` and initialize `proxy_handler_instance` 
 
 ```python
-from litellm.integrations.custom_logger import CustomLogger
-import litellm
+from dheera_ai.integrations.custom_logger import CustomLogger
+import dheera_ai
 
-# This file includes the custom callbacks for LiteLLM Proxy
+# This file includes the custom callbacks for Dheera AI Proxy
 # Once defined, these can be passed in proxy_config.yaml
 class MyCustomHandler(CustomLogger):
     def log_pre_api_call(self, model, messages, kwargs): 
@@ -1664,17 +1664,17 @@ class MyCustomHandler(CustomLogger):
     async def async_log_success_event(self, kwargs, response_obj, start_time, end_time):
         print(f"On Async Success!")
         # log: key, user, model, prompt, response, tokens, cost
-        # Access kwargs passed to litellm.completion()
+        # Access kwargs passed to dheera_ai.completion()
         model = kwargs.get("model", None)
         messages = kwargs.get("messages", None)
         user = kwargs.get("user", None)
 
-        # Access litellm_params passed to litellm.completion(), example access `metadata`
-        litellm_params = kwargs.get("litellm_params", {})
-        metadata = litellm_params.get("metadata", {})   # headers passed to LiteLLM proxy, can be found here
+        # Access dheera_ai_params passed to dheera_ai.completion(), example access `metadata`
+        dheera_ai_params = kwargs.get("dheera_ai_params", {})
+        metadata = dheera_ai_params.get("metadata", {})   # headers passed to Dheera AI proxy, can be found here
 
-        # Calculate cost using  litellm.completion_cost()
-        cost = litellm.completion_cost(completion_response=response_obj)
+        # Calculate cost using  dheera_ai.completion_cost()
+        cost = dheera_ai.completion_cost(completion_response=response_obj)
         response = response_obj
         # tokens used in response 
         usage = response_obj["usage"]
@@ -1696,21 +1696,21 @@ class MyCustomHandler(CustomLogger):
         try:
             print(f"On Async Failure !")
             print("\nkwargs", kwargs)
-            # Access kwargs passed to litellm.completion()
+            # Access kwargs passed to dheera_ai.completion()
             model = kwargs.get("model", None)
             messages = kwargs.get("messages", None)
             user = kwargs.get("user", None)
 
-            # Access litellm_params passed to litellm.completion(), example access `metadata`
-            litellm_params = kwargs.get("litellm_params", {})
-            metadata = litellm_params.get("metadata", {})   # headers passed to LiteLLM proxy, can be found here
+            # Access dheera_ai_params passed to dheera_ai.completion(), example access `metadata`
+            dheera_ai_params = kwargs.get("dheera_ai_params", {})
+            metadata = dheera_ai_params.get("metadata", {})   # headers passed to Dheera AI proxy, can be found here
 
             # Access Exceptions & Traceback
             exception_event = kwargs.get("exception", None)
             traceback_event = kwargs.get("traceback_exception", None)
 
-            # Calculate cost using  litellm.completion_cost()
-            cost = litellm.completion_cost(completion_response=response_obj)
+            # Calculate cost using  dheera_ai.completion_cost()
+            cost = dheera_ai.completion_cost(completion_response=response_obj)
             print("now checking response obj")
             
             print(
@@ -1730,8 +1730,8 @@ class MyCustomHandler(CustomLogger):
 
 proxy_handler_instance = MyCustomHandler()
 
-# Set litellm.callbacks = [proxy_handler_instance] on the proxy
-# need to set litellm.callbacks = [proxy_handler_instance] # on the proxy
+# Set dheera_ai.callbacks = [proxy_handler_instance] on the proxy
+# need to set dheera_ai.callbacks = [proxy_handler_instance] # on the proxy
 ```
 
 #### Step 2 - Pass your custom callback class in `config.yaml`
@@ -1749,11 +1749,11 @@ In the config below, we pass
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
 
-litellm_settings:
-  callbacks: custom_callbacks.proxy_handler_instance # sets litellm.callbacks = [proxy_handler_instance]
+dheera_ai_settings:
+  callbacks: custom_callbacks.proxy_handler_instance # sets dheera_ai.callbacks = [proxy_handler_instance]
 
 ```
 
@@ -1767,12 +1767,12 @@ Instead of using local Python files, you can load custom callbacks directly from
 
 **Example - Loading from S3:**
 
-Let's say you have a file `custom_callbacks.py` stored in your S3 bucket `litellm-proxy` with the following content:
+Let's say you have a file `custom_callbacks.py` stored in your S3 bucket `dheera_ai-proxy` with the following content:
 
 ```python
 # custom_callbacks.py (stored in S3)
-from litellm.integrations.custom_logger import CustomLogger
-import litellm
+from dheera_ai.integrations.custom_logger import CustomLogger
+import dheera_ai
 
 class MyCustomHandler(CustomLogger):
     async def async_log_success_event(self, kwargs, response_obj, start_time, end_time):
@@ -1783,7 +1783,7 @@ class MyCustomHandler(CustomLogger):
         print(f"Custom UI SSO failure callback!")
         # Your failure handling logic
 
-# Instance that will be loaded by LiteLLM
+# Instance that will be loaded by Dheera AI
 custom_handler = MyCustomHandler()
 ```
 
@@ -1792,11 +1792,11 @@ custom_handler = MyCustomHandler()
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
 
-litellm_settings:
-  callbacks: ["s3://litellm-proxy/custom_callbacks.custom_handler"]
+dheera_ai_settings:
+  callbacks: ["s3://dheera_ai-proxy/custom_callbacks.custom_handler"]
 ```
 
 **Example - Loading from GCS:**
@@ -1804,15 +1804,15 @@ litellm_settings:
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["gcs://my-gcs-bucket/custom_callbacks.custom_handler"]
 ```
 
 **How it works:**
-1. LiteLLM detects the S3/GCS URL prefix
+1. Dheera AI detects the S3/GCS URL prefix
 2. Downloads the Python file to a temporary location
 3. Loads the module and extracts the specified instance
 4. Cleans up the temporary file
@@ -1826,7 +1826,7 @@ This approach allows you to:
 #### Step 3 - Start proxy + test request
 
 ```shell
-litellm --config proxy_config.yaml
+dheera_ai --config proxy_config.yaml
 ```
 
 ```shell
@@ -1867,8 +1867,8 @@ class MyCustomHandler(CustomLogger):
     async def async_log_success_event(self, kwargs, response_obj, start_time, end_time):
         print(f"On Async Success!")
 
-        litellm_params = kwargs.get("litellm_params", None)
-        proxy_server_request = litellm_params.get("proxy_server_request")
+        dheera_ai_params = kwargs.get("dheera_ai_params", None)
+        proxy_server_request = dheera_ai_params.get("proxy_server_request")
         print(proxy_server_request)
 ```
 
@@ -1903,15 +1903,15 @@ class MyCustomHandler(CustomLogger):
 
 #### Logging `model_info` set in config.yaml 
 
-Here is how to log the `model_info` set in your proxy `config.yaml`. Information on setting `model_info` on [config.yaml](https://docs.litellm.ai/docs/proxy/configs)
+Here is how to log the `model_info` set in your proxy `config.yaml`. Information on setting `model_info` on [config.yaml](https://docs.dheera_ai.ai/docs/proxy/configs)
 
 ```python
 class MyCustomHandler(CustomLogger):
     async def async_log_success_event(self, kwargs, response_obj, start_time, end_time):
         print(f"On Async Success!")
 
-        litellm_params = kwargs.get("litellm_params", None)
-        model_info = litellm_params.get("model_info")
+        dheera_ai_params = kwargs.get("dheera_ai_params", None)
+        model_info = dheera_ai_params.get("model_info")
         print(model_info)
 ```
 
@@ -1990,19 +1990,19 @@ ModelResponse(
   style={{width: '100%', display: 'block', margin: '2rem auto'}}
 />
 <p style={{textAlign: 'left', color: '#666'}}>
-  Send LiteLLM logs to a custom API endpoint
+  Send Dheera AI logs to a custom API endpoint
 </p>
 
 :::info
 
-This is an Enterprise only feature [Get Started with Enterprise here](https://github.com/BerriAI/litellm/tree/main/enterprise)
+This is an Enterprise only feature [Get Started with Enterprise here](https://github.com/BerriAI/dheera_ai/tree/main/enterprise)
 
 :::
 
 | Property       | Details                                                                                                                                                    |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Description    | Log LLM Input/Output to a custom API endpoint                                                                                                              |
-| Logged Payload | `List[StandardLoggingPayload]` LiteLLM logs a list of [`StandardLoggingPayload` objects](https://docs.litellm.ai/docs/proxy/logging_spec) to your endpoint |
+| Logged Payload | `List[StandardLoggingPayload]` Dheera AI logs a list of [`StandardLoggingPayload` objects](https://docs.dheera_ai.ai/docs/proxy/logging_spec) to your endpoint |
 
 
 
@@ -2013,16 +2013,16 @@ Use this if you:
 
 #### Usage
 
-1. Set `success_callback: ["generic_api"]` on litellm config.yaml
+1. Set `success_callback: ["generic_api"]` on dheera_ai config.yaml
 
-```yaml showLineNumbers title="litellm config.yaml"
+```yaml showLineNumbers title="dheera_ai config.yaml"
 model_list:
   - model_name: openai/gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["generic_api"]
 ```
 
@@ -2046,7 +2046,7 @@ GENERIC_LOGGER_HEADERS="Authorization=Bearer <your-api-key>,X-Custom-Header=cust
 3. Start the proxy
 
 ```shell
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 4. Make a test request
@@ -2070,18 +2070,18 @@ curl -i --location 'http://0.0.0.0:4000/chat/completions' \
 
 ## Langsmith
 
-1. Set `success_callback: ["langsmith"]` on litellm config.yaml
+1. Set `success_callback: ["langsmith"]` on dheera_ai config.yaml
 
 If you're using a custom LangSmith instance, you can set the
 `LANGSMITH_BASE_URL` environment variable to point to your instance.
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["langsmith"]
 
 environment_variables:
   LANGSMITH_API_KEY: "lsv2_pt_xxxxxxxx"
-  LANGSMITH_PROJECT: "litellm-proxy"
+  LANGSMITH_PROJECT: "dheera_ai-proxy"
 
   LANGSMITH_BASE_URL: "https://api.smith.langchain.com" # (Optional - only needed if you have a custom Langsmith instance)
 ```
@@ -2090,7 +2090,7 @@ environment_variables:
 2. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -2115,17 +2115,17 @@ Expect to see your log on Langfuse
 
 ## Arize AI
 
-1. Set `success_callback: ["arize"]` on litellm config.yaml
+1. Set `success_callback: ["arize"]` on dheera_ai config.yaml
 
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["arize"]
 
 environment_variables:
@@ -2138,7 +2138,7 @@ environment_variables:
 2. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -2163,17 +2163,17 @@ Expect to see your log on Langfuse
 
 ## Langtrace
 
-1. Set `success_callback: ["langtrace"]` on litellm config.yaml
+1. Set `success_callback: ["langtrace"]` on dheera_ai config.yaml
 
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["langtrace"]
 
 environment_variables:
@@ -2183,7 +2183,7 @@ environment_variables:
 2. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -2230,20 +2230,20 @@ export GALILEO_PASSWORD=""
 
 ```yaml
 model_list:
-- litellm_params:
+- dheera_ai_params:
     api_base: https://exampleopenaiendpoint-production.up.railway.app/
     api_key: my-fake-key
     model: openai/my-fake-model
   model_name: fake-openai-endpoint
 
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["galileo"] # 👈 KEY CHANGE
 ```
 
 2. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -2283,20 +2283,20 @@ export OPENMETER_API_KEY=""
 
 ```yaml
 model_list:
-- litellm_params:
+- dheera_ai_params:
     api_base: https://openai-function-calling-workers.tasslexyz.workers.dev/
     api_key: my-fake-key
     model: openai/my-fake-model
   model_name: fake-openai-endpoint
 
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["openmeter"] # 👈 KEY CHANGE
 ```
 
 2. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -2322,8 +2322,8 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 
 We will use the `--config` to set 
 
-- `litellm.success_callback = ["dynamodb"]` 
-- `litellm.dynamodb_table_name = "your-table-name"`
+- `dheera_ai.success_callback = ["dynamodb"]` 
+- `dheera_ai.dynamodb_table_name = "your-table-name"`
 
 This will log all successful LLM calls to DynamoDB
 
@@ -2335,14 +2335,14 @@ AWS_SECRET_ACCESS_KEY = ""
 AWS_REGION_NAME = ""
 ```
 
-**Step 2**: Create a `config.yaml` file and set `litellm_settings`: `success_callback`
+**Step 2**: Create a `config.yaml` file and set `dheera_ai_settings`: `success_callback`
 
 ```yaml
 model_list:
  - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["dynamodb"]
   dynamodb_table_name: your-table-name
 ```
@@ -2352,7 +2352,7 @@ litellm_settings:
 Start proxy
 
 ```shell
-litellm --config config.yaml --debug
+dheera_ai --config config.yaml --debug
 ```
 
 Test Request
@@ -2454,7 +2454,7 @@ If api calls fail (llm/database) you can log those to Sentry:
 pip install --upgrade sentry-sdk
 ```
 
-**Step 2**: Save your Sentry_DSN and add `litellm_settings`: `failure_callback`
+**Step 2**: Save your Sentry_DSN and add `dheera_ai_settings`: `failure_callback`
 
 ```shell
 export SENTRY_DSN="your-sentry-dsn"
@@ -2467,9 +2467,9 @@ export SENTRY_ENVIRONMENT="development" # Controls the Sentry Environment (defau
 ```yaml 
 model_list:
  - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
-litellm_settings:
+dheera_ai_settings:
   # other settings
   failure_callback: ["sentry"]
 general_settings: 
@@ -2481,20 +2481,20 @@ general_settings:
 Start proxy
 
 ```shell
-litellm --config config.yaml --debug
+dheera_ai --config config.yaml --debug
 ```
 
 Test Request
 
 ```
-litellm --test
+dheera_ai --test
 ```
 
 ## Athina
 
 [Athina](https://athina.ai/) allows you to log LLM Input/Output for monitoring, analytics, and observability.
 
-We will use the `--config` to set `litellm.success_callback = ["athina"]` this will log all successful LLM calls to athina
+We will use the `--config` to set `dheera_ai.success_callback = ["athina"]` this will log all successful LLM calls to athina
 
 **Step 1** Set Athina API key
 
@@ -2502,14 +2502,14 @@ We will use the `--config` to set `litellm.success_callback = ["athina"]` this w
 ATHINA_API_KEY = "your-athina-api-key"
 ```
 
-**Step 2**: Create a `config.yaml` file and set `litellm_settings`: `success_callback`
+**Step 2**: Create a `config.yaml` file and set `dheera_ai_settings`: `success_callback`
 
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["athina"]
 ```
 
@@ -2518,7 +2518,7 @@ litellm_settings:
 Start proxy
 
 ```shell
-litellm --config config.yaml --debug
+dheera_ai --config config.yaml --debug
 ```
 
 Test Request
@@ -2544,7 +2544,7 @@ Note: This page is for logging callbacks and this is a moderation service. Comme
 
 [Azure Content-Safety](https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety) is a Microsoft Azure service that provides content moderation APIs to detect potential offensive, harmful, or risky content in text.
 
-We will use the `--config` to set `litellm.success_callback = ["azure_content_safety"]` this will moderate all LLM calls using Azure Content Safety.
+We will use the `--config` to set `dheera_ai.success_callback = ["azure_content_safety"]` this will moderate all LLM calls using Azure Content Safety.
 
 **Step 0** Deploy Azure Content Safety
 
@@ -2556,14 +2556,14 @@ Deploy an Azure Content-Safety instance from the Azure Portal and get the `endpo
 AZURE_CONTENT_SAFETY_KEY = "<your-azure-content-safety-key>"
 ```
 
-**Step 2**: Create a `config.yaml` file and set `litellm_settings`: `success_callback`
+**Step 2**: Create a `config.yaml` file and set `dheera_ai_settings`: `success_callback`
 
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["azure_content_safety"]
   azure_content_safety_params:
     endpoint: "<your-azure-content-safety-endpoint>"
@@ -2575,7 +2575,7 @@ litellm_settings:
 Start proxy
 
 ```shell
-litellm --config config.yaml --debug
+dheera_ai --config config.yaml --debug
 ```
 
 Test Request
@@ -2608,9 +2608,9 @@ You can customize the thresholds for each category by setting the `thresholds` i
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["azure_content_safety"]
   azure_content_safety_params:
     endpoint: "<your-azure-content-safety-endpoint>"

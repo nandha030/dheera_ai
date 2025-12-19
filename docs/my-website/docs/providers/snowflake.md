@@ -6,7 +6,7 @@ import TabItem from '@theme/TabItem';
 | Property                   | Details                                                                                                   |
 |----------------------------|-----------------------------------------------------------------------------------------------------------|
 | Description                | The Snowflake Cortex LLM REST API lets you access the COMPLETE and EMBED functions via HTTP POST requests |
-| Provider Route on LiteLLM  | `snowflake/`                                                                                              |
+| Provider Route on Dheera AI  | `snowflake/`                                                                                              |
 | Link to Provider Doc       | [Snowflake ↗](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-llm-rest-api)              |
 | Base URLs                  | `https://{account-id}.snowflakecomputing.com/api/v2/cortex/inference:complete`,`https://{account-id}.snowflakecomputing.com/api/v2/cortex/inference:embed`|
 | Supported OpenAI Endpoints | `/chat/completions`, `/completions`, `/embeddings`                                                        |
@@ -35,7 +35,7 @@ os.environ["SNOWFLAKE_ACCOUNT_ID"] = "YOUR ACCOUNT IDENTIFIER"
 ## Usage
 
 ```python
-from litellm import completion, embedding
+from dheera_ai import completion, embedding
 
 ## set ENV variables
 os.environ["SNOWFLAKE_JWT"] = "JWT_TOKEN"
@@ -69,7 +69,7 @@ response = completion(
 )
 ```
 
-## Usage with LiteLLM Proxy 
+## Usage with Dheera AI Proxy 
 
 #### 1. Required env variables
 ```bash
@@ -81,7 +81,7 @@ export SNOWFLAKE_ACCOUNT_ID = ""
 ```yaml
 model_list:
   - model_name: mistral-7b
-    litellm_params:
+    dheera_ai_params:
         model: snowflake/mistral-7b
         api_key: YOUR_API_KEY
         api_base: https://YOUR-ACCOUNT-ID.snowflakecomputing.com/api/v2/cortex/inference:complete
@@ -89,7 +89,7 @@ model_list:
 ```
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 #### 3. Test it

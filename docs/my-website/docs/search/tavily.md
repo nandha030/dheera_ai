@@ -2,11 +2,11 @@
 
 **Get API Key:** [https://tavily.com](https://tavily.com)
 
-## LiteLLM Python SDK
+## Dheera AI Python SDK
 
 ```python showLineNumbers title="Tavily Search"
 import os
-from litellm import search
+from dheera_ai import search
 
 os.environ["TAVILY_API_KEY"] = "tvly-..."
 
@@ -17,20 +17,20 @@ response = search(
 )
 ```
 
-## LiteLLM AI Gateway
+## Dheera AI AI Gateway
 
 ### 1. Setup config.yaml
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
 search_tools:
   - search_tool_name: tavily-search
-    litellm_params:
+    dheera_ai_params:
       search_provider: tavily
       api_key: os.environ/TAVILY_API_KEY
 ```
@@ -38,7 +38,7 @@ search_tools:
 ### 2. Start the proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -59,7 +59,7 @@ curl http://0.0.0.0:4000/v1/search/tavily-search \
 
 ```python showLineNumbers title="Tavily Search with Provider-specific Parameters"
 import os
-from litellm import search
+from dheera_ai import search
 
 os.environ["TAVILY_API_KEY"] = "tvly-..."
 

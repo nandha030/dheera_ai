@@ -9,15 +9,15 @@ import os
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm.proxy.proxy_server import app
-from litellm.proxy.utils import PrismaClient, ProxyLogging
-from litellm.proxy.management_endpoints.ui_sso import auth_callback
-from litellm.proxy._types import LitellmUserRoles
+import dheera_ai
+from dheera_ai.proxy.proxy_server import app
+from dheera_ai.proxy.utils import PrismaClient, ProxyLogging
+from dheera_ai.proxy.management_endpoints.ui_sso import auth_callback
+from dheera_ai.proxy._types import LitellmUserRoles
 import os
 import jwt
 import time
-from litellm.caching.caching import DualCache
+from dheera_ai.caching.caching import DualCache
 
 proxy_logging_obj = ProxyLogging(user_api_key_cache=DualCache())
 
@@ -27,12 +27,12 @@ def mock_env_vars(monkeypatch):
     monkeypatch.setenv("GOOGLE_CLIENT_ID", "mock_google_client_id")
     monkeypatch.setenv("GOOGLE_CLIENT_SECRET", "mock_google_client_secret")
     monkeypatch.setenv("PROXY_BASE_URL", "http://testserver")
-    monkeypatch.setenv("LITELLM_MASTER_KEY", "mock_master_key")
+    monkeypatch.setenv("DHEERA_AI_MASTER_KEY", "mock_master_key")
 
 
 @pytest.fixture
 def prisma_client():
-    from litellm.proxy.proxy_cli import append_query_params
+    from dheera_ai.proxy.proxy_cli import append_query_params
 
     ### add connection pool + pool timeout args
     params = {"connection_limit": 100, "pool_timeout": 60}
@@ -45,11 +45,11 @@ def prisma_client():
         database_url=os.environ["DATABASE_URL"], proxy_logging_obj=proxy_logging_obj
     )
 
-    # Reset litellm.proxy.proxy_server.prisma_client to None
-    litellm.proxy.proxy_server.litellm_proxy_budget_name = (
-        f"litellm-proxy-budget-{time.time()}"
+    # Reset dheera_ai.proxy.proxy_server.prisma_client to None
+    dheera_ai.proxy.proxy_server.dheera_ai_proxy_budget_name = (
+        f"dheera_ai-proxy-budget-{time.time()}"
     )
-    litellm.proxy.proxy_server.user_custom_key_generate = None
+    dheera_ai.proxy.proxy_server.user_custom_key_generate = None
 
     return prisma_client
 
@@ -60,10 +60,10 @@ async def test_auth_callback_new_user(mock_google_sso, mock_env_vars, prisma_cli
     """
     Tests that a new SSO Sign In user is by default given an 'INTERNAL_USER_VIEW_ONLY' role
     """
-    from litellm._uuid import uuid
-    import litellm
+    from dheera_ai._uuid import uuid
+    import dheera_ai
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     # Generate a unique user ID
     unique_user_id = str(uuid.uuid4())
@@ -71,11 +71,11 @@ async def test_auth_callback_new_user(mock_google_sso, mock_env_vars, prisma_cli
 
     try:
         # Set up the prisma client
-        setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-        await litellm.proxy.proxy_server.prisma_client.connect()
+        setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+        await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
         # Set up the master key
-        litellm.proxy.proxy_server.master_key = "mock_master_key"
+        dheera_ai.proxy.proxy_server.master_key = "mock_master_key"
 
         # Mock the GoogleSSO verify_and_process method
         mock_sso_result = MagicMock()
@@ -108,7 +108,7 @@ async def test_auth_callback_new_user(mock_google_sso, mock_env_vars, prisma_cli
         assert response.headers["location"].startswith(f"http://testserver/ui/?login=success")
 
         # Verify that the user was added to the database
-        user = await prisma_client.db.litellm_usertable.find_first(
+        user = await prisma_client.db.dheera_ai_usertable.find_first(
             where={"user_id": unique_user_id}
         )
         print("inserted user from SSO", user)
@@ -119,7 +119,7 @@ async def test_auth_callback_new_user(mock_google_sso, mock_env_vars, prisma_cli
 
     finally:
         # Clean up: Delete the user from the database
-        await prisma_client.db.litellm_usertable.delete(
+        await prisma_client.db.dheera_ai_usertable.delete(
             where={"user_id": unique_user_id}
         )
 
@@ -130,11 +130,11 @@ async def test_auth_callback_new_user_with_sso_default(
     mock_google_sso, mock_env_vars, prisma_client
 ):
     """
-    When litellm_settings.default_internal_user_params.user_role = 'INTERNAL_USER'
+    When dheera_ai_settings.default_internal_user_params.user_role = 'INTERNAL_USER'
 
     Tests that a new SSO Sign In user is by default given an 'INTERNAL_USER' role
     """
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     # Generate a unique user ID
     unique_user_id = str(uuid.uuid4())
@@ -142,14 +142,14 @@ async def test_auth_callback_new_user_with_sso_default(
 
     try:
         # Set up the prisma client
-        setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-        litellm.default_internal_user_params = {
+        setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+        dheera_ai.default_internal_user_params = {
             "user_role": LitellmUserRoles.INTERNAL_USER.value
         }
-        await litellm.proxy.proxy_server.prisma_client.connect()
+        await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
         # Set up the master key
-        litellm.proxy.proxy_server.master_key = "mock_master_key"
+        dheera_ai.proxy.proxy_server.master_key = "mock_master_key"
 
         # Mock the GoogleSSO verify_and_process method
         mock_sso_result = MagicMock()
@@ -181,7 +181,7 @@ async def test_auth_callback_new_user_with_sso_default(
         assert response.headers["location"].startswith(f"http://testserver/ui/?login=success")
 
         # Verify that the user was added to the database
-        user = await prisma_client.db.litellm_usertable.find_first(
+        user = await prisma_client.db.dheera_ai_usertable.find_first(
             where={"user_id": unique_user_id}
         )
         print("inserted user from SSO", user)
@@ -191,7 +191,7 @@ async def test_auth_callback_new_user_with_sso_default(
 
     finally:
         # Clean up: Delete the user from the database
-        await prisma_client.db.litellm_usertable.delete(
+        await prisma_client.db.dheera_ai_usertable.delete(
             where={"user_id": unique_user_id}
         )
-        litellm.default_internal_user_params = None
+        dheera_ai.default_internal_user_params = None

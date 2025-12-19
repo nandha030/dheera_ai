@@ -4,7 +4,7 @@ import TabItem from '@theme/TabItem';
 # Galadriel
 https://docs.galadriel.com/api-reference/chat-completion-API
 
-LiteLLM supports all models on Galadriel.
+Dheera AI supports all models on Galadriel.
 
 ## API Key
 ```python
@@ -14,14 +14,14 @@ os.environ['GALADRIEL_API_KEY'] = "your-api-key"
 
 ## Sample Usage
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['GALADRIEL_API_KEY'] = ""
 response = completion(
     model="galadriel/llama3.1", 
     messages=[
-       {"role": "user", "content": "hello from litellm"}
+       {"role": "user", "content": "hello from dheera_ai"}
    ],
 )
 print(response)
@@ -29,14 +29,14 @@ print(response)
 
 ## Sample Usage - Streaming
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['GALADRIEL_API_KEY'] = ""
 response = completion(
     model="galadriel/llama3.1", 
     messages=[
-       {"role": "user", "content": "hello from litellm"}
+       {"role": "user", "content": "hello from dheera_ai"}
    ],
     stream=True
 )

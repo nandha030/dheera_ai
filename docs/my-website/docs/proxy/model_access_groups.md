@@ -42,14 +42,14 @@ graph LR
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
     model_info:
       access_groups: ["beta-models"] # 👈 Model Access Group
   - model_name: fireworks-llama-v3-70b-instruct
-    litellm_params:
+    dheera_ai_params:
       model: fireworks_ai/accounts/fireworks/models/llama-v3-70b-instruct
       api_key: "os.environ/FIREWORKS"
     model_info:
@@ -194,9 +194,9 @@ Use this to also give users access to all models, except for a few that you don'
 
 Setting model access groups on wildcard models is an Enterprise feature. 
 
-See pricing [here](https://litellm.ai/#pricing)
+See pricing [here](https://dheera_ai.ai/#pricing)
 
-Get a trial key [here](https://litellm.ai/#trial)
+Get a trial key [here](https://dheera_ai.ai/#trial)
 :::
 
 
@@ -206,13 +206,13 @@ Get a trial key [here](https://litellm.ai/#trial)
 ```yaml showLineNumbers title="config.yaml - Wildcard Models"
 model_list:
   - model_name: openai/*
-    litellm_params:
+    dheera_ai_params:
       model: openai/*
       api_key: os.environ/OPENAI_API_KEY
     model_info:
       access_groups: ["default-models"]
   - model_name: openai/o1-*
-    litellm_params:
+    dheera_ai_params:
       model: openai/o1-*
       api_key: os.environ/OPENAI_API_KEY
     model_info:
@@ -293,7 +293,7 @@ curl -X POST 'http://localhost:4000/model/new' \
   -H 'Content-Type: application/json' \
   -d '{
     "model_name": "gpt-4",
-    "litellm_params": {
+    "dheera_ai_params": {
       "model": "gpt-4",
       "api_key": "os.environ/OPENAI_API_KEY"
     }
@@ -305,7 +305,7 @@ curl -X POST 'http://localhost:4000/model/new' \
   -H 'Content-Type: application/json' \
   -d '{
     "model_name": "claude-3-opus",
-    "litellm_params": {
+    "dheera_ai_params": {
       "model": "claude-3-opus-20240229",
       "api_key": "os.environ/ANTHROPIC_API_KEY"
     }
@@ -421,11 +421,11 @@ curl -X PUT 'http://localhost:4000/access_group/production-models/update' \
 The API key from Step 4 now automatically has access to `gemini-pro` without any changes to the key itself.
 ### API Reference - Access Group Management
 
-For complete API documentation including all endpoints, parameters, and response schemas, see the [Access Group Management API Reference](https://litellm-api.up.railway.app/#/model%20management/create_model_group_access_group_new_post).
+For complete API documentation including all endpoints, parameters, and response schemas, see the [Access Group Management API Reference](https://dheera_ai-api.up.railway.app/#/model%20management/create_model_group_access_group_new_post).
 
 ## Managing Access Groups via UI
 
-You can also manage access groups through the LiteLLM Admin UI.
+You can also manage access groups through the Dheera AI Admin UI.
 
 ### Step 1: Add Model to Access Group
 

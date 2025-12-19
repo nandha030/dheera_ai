@@ -7,8 +7,8 @@ from unittest.mock import patch, MagicMock
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm.llms.bedrock.chat.converse_transformation import AmazonConverseConfig
+import dheera_ai
+from dheera_ai.llms.bedrock.chat.converse_transformation import AmazonConverseConfig
 
 
 class TestBedrockGPTOSS(BaseLLMChatTest):
@@ -18,7 +18,7 @@ class TestBedrockGPTOSS(BaseLLMChatTest):
         }
     
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
         pass
 
     def test_prompt_caching(self):

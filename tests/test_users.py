@@ -237,7 +237,7 @@ async def test_global_proxy_budget_update():
     - Make chat completion call (streaming)
     - Assert spend increased
     """
-    get_user = f"litellm-proxy-budget"
+    get_user = f"dheera_ai-proxy-budget"
     async with aiohttp.ClientSession() as session:
         user_info = await get_user_info(
             session=session, get_user=get_user, call_user="sk-1234"
@@ -318,7 +318,7 @@ async def test_user_model_access():
 
 
 import json
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import pytest
 import aiohttp
 from typing import Dict, Tuple

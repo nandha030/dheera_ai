@@ -9,7 +9,7 @@ You can now override the default api key auth.
 Make sure the response type follows the `UserAPIKeyAuth` pydantic object. This is used by for logging usage specific to that user key.
 
 ```python
-from litellm.proxy._types import UserAPIKeyAuth
+from dheera_ai.proxy._types import UserAPIKeyAuth
 
 async def user_api_key_auth(request: Request, api_key: str) -> UserAPIKeyAuth: 
     try: 
@@ -140,7 +140,7 @@ UserAPIKeyAuth(
 
 ```python
 from datetime import datetime, timedelta
-from litellm.proxy._types import UserAPIKeyAuth, LitellmUserRoles
+from dheera_ai.proxy._types import UserAPIKeyAuth, LitellmUserRoles
 
 async def user_api_key_auth(request: Request, api_key: str) -> UserAPIKeyAuth:
     try:
@@ -192,10 +192,10 @@ e.g. if they're both in the same dir - `./config.yaml` and `./custom_auth.py`, t
 ```yaml 
 model_list: 
   - model_name: "openai-model"
-    litellm_params: 
+    dheera_ai_params: 
       model: "gpt-3.5-turbo"
 
-litellm_settings:
+dheera_ai_settings:
   drop_params: True
   set_verbose: True
 
@@ -203,24 +203,24 @@ general_settings:
   custom_auth: custom_auth.user_api_key_auth
 ```
 
-[**Implementation Code**](https://github.com/BerriAI/litellm/blob/caf2a6b279ddbe89ebd1d8f4499f65715d684851/litellm/proxy/utils.py#L122)
+[**Implementation Code**](https://github.com/BerriAI/dheera_ai/blob/caf2a6b279ddbe89ebd1d8f4499f65715d684851/dheera_ai/proxy/utils.py#L122)
 
 #### 3. Start the proxy
 ```shell
-$ litellm --config /path/to/config.yaml 
+$ dheera_ai --config /path/to/config.yaml 
 ```
 
-## ✨ Support LiteLLM Virtual Keys + Custom Auth
+## ✨ Support Dheera AI Virtual Keys + Custom Auth
 
 Supported from v1.72.2+
 
 :::info 
 
-✨ Supporting Custom Auth + LiteLLM Virtual Keys is on LiteLLM Enterprise
+✨ Supporting Custom Auth + Dheera AI Virtual Keys is on Dheera AI Enterprise
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Get free 7-day trial key](https://www.litellm.ai/enterprise#trial)
+[Get free 7-day trial key](https://www.dheera_ai.ai/enterprise#trial)
 :::
 
 ### Usage
@@ -237,7 +237,7 @@ from typing import Union
 
 from fastapi import Request
 
-from litellm.proxy._types import UserAPIKeyAuth
+from dheera_ai.proxy._types import UserAPIKeyAuth
 
 
 async def user_api_key_auth(
@@ -255,24 +255,24 @@ async def user_api_key_auth(
 
 2. Setup config.yaml
 
-Key change set `mode: auto`. This will check both litellm api key auth + custom auth.
+Key change set `mode: auto`. This will check both dheera_ai api key auth + custom auth.
 
 ```yaml
 model_list: 
   - model_name: "openai-model"
-    litellm_params: 
+    dheera_ai_params: 
       model: "gpt-3.5-turbo"
       api_key: os.environ/OPENAI_API_KEY
 
 general_settings:
   custom_auth: custom_auth_auto.user_api_key_auth
   custom_auth_settings:
-    mode: "auto" # can be 'on', 'off', 'auto' - 'auto' checks both litellm api key auth + custom auth
+    mode: "auto" # can be 'on', 'off', 'auto' - 'auto' checks both dheera_ai api key auth + custom auth
 ```
 
 Flow:
 1. Checks custom auth first
-2. If custom auth fails, checks litellm api key auth
+2. If custom auth fails, checks dheera_ai api key auth
 3. If both fail, returns 401
 
 
@@ -311,7 +311,7 @@ from typing import Union
 
 from fastapi import Request
 
-from litellm.proxy._types import UserAPIKeyAuth, ProxyException
+from dheera_ai.proxy._types import UserAPIKeyAuth, ProxyException
 
 
 async def user_api_key_auth(

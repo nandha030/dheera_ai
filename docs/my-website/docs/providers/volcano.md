@@ -3,7 +3,7 @@ https://www.volcengine.com/docs/82379/1263482
 
 :::tip
 
-**We support ALL Volcengine models including Chat and Embeddings, just set `model=volcengine/<any-model-on-volcengine>` as a prefix when sending litellm requests**
+**We support ALL Volcengine models including Chat and Embeddings, just set `model=volcengine/<any-model-on-volcengine>` as a prefix when sending dheera_ai requests**
 
 :::
 
@@ -17,7 +17,7 @@ os.environ['ARK_API_KEY']
 
 ## Sample Usage
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['VOLCENGINE_API_KEY'] = ""
@@ -41,7 +41,7 @@ print(response)
 
 ## Sample Usage - Streaming
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['VOLCENGINE_API_KEY'] = ""
@@ -68,7 +68,7 @@ for chunk in response:
 
 ## Sample Usage - Embedding
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 import os
 
 os.environ['VOLCENGINE_API_KEY'] = ""
@@ -88,7 +88,7 @@ print(response)
 
 ### Embedding Parameters
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 
 response = embedding(
     model="volcengine/doubao-embedding-text-240715",
@@ -103,7 +103,7 @@ We support ALL `volcengine` models for both chat completions and embeddings:
 - **Chat Models**: Set `volcengine/<OUR_ENDPOINT_ID>` as a prefix when sending completion requests
 - **Embedding Models**: Use the specific model names listed above (e.g., `volcengine/doubao-embedding-text-240715`)
 
-## Sample Usage - LiteLLM Proxy
+## Sample Usage - Dheera AI Proxy
 
 ### Config.yaml setting
 
@@ -111,12 +111,12 @@ We support ALL `volcengine` models for both chat completions and embeddings:
 model_list:
   # Chat model
   - model_name: volcengine-model
-    litellm_params:
+    dheera_ai_params:
       model: volcengine/<OUR_ENDPOINT_ID>
       api_key: os.environ/VOLCENGINE_API_KEY
   # Embedding model
   - model_name: volcengine-embedding
-    litellm_params:
+    dheera_ai_params:
       model: volcengine/doubao-embedding-text-240715
       api_key: os.environ/VOLCENGINE_API_KEY
 ```

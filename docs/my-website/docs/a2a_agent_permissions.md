@@ -4,11 +4,11 @@ import Image from '@theme/IdealImage';
 
 # Agent Permission Management
 
-Control which A2A agents can be accessed by specific keys or teams in LiteLLM.
+Control which A2A agents can be accessed by specific keys or teams in Dheera AI.
 
 ## Overview
 
-Agent Permission Management lets you restrict which agents a LiteLLM Virtual Key or Team can access. This is useful for:
+Agent Permission Management lets you restrict which agents a Dheera AI Virtual Key or Team can access. This is useful for:
 
 - **Multi-tenant environments**: Give different teams access to different agents
 - **Security**: Prevent keys from invoking agents they shouldn't have access to
@@ -212,9 +212,9 @@ curl -X POST "http://localhost:4000/a2a/agent-456" \
 
 ```mermaid
 flowchart TD
-    A[Request to invoke agent] --> B{LiteLLM Virtual Key has agent restrictions?}
-    B -->|Yes| C{LiteLLM Team has agent restrictions?}
-    B -->|No| D{LiteLLM Team has agent restrictions?}
+    A[Request to invoke agent] --> B{Dheera AI Virtual Key has agent restrictions?}
+    B -->|Yes| C{Dheera AI Team has agent restrictions?}
+    B -->|No| D{Dheera AI Team has agent restrictions?}
     
     C -->|Yes| E[Use intersection of key + team permissions]
     C -->|No| F[Use key permissions only]

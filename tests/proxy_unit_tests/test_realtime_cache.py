@@ -2,8 +2,8 @@ from typing import Any, cast
 
 import pytest
 
-from litellm.proxy.common_utils.realtime_utils import _realtime_request_body
-from litellm.proxy.proxy_server import _realtime_query_params_template
+from dheera_ai.proxy.common_utils.realtime_utils import _realtime_request_body
+from dheera_ai.proxy.proxy_server import _realtime_query_params_template
 
 
 @pytest.fixture(autouse=True)

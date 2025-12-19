@@ -8,11 +8,11 @@
 
 from fastapi import HTTPException
 
-import litellm
-from litellm._logging import verbose_proxy_logger
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.types.utils import CallTypesLiteral
+import dheera_ai
+from dheera_ai._logging import verbose_proxy_logger
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.types.utils import CallTypesLiteral
 
 
 class _ENTERPRISE_GoogleTextModeration(CustomLogger):
@@ -52,15 +52,15 @@ class _ENTERPRISE_GoogleTextModeration(CustomLogger):
         self.document_type = language_v1.types.Document.Type.PLAIN_TEXT  # type: ignore
 
         default_confidence_threshold = (
-            litellm.google_moderation_confidence_threshold or 0.8
+            dheera_ai.google_moderation_confidence_threshold or 0.8
         )  # by default require a high confidence (80%) to fail
 
         for category in self.confidence_categories:
-            if hasattr(litellm, f"{category}_confidence_threshold"):
+            if hasattr(dheera_ai, f"{category}_confidence_threshold"):
                 setattr(
                     self,
                     f"{category}_confidence_threshold",
-                    getattr(litellm, f"{category}_confidence_threshold"),
+                    getattr(dheera_ai, f"{category}_confidence_threshold"),
                 )
             else:
                 setattr(
@@ -79,7 +79,7 @@ class _ENTERPRISE_GoogleTextModeration(CustomLogger):
     def print_verbose(self, print_statement):
         try:
             verbose_proxy_logger.debug(print_statement)
-            if litellm.set_verbose:
+            if dheera_ai.set_verbose:
                 print(print_statement)  # noqa
         except Exception:
             pass

@@ -15,11 +15,11 @@ liteLLM supports:
 ### Quick Start
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # set callbacks
-litellm.success_callback=["posthog", "helicone", "lunary"]
-litellm.failure_callback=["sentry", "lunary"]
+dheera_ai.success_callback=["posthog", "helicone", "lunary"]
+dheera_ai.failure_callback=["sentry", "lunary"]
 
 ## set env variables
 os.environ['SENTRY_DSN'], os.environ['SENTRY_API_TRACE_RATE']= ""

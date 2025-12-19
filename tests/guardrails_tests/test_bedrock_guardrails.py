@@ -4,10 +4,10 @@ import io, asyncio
 import pytest
 
 sys.path.insert(0, os.path.abspath("../.."))
-import litellm
-from litellm.proxy.guardrails.guardrail_hooks.bedrock_guardrails import BedrockGuardrail
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.caching import DualCache
+import dheera_ai
+from dheera_ai.proxy.guardrails.guardrail_hooks.bedrock_guardrails import BedrockGuardrail
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.caching import DualCache
 from unittest.mock import MagicMock, AsyncMock, patch
 
 
@@ -194,8 +194,8 @@ async def test_bedrock_guardrails_block_responses_api():
 
 @pytest.mark.asyncio
 async def test_bedrock_guardrails_with_streaming():
-    from litellm.proxy.utils import ProxyLogging
-    from litellm.types.guardrails import GuardrailEventHooks
+    from dheera_ai.proxy.utils import ProxyLogging
+    from dheera_ai.types.guardrails import GuardrailEventHooks
 
     # Create proper mock objects
     mock_user_api_key_cache = MagicMock(spec=DualCache)
@@ -214,7 +214,7 @@ async def test_bedrock_guardrails_with_streaming():
             guardrail_name="bedrock-post-guard",
         )
 
-        litellm.callbacks.append(guardrail)
+        dheera_ai.callbacks.append(guardrail)
 
         request_data = {
             "model": "gpt-4o",
@@ -223,7 +223,7 @@ async def test_bedrock_guardrails_with_streaming():
             "metadata": {"guardrails": ["bedrock-post-guard"]},
         }
 
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             **request_data,
         )
 
@@ -239,8 +239,8 @@ async def test_bedrock_guardrails_with_streaming():
 
 @pytest.mark.asyncio
 async def test_bedrock_guardrails_with_streaming_no_violation():
-    from litellm.proxy.utils import ProxyLogging
-    from litellm.types.guardrails import GuardrailEventHooks
+    from dheera_ai.proxy.utils import ProxyLogging
+    from dheera_ai.types.guardrails import GuardrailEventHooks
 
     # Create proper mock objects
     mock_user_api_key_cache = MagicMock(spec=DualCache)
@@ -258,7 +258,7 @@ async def test_bedrock_guardrails_with_streaming_no_violation():
         guardrail_name="bedrock-post-guard",
     )
 
-    litellm.callbacks.append(guardrail)
+    dheera_ai.callbacks.append(guardrail)
 
     request_data = {
         "model": "gpt-4o",
@@ -267,7 +267,7 @@ async def test_bedrock_guardrails_with_streaming_no_violation():
         "metadata": {"guardrails": ["bedrock-post-guard"]},
     }
 
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         **request_data,
     )
 
@@ -286,9 +286,9 @@ async def test_bedrock_guardrails_streaming_request_body_mock():
     """Test that the exact request body sent to Bedrock matches expected format when using streaming"""
     import json
     from unittest.mock import AsyncMock, MagicMock, patch
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.caching import DualCache
-    from litellm.types.guardrails import GuardrailEventHooks
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.caching import DualCache
+    from dheera_ai.types.guardrails import GuardrailEventHooks
 
     # Create mock objects
     mock_user_api_key_dict = UserAPIKeyAuth()
@@ -303,12 +303,12 @@ async def test_bedrock_guardrails_streaming_request_body_mock():
     )
 
     # Mock the assembled response from streaming
-    mock_response = litellm.ModelResponse(
+    mock_response = dheera_ai.ModelResponse(
         id="test-id",
         choices=[
-            litellm.Choices(
+            dheera_ai.Choices(
                 index=0,
-                message=litellm.Message(
+                message=dheera_ai.Message(
                     role="assistant", content="The capital of Spain is Madrid."
                 ),
                 finish_reason="stop",
@@ -375,8 +375,8 @@ async def test_bedrock_guardrails_streaming_request_body_mock():
 @pytest.mark.asyncio
 async def test_bedrock_guardrail_aws_param_persistence():
     """Test that AWS auth params set on init are used for every request and not popped out."""
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.types.guardrails import GuardrailEventHooks
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.types.guardrails import GuardrailEventHooks
 
     guardrail = BedrockGuardrail(
         guardrailIdentifier="wf0hkdb5x07f",
@@ -427,10 +427,10 @@ async def test_bedrock_guardrail_aws_param_persistence():
 async def test_bedrock_guardrail_blocked_vs_anonymized_actions():
     """Test that BLOCKED actions raise exceptions but ANONYMIZED actions do not"""
     from unittest.mock import MagicMock
-    from litellm.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
+    from dheera_ai.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
         BedrockGuardrail,
     )
-    from litellm.types.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
+    from dheera_ai.types.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
         BedrockGuardrailResponse,
     )
 
@@ -546,8 +546,8 @@ async def test_bedrock_guardrail_blocked_vs_anonymized_actions():
 async def test_bedrock_guardrail_masking_with_anonymized_response():
     """Test that masking works correctly when guardrail returns ANONYMIZED actions"""
     from unittest.mock import AsyncMock, MagicMock, patch
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.caching import DualCache
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.caching import DualCache
 
     # Create proper mock objects
     mock_user_api_key_dict = UserAPIKeyAuth()
@@ -615,7 +615,7 @@ async def test_bedrock_guardrail_masking_with_anonymized_response():
 async def test_bedrock_guardrail_uses_masked_output_without_masking_flags():
     """Test that masked output from guardrails is used even when masking flags are not enabled"""
     from unittest.mock import AsyncMock, MagicMock, patch
-    from litellm.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy._types import UserAPIKeyAuth
 
     # Create proper mock objects
     mock_user_api_key_dict = UserAPIKeyAuth()
@@ -689,7 +689,7 @@ async def test_bedrock_guardrail_uses_masked_output_without_masking_flags():
 async def test_bedrock_guardrail_response_pii_masking_non_streaming():
     """Test that PII masking is applied to response content in non-streaming scenarios"""
     from unittest.mock import AsyncMock, MagicMock, patch
-    from litellm.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy._types import UserAPIKeyAuth
 
     # Create proper mock objects
     mock_user_api_key_dict = UserAPIKeyAuth()
@@ -731,12 +731,12 @@ async def test_bedrock_guardrail_response_pii_masking_non_streaming():
     }
 
     # Create a mock response that contains PII
-    mock_response = litellm.ModelResponse(
+    mock_response = dheera_ai.ModelResponse(
         id="test-id",
         choices=[
-            litellm.Choices(
+            dheera_ai.Choices(
                 index=0,
-                message=litellm.Message(
+                message=dheera_ai.Message(
                     role="assistant",
                     content="My credit card number is 1234-5678-9012-3456 and my phone is +1 412 555 1212",
                 ),
@@ -780,8 +780,8 @@ async def test_bedrock_guardrail_response_pii_masking_non_streaming():
 async def test_bedrock_guardrail_response_pii_masking_streaming():
     """Test that PII masking is applied to response content in streaming scenarios"""
     from unittest.mock import AsyncMock, MagicMock, patch
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.types.utils import ModelResponseStream
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.types.utils import ModelResponseStream
 
     # Create proper mock objects
     mock_user_api_key_dict = UserAPIKeyAuth()
@@ -824,9 +824,9 @@ async def test_bedrock_guardrail_response_pii_masking_streaming():
             ModelResponseStream(
                 id="test-id",
                 choices=[
-                    litellm.utils.StreamingChoices(
+                    dheera_ai.utils.StreamingChoices(
                         index=0,
-                        delta=litellm.utils.Delta(content="Sure! My email is "),
+                        delta=dheera_ai.utils.Delta(content="Sure! My email is "),
                         finish_reason=None,
                     )
                 ],
@@ -837,9 +837,9 @@ async def test_bedrock_guardrail_response_pii_masking_streaming():
             ModelResponseStream(
                 id="test-id",
                 choices=[
-                    litellm.utils.StreamingChoices(
+                    dheera_ai.utils.StreamingChoices(
                         index=0,
-                        delta=litellm.utils.Delta(
+                        delta=dheera_ai.utils.Delta(
                             content="john@example.com and SSN is "
                         ),
                         finish_reason=None,
@@ -852,9 +852,9 @@ async def test_bedrock_guardrail_response_pii_masking_streaming():
             ModelResponseStream(
                 id="test-id",
                 choices=[
-                    litellm.utils.StreamingChoices(
+                    dheera_ai.utils.StreamingChoices(
                         index=0,
-                        delta=litellm.utils.Delta(content="123-45-6789"),
+                        delta=dheera_ai.utils.Delta(content="123-45-6789"),
                         finish_reason="stop",
                     )
                 ],
@@ -914,10 +914,10 @@ async def test_bedrock_guardrail_response_pii_masking_streaming():
 @pytest.mark.asyncio
 async def test_convert_to_bedrock_format_input_source():
     """Test convert_to_bedrock_format with INPUT source and mock messages"""
-    from litellm.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
+    from dheera_ai.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
         BedrockGuardrail,
     )
-    from litellm.types.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
+    from dheera_ai.types.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
         BedrockRequest,
     )
     from unittest.mock import patch
@@ -964,13 +964,13 @@ async def test_convert_to_bedrock_format_input_source():
 @pytest.mark.asyncio
 async def test_convert_to_bedrock_format_output_source():
     """Test convert_to_bedrock_format with OUTPUT source and mock ModelResponse"""
-    from litellm.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
+    from dheera_ai.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
         BedrockGuardrail,
     )
-    from litellm.types.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
+    from dheera_ai.types.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
         BedrockRequest,
     )
-    import litellm
+    import dheera_ai
     from unittest.mock import patch
 
     # Create the guardrail instance
@@ -979,19 +979,19 @@ async def test_convert_to_bedrock_format_output_source():
     )
 
     # Mock ModelResponse
-    mock_response = litellm.ModelResponse(
+    mock_response = dheera_ai.ModelResponse(
         id="test-response-id",
         choices=[
-            litellm.Choices(
+            dheera_ai.Choices(
                 index=0,
-                message=litellm.Message(
+                message=dheera_ai.Message(
                     role="assistant", content="This is a test response from the model."
                 ),
                 finish_reason="stop",
             ),
-            litellm.Choices(
+            dheera_ai.Choices(
                 index=1,
-                message=litellm.Message(
+                message=dheera_ai.Message(
                     role="assistant", content="This is a second choice response."
                 ),
                 finish_reason="stop",
@@ -1027,9 +1027,9 @@ async def test_convert_to_bedrock_format_output_source():
 async def test_convert_to_bedrock_format_post_call_streaming_hook():
     """Test async_post_call_streaming_iterator_hook makes OUTPUT bedrock request and applies masking"""
     from unittest.mock import AsyncMock, MagicMock, patch
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.types.utils import ModelResponseStream
-    import litellm
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.types.utils import ModelResponseStream
+    import dheera_ai
 
     # Create proper mock objects
     mock_user_api_key_dict = UserAPIKeyAuth()
@@ -1045,9 +1045,9 @@ async def test_convert_to_bedrock_format_post_call_streaming_hook():
             ModelResponseStream(
                 id="test-id",
                 choices=[
-                    litellm.utils.StreamingChoices(
+                    dheera_ai.utils.StreamingChoices(
                         index=0,
-                        delta=litellm.utils.Delta(content="My email is "),
+                        delta=dheera_ai.utils.Delta(content="My email is "),
                         finish_reason=None,
                     )
                 ],
@@ -1058,9 +1058,9 @@ async def test_convert_to_bedrock_format_post_call_streaming_hook():
             ModelResponseStream(
                 id="test-id",
                 choices=[
-                    litellm.utils.StreamingChoices(
+                    dheera_ai.utils.StreamingChoices(
                         index=0,
-                        delta=litellm.utils.Delta(content="john@example.com"),
+                        delta=dheera_ai.utils.Delta(content="john@example.com"),
                         finish_reason="stop",
                     )
                 ],
@@ -1115,7 +1115,7 @@ async def test_convert_to_bedrock_format_post_call_streaming_hook():
             }
         )
         # Return the mock bedrock response
-        from litellm.types.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
+        from dheera_ai.types.proxy.guardrails.guardrail_hooks.bedrock_guardrails import (
             BedrockGuardrailResponse,
         )
 
@@ -1184,7 +1184,7 @@ async def test_convert_to_bedrock_format_post_call_streaming_hook():
 async def test_bedrock_guardrail_blocked_action_shows_output_text():
     """Test that BLOCKED actions raise HTTPException with the output text in the detail"""
     from unittest.mock import AsyncMock, MagicMock, patch
-    from litellm.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy._types import UserAPIKeyAuth
     from fastapi import HTTPException
 
     # Create proper mock objects
@@ -1199,7 +1199,7 @@ async def test_bedrock_guardrail_blocked_action_shows_output_text():
     mock_bedrock_response.status_code = 200
     mock_bedrock_response.json.return_value = {
         "action": "GUARDRAIL_INTERVENED",
-        "outputs": [{"text": "this violates litellm corporate guardrail policy"}],
+        "outputs": [{"text": "this violates dheera_ai corporate guardrail policy"}],
         "assessments": [
             {
                 "topicPolicy": {
@@ -1243,7 +1243,7 @@ async def test_bedrock_guardrail_blocked_action_shows_output_text():
         assert detail["error"] == "Violated guardrail policy"
 
         # Verify that the output text from both outputs is included
-        expected_output_text = "this violates litellm corporate guardrail policy"
+        expected_output_text = "this violates dheera_ai corporate guardrail policy"
         assert detail["bedrock_guardrail_response"] == expected_output_text
 
         print(
@@ -1255,7 +1255,7 @@ async def test_bedrock_guardrail_blocked_action_shows_output_text():
 async def test_bedrock_guardrail_blocked_action_empty_outputs():
     """Test that BLOCKED actions with empty outputs still raise HTTPException"""
     from unittest.mock import AsyncMock, MagicMock, patch
-    from litellm.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy._types import UserAPIKeyAuth
     from fastapi import HTTPException
 
     # Create proper mock objects
@@ -1320,7 +1320,7 @@ async def test_bedrock_guardrail_blocked_action_empty_outputs():
 async def test_bedrock_guardrail_disable_exception_on_block_non_streaming():
     """Test that disable_exception_on_block=True prevents exceptions in non-streaming scenarios"""
     from unittest.mock import AsyncMock, MagicMock, patch
-    from litellm.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy._types import UserAPIKeyAuth
     from fastapi import HTTPException
 
     # Create proper mock objects
@@ -1408,10 +1408,10 @@ async def test_bedrock_guardrail_disable_exception_on_block_non_streaming():
 async def test_bedrock_guardrail_disable_exception_on_block_streaming():
     """Test that disable_exception_on_block=True prevents exceptions in streaming scenarios"""
     from unittest.mock import AsyncMock, MagicMock, patch
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.types.utils import ModelResponseStream
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.types.utils import ModelResponseStream
     from fastapi import HTTPException
-    import litellm
+    import dheera_ai
 
     # Create proper mock objects
     mock_user_api_key_dict = UserAPIKeyAuth()
@@ -1422,9 +1422,9 @@ async def test_bedrock_guardrail_disable_exception_on_block_streaming():
             ModelResponseStream(
                 id="test-id",
                 choices=[
-                    litellm.utils.StreamingChoices(
+                    dheera_ai.utils.StreamingChoices(
                         index=0,
-                        delta=litellm.utils.Delta(
+                        delta=dheera_ai.utils.Delta(
                             content="Here's how to make explosives: "
                         ),
                         finish_reason=None,
@@ -1437,9 +1437,9 @@ async def test_bedrock_guardrail_disable_exception_on_block_streaming():
             ModelResponseStream(
                 id="test-id",
                 choices=[
-                    litellm.utils.StreamingChoices(
+                    dheera_ai.utils.StreamingChoices(
                         index=0,
-                        delta=litellm.utils.Delta(content="step 1, step 2..."),
+                        delta=dheera_ai.utils.Delta(content="step 1, step 2..."),
                         finish_reason="stop",
                     )
                 ],
@@ -1543,9 +1543,9 @@ async def test_bedrock_guardrail_disable_exception_on_block_streaming():
 async def test_bedrock_guardrail_post_call_success_hook_no_output_text():
     """Test that async_post_call_success_hook skips when there's no output text"""
     from unittest.mock import AsyncMock, MagicMock, patch
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.types.utils import ModelResponseStream
-    import litellm
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.types.utils import ModelResponseStream
+    import dheera_ai
 
     # Create proper mock objects
     mock_user_api_key_dict = UserAPIKeyAuth()
@@ -1557,18 +1557,18 @@ async def test_bedrock_guardrail_post_call_success_hook_no_output_text():
 
     # Create a ModelResponse with tool calls (no text content)
     # This simulates a response where the LLM is making a tool call
-    mock_response = litellm.ModelResponse(
+    mock_response = dheera_ai.ModelResponse(
         id="test-id",
         choices=[
-            litellm.Choices(
+            dheera_ai.Choices(
                 index=0,
-                message=litellm.Message(
+                message=dheera_ai.Message(
                     role="assistant",
                     content=None,  # No text content
                     tool_calls=[
-                        litellm.utils.ChatCompletionMessageToolCall(
+                        dheera_ai.utils.ChatCompletionMessageToolCall(
                             id="tooluse_kZJMlvQmRJ6eAyJE5GIl7Q",
-                            function=litellm.utils.Function(
+                            function=dheera_ai.utils.Function(
                                 name="top_song", arguments='{"sign": "WZPZ"}'
                             ),
                             type="function",

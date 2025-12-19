@@ -13,9 +13,9 @@ import httpx
 import pytest
 from respx import MockRouter
 
-import litellm
-from litellm import Choices, Message, ModelResponse
-from litellm.types.utils import PromptTokensDetails
+import dheera_ai
+from dheera_ai import Choices, Message, ModelResponse
+from dheera_ai.types.utils import PromptTokensDetails
 
 
 @pytest.mark.asyncio
@@ -24,7 +24,7 @@ async def test_prompt_caching():
     Tests that:
     - prompt_tokens_details is correctly handled and returned as PromptTokensDetails type
     """
-    response1 = await litellm.acompletion(
+    response1 = await dheera_ai.acompletion(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": "hi"}],
     )

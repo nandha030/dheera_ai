@@ -1,11 +1,11 @@
-# Gradio Chatbot + LiteLLM Tutorial
-Simple tutorial for integrating LiteLLM completion calls with streaming Gradio chatbot demos
+# Gradio Chatbot + Dheera AI Tutorial
+Simple tutorial for integrating Dheera AI completion calls with streaming Gradio chatbot demos
 
 ### Install & Import Dependencies
 ```python
-!pip install gradio litellm
+!pip install gradio dheera_ai
 import gradio
-import litellm
+import dheera_ai
 ```
 
 ### Define Inference Function
@@ -15,18 +15,18 @@ def inference(message, history):
     try:
         flattened_history = [item for sublist in history for item in sublist]
         full_message = " ".join(flattened_history + [message])
-        messages_litellm = [{"role": "user", "content": full_message}] # litellm message format
+        messages_dheera_ai = [{"role": "user", "content": full_message}] # dheera_ai message format
         partial_message = ""
-        for chunk in litellm.completion(model="huggingface/meta-llama/Llama-2-7b-chat-hf",
+        for chunk in dheera_ai.completion(model="huggingface/meta-llama/Llama-2-7b-chat-hf",
                                         api_base="x.x.x.x:xxxx",
-                                        messages=messages_litellm,
+                                        messages=messages_dheera_ai,
                                         max_new_tokens=512,
                                         temperature=.7,
                                         top_k=100,
                                         top_p=.9,
                                         repetition_penalty=1.18,
                                         stream=True):
-            partial_message += chunk['choices'][0]['delta']['content'] # extract text from streamed litellm chunks
+            partial_message += chunk['choices'][0]['delta']['content'] # extract text from streamed dheera_ai chunks
             yield partial_message
     except Exception as e:
         print("Exception encountered:", str(e))

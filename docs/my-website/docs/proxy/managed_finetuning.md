@@ -1,11 +1,11 @@
-# ✨ [BETA] LiteLLM Managed Files with Finetuning
+# ✨ [BETA] Dheera AI Managed Files with Finetuning
 
 
 :::info
 
-This is a free LiteLLM Enterprise feature.
+This is a free Dheera AI Enterprise feature.
 
-Available via the `litellm[proxy]` package or any `litellm` docker image.
+Available via the `dheera_ai[proxy]` package or any `dheera_ai` docker image.
 
 :::
 
@@ -33,10 +33,10 @@ Here's how to give developers access to your Finetuning models.
 
 Include `/fine_tuning` in the `supported_endpoints` list. Tells developers this model supports the `/fine_tuning` endpoint.
 
-```yaml showLineNumbers title="litellm_config.yaml"
+```yaml showLineNumbers title="dheera_ai_config.yaml"
 model_list:
   - model_name: "gpt-4.1-openai"
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4.1
       api_key: os.environ/OPENAI_API_KEY
     model_info:
@@ -57,7 +57,7 @@ You can now use the virtual key to access the finetuning models (See Developer f
 
 ## (Developer) Usage
 
-Here's how to create a LiteLLM managed file and execute Finetuning CRUD operations with the file. 
+Here's how to create a Dheera AI managed file and execute Finetuning CRUD operations with the file. 
 
 ### 1. Create request.jsonl 
 
@@ -69,7 +69,7 @@ Here's how to create a LiteLLM managed file and execute Finetuning CRUD operatio
 
 ### 2. Upload File 
 
-Specify `target_model_names: "<model-name>"` to enable LiteLLM managed files and request validation.
+Specify `target_model_names: "<model-name>"` to enable Dheera AI managed files and request validation.
 
 model-name should be the same as the model-name in the request.jsonl
 
@@ -105,7 +105,7 @@ file_id = finetuning_input_file.id
 
 # Create Finetuning Job
 ft_job = client.fine_tuning.jobs.create(
-    model="gpt-4.1-openai",  # litellm public model name you want to finetune                  
+    model="gpt-4.1-openai",  # dheera_ai public model name you want to finetune                  
     training_file=file_id,
 )
 ```
@@ -155,16 +155,16 @@ client = OpenAI(
 finetuning_input_file = client.files.create(
     file=open("./fine_tuning.jsonl", "rb"), # {"model": "azure-gpt-4o"} <-> {"model": "gpt-4o-my-special-deployment"}
     purpose="fine-tune",
-    extra_body={"target_model_names": "gpt-4.1-openai"} # 👈 Tells litellm which regions/projects to write the file in. 
+    extra_body={"target_model_names": "gpt-4.1-openai"} # 👈 Tells dheera_ai which regions/projects to write the file in. 
 )
-print(finetuning_input_file) # file.id = "litellm_proxy/..." = {"model_name": {"deployment_id": "deployment_file_id"}}
+print(finetuning_input_file) # file.id = "dheera_ai_proxy/..." = {"model_name": {"deployment_id": "deployment_file_id"}}
 
 file_id = finetuning_input_file.id
 # # file_id = "bGl0ZWxs..."
 
 # ## create fine-tuning job 
 ft_job = client.fine_tuning.jobs.create(
-    model="gpt-4.1-openai",  # litellm model name you want to finetune                  
+    model="gpt-4.1-openai",  # dheera_ai model name you want to finetune                  
     training_file=file_id,
 )
 
@@ -179,7 +179,7 @@ cancel_ft_job = client.fine_tuning.jobs.cancel(
 print("response from cancel ft job={}".format(cancel_ft_job))
 # list fine-tuning jobs 
 list_ft_jobs = client.fine_tuning.jobs.list(
-    extra_query={"target_model_names": "gpt-4.1-openai"}   # tell litellm proxy which provider to use
+    extra_query={"target_model_names": "gpt-4.1-openai"}   # tell dheera_ai proxy which provider to use
 )
 
 print("list of ft jobs={}".format(list_ft_jobs))

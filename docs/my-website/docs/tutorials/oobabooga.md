@@ -1,9 +1,9 @@
 # Oobabooga Text Web API Tutorial
 
-### Install + Import LiteLLM 
+### Install + Import Dheera AI 
 ```python 
-!pip install litellm
-from litellm import completion 
+!pip install dheera_ai
+from dheera_ai import completion 
 import os
 ```
 

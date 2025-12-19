@@ -9,18 +9,18 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system-path
 
-import litellm
-from litellm import completion, embedding
+import dheera_ai
+from dheera_ai import completion, embedding
 import pytest
 from unittest.mock import MagicMock, patch
-from litellm.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
+from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
 import pytest_asyncio
 from openai import AsyncOpenAI
 
 
 @pytest.mark.asyncio
-async def test_litellm_gateway_from_sdk():
-    litellm.set_verbose = True
+async def test_dheera_ai_gateway_from_sdk():
+    dheera_ai.set_verbose = True
     messages = [
         {
             "role": "user",
@@ -36,7 +36,7 @@ async def test_litellm_gateway_from_sdk():
     ) as mock_call:
         try:
             completion(
-                model="litellm_proxy/my-vllm-model",
+                model="dheera_ai_proxy/my-vllm-model",
                 messages=messages,
                 response_format={"type": "json_object"},
                 client=openai_client,
@@ -54,13 +54,13 @@ async def test_litellm_gateway_from_sdk():
 
 
 @pytest.mark.asyncio
-async def test_litellm_gateway_from_sdk_structured_output():
+async def test_dheera_ai_gateway_from_sdk_structured_output():
     from pydantic import BaseModel
 
     class Result(BaseModel):
         answer: str
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     from openai import OpenAI
 
     openai_client = OpenAI(api_key="fake-key")
@@ -69,15 +69,15 @@ async def test_litellm_gateway_from_sdk_structured_output():
         openai_client.chat.completions, "create", new=MagicMock()
     ) as mock_call:
         try:
-            litellm.completion(
-                model="litellm_proxy/openai/gpt-4o",
+            dheera_ai.completion(
+                model="dheera_ai_proxy/openai/gpt-4o",
                 messages=[
                     {"role": "user", "content": "What is the capital of France?"}
                 ],
                 api_key="my-test-api-key",
                 user="test",
                 response_format=Result,
-                base_url="https://litellm.ml-serving-internal.scale.com",
+                base_url="https://dheera_ai.ml-serving-internal.scale.com",
                 client=openai_client,
             )
         except Exception as e:
@@ -92,9 +92,9 @@ async def test_litellm_gateway_from_sdk_structured_output():
 
 @pytest.mark.parametrize("is_async", [False, True])
 @pytest.mark.asyncio
-async def test_litellm_gateway_from_sdk_embedding(is_async):
-    litellm.set_verbose = True
-    litellm._turn_on_debug()
+async def test_dheera_ai_gateway_from_sdk_embedding(is_async):
+    dheera_ai.set_verbose = True
+    dheera_ai._turn_on_debug()
 
     if is_async:
         from openai import AsyncOpenAI
@@ -112,15 +112,15 @@ async def test_litellm_gateway_from_sdk_embedding(is_async):
     with patch.object(patch_target.__self__, patch_target.__name__, new=mock_method):
         try:
             if is_async:
-                await litellm.aembedding(
-                    model="litellm_proxy/my-vllm-model",
+                await dheera_ai.aembedding(
+                    model="dheera_ai_proxy/my-vllm-model",
                     input="Hello world",
                     client=openai_client,
                     api_base="my-custom-api-base",
                 )
             else:
-                litellm.embedding(
-                    model="litellm_proxy/my-vllm-model",
+                dheera_ai.embedding(
+                    model="dheera_ai_proxy/my-vllm-model",
                     input="Hello world",
                     client=openai_client,
                     api_base="my-custom-api-base",
@@ -138,8 +138,8 @@ async def test_litellm_gateway_from_sdk_embedding(is_async):
 
 @pytest.mark.parametrize("is_async", [False, True])
 @pytest.mark.asyncio
-async def test_litellm_gateway_from_sdk_image_generation(is_async):
-    litellm._turn_on_debug()
+async def test_dheera_ai_gateway_from_sdk_image_generation(is_async):
+    dheera_ai._turn_on_debug()
 
     if is_async:
         from openai import AsyncOpenAI
@@ -157,15 +157,15 @@ async def test_litellm_gateway_from_sdk_image_generation(is_async):
     with patch.object(patch_target.__self__, patch_target.__name__, new=mock_method):
         try:
             if is_async:
-                response = await litellm.aimage_generation(
-                    model="litellm_proxy/dall-e-3",
+                response = await dheera_ai.aimage_generation(
+                    model="dheera_ai_proxy/dall-e-3",
                     prompt="A beautiful sunset over mountains",
                     client=openai_client,
                     api_base="my-custom-api-base",
                 )
             else:
-                response = litellm.image_generation(
-                    model="litellm_proxy/dall-e-3",
+                response = dheera_ai.image_generation(
+                    model="dheera_ai_proxy/dall-e-3",
                     prompt="A beautiful sunset over mountains",
                     client=openai_client,
                     api_base="my-custom-api-base",
@@ -187,9 +187,9 @@ async def test_litellm_gateway_from_sdk_image_generation(is_async):
 
 @pytest.mark.parametrize("is_async", [False, True])
 @pytest.mark.asyncio
-async def test_litellm_gateway_image_generation_direct(is_async):
-    """Test image generation using the litellm_proxy provider directly."""
-    litellm._turn_on_debug()
+async def test_dheera_ai_gateway_image_generation_direct(is_async):
+    """Test image generation using the dheera_ai_proxy provider directly."""
+    dheera_ai._turn_on_debug()
 
     # Create mock response that matches OpenAI's response structure
     mock_openai_response = MagicMock()
@@ -203,9 +203,9 @@ async def test_litellm_gateway_image_generation_direct(is_async):
         mock_async_client = AsyncMock()
         mock_async_client.images.generate = AsyncMock(return_value=mock_openai_response)
         
-        with patch("litellm.llms.openai.openai.AsyncOpenAI", return_value=mock_async_client) as mock_async_constructor:
-            response = await litellm.aimage_generation(
-                model="litellm_proxy/dall-e-3",
+        with patch("dheera_ai.llms.openai.openai.AsyncOpenAI", return_value=mock_async_client) as mock_async_constructor:
+            response = await dheera_ai.aimage_generation(
+                model="dheera_ai_proxy/dall-e-3",
                 prompt="A beautiful sunset over mountains",
                 api_base="http://my-proxy",
                 api_key="sk-1234",
@@ -228,9 +228,9 @@ async def test_litellm_gateway_image_generation_direct(is_async):
         mock_sync_client = MagicMock()
         mock_sync_client.images.generate.return_value = mock_openai_response
         
-        with patch("litellm.llms.openai.openai.OpenAI", return_value=mock_sync_client) as mock_sync_constructor:
-            response = litellm.image_generation(
-                model="litellm_proxy/dall-e-3",
+        with patch("dheera_ai.llms.openai.openai.OpenAI", return_value=mock_sync_client) as mock_sync_constructor:
+            response = dheera_ai.image_generation(
+                model="dheera_ai_proxy/dall-e-3",
                 prompt="A beautiful sunset over mountains",
                 api_base="http://my-proxy",
                 api_key="sk-1234",
@@ -255,8 +255,8 @@ async def test_litellm_gateway_image_generation_direct(is_async):
 
 @pytest.mark.parametrize("is_async", [False, True])
 @pytest.mark.asyncio
-async def test_litellm_gateway_from_sdk_image_edit(is_async):
-    litellm._turn_on_debug()
+async def test_dheera_ai_gateway_from_sdk_image_edit(is_async):
+    dheera_ai._turn_on_debug()
 
     mock_response = {
         "created": 1,
@@ -276,15 +276,15 @@ async def test_litellm_gateway_from_sdk_image_edit(is_async):
 
     if is_async:
         mock_post = AsyncMock(return_value=MockResponse(mock_response, 200))
-        patch_target = "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post"
+        patch_target = "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post"
     else:
         mock_post = MagicMock(return_value=MockResponse(mock_response, 200))
-        patch_target = "litellm.llms.custom_httpx.http_handler.HTTPHandler.post"
+        patch_target = "dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post"
 
     with patch(patch_target, new=mock_post):
         if is_async:
-            await litellm.aimage_edit(
-                model="litellm_proxy/gpt-image-1",
+            await dheera_ai.aimage_edit(
+                model="dheera_ai_proxy/gpt-image-1",
                 prompt="A test prompt",
                 image=[image_file],
                 api_base="http://my-proxy",
@@ -292,8 +292,8 @@ async def test_litellm_gateway_from_sdk_image_edit(is_async):
             )
             mock_post.assert_awaited_once()
         else:
-            litellm.image_edit(
-                model="litellm_proxy/gpt-image-1",
+            dheera_ai.image_edit(
+                model="dheera_ai_proxy/gpt-image-1",
                 prompt="A test prompt",
                 image=[image_file],
                 api_base="http://my-proxy",
@@ -308,9 +308,9 @@ async def test_litellm_gateway_from_sdk_image_edit(is_async):
 
 @pytest.mark.parametrize("is_async", [False, True])
 @pytest.mark.asyncio
-async def test_litellm_gateway_from_sdk_transcription(is_async):
-    litellm.set_verbose = True
-    litellm._turn_on_debug()
+async def test_dheera_ai_gateway_from_sdk_transcription(is_async):
+    dheera_ai.set_verbose = True
+    dheera_ai._turn_on_debug()
 
     if is_async:
         from openai import AsyncOpenAI
@@ -328,15 +328,15 @@ async def test_litellm_gateway_from_sdk_transcription(is_async):
     with patch.object(patch_target.__self__, patch_target.__name__, new=mock_method):
         try:
             if is_async:
-                await litellm.atranscription(
-                    model="litellm_proxy/whisper-1",
+                await dheera_ai.atranscription(
+                    model="dheera_ai_proxy/whisper-1",
                     file=b"sample_audio",
                     client=openai_client,
                     api_base="my-custom-api-base",
                 )
             else:
-                litellm.transcription(
-                    model="litellm_proxy/whisper-1",
+                dheera_ai.transcription(
+                    model="dheera_ai_proxy/whisper-1",
                     file=b"sample_audio",
                     client=openai_client,
                     api_base="my-custom-api-base",
@@ -353,8 +353,8 @@ async def test_litellm_gateway_from_sdk_transcription(is_async):
 
 @pytest.mark.parametrize("is_async", [False, True])
 @pytest.mark.asyncio
-async def test_litellm_gateway_from_sdk_speech(is_async):
-    litellm.set_verbose = True
+async def test_dheera_ai_gateway_from_sdk_speech(is_async):
+    dheera_ai.set_verbose = True
 
     if is_async:
         from openai import AsyncOpenAI
@@ -372,16 +372,16 @@ async def test_litellm_gateway_from_sdk_speech(is_async):
     with patch.object(patch_target.__self__, patch_target.__name__, new=mock_method):
         try:
             if is_async:
-                await litellm.aspeech(
-                    model="litellm_proxy/tts-1",
+                await dheera_ai.aspeech(
+                    model="dheera_ai_proxy/tts-1",
                     input="Hello, this is a test of text to speech",
                     voice="alloy",
                     client=openai_client,
                     api_base="my-custom-api-base",
                 )
             else:
-                litellm.speech(
-                    model="litellm_proxy/tts-1",
+                dheera_ai.speech(
+                    model="dheera_ai_proxy/tts-1",
                     input="Hello, this is a test of text to speech",
                     voice="alloy",
                     client=openai_client,
@@ -404,9 +404,9 @@ async def test_litellm_gateway_from_sdk_speech(is_async):
 
 @pytest.mark.parametrize("is_async", [False, True])
 @pytest.mark.asyncio
-async def test_litellm_gateway_from_sdk_rerank(is_async):
-    litellm.set_verbose = True
-    litellm._turn_on_debug()
+async def test_dheera_ai_gateway_from_sdk_rerank(is_async):
+    dheera_ai.set_verbose = True
+    dheera_ai._turn_on_debug()
 
     if is_async:
         client = AsyncHTTPHandler()
@@ -459,8 +459,8 @@ async def test_litellm_gateway_from_sdk_rerank(is_async):
 
         try:
             if is_async:
-                response = await litellm.arerank(
-                    model="litellm_proxy/rerank-english-v2.0",
+                response = await dheera_ai.arerank(
+                    model="dheera_ai_proxy/rerank-english-v2.0",
                     query="What is machine learning?",
                     documents=[
                         "Machine learning is a field of study in artificial intelligence",
@@ -470,8 +470,8 @@ async def test_litellm_gateway_from_sdk_rerank(is_async):
                     api_base="my-custom-api-base",
                 )
             else:
-                response = litellm.rerank(
-                    model="litellm_proxy/rerank-english-v2.0",
+                response = dheera_ai.rerank(
+                    model="dheera_ai_proxy/rerank-english-v2.0",
                     query="What is machine learning?",
                     documents=[
                         "Machine learning is a field of study in artificial intelligence",
@@ -498,9 +498,9 @@ async def test_litellm_gateway_from_sdk_rerank(is_async):
         assert len(request_body["documents"]) == 2
 
 
-def test_litellm_gateway_from_sdk_with_response_cost_in_additional_headers():
-    litellm.set_verbose = True
-    litellm._turn_on_debug()
+def test_dheera_ai_gateway_from_sdk_with_response_cost_in_additional_headers():
+    dheera_ai.set_verbose = True
+    dheera_ai._turn_on_debug()
 
     from openai import OpenAI
 
@@ -508,8 +508,8 @@ def test_litellm_gateway_from_sdk_with_response_cost_in_additional_headers():
 
     # Create mock response object
     mock_response = MagicMock()
-    mock_response.headers = {"x-litellm-response-cost": "120"}
-    mock_response.parse.return_value = litellm.ModelResponse(
+    mock_response.headers = {"x-dheera_ai-response-cost": "120"}
+    mock_response.parse.return_value = dheera_ai.ModelResponse(
         **{
             "id": "chatcmpl-BEkxQvRGp9VAushfAsOZCbhMFLsoy",
             "choices": [
@@ -553,8 +553,8 @@ def test_litellm_gateway_from_sdk_with_response_cost_in_additional_headers():
         "create",
         return_value=mock_response,
     ) as mock_call:
-        response = litellm.completion(
-            model="litellm_proxy/gpt-4o",
+        response = dheera_ai.completion(
+            model="dheera_ai_proxy/gpt-4o",
             messages=[{"role": "user", "content": "Hello world"}],
             api_base="http://0.0.0.0:4000",
             api_key="sk-PIp1h0RekR",
@@ -565,7 +565,7 @@ def test_litellm_gateway_from_sdk_with_response_cost_in_additional_headers():
         print(f"additional_headers: {response._hidden_params['additional_headers']}")
         assert (
             response._hidden_params["additional_headers"][
-                "llm_provider-x-litellm-response-cost"
+                "llm_provider-x-dheera_ai-response-cost"
             ]
             == "120"
         )
@@ -573,10 +573,10 @@ def test_litellm_gateway_from_sdk_with_response_cost_in_additional_headers():
         assert response._hidden_params["response_cost"] == 120
 
 
-def test_litellm_gateway_from_sdk_with_thinking_param():
+def test_dheera_ai_gateway_from_sdk_with_thinking_param():
     try:
-        response = litellm.completion(
-            model="litellm_proxy/anthropic.claude-3-7-sonnet-20250219-v1:0",
+        response = dheera_ai.completion(
+            model="dheera_ai_proxy/anthropic.claude-3-7-sonnet-20250219-v1:0",
             messages=[{"role": "user", "content": "Hello world"}],
             api_base="http://0.0.0.0:4000",
             api_key="sk-PIp1h0RekR",

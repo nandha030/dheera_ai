@@ -10,7 +10,7 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-from litellm import Router
+from dheera_ai import Router
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 router_json_path = os.path.join(current_path, "auto_router", "router.json")
@@ -22,43 +22,43 @@ async def test_router_auto_router():
     """
     Simple e2e test to validate we get an llm response from the auto router
     """
-    import litellm
-    litellm._turn_on_debug()
+    import dheera_ai
+    dheera_ai._turn_on_debug()
 
     router = Router(
     model_list=[
             {
                 "model_name": "custom-text-embedding-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "text-embedding-3-large",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
             },
             {
                 "model_name": "custom-text-embedding-model-2",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "text-embedding-3-large",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
             },
             {
-                "model_name": "litellm-gpt-4.1",
-                "litellm_params": {
+                "model_name": "dheera_ai-gpt-4.1",
+                "dheera_ai_params": {
                     "model": "gpt-4.1",
                 },
                 "model_info": {"id": "openai-id"},
             },
             
             {
-                "model_name": "litellm-claude-35",
-                "litellm_params": {
+                "model_name": "dheera_ai-claude-35",
+                "dheera_ai_params": {
                     "model": "claude-sonnet-4-5-20250929",
                 },
                 "model_info": {"id": "claude-id"},
             },
             {
                 "model_name": "auto_router1",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "auto_router/auto_router_1",
                     "auto_router_config_path": router_json_path,
                     "auto_router_default_model": "gpt-4o-mini",
@@ -67,7 +67,7 @@ async def test_router_auto_router():
             },
             {
                 "model_name": "auto_router_2",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "auto_router/auto_router_2",
                     "auto_router_config_path": router_json_path,
                     "auto_router_default_model": "gpt-4o-mini",

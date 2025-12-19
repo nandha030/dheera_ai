@@ -1,15 +1,15 @@
 # #### What this tests ####
-# #    This tests if the litellm model response type is returnable in a flask app
+# #    This tests if the dheera_ai model response type is returnable in a flask app
 
 # import sys, os
 # import traceback
 # from flask import Flask, request, jsonify, abort, Response
 # sys.path.insert(0, os.path.abspath('../../..'))  # Adds the parent directory to the system path
 
-# import litellm
-# from litellm import completion
+# import dheera_ai
+# from dheera_ai import completion
 
-# litellm.set_verbose = False
+# dheera_ai.set_verbose = False
 
 # app = Flask(__name__)
 

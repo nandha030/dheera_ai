@@ -6,7 +6,7 @@ import TabItem from '@theme/TabItem';
 | Property | Details |
 |-------|-------|
 | Description | Google Cloud Text-to-Speech with Chirp3 HD voices and Gemini TTS |
-| Provider Route on LiteLLM | `vertex_ai/chirp` (Chirp), `vertex_ai/gemini-*-tts` (Gemini) |
+| Provider Route on Dheera AI | `vertex_ai/chirp` (Chirp), `vertex_ai/gemini-*-tts` (Gemini) |
 
 ## Chirp3 HD Voices
 
@@ -14,10 +14,10 @@ Google Cloud Text-to-Speech API with high-quality Chirp3 HD voices.
 
 ### Quick Start
 
-#### LiteLLM Python SDK
+#### Dheera AI Python SDK
 
 ```python showLineNumbers title="Chirp3 Quick Start"
-from litellm import speech
+from dheera_ai import speech
 from pathlib import Path
 
 speech_file_path = Path(__file__).parent / "speech.mp3"
@@ -31,14 +31,14 @@ response = speech(
 response.stream_to_file(speech_file_path)
 ```
 
-#### LiteLLM AI Gateway
+#### Dheera AI AI Gateway
 
 **1. Setup config.yaml**
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: vertex-tts
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/chirp
       vertex_project: "your-project-id"
       vertex_location: "us-central1"
@@ -47,8 +47,8 @@ model_list:
 
 **2. Start the proxy**
 
-```bash title="Start LiteLLM Proxy"
-litellm --config /path/to/config.yaml
+```bash title="Start Dheera AI Proxy"
+dheera_ai --config /path/to/config.yaml
 ```
 
 **3. Make requests**
@@ -89,7 +89,7 @@ response.stream_to_file("speech.mp3")
 
 ### Voice Mapping
 
-LiteLLM maps OpenAI voice names to Google Cloud voices. You can use either OpenAI voices or Google Cloud voices directly.
+Dheera AI maps OpenAI voice names to Google Cloud voices. You can use either OpenAI voices or Google Cloud voices directly.
 
 | OpenAI Voice | Google Cloud Voice |
 |-------------|-------------------|
@@ -102,10 +102,10 @@ LiteLLM maps OpenAI voice names to Google Cloud voices. You can use either OpenA
 
 ### Using Google Cloud Voices Directly
 
-#### LiteLLM Python SDK
+#### Dheera AI Python SDK
 
 ```python showLineNumbers title="Chirp3 HD Voice"
-from litellm import speech
+from dheera_ai import speech
 
 # Pass Chirp3 HD voice name directly
 response = speech(
@@ -118,7 +118,7 @@ response.stream_to_file("speech.mp3")
 ```
 
 ```python showLineNumbers title="Voice as Dict (Multilingual)"
-from litellm import speech
+from dheera_ai import speech
 
 # Pass as dict for full control over language and voice
 response = speech(
@@ -133,7 +133,7 @@ response = speech(
 response.stream_to_file("speech.mp3")
 ```
 
-#### LiteLLM AI Gateway
+#### Dheera AI AI Gateway
 
 <Tabs>
 <TabItem value="curl" label="curl">
@@ -198,12 +198,12 @@ Browse available voices: [Google Cloud Text-to-Speech Console](https://console.c
 
 ### Passing Raw SSML
 
-LiteLLM auto-detects SSML when your input contains `<speak>` tags and passes it through unchanged.
+Dheera AI auto-detects SSML when your input contains `<speak>` tags and passes it through unchanged.
 
-#### LiteLLM Python SDK
+#### Dheera AI Python SDK
 
 ```python showLineNumbers title="SSML Input"
-from litellm import speech
+from dheera_ai import speech
 
 ssml = """
 <speak>
@@ -222,7 +222,7 @@ response.stream_to_file("speech.mp3")
 ```
 
 ```python showLineNumbers title="Force SSML Mode"
-from litellm import speech
+from dheera_ai import speech
 
 # Force SSML mode with use_ssml=True
 response = speech(
@@ -235,7 +235,7 @@ response = speech(
 response.stream_to_file("speech.mp3")
 ```
 
-#### LiteLLM AI Gateway
+#### Dheera AI AI Gateway
 
 <Tabs>
 <TabItem value="curl" label="curl">
@@ -287,7 +287,7 @@ response.stream_to_file("speech.mp3")
 
 ```python showLineNumbers title="Async Speech Generation"
 import asyncio
-from litellm import aspeech
+from dheera_ai import aspeech
 
 async def main():
     response = await aspeech(
@@ -316,10 +316,10 @@ Gemini models with audio output capabilities using the chat completions API.
 
 ### Quick Start
 
-#### LiteLLM Python SDK
+#### Dheera AI Python SDK
 
 ```python showLineNumbers title="Gemini TTS Quick Start"
-from litellm import completion
+from dheera_ai import completion
 import json
 
 # Load credentials
@@ -339,14 +339,14 @@ response = completion(
 print(response)
 ```
 
-#### LiteLLM AI Gateway
+#### Dheera AI AI Gateway
 
 **1. Setup config.yaml**
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gemini-tts
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/gemini-2.5-flash-preview-tts
       vertex_project: "your-project-id"
       vertex_location: "us-central1"
@@ -355,8 +355,8 @@ model_list:
 
 **2. Start the proxy**
 
-```bash title="Start LiteLLM Proxy"
-litellm --config /path/to/config.yaml
+```bash title="Start Dheera AI Proxy"
+dheera_ai --config /path/to/config.yaml
 ```
 
 **3. Make requests**
@@ -406,7 +406,7 @@ See [Gemini TTS documentation](https://ai.google.dev/gemini-api/docs/speech-gene
 ### Advanced Usage
 
 ```python showLineNumbers title="Gemini TTS with System Prompt"
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="vertex_ai/gemini-2.5-pro-preview-tts",

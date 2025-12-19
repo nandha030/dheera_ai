@@ -9,12 +9,12 @@ from unittest.mock import Mock, patch, MagicMock
 import httpx
 
 sys.path.insert(0, os.path.abspath("../.."))
-import litellm
+import dheera_ai
 
 from tests.vector_store_tests.base_vector_store_test import BaseVectorStoreTest
-from litellm.llms.ragflow.vector_stores.transformation import RAGFlowVectorStoreConfig
-from litellm.litellm_core_utils.litellm_logging import Logging as LiteLLMLoggingObj
-from litellm.types.vector_stores import VectorStoreCreateOptionalRequestParams
+from dheera_ai.llms.ragflow.vector_stores.transformation import RAGFlowVectorStoreConfig
+from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging as DheeraAILoggingObj
+from dheera_ai.types.vector_stores import VectorStoreCreateOptionalRequestParams
 
 
 class TestRAGFlowVectorStore(BaseVectorStoreTest):
@@ -43,8 +43,8 @@ class TestRAGFlowVectorStore(BaseVectorStoreTest):
         config = RAGFlowVectorStoreConfig()
         
         # Test with api_key in params
-        litellm_params = {"api_key": "test-api-key-123"}
-        credentials = config.get_auth_credentials(litellm_params)
+        dheera_ai_params = {"api_key": "test-api-key-123"}
+        credentials = config.get_auth_credentials(dheera_ai_params)
         assert "headers" in credentials
         assert credentials["headers"]["Authorization"] == "Bearer test-api-key-123"
         
@@ -57,37 +57,37 @@ class TestRAGFlowVectorStore(BaseVectorStoreTest):
         config = RAGFlowVectorStoreConfig()
         
         # Test with api_base in params
-        litellm_params = {"api_base": "http://custom-host:9999"}
-        url = config.get_complete_url(api_base=None, litellm_params=litellm_params)
+        dheera_ai_params = {"api_base": "http://custom-host:9999"}
+        url = config.get_complete_url(api_base=None, dheera_ai_params=dheera_ai_params)
         assert url == "http://custom-host:9999/api/v1/datasets"
         
         # Test with api_base parameter
-        url = config.get_complete_url(api_base="http://test-host:8888", litellm_params={})
+        url = config.get_complete_url(api_base="http://test-host:8888", dheera_ai_params={})
         assert url == "http://test-host:8888/api/v1/datasets"
         
         # Test with default (no api_base provided)
         with patch.dict(os.environ, {}, clear=True):
-            url = config.get_complete_url(api_base=None, litellm_params={})
+            url = config.get_complete_url(api_base=None, dheera_ai_params={})
             assert url == "http://localhost:9380/api/v1/datasets"
         
         # Test with trailing slash removal
-        url = config.get_complete_url(api_base="http://test-host:8888/", litellm_params={})
+        url = config.get_complete_url(api_base="http://test-host:8888/", dheera_ai_params={})
         assert url == "http://test-host:8888/api/v1/datasets"
 
     def test_validate_environment(self):
         """Test environment validation and header setting."""
         config = RAGFlowVectorStoreConfig()
-        from litellm.types.router import GenericLiteLLMParams
+        from dheera_ai.types.router import GenericDheeraAIParams
         
-        # Test with api_key in litellm_params
-        litellm_params = GenericLiteLLMParams(api_key="test-key")
-        headers = config.validate_environment({}, litellm_params)
+        # Test with api_key in dheera_ai_params
+        dheera_ai_params = GenericDheeraAIParams(api_key="test-key")
+        headers = config.validate_environment({}, dheera_ai_params)
         assert headers["Authorization"] == "Bearer test-key"
         assert headers["Content-Type"] == "application/json"
         
         # Test with missing api_key
         with pytest.raises(ValueError, match="RAGFLOW_API_KEY"):
-            config.validate_environment({}, GenericLiteLLMParams())
+            config.validate_environment({}, GenericDheeraAIParams())
 
     def test_get_vector_store_endpoints_by_type(self):
         """Test that endpoints are correctly configured (empty for management only)."""
@@ -257,7 +257,7 @@ class TestRAGFlowVectorStore(BaseVectorStoreTest):
     def test_transform_search_vector_store_request_not_implemented(self):
         """Test that search operations raise NotImplementedError."""
         config = RAGFlowVectorStoreConfig()
-        logging_obj = MagicMock(spec=LiteLLMLoggingObj)
+        logging_obj = MagicMock(spec=DheeraAILoggingObj)
         
         with pytest.raises(NotImplementedError, match="management only"):
             config.transform_search_vector_store_request(
@@ -265,14 +265,14 @@ class TestRAGFlowVectorStore(BaseVectorStoreTest):
                 query="test query",
                 vector_store_search_optional_params={},
                 api_base="http://localhost:9380",
-                litellm_logging_obj=logging_obj,
-                litellm_params={}
+                dheera_ai_logging_obj=logging_obj,
+                dheera_ai_params={}
             )
 
     def test_transform_search_vector_store_response_not_implemented(self):
         """Test that search response transformation raises NotImplementedError."""
         config = RAGFlowVectorStoreConfig()
-        logging_obj = MagicMock(spec=LiteLLMLoggingObj)
+        logging_obj = MagicMock(spec=DheeraAILoggingObj)
         mock_response = Mock(spec=httpx.Response)
         
         with pytest.raises(NotImplementedError, match="management only"):
@@ -305,8 +305,8 @@ class TestRAGFlowVectorStore(BaseVectorStoreTest):
     @pytest.mark.asyncio
     async def test_basic_create_vector_store(self, sync_mode):
         """Override to handle RAGFlow-specific connection errors."""
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
         base_request_args = self.get_base_create_vector_store_args()
         
         # Skip if no API key is set
@@ -317,17 +317,17 @@ class TestRAGFlowVectorStore(BaseVectorStoreTest):
         create_args = base_request_args
         try: 
             if sync_mode:
-                response = litellm.vector_stores.create(
+                response = dheera_ai.vector_stores.create(
                     name=f"test-ragflow-{int(__import__('time').time())}",
                     **create_args
                 )
             else:
-                response = await litellm.vector_stores.acreate(
+                response = await dheera_ai.vector_stores.acreate(
                     name=f"test-ragflow-{int(__import__('time').time())}",
                     **create_args
                 )
-        except litellm.InternalServerError: 
-            pytest.skip("Skipping test due to litellm.InternalServerError")
+        except dheera_ai.InternalServerError: 
+            pytest.skip("Skipping test due to dheera_ai.InternalServerError")
         except Exception as e:
             error_str = str(e).lower()
             error_type = type(e).__name__
@@ -346,7 +346,7 @@ class TestRAGFlowVectorStore(BaseVectorStoreTest):
             # Re-raise if it's not a handled error
             raise
         
-        print("litellm create response=", json.dumps(response, indent=4, default=str))
+        print("dheera_ai create response=", json.dumps(response, indent=4, default=str))
         
         # Validate response structure
         self._validate_vector_store_create_response(response)

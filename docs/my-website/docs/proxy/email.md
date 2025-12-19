@@ -9,23 +9,23 @@ import TabItem from '@theme/TabItem';
   style={{width: '70%', display: 'block', margin: '0 0 2rem 0'}}
 />
 <p style={{textAlign: 'left', color: '#666'}}>
-  LiteLLM Email Notifications
+  Dheera AI Email Notifications
 </p>
 
 ## Overview
 
-Send LiteLLM Proxy users emails for specific events.
+Send Dheera AI Proxy users emails for specific events.
 
 | Category | Details |
 |----------|---------|
-| Supported Events | • User added as a user on LiteLLM Proxy<br/>• Proxy API Key created for user<br/>• Proxy API Key rotated for user |
+| Supported Events | • User added as a user on Dheera AI Proxy<br/>• Proxy API Key created for user<br/>• Proxy API Key rotated for user |
 | Supported Email Integrations | • Resend API<br/>• SMTP |
 
 ## Usage
 
 :::info
 
-LiteLLM Cloud: This feature is enabled for all LiteLLM Cloud users, there's no need to configure anything.
+Dheera AI Cloud: This feature is enabled for all Dheera AI Cloud users, there's no need to configure anything.
 
 :::
 
@@ -37,7 +37,7 @@ LiteLLM Cloud: This feature is enabled for all LiteLLM Cloud users, there's no n
 Get SMTP credentials to set this up
 
 ```yaml showLineNumbers title="proxy_config.yaml"
-litellm_settings:
+dheera_ai_settings:
     callbacks: ["smtp_email"]
 ```
 
@@ -48,14 +48,14 @@ SMTP_HOST="smtp.resend.com"
 SMTP_TLS="True"
 SMTP_PORT="587"
 SMTP_USERNAME="resend"
-SMTP_SENDER_EMAIL="notifications@alerts.litellm.ai"
+SMTP_SENDER_EMAIL="notifications@alerts.dheera_ai.ai"
 SMTP_PASSWORD="xxxxx"
 ```
 
   </TabItem>
   <TabItem value="resend" label="Resend API">
 
-Add `resend_email` to your proxy config.yaml under `litellm_settings`
+Add `resend_email` to your proxy config.yaml under `dheera_ai_settings`
 
 set the following env variables
 
@@ -64,14 +64,14 @@ RESEND_API_KEY="re_1234"
 ```
 
 ```yaml showLineNumbers title="proxy_config.yaml"
-litellm_settings:
+dheera_ai_settings:
     callbacks: ["resend_email"]
 ```
 
   </TabItem>
   <TabItem value="sendgrid" label="SendGrid API">
 
-Add `sendgrid_email` to your proxy config.yaml under `litellm_settings`
+Add `sendgrid_email` to your proxy config.yaml under `dheera_ai_settings`
 
 set the following env variables
 
@@ -81,7 +81,7 @@ SENDGRID_SENDER_EMAIL="notifications@your-domain.com"
 ```
 
 ```yaml showLineNumbers title="proxy_config.yaml"
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["sendgrid_email"]
 ```
 
@@ -90,16 +90,16 @@ litellm_settings:
 
 ### 2. Create a new user
 
-On the LiteLLM Proxy UI, go to users > create a new user. 
+On the Dheera AI Proxy UI, go to users > create a new user. 
 
 After creating a new user, they will receive an email invite a the email you specified when creating the user. 
 
 ## Email Templates 
 
 
-### 1. User added as a user on LiteLLM Proxy
+### 1. User added as a user on Dheera AI Proxy
 
-This email is send when you create a new user on LiteLLM Proxy.
+This email is send when you create a new user on Dheera AI Proxy.
 
 <Image 
   img={require('../../img/email_event_1.png')}
@@ -108,7 +108,7 @@ This email is send when you create a new user on LiteLLM Proxy.
 
 **How to trigger this event**
 
-On the LiteLLM Proxy UI, go to Users > Create User > Enter the user's email address > Create User.
+On the Dheera AI Proxy UI, go to Users > Create User > Enter the user's email address > Create User.
 
 <Image 
   img={require('../../img/new_user_email.png')}
@@ -117,7 +117,7 @@ On the LiteLLM Proxy UI, go to Users > Create User > Enter the user's email addr
 
 ### 2. Proxy API Key created for user
 
-This email is sent when you create a new API key for a user on LiteLLM Proxy.
+This email is sent when you create a new API key for a user on Dheera AI Proxy.
 
 <Image 
   img={require('../../img/email_event_2.png')}
@@ -126,7 +126,7 @@ This email is sent when you create a new API key for a user on LiteLLM Proxy.
 
 **How to trigger this event**
 
-On the LiteLLM Proxy UI, go to Virtual Keys > Create API Key > Select User ID
+On the Dheera AI Proxy UI, go to Virtual Keys > Create API Key > Select User ID
 
 <Image 
   img={require('../../img/key_email.png')}
@@ -142,7 +142,7 @@ On the Create Key Modal, Select Advanced Settings > Set Send Email to True.
 
 ### 3. Proxy API Key Rotated for User
 
-This email is sent when you rotate an API key for a user on LiteLLM Proxy.
+This email is sent when you rotate an API key for a user on Dheera AI Proxy.
 
 <Image 
   img={require('../../img/email_regen2.png')}
@@ -151,7 +151,7 @@ This email is sent when you rotate an API key for a user on LiteLLM Proxy.
 
 **How to trigger this event**
 
-On the LiteLLM Proxy UI, go to Virtual Keys > Click on a key > Click "Regenerate Key"
+On the Dheera AI Proxy UI, go to Virtual Keys > Click on a key > Click "Regenerate Key"
 
 :::info
 
@@ -174,22 +174,22 @@ After regenerating the key, the user will receive an email notification with:
 
 :::info
 
-Customizing Email Branding is an Enterprise Feature [Get in touch with us for a Free Trial](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+Customizing Email Branding is an Enterprise Feature [Get in touch with us for a Free Trial](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
-LiteLLM allows you to customize various aspects of your email notifications. Below is a complete reference of all customizable fields:
+Dheera AI allows you to customize various aspects of your email notifications. Below is a complete reference of all customizable fields:
 
 | Field | Environment Variable | Type | Default Value | Example | Description |
 |-------|-------------------|------|---------------|---------|-------------|
-| Logo URL | `EMAIL_LOGO_URL` | string | LiteLLM logo | `"https://your-company.com/logo.png"` | Public URL to your company logo |
+| Logo URL | `EMAIL_LOGO_URL` | string | Dheera AI logo | `"https://your-company.com/logo.png"` | Public URL to your company logo |
 | Support Contact | `EMAIL_SUPPORT_CONTACT` | string | support@berri.ai | `"support@your-company.com"` | Email address for user support |
-| Email Signature | `EMAIL_SIGNATURE` | string (HTML) | Standard LiteLLM footer | `"<p>Best regards,<br/>Your Team</p><p><a href='https://your-company.com'>Visit us</a></p>"` | HTML-formatted footer for all emails |
-| Invitation Subject | `EMAIL_SUBJECT_INVITATION` | string | "LiteLLM: New User Invitation" | `"Welcome to Your Company!"` | Subject line for invitation emails |
-| Key Creation Subject | `EMAIL_SUBJECT_KEY_CREATED` | string | "LiteLLM: API Key Created" | `"Your New API Key is Ready"` | Subject line for key creation emails |
-| Key Rotation Subject | `EMAIL_SUBJECT_KEY_ROTATED` | string | "LiteLLM: API Key Rotated" | `"Your API Key Has Been Rotated"` | Subject line for key rotation emails |
+| Email Signature | `EMAIL_SIGNATURE` | string (HTML) | Standard Dheera AI footer | `"<p>Best regards,<br/>Your Team</p><p><a href='https://your-company.com'>Visit us</a></p>"` | HTML-formatted footer for all emails |
+| Invitation Subject | `EMAIL_SUBJECT_INVITATION` | string | "Dheera AI: New User Invitation" | `"Welcome to Your Company!"` | Subject line for invitation emails |
+| Key Creation Subject | `EMAIL_SUBJECT_KEY_CREATED` | string | "Dheera AI: API Key Created" | `"Your New API Key is Ready"` | Subject line for key creation emails |
+| Key Rotation Subject | `EMAIL_SUBJECT_KEY_ROTATED` | string | "Dheera AI: API Key Rotated" | `"Your API Key Has Been Rotated"` | Subject line for key rotation emails |
 | Include API Key | `EMAIL_INCLUDE_API_KEY` | boolean | true | `"false"` | Whether to include the actual API key in emails (set to false for enhanced security) |
-| Proxy Base URL | `PROXY_BASE_URL` | string | http://0.0.0.0:4000 | `"https://proxy.your-company.com"` | Base URL for the LiteLLM Proxy (used in email links) |
+| Proxy Base URL | `PROXY_BASE_URL` | string | http://0.0.0.0:4000 | `"https://proxy.your-company.com"` | Base URL for the Dheera AI Proxy (used in email links) |
 
 
 ## HTML Support in Email Signature
@@ -197,13 +197,13 @@ LiteLLM allows you to customize various aspects of your email notifications. Bel
 The `EMAIL_SIGNATURE` field supports HTML formatting for rich, branded email footers. Here's an example of what you can include:
 
 ```html
-<p>Best regards,<br/>The LiteLLM Team</p>
+<p>Best regards,<br/>The Dheera AI Team</p>
 <p>
-  <a href='https://docs.litellm.ai'>Documentation</a> |
-  <a href='https://github.com/BerriAI/litellm'>GitHub</a>
+  <a href='https://docs.dheera_ai.ai'>Documentation</a> |
+  <a href='https://github.com/BerriAI/dheera_ai'>GitHub</a>
 </p>
 <p style='font-size: 12px; color: #666;'>
-  This is an automated message from LiteLLM Proxy
+  This is an automated message from Dheera AI Proxy
 </p>
 ```
 
@@ -235,12 +235,12 @@ EMAIL_SUBJECT_KEY_ROTATED="Your API Key Has Been Rotated"  # Subject for key rot
 EMAIL_INCLUDE_API_KEY="false"  # Set to false to hide API keys in emails (default: true)
 
 # Proxy Configuration
-PROXY_BASE_URL="https://proxy.your-company.com"      # Base URL for the LiteLLM Proxy (used in email links)
+PROXY_BASE_URL="https://proxy.your-company.com"      # Base URL for the Dheera AI Proxy (used in email links)
 ```
 
 ## Security: Hiding API Keys in Emails
 
-For enhanced security, you can configure LiteLLM to **not** include actual API keys in email notifications. This is useful when:
+For enhanced security, you can configure Dheera AI to **not** include actual API keys in email notifications. This is useful when:
 
 - You want to reduce the risk of key exposure via email interception
 - Your security policy requires keys to only be retrieved from the secure dashboard
@@ -265,7 +265,7 @@ EMAIL_INCLUDE_API_KEY="true"  # or omit this variable
 | `true` (default) | Shows actual `sk-xxxxx` key | Shows actual `sk-xxxxx` key |
 | `false` | Shows placeholder message | Shows placeholder message |
 
-Users can always retrieve their keys from the LiteLLM Proxy dashboard.
+Users can always retrieve their keys from the Dheera AI Proxy dashboard.
 
 ## HTML Support in Email Signature
 
@@ -280,24 +280,24 @@ The `EMAIL_SIGNATURE` environment variable supports HTML formatting, allowing yo
 
 Example HTML signature:
 ```html
-<p>Best regards,<br/>The LiteLLM Team</p>
+<p>Best regards,<br/>The Dheera AI Team</p>
 <p>
-  <a href='https://docs.litellm.ai'>Documentation</a> |
-  <a href='https://github.com/BerriAI/litellm'>GitHub</a>
+  <a href='https://docs.dheera_ai.ai'>Documentation</a> |
+  <a href='https://github.com/BerriAI/dheera_ai'>GitHub</a>
 </p>
 <p style='font-size: 12px; color: #666;'>
-  This is an automated message from LiteLLM Proxy
+  This is an automated message from Dheera AI Proxy
 </p>
 ```
 
 ## Default Templates
 
-If environment variables are not set, LiteLLM will use default templates:
+If environment variables are not set, Dheera AI will use default templates:
 
-- Default logo: LiteLLM logo
+- Default logo: Dheera AI logo
 - Default support contact: support@berri.ai
-- Default signature: Standard LiteLLM footer
-- Default subjects: "LiteLLM: \{event_message\}" (replaced with actual event message)
+- Default signature: Standard Dheera AI footer
+- Default subjects: "Dheera AI: \{event_message\}" (replaced with actual event message)
 
 ## Template Variables
 
@@ -315,11 +315,11 @@ The system will automatically replace `\{event_message\}` and other template var
 
 ### Why do I see "http://0.0.0.0:4000" in the email links?
 
-The `PROXY_BASE_URL` environment variable is used to construct email links. If you are using the LiteLLM Proxy in a local environment, you will see "http://0.0.0.0:4000" in the email links.
+The `PROXY_BASE_URL` environment variable is used to construct email links. If you are using the Dheera AI Proxy in a local environment, you will see "http://0.0.0.0:4000" in the email links.
 
-If you are using the LiteLLM Proxy in a production environment, you will see the actual base URL of the LiteLLM Proxy.
+If you are using the Dheera AI Proxy in a production environment, you will see the actual base URL of the Dheera AI Proxy.
 
-You can set the `PROXY_BASE_URL` environment variable to the actual base URL of the LiteLLM Proxy.
+You can set the `PROXY_BASE_URL` environment variable to the actual base URL of the Dheera AI Proxy.
 
 ```bash
 PROXY_BASE_URL="https://proxy.your-company.com"

@@ -10,11 +10,11 @@ import os
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm import embedding
-from litellm.exceptions import BadRequestError
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
-from litellm.utils import (
+import dheera_ai
+from dheera_ai import embedding
+from dheera_ai.exceptions import BadRequestError
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
+from dheera_ai.utils import (
     CustomStreamWrapper,
     get_supported_openai_params,
     get_optional_params,
@@ -45,24 +45,24 @@ class BaseLLMEmbeddingTest(ABC):
         pass
 
     @abstractmethod
-    def get_custom_llm_provider(self) -> litellm.LlmProviders:
+    def get_custom_llm_provider(self) -> dheera_ai.LlmProviders:
         """Must return the custom llm provider"""
         pass
 
     @pytest.mark.asyncio()
     @pytest.mark.parametrize("sync_mode", [True, False])
     async def test_basic_embedding(self, sync_mode):
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         embedding_call_args = self.get_base_embedding_call_args()
         if sync_mode is True:
-            response = litellm.embedding(
+            response = dheera_ai.embedding(
                 **embedding_call_args,
                 input=["hello", "world"],
             )
 
             print("embedding response: ", response)
         else:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 **embedding_call_args,
                 input=["hello", "world"],
             )
@@ -81,11 +81,11 @@ class BaseLLMEmbeddingTest(ABC):
         assert optional_params["max_retries"] == 20
 
     def test_image_embedding(self):
-        litellm.set_verbose = True
-        from litellm.utils import supports_embedding_image_input
+        dheera_ai.set_verbose = True
+        from dheera_ai.utils import supports_embedding_image_input
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         base_embedding_call_args = self.get_base_embedding_call_args()
         if not supports_embedding_image_input(base_embedding_call_args["model"], None):

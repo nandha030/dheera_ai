@@ -13,12 +13,12 @@ os.environ["COHERE_API_KEY"] = ""
 
 ## Usage
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 #### Cohere v2 API (Default)
 
 ```python showLineNumbers
-from litellm import completion
+from dheera_ai import completion
 
 ## set ENV variables
 os.environ["COHERE_API_KEY"] = "cohere key"
@@ -35,7 +35,7 @@ response = completion(
 To use the Cohere v1/chat API, prefix your model name with `cohere_chat/v1/`:
 
 ```python showLineNumbers
-from litellm import completion
+from dheera_ai import completion
 
 ## set ENV variables
 os.environ["COHERE_API_KEY"] = "cohere key"
@@ -52,7 +52,7 @@ response = completion(
 **Cohere v2 Streaming:**
 
 ```python showLineNumbers
-from litellm import completion
+from dheera_ai import completion
 
 ## set ENV variables
 os.environ["COHERE_API_KEY"] = "cohere key"
@@ -72,7 +72,7 @@ for chunk in response:
 **Cohere v1 Streaming:**
 
 ```python showLineNumbers
-from litellm import completion
+from dheera_ai import completion
 
 ## set ENV variables
 os.environ["COHERE_API_KEY"] = "cohere key"
@@ -89,9 +89,9 @@ for chunk in response:
 ```
 
 
-## Usage with LiteLLM Proxy 
+## Usage with Dheera AI Proxy 
 
-Here's how to call Cohere with the LiteLLM Proxy Server
+Here's how to call Cohere with the Dheera AI Proxy Server
 
 ### 1. Save key in your environment
 
@@ -107,7 +107,7 @@ Define the cohere models you want to use in the config.yaml
 ```yaml showLineNumbers
 model_list:
   - model_name: command-a-03-2025 
-    litellm_params:
+    dheera_ai_params:
       model: cohere_chat/v1/command-a-03-2025
       api_key: "os.environ/COHERE_API_KEY"
 ```
@@ -116,13 +116,13 @@ model_list:
 ```yaml showLineNumbers
 model_list:
   - model_name: command-a-03-2025-v2
-    litellm_params:
+    dheera_ai_params:
       model: cohere_chat/command-a-03-2025
       api_key: "os.environ/COHERE_API_KEY"
 ```
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 
@@ -134,7 +134,7 @@ litellm --config /path/to/config.yaml
 ```shell showLineNumbers
 curl --location 'http://0.0.0.0:4000/chat/completions' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer <your-litellm-api-key>' \
+--header 'Authorization: Bearer <your-dheera_ai-api-key>' \
 --data ' {
       "model": "command-a-03-2025",
       "messages": [
@@ -152,7 +152,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 ```shell showLineNumbers
 curl --location 'http://0.0.0.0:4000/chat/completions' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer <your-litellm-api-key>' \
+--header 'Authorization: Bearer <your-dheera_ai-api-key>' \
 --data ' {
       "model": "command-a-03-2025-v2",
       "messages": [
@@ -211,30 +211,30 @@ print(response)
 ## Supported Models
 | Model Name | Function Call |
 |------------|----------------|
-| command-a-03-2025 | `litellm.completion('command-a-03-2025', messages)` |
-| command-r-plus-08-2024 | `litellm.completion('command-r-plus-08-2024', messages)` |  
-| command-r-08-2024 | `litellm.completion('command-r-08-2024', messages)` |
-| command-r-plus | `litellm.completion('command-r-plus', messages)` |  
-| command-r | `litellm.completion('command-r', messages)` |
-| command-light | `litellm.completion('command-light', messages)` |  
-| command-nightly | `litellm.completion('command-nightly', messages)` |
+| command-a-03-2025 | `dheera_ai.completion('command-a-03-2025', messages)` |
+| command-r-plus-08-2024 | `dheera_ai.completion('command-r-plus-08-2024', messages)` |  
+| command-r-08-2024 | `dheera_ai.completion('command-r-08-2024', messages)` |
+| command-r-plus | `dheera_ai.completion('command-r-plus', messages)` |  
+| command-r | `dheera_ai.completion('command-r', messages)` |
+| command-light | `dheera_ai.completion('command-light', messages)` |  
+| command-nightly | `dheera_ai.completion('command-nightly', messages)` |
 
 
 ## Embedding
 
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 os.environ["COHERE_API_KEY"] = "cohere key"
 
 # cohere call
 response = embedding(
     model="embed-english-v3.0", 
-    input=["good morning from litellm", "this is another item"], 
+    input=["good morning from dheera_ai", "this is another item"], 
 )
 ```
 
 ### Setting - Input Type for v3 models
-v3 Models have a required parameter: `input_type`. LiteLLM defaults to `search_document`. It can be one of the following four values:
+v3 Models have a required parameter: `input_type`. Dheera AI defaults to `search_document`. It can be one of the following four values:
 
 - `input_type="search_document"`: (default) Use this for texts (documents) you want to store in your vector database
 - `input_type="search_query"`: Use this for search queries to find the most relevant documents in your vector database
@@ -245,13 +245,13 @@ https://txt.cohere.com/introducing-embed-v3/
 
 
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 os.environ["COHERE_API_KEY"] = "cohere key"
 
 # cohere call
 response = embedding(
     model="embed-english-v3.0", 
-    input=["good morning from litellm", "this is another item"], 
+    input=["good morning from dheera_ai", "this is another item"], 
     input_type="search_document" 
 )
 ```
@@ -259,25 +259,25 @@ response = embedding(
 ### Supported Embedding Models
 | Model Name               | Function Call                                                |
 |--------------------------|--------------------------------------------------------------|
-| embed-english-v3.0       | `embedding(model="embed-english-v3.0", input=["good morning from litellm", "this is another item"])` |
-| embed-english-light-v3.0 | `embedding(model="embed-english-light-v3.0", input=["good morning from litellm", "this is another item"])` |
-| embed-multilingual-v3.0  | `embedding(model="embed-multilingual-v3.0", input=["good morning from litellm", "this is another item"])` |
-| embed-multilingual-light-v3.0 | `embedding(model="embed-multilingual-light-v3.0", input=["good morning from litellm", "this is another item"])` |
-| embed-english-v2.0       | `embedding(model="embed-english-v2.0", input=["good morning from litellm", "this is another item"])` |
-| embed-english-light-v2.0 | `embedding(model="embed-english-light-v2.0", input=["good morning from litellm", "this is another item"])` |
-| embed-multilingual-v2.0  | `embedding(model="embed-multilingual-v2.0", input=["good morning from litellm", "this is another item"])` |
+| embed-english-v3.0       | `embedding(model="embed-english-v3.0", input=["good morning from dheera_ai", "this is another item"])` |
+| embed-english-light-v3.0 | `embedding(model="embed-english-light-v3.0", input=["good morning from dheera_ai", "this is another item"])` |
+| embed-multilingual-v3.0  | `embedding(model="embed-multilingual-v3.0", input=["good morning from dheera_ai", "this is another item"])` |
+| embed-multilingual-light-v3.0 | `embedding(model="embed-multilingual-light-v3.0", input=["good morning from dheera_ai", "this is another item"])` |
+| embed-english-v2.0       | `embedding(model="embed-english-v2.0", input=["good morning from dheera_ai", "this is another item"])` |
+| embed-english-light-v2.0 | `embedding(model="embed-english-light-v2.0", input=["good morning from dheera_ai", "this is another item"])` |
+| embed-multilingual-v2.0  | `embedding(model="embed-multilingual-v2.0", input=["good morning from dheera_ai", "this is another item"])` |
 
 ## Rerank 
 
 ### Usage
 
-LiteLLM supports the v1 and v2 clients for Cohere rerank. By default, the `rerank` endpoint uses the v2 client, but you can specify the v1 client by explicitly calling `v1/rerank`
+Dheera AI supports the v1 and v2 clients for Cohere rerank. By default, the `rerank` endpoint uses the v2 client, but you can specify the v1 client by explicitly calling `v1/rerank`
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM SDK Usage">
+<TabItem value="sdk" label="Dheera AI SDK Usage">
 
 ```python
-from litellm import rerank
+from dheera_ai import rerank
 import os
 
 os.environ["COHERE_API_KEY"] = "sk-.."
@@ -300,30 +300,30 @@ print(response)
 ```
 </TabItem>
 
-<TabItem value="proxy" label="LiteLLM Proxy Usage">
+<TabItem value="proxy" label="Dheera AI Proxy Usage">
 
-LiteLLM provides an cohere api compatible `/rerank` endpoint for Rerank calls.
+Dheera AI provides an cohere api compatible `/rerank` endpoint for Rerank calls.
 
 **Setup**
 
-Add this to your litellm proxy config.yaml
+Add this to your dheera_ai proxy config.yaml
 
 ```yaml
 model_list:
   - model_name: Salesforce/Llama-Rank-V1
-    litellm_params:
+    dheera_ai_params:
       model: together_ai/Salesforce/Llama-Rank-V1
       api_key: os.environ/TOGETHERAI_API_KEY
   - model_name: rerank-english-v3.0
-    litellm_params:
+    dheera_ai_params:
       model: cohere/rerank-english-v3.0
       api_key: os.environ/COHERE_API_KEY
 ```
 
-Start litellm
+Start dheera_ai
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```

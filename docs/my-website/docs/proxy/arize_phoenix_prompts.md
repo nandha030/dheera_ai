@@ -1,15 +1,15 @@
 # Arize Phoenix Prompt Management
 
-Use prompt versions from [Arize Phoenix](https://phoenix.arize.com/) with LiteLLM SDK and Proxy.
+Use prompt versions from [Arize Phoenix](https://phoenix.arize.com/) with Dheera AI SDK and Proxy.
 
 ## Quick Start
 
 ### SDK
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gpt-4o",
     prompt_id="UHJvbXB0VmVyc2lvbjox",
     prompt_integration="arize_phoenix",
@@ -26,7 +26,7 @@ response = litellm.completion(
 ```yaml
 prompts:
   - prompt_id: "simple_prompt"
-    litellm_params:
+    dheera_ai_params:
       prompt_id: "UHJvbXB0VmVyc2lvbjox"
       prompt_integration: "arize_phoenix"
       api_base: https://app.phoenix.arize.com/s/your-workspace
@@ -97,7 +97,7 @@ prompt_variables = {
 ## Combine with Additional Messages
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gpt-4o",
     prompt_id="UHJvbXB0VmVyc2lvbjox",
     prompt_integration="arize_phoenix",
@@ -114,7 +114,7 @@ response = litellm.completion(
 
 ```python
 try:
-    response = litellm.completion(
+    response = dheera_ai.completion(
         model="gpt-4o",
         prompt_id="invalid-id",
         prompt_integration="arize_phoenix",
@@ -129,6 +129,6 @@ except Exception as e:
 
 ## Support
 
-- [LiteLLM GitHub Issues](https://github.com/BerriAI/litellm/issues)
+- [Dheera AI GitHub Issues](https://github.com/BerriAI/dheera_ai/issues)
 - [Arize Phoenix Docs](https://docs.arize.com/phoenix)
 

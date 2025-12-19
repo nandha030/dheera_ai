@@ -27,8 +27,8 @@ Your guardrail checks input, then output. If something's wrong, raise an excepti
 ### Create Your Directory
 
 ```bash
-mkdir -p litellm/proxy/guardrails/guardrail_hooks/my_guardrail
-cd litellm/proxy/guardrails/guardrail_hooks/my_guardrail
+mkdir -p dheera_ai/proxy/guardrails/guardrail_hooks/my_guardrail
+cd dheera_ai/proxy/guardrails/guardrail_hooks/my_guardrail
 ```
 
 Two files: `my_guardrail.py` (main class) and `__init__.py` (initialization).
@@ -46,26 +46,26 @@ Follow from [Custom Guardrail](../proxy/guardrails/custom_guardrail#custom-guard
 ```python
 from typing import TYPE_CHECKING
 
-from litellm.types.guardrails import SupportedGuardrailIntegrations
+from dheera_ai.types.guardrails import SupportedGuardrailIntegrations
 
 from .my_guardrail import MyGuardrail
 
 if TYPE_CHECKING:
-    from litellm.types.guardrails import Guardrail, LitellmParams
+    from dheera_ai.types.guardrails import Guardrail, LitellmParams
 
 
-def initialize_guardrail(litellm_params: "LitellmParams", guardrail: "Guardrail"):
-    import litellm
+def initialize_guardrail(dheera_ai_params: "LitellmParams", guardrail: "Guardrail"):
+    import dheera_ai
     
     _my_guardrail_callback = MyGuardrail(
-        api_base=litellm_params.api_base,
-        api_key=litellm_params.api_key,
+        api_base=dheera_ai_params.api_base,
+        api_key=dheera_ai_params.api_key,
         guardrail_name=guardrail.get("guardrail_name", ""),
-        event_hook=litellm_params.mode,
-        default_on=litellm_params.default_on,
+        event_hook=dheera_ai_params.mode,
+        default_on=dheera_ai_params.default_on,
     )
     
-    litellm.logging_callback_manager.add_litellm_callback(_my_guardrail_callback)
+    dheera_ai.logging_callback_manager.add_dheera_ai_callback(_my_guardrail_callback)
     return _my_guardrail_callback
 
 
@@ -80,7 +80,7 @@ guardrail_class_registry = {
 
 ### Register Your Guardrail Type
 
-Add to `litellm/types/guardrails.py`:
+Add to `dheera_ai/types/guardrails.py`:
 
 ```python
 class SupportedGuardrailIntegrations(str, Enum):
@@ -99,14 +99,14 @@ class SupportedGuardrailIntegrations(str, Enum):
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   guardrails:
     - guardrail_name: my_guardrail
-      litellm_params:
+      dheera_ai_params:
         guardrail: my_guardrail
         mode: during_call
         api_key: os.environ/MY_GUARDRAIL_API_KEY
@@ -128,7 +128,7 @@ curl --location 'http://localhost:4000/chat/completions' \
 
 ## Testing
 
-Add unit tests inside `test_litellm/` folder.
+Add unit tests inside `test_dheera_ai/` folder.
 
 
 

@@ -8,22 +8,22 @@ import TabItem from '@theme/TabItem';
 If you haven't set up or authenticated your Bedrock provider yet, see the [Bedrock Provider Setup & Authentication Guide](../../providers/bedrock.md).
 :::
 
-LiteLLM supports Bedrock guardrails via the [Bedrock ApplyGuardrail API](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ApplyGuardrail.html). 
+Dheera AI supports Bedrock guardrails via the [Bedrock ApplyGuardrail API](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ApplyGuardrail.html). 
 
 ## Quick Start
-### 1. Define Guardrails on your LiteLLM config.yaml 
+### 1. Define Guardrails on your Dheera AI config.yaml 
 
 Define your guardrails under the `guardrails` section
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "bedrock-pre-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: bedrock  # supported values: "aporia", "bedrock", "lakera"
       mode: "during_call"
       guardrailIdentifier: ff6ujrregl1q      # your guardrail ID on bedrock
@@ -39,11 +39,11 @@ guardrails:
 - `post_call` Run **after** LLM call, on **input & output**
 - `during_call` Run **during** LLM call, on **input** Same as `pre_call` but runs in parallel as LLM call.  Response not returned until guardrail check completes
 
-### 2. Start LiteLLM Gateway 
+### 2. Start Dheera AI Gateway 
 
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 ### 3. Test request 
@@ -150,16 +150,16 @@ Bedrock guardrails support PII detection and masking capabilities. To enable thi
 
 Here's how to configure it in your config.yaml:
 
-```yaml showLineNumbers title="litellm proxy config.yaml"
+```yaml showLineNumbers title="dheera_ai proxy config.yaml"
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
   
 guardrails:
   - guardrail_name: "bedrock-pre-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: bedrock
       mode: "pre_call"  # Important: must use pre_call mode for masking
       guardrailIdentifier: wf0hkdb5x07f
@@ -170,7 +170,7 @@ guardrails:
       mask_response_content: true   # Enable masking in model responses
 ```
 
-With this configuration, when the bedrock guardrail intervenes, litellm will read the masked output from the guardrail and send it to the model.
+With this configuration, when the bedrock guardrail intervenes, dheera_ai will read the masked output from the guardrail and send it to the model.
 
 ### Example Usage
 
@@ -190,16 +190,16 @@ This helps protect sensitive information while still allowing the model to under
 
 ## Experimental: Only Send Latest User Message
 
-When you're chaining long conversations through Bedrock guardrails, you can opt into a lighter, experimental behavior by setting `experimental_use_latest_role_message_only: true` in the guardrail's `litellm_params`. When enabled, LiteLLM only sends the most recent `user` message (or assistant output during post-call checks) to Bedrock, which:
+When you're chaining long conversations through Bedrock guardrails, you can opt into a lighter, experimental behavior by setting `experimental_use_latest_role_message_only: true` in the guardrail's `dheera_ai_params`. When enabled, Dheera AI only sends the most recent `user` message (or assistant output during post-call checks) to Bedrock, which:
 
 - prevents unintended blocks on older system/dev messages
 - keeps Bedrock payloads smaller, reducing latency and cost
 - applies to proxy hooks (`pre_call`, `during_call`) and the `/guardrails/apply_guardrail` testing endpoint
 
-```yaml showLineNumbers title="litellm proxy config.yaml"
+```yaml showLineNumbers title="dheera_ai proxy config.yaml"
 guardrails:
   - guardrail_name: "bedrock-pre-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: bedrock
       mode: "pre_call"
       guardrailIdentifier: wf0hkdb5x07f
@@ -212,7 +212,7 @@ guardrails:
 
 ## Disabling Exceptions on Bedrock BLOCK
 
-By default, when Bedrock guardrails block content, LiteLLM raises an HTTP 400 exception. However, you can disable this behavior by setting `disable_exception_on_block: true`. This is particularly useful when integrating with **OpenWebUI**, where exceptions can interrupt the chat flow and break the user experience.
+By default, when Bedrock guardrails block content, Dheera AI raises an HTTP 400 exception. However, you can disable this behavior by setting `disable_exception_on_block: true`. This is particularly useful when integrating with **OpenWebUI**, where exceptions can interrupt the chat flow and break the user experience.
 
 When exceptions are disabled, instead of receiving an error, you'll get a successful response containing the Bedrock guardrail's modified/blocked output.
 
@@ -220,16 +220,16 @@ When exceptions are disabled, instead of receiving an error, you'll get a succes
 
 Add `disable_exception_on_block: true` to your guardrail configuration:
 
-```yaml showLineNumbers title="litellm proxy config.yaml"
+```yaml showLineNumbers title="dheera_ai proxy config.yaml"
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "bedrock-guardrail"
-    litellm_params:
+    dheera_ai_params:
       guardrail: bedrock
       mode: "post_call"
       guardrailIdentifier: ff6ujrregl1q

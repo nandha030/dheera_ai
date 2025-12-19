@@ -9,15 +9,15 @@
 
 :::tip
 
-LiteLLM follows the [Mistral API request/response for the OCR API](https://docs.mistral.ai/capabilities/vision/#optical-character-recognition-ocr)
+Dheera AI follows the [Mistral API request/response for the OCR API](https://docs.mistral.ai/capabilities/vision/#optical-character-recognition-ocr)
 
 :::
 
-## **LiteLLM Python SDK Usage**
+## **Dheera AI Python SDK Usage**
 ### Quick Start 
 
 ```python
-from litellm import ocr
+from dheera_ai import ocr
 import os
 
 os.environ["MISTRAL_API_KEY"] = "sk-.."
@@ -39,7 +39,7 @@ for page in response.pages:
 ### Async Usage 
 
 ```python
-from litellm import aocr
+from dheera_ai import aocr
 import os, asyncio
 
 os.environ["MISTRAL_API_KEY"] = "sk-.."
@@ -65,7 +65,7 @@ asyncio.run(test_async_ocr())
 
 ```python
 import base64
-from litellm import ocr
+from dheera_ai import ocr
 
 # Encode PDF to base64
 with open("document.pdf", "rb") as f:
@@ -97,26 +97,26 @@ response = ocr(
 )
 ```
 
-## **LiteLLM Proxy Usage**
+## **Dheera AI Proxy Usage**
 
-LiteLLM provides a Mistral API compatible `/ocr` endpoint for OCR calls.
+Dheera AI provides a Mistral API compatible `/ocr` endpoint for OCR calls.
 
 **Setup**
 
-Add this to your litellm proxy config.yaml
+Add this to your dheera_ai proxy config.yaml
 
 ```yaml
 model_list:
   - model_name: mistral-ocr
-    litellm_params:
+    dheera_ai_params:
       model: mistral/mistral-ocr-latest
       api_key: os.environ/MISTRAL_API_KEY
 ```
 
-Start litellm
+Start dheera_ai
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -141,7 +141,7 @@ curl http://0.0.0.0:4000/v1/ocr \
 
 :::info
 
-LiteLLM follows the **Mistral OCR API specification**. 
+Dheera AI follows the **Mistral OCR API specification**. 
 
 See the [official Mistral OCR documentation](https://docs.mistral.ai/capabilities/vision/#optical-character-recognition-ocr) for complete details.
 

@@ -1,5 +1,5 @@
 # # #### What this tests ####
-# # #    This tests the LiteLLM Class
+# # #    This tests the DheeraAI Class
 
 # import sys, os
 # import traceback
@@ -8,14 +8,14 @@
 # sys.path.insert(
 #     0, os.path.abspath("../..")
 # )  # Adds the parent directory to the system path
-# import litellm
+# import dheera_ai
 # import asyncio
 
-# # litellm.set_verbose = True
-# # from litellm import Router
+# # dheera_ai.set_verbose = True
+# # from dheera_ai import Router
 # import instructor
 
-# from litellm import completion
+# from dheera_ai import completion
 # from pydantic import BaseModel
 
 
@@ -24,9 +24,9 @@
 #     age: int
 
 
-# client = instructor.from_litellm(completion)
+# client = instructor.from_dheera_ai(completion)
 
-# litellm.set_verbose = True
+# dheera_ai.set_verbose = True
 
 # resp = client.chat.completions.create(
 #     model="gpt-3.5-turbo",
@@ -54,7 +54,7 @@
 # #         model_list=[
 # #             {
 # #                 "model_name": "gpt-3.5-turbo",  # openai model name
-# #                 "litellm_params": {  # params for litellm completion/embedding call
+# #                 "dheera_ai_params": {  # params for dheera_ai completion/embedding call
 # #                     "model": "azure/gpt-4.1-mini",
 # #                     "api_key": os.getenv("AZURE_API_KEY"),
 # #                     "api_version": os.getenv("AZURE_API_VERSION"),
@@ -92,7 +92,7 @@
 # #         model_list=[
 # #             {
 # #                 "model_name": "gpt-3.5-turbo",  # openai model name
-# #                 "litellm_params": {  # params for litellm completion/embedding call
+# #                 "dheera_ai_params": {  # params for dheera_ai completion/embedding call
 # #                     "model": "azure/gpt-4.1-mini",
 # #                     "api_key": os.getenv("AZURE_API_KEY"),
 # #                     "api_version": os.getenv("AZURE_API_VERSION"),
@@ -100,7 +100,7 @@
 # #                 },
 # #             }
 # #         ],
-# #         default_litellm_params={"acompletion": True},
+# #         default_dheera_ai_params={"acompletion": True},
 # #     )
 # # )
 

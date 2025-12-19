@@ -14,14 +14,14 @@ os.environ['DEEPSEEK_API_KEY']
 
 ## Sample Usage
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['DEEPSEEK_API_KEY'] = ""
 response = completion(
     model="deepseek/deepseek-chat", 
     messages=[
-       {"role": "user", "content": "hello from litellm"}
+       {"role": "user", "content": "hello from dheera_ai"}
    ],
 )
 print(response)
@@ -29,14 +29,14 @@ print(response)
 
 ## Sample Usage - Streaming
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['DEEPSEEK_API_KEY'] = ""
 response = completion(
     model="deepseek/deepseek-chat", 
     messages=[
-       {"role": "user", "content": "hello from litellm"}
+       {"role": "user", "content": "hello from dheera_ai"}
    ],
     stream=True
 )
@@ -68,7 +68,7 @@ Enable thinking mode for DeepSeek reasoner models using `thinking` or `reasoning
 <TabItem value="thinking" label="thinking param">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['DEEPSEEK_API_KEY'] = ""
@@ -86,7 +86,7 @@ print(resp.choices[0].message.content)  # Final answer
 <TabItem value="reasoning_effort" label="reasoning_effort param">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['DEEPSEEK_API_KEY'] = ""
@@ -113,7 +113,7 @@ DeepSeek only supports `{"type": "enabled"}` - unlike Anthropic, it doesn't supp
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['DEEPSEEK_API_KEY'] = ""
@@ -135,7 +135,7 @@ print(
 ```yaml
 model_list:
   - model_name: deepseek-reasoner
-    litellm_params:
+    dheera_ai_params:
         model: deepseek/deepseek-reasoner
         api_key: os.environ/DEEPSEEK_API_KEY
 ```
@@ -143,7 +143,7 @@ model_list:
 2. Run proxy
 
 ```bash
-python litellm/proxy/main.py
+python dheera_ai/proxy/main.py
 ```
 
 3. Test it!

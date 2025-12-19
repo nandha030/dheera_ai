@@ -1,10 +1,10 @@
-# Contributing to LiteLLM
+# Contributing to Dheera AI
 
-Thank you for your interest in contributing to LiteLLM! We welcome contributions of all kinds - from bug fixes and documentation improvements to new features and integrations.
+Thank you for your interest in contributing to Dheera AI! We welcome contributions of all kinds - from bug fixes and documentation improvements to new features and integrations.
 
 ## **Checklist before submitting a PR**
 
-Here are the core requirements for any PR submitted to LiteLLM:
+Here are the core requirements for any PR submitted to Dheera AI:
 
 - [ ] **Sign the Contributor License Agreement (CLA)** - [see details](#contributor-license-agreement-cla)
 - [ ] **Add testing** - Adding at least 1 test is a hard requirement - [see details](#adding-testing)
@@ -15,7 +15,7 @@ Here are the core requirements for any PR submitted to LiteLLM:
 
 ## **Contributor License Agreement (CLA)**
 
-Before contributing code to LiteLLM, you must sign our [Contributor License Agreement (CLA)](https://cla-assistant.io/BerriAI/litellm). This is a legal requirement for all contributions to be merged into the main repository.
+Before contributing code to Dheera AI, you must sign our [Contributor License Agreement (CLA)](https://cla-assistant.io/BerriAI/dheera_ai). This is a legal requirement for all contributions to be merged into the main repository.
 
 **Important:** We strongly recommend reviewing and signing the CLA before starting work on your contribution to avoid any delays in the PR process.
 
@@ -24,10 +24,10 @@ Before contributing code to LiteLLM, you must sign our [Contributor License Agre
 ### 1. Setup Your Local Development Environment
 
 ```bash
-# Fork the repository on GitHub (click the Fork button at https://github.com/BerriAI/litellm)
+# Fork the repository on GitHub (click the Fork button at https://github.com/BerriAI/dheera_ai)
 # Then clone your fork locally
-git clone https://github.com/YOUR_USERNAME/litellm.git
-cd litellm
+git clone https://github.com/YOUR_USERNAME/dheera_ai.git
+cd dheera_ai
 
 # Create a new branch for your feature
 git checkout -b your-feature-branch
@@ -72,24 +72,24 @@ git push origin your-feature-branch
 
 ### Where to Add Tests
 
-Add your tests to the [`tests/test_litellm/` directory](https://github.com/BerriAI/litellm/tree/main/tests/test_litellm).
+Add your tests to the [`tests/test_dheera_ai/` directory](https://github.com/BerriAI/dheera_ai/tree/main/tests/test_dheera_ai).
 
-- This directory mirrors the structure of the `litellm/` directory
+- This directory mirrors the structure of the `dheera_ai/` directory
 - **Only add mocked tests** - no real LLM API calls in this directory
 - For integration tests with real APIs, use the appropriate test directories
 
 ### File Naming Convention
 
-The `tests/test_litellm/` directory follows the same structure as `litellm/`:
+The `tests/test_dheera_ai/` directory follows the same structure as `dheera_ai/`:
 
-- `litellm/proxy/caching_routes.py` → `tests/test_litellm/proxy/test_caching_routes.py`
-- `litellm/utils.py` → `tests/test_litellm/test_utils.py`
+- `dheera_ai/proxy/caching_routes.py` → `tests/test_dheera_ai/proxy/test_caching_routes.py`
+- `dheera_ai/utils.py` → `tests/test_dheera_ai/test_utils.py`
 
 ### Example Test
 
 ```python
 import pytest
-from litellm import completion
+from dheera_ai import completion
 
 def test_your_feature():
     """Test your feature with a descriptive docstring."""
@@ -115,7 +115,7 @@ make test-unit
 
 Run specific test files:
 ```bash
-poetry run pytest tests/test_litellm/test_your_file.py -v
+poetry run pytest tests/test_dheera_ai/test_your_file.py -v
 ```
 
 ### Running Linting and Formatting Checks
@@ -174,7 +174,7 @@ make test-unit-helm            # Run Helm unit tests
 
 ## Code Quality Standards
 
-LiteLLM follows the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).
+Dheera AI follows the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).
 
 Our automated quality checks include:
 - **Black** for consistent code formatting
@@ -216,7 +216,7 @@ If `make test-unit` fails:
 
 ## Building and Running Locally
 
-### LiteLLM Proxy Server
+### Dheera AI Proxy Server
 
 To run the proxy server locally:
 
@@ -225,7 +225,7 @@ To run the proxy server locally:
 make install-proxy-dev
 
 # Start the proxy server
-poetry run litellm --config your_config.yaml
+poetry run dheera_ai --config your_config.yaml
 ```
 
 ### Docker Development
@@ -234,14 +234,14 @@ If you want to build the Docker image yourself:
 
 ```bash
 # Build using the non-root Dockerfile
-docker build -f docker/Dockerfile.non_root -t litellm_dev .
+docker build -f docker/Dockerfile.non_root -t dheera_ai_dev .
 
 # Run with your config
 docker run \
     -v $(pwd)/proxy_config.yaml:/app/config.yaml \
-    -e LITELLM_MASTER_KEY="sk-1234" \
+    -e DHEERA_AI_MASTER_KEY="sk-1234" \
     -p 4000:4000 \
-    litellm_dev \
+    dheera_ai_dev \
     --config /app/config.yaml --detailed_debug
 ```
 
@@ -259,18 +259,18 @@ docker run \
 If you need help:
 
 - 💬 [Join our Discord](https://discord.gg/wuPM9dRgDw)
-- 💬 [Join our Slack](https://www.litellm.ai/support)
+- 💬 [Join our Slack](https://www.dheera_ai.ai/support)
 - 📧 Email us: ishaan@berri.ai / krrish@berri.ai
-- 🐛 [Create an issue](https://github.com/BerriAI/litellm/issues/new)
+- 🐛 [Create an issue](https://github.com/BerriAI/dheera_ai/issues/new)
 
 ## What to Contribute
 
 Looking for ideas? Check out:
 
-- 🐛 [Good first issues](https://github.com/BerriAI/litellm/labels/good%20first%20issue)
-- 🚀 [Feature requests](https://github.com/BerriAI/litellm/labels/enhancement)
+- 🐛 [Good first issues](https://github.com/BerriAI/dheera_ai/labels/good%20first%20issue)
+- 🚀 [Feature requests](https://github.com/BerriAI/dheera_ai/labels/enhancement)
 - 📚 Documentation improvements
 - 🧪 Test coverage improvements
 - 🔌 New LLM provider integrations
 
-Thank you for contributing to LiteLLM! 🚀 
+Thank you for contributing to Dheera AI! 🚀 

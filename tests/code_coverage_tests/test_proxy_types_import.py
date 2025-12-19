@@ -5,12 +5,12 @@ import sys
 
 def test_proxy_types_not_imported():
     """
-    Test that proxy._types is not directly imported in litellm/__init__.py
+    Test that proxy._types is not directly imported in dheera_ai/__init__.py
     by examining the source code using AST parsing.
     """
-    # Read the litellm/__init__.py file
-    # local_init_file = "../litellm/"
-    init_file_path = os.path.join("./litellm", "__init__.py")
+    # Read the dheera_ai/__init__.py file
+    # local_init_file = "../dheera_ai/"
+    init_file_path = os.path.join("./dheera_ai", "__init__.py")
     if not os.path.exists(init_file_path):
         raise Exception(f"Could not find {init_file_path}")
     
@@ -56,7 +56,7 @@ def test_proxy_types_not_imported():
                 })
     
     if found_imports:
-        print("❌ BAD, this can import time to import litellm. Found direct imports of proxy._types in litellm/__init__.py:")
+        print("❌ BAD, this can import time to import dheera_ai. Found direct imports of proxy._types in dheera_ai/__init__.py:")
         print("=" * 80)
         for imp in found_imports:
             print(f"Line {imp['line']}: {imp['content']}")
@@ -67,10 +67,10 @@ def test_proxy_types_not_imported():
         print("To fix this, please conditionally import this TYPE using TYPE_CHECKING")
         
         raise Exception(
-            f"Found {len(found_imports)} direct import(s) of proxy._types in litellm/__init__.py"
+            f"Found {len(found_imports)} direct import(s) of proxy._types in dheera_ai/__init__.py"
         )
     
-    print("✓ No direct imports of proxy._types found in litellm/__init__.py")
+    print("✓ No direct imports of proxy._types found in dheera_ai/__init__.py")
     return True
 
 
@@ -79,14 +79,14 @@ def main():
     Main function to run the import test
     """
     print("=" * 60)
-    print("Testing litellm import performance")
-    print("Checking that proxy._types is not directly imported from litellm/__init__.py")
+    print("Testing dheera_ai import performance")
+    print("Checking that proxy._types is not directly imported from dheera_ai/__init__.py")
     print("=" * 60)
     
     try:
         test_proxy_types_not_imported()
         print("\n" + "=" * 60)
-        print("✓ Test passed! proxy._types is not directly imported from litellm/__init__.py")
+        print("✓ Test passed! proxy._types is not directly imported from dheera_ai/__init__.py")
         print("=" * 60)
     except Exception as e:
         print(f"\n❌ Test failed: {e}")

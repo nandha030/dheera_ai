@@ -7,10 +7,10 @@ from unittest.mock import AsyncMock
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm import completion, embedding
-from litellm.llms.watsonx.common_utils import IBMWatsonXMixin
-from litellm.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
+import dheera_ai
+from dheera_ai import completion, embedding
+from dheera_ai.llms.watsonx.common_utils import IBMWatsonXMixin
+from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
 from unittest.mock import patch, MagicMock, AsyncMock, Mock
 import pytest
 from typing import Optional
@@ -41,7 +41,7 @@ def watsonx_chat_completion_call():
             mock_response.raise_for_status = Mock()  # No-op to simulate no exception
 
             with patch.object(client, "post") as mock_post, patch.object(
-                litellm.module_level_client, "post", return_value=mock_response
+                dheera_ai.module_level_client, "post", return_value=mock_response
             ) as mock_get:
                 try:
                     completion(
@@ -99,7 +99,7 @@ def watsonx_embedding_call():
             mock_response.raise_for_status = Mock()  # No-op to simulate no exception
 
             with patch.object(client, "post") as mock_post, patch.object(
-                litellm.module_level_client, "post", return_value=mock_response
+                dheera_ai.module_level_client, "post", return_value=mock_response
             ) as mock_get:
                 try:
                     embedding(

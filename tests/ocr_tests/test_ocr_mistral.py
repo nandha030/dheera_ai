@@ -4,8 +4,8 @@ Test OCR functionality with Mistral API.
 import os
 import sys
 import pytest
-import litellm
-from litellm import Router
+import dheera_ai
+from dheera_ai import Router
 from base_ocr_unit_tests import BaseOCRTest, TEST_PDF_URL
 
 
@@ -26,14 +26,14 @@ async def test_router_aocr_with_mistral():
     """
     Test OCR with Router using Mistral OCR deployment.
     """
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     # Create router with Mistral OCR deployment
     router = Router(
         model_list=[
             {
                 "model_name": "mistral-ocr",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "mistral/mistral-ocr-latest",
                     "api_key": os.getenv("MISTRAL_API_KEY"),
                 },

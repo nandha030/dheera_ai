@@ -9,9 +9,9 @@ import pytest
 # ) # noqa
 # )  # Adds the parent directory to the system path
 
-import litellm
+import dheera_ai
 from base_llm_unit_tests import BaseLLMChatTest
-from litellm.llms.groq.chat.transformation import GroqChatConfig
+from dheera_ai.llms.groq.chat.transformation import GroqChatConfig
 
 class TestGroq(BaseLLMChatTest):
     def get_base_completion_call_args(self) -> dict:
@@ -20,7 +20,7 @@ class TestGroq(BaseLLMChatTest):
         }
 
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
         pass
 
     def test_tool_call_with_empty_enum_property(self):
@@ -37,7 +37,7 @@ class TestGroqStructuredOutputs:
     """
     Tests for Groq structured outputs handling.
     Related issues:
-    - https://github.com/BerriAI/litellm/issues/11001
+    - https://github.com/BerriAI/dheera_ai/issues/11001
     - https://github.com/openai/openai-agents-python/issues/2140
     """
 
@@ -78,7 +78,7 @@ class TestGroqStructuredOutputs:
             ]
         }
 
-        with pytest.raises(litellm.BadRequestError) as exc_info:
+        with pytest.raises(dheera_ai.BadRequestError) as exc_info:
             config.map_openai_params(
                 non_default_params=non_default_params,
                 optional_params={},

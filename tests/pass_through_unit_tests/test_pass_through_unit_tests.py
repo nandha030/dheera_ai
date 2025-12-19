@@ -14,27 +14,27 @@ from fastapi import FastAPI
 from fastapi.routing import APIRoute
 import httpx
 import pytest
-import litellm
+import dheera_ai
 from typing import AsyncGenerator
-from litellm.litellm_core_utils.litellm_logging import Logging as LiteLLMLoggingObj
-from litellm.types.passthrough_endpoints.pass_through_endpoints import EndpointType
-from litellm.proxy.pass_through_endpoints.success_handler import (
+from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging as DheeraAILoggingObj
+from dheera_ai.types.passthrough_endpoints.pass_through_endpoints import EndpointType
+from dheera_ai.proxy.pass_through_endpoints.success_handler import (
     PassThroughEndpointLogging,
 )
-from litellm.proxy.pass_through_endpoints.streaming_handler import (
+from dheera_ai.proxy.pass_through_endpoints.streaming_handler import (
     PassThroughStreamingHandler,
 )
 
-from litellm.proxy.pass_through_endpoints.pass_through_endpoints import (
+from dheera_ai.proxy.pass_through_endpoints.pass_through_endpoints import (
     pass_through_request,
 )
 from fastapi import Request
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.proxy.pass_through_endpoints.pass_through_endpoints import (
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.proxy.pass_through_endpoints.pass_through_endpoints import (
     _update_metadata_with_tags_in_header,
     HttpPassThroughEndpointHelpers,
 )
-from litellm.types.passthrough_endpoints.pass_through_endpoints import (
+from dheera_ai.types.passthrough_endpoints.pass_through_endpoints import (
     PassthroughStandardLoggingPayload,
 )
 
@@ -130,46 +130,46 @@ def test_init_kwargs_for_pass_through_endpoint_basic(
         request=request,
         user_api_key_dict=mock_user_api_key_dict,
         passthrough_logging_payload=passthrough_payload,
-        litellm_call_id="test-call-id",
-        logging_obj=LiteLLMLoggingObj(
+        dheera_ai_call_id="test-call-id",
+        logging_obj=DheeraAILoggingObj(
             model="test-model",
             messages=[],
             stream=False,
             call_type="test-call-type",
             start_time=datetime.now(),
-            litellm_call_id="test-call-id",
+            dheera_ai_call_id="test-call-id",
             function_id="test-function-id",
         ),
     )
 
     assert result["call_type"] == "pass_through_endpoint"
-    assert result["litellm_call_id"] == "test-call-id"
+    assert result["dheera_ai_call_id"] == "test-call-id"
     assert result["passthrough_logging_payload"] == passthrough_payload
 
     #########################################################
     # Check metadata
     #########################################################
-    assert result["litellm_params"]["metadata"]["user_api_key"] == "test-key"
-    assert result["litellm_params"]["metadata"]["user_api_key_hash"] == "test-key"
-    assert result["litellm_params"]["metadata"]["user_api_key_alias"] is None
-    assert result["litellm_params"]["metadata"]["user_api_key_user_email"] is None
-    assert result["litellm_params"]["metadata"]["user_api_key_user_id"] == "test-user"
-    assert result["litellm_params"]["metadata"]["user_api_key_team_id"] == "test-team"
-    assert result["litellm_params"]["metadata"]["user_api_key_org_id"] is None
-    assert result["litellm_params"]["metadata"]["user_api_key_team_alias"] is None
-    assert result["litellm_params"]["metadata"]["user_api_key_end_user_id"] == "test-user"
-    assert result["litellm_params"]["metadata"]["user_api_key_request_route"] is None
+    assert result["dheera_ai_params"]["metadata"]["user_api_key"] == "test-key"
+    assert result["dheera_ai_params"]["metadata"]["user_api_key_hash"] == "test-key"
+    assert result["dheera_ai_params"]["metadata"]["user_api_key_alias"] is None
+    assert result["dheera_ai_params"]["metadata"]["user_api_key_user_email"] is None
+    assert result["dheera_ai_params"]["metadata"]["user_api_key_user_id"] == "test-user"
+    assert result["dheera_ai_params"]["metadata"]["user_api_key_team_id"] == "test-team"
+    assert result["dheera_ai_params"]["metadata"]["user_api_key_org_id"] is None
+    assert result["dheera_ai_params"]["metadata"]["user_api_key_team_alias"] is None
+    assert result["dheera_ai_params"]["metadata"]["user_api_key_end_user_id"] == "test-user"
+    assert result["dheera_ai_params"]["metadata"]["user_api_key_request_route"] is None
 
 
-def test_init_kwargs_with_litellm_metadata(mock_request, mock_user_api_key_dict):
+def test_init_kwargs_with_dheera_ai_metadata(mock_request, mock_user_api_key_dict):
     """
-    Expected behavior: litellm_metadata should be merged with default metadata
+    Expected behavior: dheera_ai_metadata should be merged with default metadata
 
-    see usage example here: https://docs.litellm.ai/docs/pass_through/anthropic_completion#send-litellm_metadata-tags
+    see usage example here: https://docs.dheera_ai.ai/docs/pass_through/anthropic_completion#send-dheera_ai_metadata-tags
     """
     request = mock_request()
     parsed_body = {
-        "litellm_metadata": {"custom_field": "custom_value", "tags": ["tag1", "tag2"]}
+        "dheera_ai_metadata": {"custom_field": "custom_value", "tags": ["tag1", "tag2"]}
     }
     passthrough_payload = PassthroughStandardLoggingPayload(
         url="https://test.com",
@@ -181,20 +181,20 @@ def test_init_kwargs_with_litellm_metadata(mock_request, mock_user_api_key_dict)
         user_api_key_dict=mock_user_api_key_dict,
         passthrough_logging_payload=passthrough_payload,
         _parsed_body=parsed_body,
-        litellm_call_id="test-call-id",
-        logging_obj=LiteLLMLoggingObj(
+        dheera_ai_call_id="test-call-id",
+        logging_obj=DheeraAILoggingObj(
             model="test-model",
             messages=[],
             stream=False,
             call_type="test-call-type",
             start_time=datetime.now(),
-            litellm_call_id="test-call-id",
+            dheera_ai_call_id="test-call-id",
             function_id="test-function-id",
         ),
     )
 
-    # Check that litellm_metadata was merged with default metadata
-    metadata = result["litellm_params"]["metadata"]
+    # Check that dheera_ai_metadata was merged with default metadata
+    metadata = result["dheera_ai_params"]["metadata"]
     print("metadata", metadata)
     assert metadata["custom_field"] == "custom_value"
     assert metadata["tags"] == ["tag1", "tag2"]
@@ -215,20 +215,20 @@ def test_init_kwargs_with_tags_in_header(mock_request, mock_user_api_key_dict):
         request=request,
         user_api_key_dict=mock_user_api_key_dict,
         passthrough_logging_payload=passthrough_payload,
-        litellm_call_id="test-call-id",
-        logging_obj=LiteLLMLoggingObj(
+        dheera_ai_call_id="test-call-id",
+        logging_obj=DheeraAILoggingObj(
             model="test-model",
             messages=[],
             stream=False,
             call_type="test-call-type",
             start_time=datetime.now(),
-            litellm_call_id="test-call-id",
+            dheera_ai_call_id="test-call-id",
             function_id="test-function-id",
         ),
     )
 
     # Check that tags were added to metadata
-    metadata = result["litellm_params"]["metadata"]
+    metadata = result["dheera_ai_params"]["metadata"]
     print("metadata", metadata)
     assert metadata["tags"] == ["tag1", "tag2"]
 
@@ -237,7 +237,7 @@ athropic_request_body = {
     "model": "claude-sonnet-4-5-20250929",
     "max_tokens": 256,
     "messages": [{"role": "user", "content": "Hello, world tell me 2 sentences "}],
-    "litellm_metadata": {"tags": ["hi", "hello"]},
+    "dheera_ai_metadata": {"tags": ["hi", "hello"]},
 }
 
 
@@ -268,7 +268,7 @@ async def test_pass_through_request_logging_failure(
 
     # Patch both the logging handler and the httpx client
     with patch(
-        "litellm.proxy.pass_through_endpoints.pass_through_endpoints.PassThroughEndpointLogging.pass_through_async_success_handler",
+        "dheera_ai.proxy.pass_through_endpoints.pass_through_endpoints.PassThroughEndpointLogging.pass_through_async_success_handler",
         new=mock_logging_failure,
     ), patch(
         "httpx.AsyncClient.send",
@@ -331,7 +331,7 @@ async def test_pass_through_request_logging_failure_with_stream(
 
     # Patch both the logging handler and the httpx client
     with patch(
-        "litellm.proxy.pass_through_endpoints.streaming_handler.PassThroughStreamingHandler._route_streaming_logging_to_handler",
+        "dheera_ai.proxy.pass_through_endpoints.streaming_handler.PassThroughStreamingHandler._route_streaming_logging_to_handler",
         new=mock_logging_failure,
     ), patch(
         "httpx.AsyncClient.send",
@@ -370,7 +370,7 @@ def test_pass_through_routes_support_all_methods():
     Test that all pass-through routes support GET, POST, PUT, DELETE, PATCH methods
     """
     # Import the routers
-    from litellm.proxy.pass_through_endpoints.llm_passthrough_endpoints import (
+    from dheera_ai.proxy.pass_through_endpoints.llm_passthrough_endpoints import (
         router as llm_router,
     )
 
@@ -398,7 +398,7 @@ def test_is_bedrock_agent_runtime_route():
     """
     Test that _is_bedrock_agent_runtime_route correctly identifies bedrock agent runtime endpoints
     """
-    from litellm.proxy.pass_through_endpoints.llm_passthrough_endpoints import (
+    from dheera_ai.proxy.pass_through_endpoints.llm_passthrough_endpoints import (
         _is_bedrock_agent_runtime_route,
     )
 
@@ -476,14 +476,14 @@ def test_init_kwargs_filters_pricing_params(mock_request, mock_user_api_key_dict
         user_api_key_dict=mock_user_api_key_dict,
         passthrough_logging_payload=passthrough_payload,
         _parsed_body=parsed_body,
-        litellm_call_id="test-call-id",
-        logging_obj=LiteLLMLoggingObj(
+        dheera_ai_call_id="test-call-id",
+        logging_obj=DheeraAILoggingObj(
             model="gpt-4",
             messages=[{"role": "user", "content": "test"}],
             stream=False,
             call_type="completion",
             start_time=datetime.now(),
-            litellm_call_id="test-call-id",
+            dheera_ai_call_id="test-call-id",
             function_id="test-function-id",
         ),
     )
@@ -512,26 +512,26 @@ def test_init_kwargs_filters_pricing_params(mock_request, mock_user_api_key_dict
     assert parsed_body["temperature"] == 0.7
     assert parsed_body["max_tokens"] == 100
     
-    # Verify pricing parameters are stored in litellm_params for internal use
-    litellm_params = result["litellm_params"]
-    assert litellm_params["input_cost_per_token"] == 0.00002
-    assert litellm_params["output_cost_per_token"] == 0.00002
+    # Verify pricing parameters are stored in dheera_ai_params for internal use
+    dheera_ai_params = result["dheera_ai_params"]
+    assert dheera_ai_params["input_cost_per_token"] == 0.00002
+    assert dheera_ai_params["output_cost_per_token"] == 0.00002
     # Note: Other pricing params are also stored but we test the key ones that caused the regression
 
 
 def test_custom_pricing_used_in_cost_calculation():
     """
-    Test that when custom pricing parameters are provided in litellm_params,
+    Test that when custom pricing parameters are provided in dheera_ai_params,
     they are actually used for cost calculation.
     
     This ensures that the custom pricing functionality works end-to-end:
-    1. Pricing params are stored in litellm_params
+    1. Pricing params are stored in dheera_ai_params
     2. These params are used by completion_cost() to calculate costs
     
     Regression test for: LIT-1221
     """
-    from litellm import completion_cost, Choices, Message, ModelResponse
-    from litellm.utils import Usage
+    from dheera_ai import completion_cost, Choices, Message, ModelResponse
+    from dheera_ai.utils import Usage
     
     # Create a mock response with usage
     resp = ModelResponse(

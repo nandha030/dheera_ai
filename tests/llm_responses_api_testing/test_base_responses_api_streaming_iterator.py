@@ -23,12 +23,12 @@ import pytest
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-from litellm.constants import STREAM_SSE_DONE_STRING
-from litellm.litellm_core_utils.litellm_logging import Logging as LiteLLMLoggingObj
-from litellm.llms.base_llm.responses.transformation import BaseResponsesAPIConfig
-from litellm.responses.streaming_iterator import BaseResponsesAPIStreamingIterator
-from litellm.responses.utils import ResponsesAPIRequestUtils
-from litellm.types.llms.openai import (
+from dheera_ai.constants import STREAM_SSE_DONE_STRING
+from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging as DheeraAILoggingObj
+from dheera_ai.llms.base_llm.responses.transformation import BaseResponsesAPIConfig
+from dheera_ai.responses.streaming_iterator import BaseResponsesAPIStreamingIterator
+from dheera_ai.responses.utils import ResponsesAPIRequestUtils
+from dheera_ai.types.llms.openai import (
     ResponseCompletedEvent,
     ResponsesAPIResponse,
     ResponsesAPIStreamEvents,
@@ -47,8 +47,8 @@ class TestBaseResponsesAPIStreamingIterator:
         # Mock dependencies
         mock_response = Mock()
         mock_response.headers = {}
-        mock_logging_obj = Mock(spec=LiteLLMLoggingObj)
-        mock_logging_obj.model_call_details = {"litellm_params": {}}
+        mock_logging_obj = Mock(spec=DheeraAILoggingObj)
+        mock_logging_obj.model_call_details = {"dheera_ai_params": {}}
         mock_config = Mock(spec=BaseResponsesAPIConfig)
         
         # Create a mock ResponsesAPIResponse for the completed event
@@ -73,7 +73,7 @@ class TestBaseResponsesAPIStreamingIterator:
             model="gpt-4",
             responses_api_provider_config=mock_config,
             logging_obj=mock_logging_obj,
-            litellm_metadata={"model_info": {"id": "model_123"}},
+            dheera_ai_metadata={"model_info": {"id": "model_123"}},
             custom_llm_provider="openai"
         )
         
@@ -101,7 +101,7 @@ class TestBaseResponsesAPIStreamingIterator:
             # Verify that _update_responses_api_response_id_with_model_id was called
             mock_update_id.assert_called_once_with(
                 responses_api_response=mock_responses_api_response,
-                litellm_metadata={"model_info": {"id": "model_123"}},
+                dheera_ai_metadata={"model_info": {"id": "model_123"}},
                 custom_llm_provider="openai"
             )
             
@@ -119,8 +119,8 @@ class TestBaseResponsesAPIStreamingIterator:
         # Mock dependencies
         mock_response = Mock()
         mock_response.headers = {}
-        mock_logging_obj = Mock(spec=LiteLLMLoggingObj)
-        mock_logging_obj.model_call_details = {"litellm_params": {}}
+        mock_logging_obj = Mock(spec=DheeraAILoggingObj)
+        mock_logging_obj.model_call_details = {"dheera_ai_params": {}}
         mock_config = Mock(spec=BaseResponsesAPIConfig)
         
         # Create a mock OutputTextDeltaEvent (not a completed event)
@@ -139,7 +139,7 @@ class TestBaseResponsesAPIStreamingIterator:
             model="gpt-4",
             responses_api_provider_config=mock_config,
             logging_obj=mock_logging_obj,
-            litellm_metadata={"model_info": {"id": "model_123"}},
+            dheera_ai_metadata={"model_info": {"id": "model_123"}},
             custom_llm_provider="openai"
         )
         
@@ -176,8 +176,8 @@ class TestBaseResponsesAPIStreamingIterator:
         # Mock dependencies
         mock_response = Mock()
         mock_response.headers = {}
-        mock_logging_obj = Mock(spec=LiteLLMLoggingObj)
-        mock_logging_obj.model_call_details = {"litellm_params": {}}
+        mock_logging_obj = Mock(spec=DheeraAILoggingObj)
+        mock_logging_obj.model_call_details = {"dheera_ai_params": {}}
         mock_config = Mock(spec=BaseResponsesAPIConfig)
         
         # Create the iterator instance
@@ -202,8 +202,8 @@ class TestBaseResponsesAPIStreamingIterator:
         # Mock dependencies
         mock_response = Mock()
         mock_response.headers = {}
-        mock_logging_obj = Mock(spec=LiteLLMLoggingObj)
-        mock_logging_obj.model_call_details = {"litellm_params": {}}
+        mock_logging_obj = Mock(spec=DheeraAILoggingObj)
+        mock_logging_obj.model_call_details = {"dheera_ai_params": {}}
         mock_config = Mock(spec=BaseResponsesAPIConfig)
         
         # Create the iterator instance
@@ -228,8 +228,8 @@ class TestBaseResponsesAPIStreamingIterator:
         # Mock dependencies
         mock_response = Mock()
         mock_response.headers = {}
-        mock_logging_obj = Mock(spec=LiteLLMLoggingObj)
-        mock_logging_obj.model_call_details = {"litellm_params": {}}
+        mock_logging_obj = Mock(spec=DheeraAILoggingObj)
+        mock_logging_obj.model_call_details = {"dheera_ai_params": {}}
         mock_config = Mock(spec=BaseResponsesAPIConfig)
         
         # Create the iterator instance

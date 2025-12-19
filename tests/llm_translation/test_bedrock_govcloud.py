@@ -3,22 +3,22 @@ Tests for AWS Bedrock GovCloud model support
 """
 
 import os
-os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"  # Load from local file
+os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"  # Load from local file
 
 import pytest
 from unittest.mock import Mock, patch
 
 # Import modules that need to be reloaded
 import importlib
-import litellm.litellm_core_utils.get_model_cost_map
-import litellm
+import dheera_ai.dheera_ai_core_utils.get_model_cost_map
+import dheera_ai
 
 # Reload modules to pick up environment variable
-importlib.reload(litellm.litellm_core_utils.get_model_cost_map)
-importlib.reload(litellm)
+importlib.reload(dheera_ai.dheera_ai_core_utils.get_model_cost_map)
+importlib.reload(dheera_ai)
 
-from litellm import completion
-from litellm.llms.bedrock.common_utils import BedrockModelInfo, AmazonBedrockGlobalConfig
+from dheera_ai import completion
+from dheera_ai.llms.bedrock.common_utils import BedrockModelInfo, AmazonBedrockGlobalConfig
 
 
 class TestBedrockGovCloudSupport:
@@ -38,7 +38,7 @@ class TestBedrockGovCloudSupport:
 
     def test_govcloud_models_in_model_cost(self):
         """Test that GovCloud models are present in model cost configuration"""
-        from litellm import model_cost
+        from dheera_ai import model_cost
         
         # Test Claude models in GovCloud
         assert "bedrock/us-gov-east-1/anthropic.claude-3-5-sonnet-20240620-v1:0" in model_cost
@@ -87,14 +87,14 @@ class TestBedrockGovCloudSupport:
         base_model = BedrockModelInfo.get_base_model("bedrock/us-gov-west-1/meta.llama3-8b-instruct-v1:0")
         assert base_model == "meta.llama3-8b-instruct-v1:0"
 
-    @patch('litellm.llms.bedrock.common_utils.init_bedrock_client')
+    @patch('dheera_ai.llms.bedrock.common_utils.init_bedrock_client')
     def test_govcloud_client_initialization(self, mock_init_client):
         """Test that Bedrock client can be initialized with GovCloud regions"""
         mock_client = Mock()
         mock_init_client.return_value = mock_client
         
         # Test that init_bedrock_client accepts GovCloud regions
-        from litellm.llms.bedrock.common_utils import init_bedrock_client
+        from dheera_ai.llms.bedrock.common_utils import init_bedrock_client
         
         # This should not raise an error
         client = init_bedrock_client(
@@ -117,12 +117,12 @@ class TestBedrockGovCloudSupport:
         """Test that GovCloud models are NOT included in bedrock_models list (they are pricing-only)"""
         # Regional models including GovCloud should be excluded from bedrock_models list
         # They are only in model_cost for pricing purposes
-        assert not any("us-gov-east-1" in model for model in litellm.bedrock_models)
-        assert not any("us-gov-west-1" in model for model in litellm.bedrock_models)
+        assert not any("us-gov-east-1" in model for model in dheera_ai.bedrock_models)
+        assert not any("us-gov-west-1" in model for model in dheera_ai.bedrock_models)
 
     def test_govcloud_model_cost_properties(self):
         """Test that GovCloud models have proper cost configuration"""
-        from litellm import model_cost
+        from dheera_ai import model_cost
         
         # Check a specific GovCloud model has all required properties
         govcloud_model = model_cost["bedrock/us-gov-east-1/anthropic.claude-3-5-sonnet-20240620-v1:0"]
@@ -132,12 +132,12 @@ class TestBedrockGovCloudSupport:
         assert "max_output_tokens" in govcloud_model
         assert "input_cost_per_token" in govcloud_model
         assert "output_cost_per_token" in govcloud_model
-        assert govcloud_model["litellm_provider"] == "bedrock"
+        assert govcloud_model["dheera_ai_provider"] == "bedrock"
         assert govcloud_model["mode"] == "chat"
 
     def test_govcloud_model_pricing_verification(self):
         """Test that GovCloud models have correct pricing that differs from base models"""
-        from litellm import model_cost
+        from dheera_ai import model_cost
         
         # Test Claude 3.5 Sonnet pricing
         base_model = "anthropic.claude-3-5-sonnet-20240620-v1:0"
@@ -191,11 +191,11 @@ class TestBedrockGovCloudSupport:
         assert gov_west_haiku_pricing["input_cost_per_token"] == base_haiku_pricing["input_cost_per_token"] * 1.2
         assert gov_west_haiku_pricing["output_cost_per_token"] == base_haiku_pricing["output_cost_per_token"] * 1.2
 
-    @patch('litellm.completion')
+    @patch('dheera_ai.completion')
     def test_govcloud_completion_cost_calculation(self, mock_completion):
         """Test that completion requests use correct pricing for GovCloud models"""
-        from litellm import completion_cost, Choices, Message, ModelResponse
-        from litellm.utils import Usage
+        from dheera_ai import completion_cost, Choices, Message, ModelResponse
+        from dheera_ai.utils import Usage
         
         # Mock completion response for base model
         base_model_response = ModelResponse(
@@ -321,10 +321,10 @@ class TestBedrockGovCloudSupport:
         assert abs(large_gov_cost - expected_large_gov_cost) < 1e-10, f"Large gov cost mismatch: got {large_gov_cost}, expected {expected_large_gov_cost}"
         assert abs(large_gov_cost - large_base_cost * 1.2) < 1e-10, f"Large gov cost should be 20% higher than base: got {large_gov_cost}, expected {large_base_cost * 1.2}"
 
-    @patch('litellm.llms.custom_httpx.http_handler.HTTPHandler.post')
+    @patch('dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post')
     def test_govcloud_completion_with_cost_tracking(self, mock_post):
         """Test that completion requests with cost tracking use correct pricing for GovCloud models"""
-        from litellm import completion
+        from dheera_ai import completion
         from unittest.mock import Mock
         import json
         
@@ -396,7 +396,7 @@ class TestBedrockGovCloudSupport:
         assert mock_post.call_count == 3
         
         # Verify usage information is present
-        from litellm.types.utils import ModelResponse
+        from dheera_ai.types.utils import ModelResponse
         assert isinstance(base_result, ModelResponse)
         assert isinstance(gov_east_result, ModelResponse)
         assert isinstance(gov_west_result, ModelResponse)
@@ -446,8 +446,8 @@ class TestBedrockGovCloudSupport:
 
     def test_govcloud_cost_per_token_with_region(self):
         """Test that cost_per_token function correctly uses region-based pricing for GovCloud models"""
-        from litellm import cost_per_token
-        from litellm.utils import Usage
+        from dheera_ai import cost_per_token
+        from dheera_ai.utils import Usage
         
         # Test usage object
         usage = Usage(prompt_tokens=20, completion_tokens=10, total_tokens=30)

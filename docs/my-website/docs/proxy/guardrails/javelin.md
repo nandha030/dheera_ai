@@ -7,20 +7,20 @@ import TabItem from '@theme/TabItem';
 Javelin provides AI safety and content moderation services with support for prompt injection detection, trust & safety violations, and language detection.
 
 ## Quick Start
-### 1. Define Guardrails on your LiteLLM config.yaml 
+### 1. Define Guardrails on your Dheera AI config.yaml 
 
 Define your guardrails under the `guardrails` section
 
-```yaml showLineNumbers title="litellm config.yaml"
+```yaml showLineNumbers title="dheera_ai config.yaml"
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "javelin-prompt-injection"
-    litellm_params:
+    dheera_ai_params:
       guardrail: javelin
       mode: "pre_call"
       api_key: os.environ/JAVELIN_API_KEY
@@ -28,10 +28,10 @@ guardrails:
       guardrail_name: "promptinjectiondetection"
       api_version: "v1"
       metadata:
-        request_source: "litellm-proxy"
+        request_source: "dheera_ai-proxy"
       application: "my-app"
   - guardrail_name: "javelin-trust-safety"
-    litellm_params:
+    dheera_ai_params:
       guardrail: javelin
       mode: "pre_call"
       api_key: os.environ/JAVELIN_API_KEY
@@ -39,7 +39,7 @@ guardrails:
       guardrail_name: "trustsafety"
       api_version: "v1"
   - guardrail_name: "javelin-language-detection"
-    litellm_params:
+    dheera_ai_params:
       guardrail: javelin
       mode: "pre_call"
       api_key: os.environ/JAVELIN_API_KEY
@@ -54,10 +54,10 @@ guardrails:
 - `post_call` Run **after** LLM call, on **input & output**
 - `during_call` Run **during** LLM call, on **input** Same as `pre_call` but runs in parallel as LLM call. Response not returned until guardrail check completes
 
-### 2. Start LiteLLM Gateway 
+### 2. Start Dheera AI Gateway 
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 ### 3. Test request 
@@ -276,7 +276,7 @@ Detects the language of input text and can enforce language policies.
 ```yaml
 guardrails:
   - guardrail_name: "javelin-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: javelin
       mode: "pre_call"
       api_key: os.environ/JAVELIN_API_KEY

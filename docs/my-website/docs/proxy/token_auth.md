@@ -7,11 +7,11 @@ Use JWT's to auth admins / users / projects into the proxy.
 
 :::info
 
-✨ JWT-based Auth  is on LiteLLM Enterprise
+✨ JWT-based Auth  is on Dheera AI Enterprise
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+[Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
@@ -36,7 +36,7 @@ general_settings:
 
 model_list:
 - model_name: azure-gpt-3.5 
-  litellm_params:
+  dheera_ai_params:
       model: azure/<your-deployment-name>
       api_base: os.environ/AZURE_API_BASE
       api_key: os.environ/AZURE_API_KEY
@@ -48,9 +48,9 @@ model_list:
 <Tabs>
 <TabItem value="admin" label="admin">
 
-Create a client scope called `litellm_proxy_admin` in your OpenID provider (e.g. Keycloak).
+Create a client scope called `dheera_ai_proxy_admin` in your OpenID provider (e.g. Keycloak).
 
-Grant your user, `litellm_proxy_admin` scope when generating a JWT. 
+Grant your user, `dheera_ai_proxy_admin` scope when generating a JWT. 
 
 ```bash
 curl --location ' 'https://demo.duendesoftware.com/connect/token'' \
@@ -60,7 +60,7 @@ curl --location ' 'https://demo.duendesoftware.com/connect/token'' \
 --data-urlencode 'username=test-{USERNAME}' \
 --data-urlencode 'password={USER_PASSWORD}' \
 --data-urlencode 'grant_type=password' \
---data-urlencode 'scope=litellm_proxy_admin' # 👈 grant this scope
+--data-urlencode 'scope=dheera_ai_proxy_admin' # 👈 grant this scope
 ```
 </TabItem>
 <TabItem value="project" label="project">
@@ -106,7 +106,7 @@ curl --location 'http://0.0.0.0:4000/v1/chat/completions' \
 
 ### Multiple OIDC providers
 
-Use this if you want LiteLLM to validate your JWT against multiple OIDC providers (e.g. Google Cloud, GitHub Auth)
+Use this if you want Dheera AI to validate your JWT against multiple OIDC providers (e.g. Google Cloud, GitHub Auth)
 
 Set `JWT_PUBLIC_KEY_URL` in your environment to a comma-separated list of URLs for your OIDC providers.
 
@@ -116,19 +116,19 @@ export JWT_PUBLIC_KEY_URL="https://demo.duendesoftware.com/.well-known/openid-co
 
 ### Set Accepted JWT Scope Names 
 
-Change the string in JWT 'scopes', that litellm evaluates to see if a user has admin access.
+Change the string in JWT 'scopes', that dheera_ai evaluates to see if a user has admin access.
 
 ```yaml
 general_settings:
   master_key: sk-1234
   enable_jwt_auth: True
-  litellm_jwtauth:
-    admin_jwt_scope: "litellm-proxy-admin"
+  dheera_ai_jwtauth:
+    admin_jwt_scope: "dheera_ai-proxy-admin"
 ```
 
 ### Tracking End-Users / Internal Users / Team / Org
 
-Set the field in the jwt token, which corresponds to a litellm user / team / org.
+Set the field in the jwt token, which corresponds to a dheera_ai user / team / org.
 
 **Note:** All JWT fields support dot notation to access nested claims (e.g., `"user.sub"`, `"resource_access.client.roles"`).
 
@@ -136,8 +136,8 @@ Set the field in the jwt token, which corresponds to a litellm user / team / org
 general_settings:
   master_key: sk-1234
   enable_jwt_auth: True
-  litellm_jwtauth:
-    admin_jwt_scope: "litellm-proxy-admin"
+  dheera_ai_jwtauth:
+    admin_jwt_scope: "dheera_ai-proxy-admin"
     team_id_jwt_field: "client_id" # 👈 CAN BE ANY FIELD (supports dot notation for nested claims)
     user_id_jwt_field: "sub" # 👈 CAN BE ANY FIELD (supports dot notation for nested claims)
     org_id_jwt_field: "org_id" # 👈 CAN BE ANY FIELD (supports dot notation for nested claims)
@@ -174,14 +174,14 @@ Expected JWT (flat structure):
 **Configuration for nested example:**
 
 ```yaml
-litellm_jwtauth:
+dheera_ai_jwtauth:
   user_id_jwt_field: "user.sub"
   user_email_jwt_field: "user.email"
   team_id_jwt_field: "tenant.team_id"
   org_id_jwt_field: "organization.id"
 ```
 
-Now litellm will automatically update the spend for the user/team/org in the db for each call. 
+Now dheera_ai will automatically update the spend for the user/team/org in the db for each call. 
 
 ### JWT Scopes
 
@@ -189,12 +189,12 @@ Here's what scopes on JWT-Auth tokens look like
 
 **Can be a list**
 ```
-scope: ["litellm-proxy-admin",...]
+scope: ["dheera_ai-proxy-admin",...]
 ```
 
 **Can be a space-separated string**
 ```
-scope: "litellm-proxy-admin ..."
+scope: "dheera_ai-proxy-admin ..."
 ```
 
 ### Control model access with Teams
@@ -205,7 +205,7 @@ scope: "litellm-proxy-admin ..."
 ```yaml
 general_settings:
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     user_id_jwt_field: "sub"
     team_ids_jwt_field: "groups" 
     user_id_upsert: true # add user_id to the db if they don't exist
@@ -221,7 +221,7 @@ This is assuming your token looks like this:
 }
 ```
 
-2. Create the teams on LiteLLM 
+2. Create the teams on Dheera AI 
 
 ```bash
 curl -X POST '<PROXY_BASE_URL>/team/new' \
@@ -242,20 +242,20 @@ OIDC Auth for API: [**See Walkthrough**](https://www.loom.com/share/00fe2deab59a
 
 ### Flow
 
-- Validate if user id is in the DB (LiteLLM_UserTable)
-- Validate if any of the groups are in the DB (LiteLLM_TeamTable)
+- Validate if user id is in the DB (Dheera AI_UserTable)
+- Validate if any of the groups are in the DB (Dheera AI_TeamTable)
 - Validate if any group has model access
 - If all checks pass, allow the request
 
 ### Select Team via Request Header
 
-When a JWT token contains multiple teams (via `team_ids_jwt_field`), you can explicitly select which team to use for a request by passing the `x-litellm-team-id` header.
+When a JWT token contains multiple teams (via `team_ids_jwt_field`), you can explicitly select which team to use for a request by passing the `x-dheera_ai-team-id` header.
 
 ```bash
 curl -X POST 'http://0.0.0.0:4000/v1/chat/completions' \
 -H 'Content-Type: application/json' \
 -H 'Authorization: Bearer <your-jwt-token>' \
--H 'x-litellm-team-id: team_id_2' \
+-H 'x-dheera_ai-team-id: team_id_2' \
 -d '{
   "model": "gpt-4",
   "messages": [{"role": "user", "content": "Hello"}]
@@ -265,12 +265,12 @@ curl -X POST 'http://0.0.0.0:4000/v1/chat/completions' \
 **Validation:**
 - The team ID in the header must exist in the JWT's `team_ids_jwt_field` list or match `team_id_jwt_field`
 - If an invalid team is specified, a 403 error is returned
-- If no header is provided, LiteLLM auto-selects the first team with access to the requested model
+- If no header is provided, Dheera AI auto-selects the first team with access to the requested model
 
 
 ### Custom JWT Validate
 
-Validate a JWT Token using custom logic, if you need an extra way to verify if tokens are valid for LiteLLM Proxy.
+Validate a JWT Token using custom logic, if you need an extra way to verify if tokens are valid for Dheera AI Proxy.
 
 #### 1. Setup custom validate function
 
@@ -297,7 +297,7 @@ def my_custom_validate(token: str) -> Literal[True]:
 general_settings:
   master_key: sk-1234
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     user_id_jwt_field: "sub"
     team_id_jwt_field: "tenant_id"
     user_id_upsert: True
@@ -335,15 +335,15 @@ By default:
 - Admins: can access only management routes (`/team/*`, `/key/*`, `/user/*`)
 - Teams: can access only openai routes (`/chat/completions`, etc.)+ info routes (`/*/info`)
 
-[**See Code**](https://github.com/BerriAI/litellm/blob/b204f0c01c703317d812a1553363ab0cb989d5b6/litellm/proxy/_types.py#L95)
+[**See Code**](https://github.com/BerriAI/dheera_ai/blob/b204f0c01c703317d812a1553363ab0cb989d5b6/dheera_ai/proxy/_types.py#L95)
 
 **Admin Routes**
 ```yaml
 general_settings:
   master_key: sk-1234
   enable_jwt_auth: True
-  litellm_jwtauth:
-    admin_jwt_scope: "litellm-proxy-admin"
+  dheera_ai_jwtauth:
+    admin_jwt_scope: "dheera_ai-proxy-admin"
     admin_allowed_routes: ["/v1/embeddings"]
 ```
 
@@ -352,19 +352,19 @@ general_settings:
 general_settings:
   master_key: sk-1234
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     ...
-    team_id_jwt_field: "litellm-team" # 👈 Set field in the JWT token that stores the team ID
+    team_id_jwt_field: "dheera_ai-team" # 👈 Set field in the JWT token that stores the team ID
     team_allowed_routes: ["/v1/chat/completions"] # 👈 Set accepted routes
 ```
 
 ### Allowing other provider routes for Teams
 
-To enable team JWT tokens to access Anthropic-style endpoints such as `/v1/messages`, update `team_allowed_routes` in your `litellm_jwtauth` configuration. `team_allowed_routes` supports the following values:
+To enable team JWT tokens to access Anthropic-style endpoints such as `/v1/messages`, update `team_allowed_routes` in your `dheera_ai_jwtauth` configuration. `team_allowed_routes` supports the following values:
 
-- Named route groups from `LiteLLMRoutes` (e.g., `openai_routes`, `anthropic_routes`, `info_routes`, `mapped_pass_through_routes`).
+- Named route groups from `Dheera AIRoutes` (e.g., `openai_routes`, `anthropic_routes`, `info_routes`, `mapped_pass_through_routes`).
 
-Below is a quick reference for the route groups you can use and example representative routes from each group. If you need the exhaustive list, see the `LiteLLMRoutes` enum in `litellm/proxy/_types.py` for the authoritative list.
+Below is a quick reference for the route groups you can use and example representative routes from each group. If you need the exhaustive list, see the `Dheera AIRoutes` enum in `dheera_ai/proxy/_types.py` for the authoritative list.
 
 | Route Group | What it contains | Representative routes |
 |-------------|------------------|-----------------------|
@@ -377,13 +377,13 @@ Below is a quick reference for the route groups you can use and example represen
 | `info_routes` | Read-only & info endpoints used by the UI | `/key/info`, `/team/info`, `/v1/models` |
 | `management_routes` | Admin-only management endpoints (create/update/delete user/team/model) | `/team/new`, `/key/generate`, `/model/new` |
 | `spend_tracking_routes` | Budget/spend related endpoints | `/spend/logs`, `/spend/keys` |
-| `public_routes` | Public and unauthenticated endpoints | `/`, `/routes`, `/.well-known/litellm-ui-config` |
+| `public_routes` | Public and unauthenticated endpoints | `/`, `/routes`, `/.well-known/dheera_ai-ui-config` |
 
-Note: `llm_api_routes` is the union of OpenAI, Anthropic, Google, pass-through and other LLM routes (`openai_routes + anthropic_routes + google_routes + mapped_pass_through_routes + passthrough_routes_wildcard + apply_guardrail_routes + mcp_routes + litellm_native_routes`).
+Note: `llm_api_routes` is the union of OpenAI, Anthropic, Google, pass-through and other LLM routes (`openai_routes + anthropic_routes + google_routes + mapped_pass_through_routes + passthrough_routes_wildcard + apply_guardrail_routes + mcp_routes + dheera_ai_native_routes`).
 
-Defaults (what the proxy uses if you don't override them in `litellm_jwtauth`):
+Defaults (what the proxy uses if you don't override them in `dheera_ai_jwtauth`):
 
-- `admin_jwt_scope`: `litellm_proxy_admin`
+- `admin_jwt_scope`: `dheera_ai_proxy_admin`
 - `admin_allowed_routes` (default): `management_routes`, `spend_tracking_routes`, `global_spend_tracking_routes`, `info_routes` 
 - `team_allowed_routes` (default): `openai_routes`, `info_routes` 
 - `public_allowed_routes` (default): `public_routes`
@@ -394,7 +394,7 @@ Example: Allow team JWTs to call Anthropic `/v1/messages` (either by route group
 ```yaml
 general_settings:
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     team_ids_jwt_field: "team_ids"
     team_allowed_routes: ["openai_routes", "info_routes", "anthropic_routes"]
 ```
@@ -404,7 +404,7 @@ Or selectively allow the exact Anthropic message endpoint only:
 ```yaml
 general_settings:
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     team_ids_jwt_field: "team_ids"
     team_allowed_routes: ["/v1/messages", "info_routes"]
 ```
@@ -418,8 +418,8 @@ Control how long public keys are cached for (in seconds).
 general_settings:
   master_key: sk-1234
   enable_jwt_auth: True
-  litellm_jwtauth:
-    admin_jwt_scope: "litellm-proxy-admin"
+  dheera_ai_jwtauth:
+    admin_jwt_scope: "dheera_ai-proxy-admin"
     admin_allowed_routes: ["/v1/embeddings"]
     public_key_ttl: 600 # 👈 KEY CHANGE
 ```
@@ -432,7 +432,7 @@ Set a custom field in which the team_id exists. By default, the 'client_id' fiel
 general_settings:
   master_key: sk-1234
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     team_id_jwt_field: "client_id" # 👈 KEY CHANGE
 ```
 
@@ -447,7 +447,7 @@ curl --location 'http://0.0.0.0:4000/team/block' \
 --header 'Authorization: Bearer <admin-token>' \
 --header 'Content-Type: application/json' \
 --data '{
-    "team_id": "litellm-test-client-id-new" # 👈 set team id
+    "team_id": "dheera_ai-test-client-id-new" # 👈 set team id
 }'
 ```
 
@@ -458,7 +458,7 @@ curl --location 'http://0.0.0.0:4000/team/unblock' \
 --header 'Authorization: Bearer <admin-token>' \
 --header 'Content-Type: application/json' \
 --data '{
-    "team_id": "litellm-test-client-id-new" # 👈 set team id
+    "team_id": "dheera_ai-test-client-id-new" # 👈 set team id
 }'
 ```
 
@@ -473,7 +473,7 @@ Allow users who belong to a specific email domain, automatic access to the proxy
 general_settings:
   master_key: sk-1234
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     user_email_jwt_field: "email" # 👈 checks 'email' field in jwt payload
     user_allowed_email_domain: "my-co.com" # 👈 OPTIONAL - allows user@my-co.com to call proxy
     user_id_upsert: true # 👈 upserts the user to db, if valid email but not in db
@@ -481,7 +481,7 @@ general_settings:
 
 ## OIDC UserInfo Endpoint
 
-Use this when your JWT/access token doesn't contain user-identifying information. LiteLLM will call your identity provider's UserInfo endpoint to fetch user details.
+Use this when your JWT/access token doesn't contain user-identifying information. Dheera AI will call your identity provider's UserInfo endpoint to fetch user details.
 
 ### When to Use
 
@@ -494,7 +494,7 @@ Use this when your JWT/access token doesn't contain user-identifying information
 ```yaml title="config.yaml" showLineNumbers
 general_settings:
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     # Enable OIDC UserInfo endpoint
     oidc_userinfo_enabled: true
     oidc_userinfo_endpoint: "https://your-idp.com/oauth2/userinfo"
@@ -511,24 +511,24 @@ general_settings:
 ```mermaid
 sequenceDiagram
     participant Client
-    participant LiteLLM
+    participant Dheera AI
     participant IdP as Identity Provider
 
-    Client->>LiteLLM: Request with Bearer token
-    Note over LiteLLM: Check cache for UserInfo
+    Client->>Dheera AI: Request with Bearer token
+    Note over Dheera AI: Check cache for UserInfo
     
-    LiteLLM->>IdP: GET /userinfo (if not cached)<br/>Authorization: Bearer {token}
-    IdP-->>LiteLLM: User data (sub, email, roles)
+    Dheera AI->>IdP: GET /userinfo (if not cached)<br/>Authorization: Bearer {token}
+    IdP-->>Dheera AI: User data (sub, email, roles)
     
-    Note over LiteLLM: Cache response (TTL: 5min)<br/>Extract user_id, email, roles<br/>Perform RBAC checks
+    Note over Dheera AI: Cache response (TTL: 5min)<br/>Extract user_id, email, roles<br/>Perform RBAC checks
     
-    LiteLLM-->>Client: Authorized/Denied
+    Dheera AI-->>Client: Authorized/Denied
 ```
 
 ### Example: Azure AD
 
 ```yaml title="config.yaml" showLineNumbers
-litellm_jwtauth:
+dheera_ai_jwtauth:
   oidc_userinfo_enabled: true
   oidc_userinfo_endpoint: "https://graph.microsoft.com/oidc/userinfo"
   user_id_jwt_field: "sub"
@@ -538,7 +538,7 @@ litellm_jwtauth:
 ### Example: Keycloak
 
 ```yaml title="config.yaml" showLineNumbers
-litellm_jwtauth:
+dheera_ai_jwtauth:
   oidc_userinfo_enabled: true
   oidc_userinfo_endpoint: "https://keycloak.example.com/realms/your-realm/protocol/openid-connect/userinfo"
   user_id_jwt_field: "sub"
@@ -559,11 +559,11 @@ Very important, set `enforce_rbac: true` to ensure that the RBAC system is enabl
 ```yaml
 general_settings:
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     object_id_jwt_field: "oid" # can be either user / team, inferred from the role mapping
     roles_jwt_field: "roles"
     role_mappings:
-      - role: litellm.api.consumer
+      - role: dheera_ai.api.consumer
         internal_role: "team"
     enforce_rbac: true # 👈 VERY IMPORTANT
 
@@ -573,12 +573,12 @@ general_settings:
       routes: ["/v1/chat/completions"]
 
 environment_variables:
-  JWT_AUDIENCE: "api://LiteLLM_Proxy" # ensures audience is validated
+  JWT_AUDIENCE: "api://Dheera AI_Proxy" # ensures audience is validated
 ```
 
 - `object_id_jwt_field`: The field in the JWT token that contains the object id. This id can be either a user id or a team id. Use this instead of `user_id_jwt_field` and `team_id_jwt_field`. If the same field could be both. **Supports dot notation** for nested claims (e.g., `"profile.object_id"`).
 
-- `roles_jwt_field`: The field in the JWT token that contains the roles. This field is a list of roles that the user has. **Supports dot notation** for nested fields - e.g., `resource_access.litellm-test-client-id.roles`.
+- `roles_jwt_field`: The field in the JWT token that contains the roles. This field is a list of roles that the user has. **Supports dot notation** for nested fields - e.g., `resource_access.dheera_ai-test-client-id.roles`.
 
 **Additional JWT Field Configuration Options:**
 
@@ -586,7 +586,7 @@ environment_variables:
 - `user_email_jwt_field`: Field containing user email. **Supports dot notation** (e.g., `"email"`, `"user.email"`).
 - `end_user_id_jwt_field`: Field containing end-user ID for cost tracking. **Supports dot notation** (e.g., `"customer_id"`, `"customer.id"`).
 
-- `role_mappings`: A list of role mappings. Map the received role in the JWT token to an internal role on LiteLLM.
+- `role_mappings`: A list of role mappings. Map the received role in the JWT token to an internal role on Dheera AI.
 
 - `JWT_AUDIENCE`: The audience of the JWT token. This is used to validate the audience of the JWT token. Set via an environment variable.
 
@@ -594,16 +594,16 @@ environment_variables:
 
 ```bash
 {
-  "aud": "api://LiteLLM_Proxy",
+  "aud": "api://Dheera AI_Proxy",
   "oid": "eec236bd-0135-4b28-9354-8fc4032d543e",
-  "roles": ["litellm.api.consumer"] 
+  "roles": ["dheera_ai.api.consumer"] 
 }
 ```
 
 ### Role Mapping Spec 
 
 - `role`: The expected role in the JWT token. 
-- `internal_role`: The internal role on LiteLLM that will be used to control access. 
+- `internal_role`: The internal role on Dheera AI that will be used to control access. 
 
 Supported internal roles:
 - `team`: Team object will be used for RBAC spend tracking. Use this for tracking spend for a 'use case'. 
@@ -622,23 +622,23 @@ Control which models a JWT can access. Set `enforce_scope_based_access: true` to
 ```yaml
 model_list:
   - model_name: anthropic-claude
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet
       api_key: os.environ/ANTHROPIC_API_KEY
   - model_name: gpt-3.5-turbo-testing
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 general_settings:
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     team_id_jwt_field: "client_id" # 👈 set the field in the JWT token that contains the team id
     team_id_upsert: true # 👈 upsert the team to db, if team id is not found in db
     scope_mappings:
-      - scope: litellm.api.consumer
+      - scope: dheera_ai.api.consumer
         models: ["anthropic-claude"]
-      - scope: litellm.api.gpt_3_5_turbo
+      - scope: dheera_ai.api.gpt_3_5_turbo
         models: ["gpt-3.5-turbo-testing"]
     enforce_scope_based_access: true # 👈 enforce scope-based access control
     enforce_rbac: true # 👈 enforces only a Team/User/ProxyAdmin can access the proxy.
@@ -655,7 +655,7 @@ Expected Token:
 
 ```bash
 {
-  "scope": ["litellm.api.consumer", "litellm.api.gpt_3_5_turbo"] # can be a list or a space-separated string
+  "scope": ["dheera_ai.api.consumer", "dheera_ai.api.gpt_3_5_turbo"] # can be a list or a space-separated string
 }
 ```
 
@@ -678,46 +678,46 @@ curl -L -X POST 'http://0.0.0.0:4000/v1/chat/completions' \
 
 ## [BETA] Sync User Roles and Teams with IDP
 
-Automatically sync user roles and team memberships from your Identity Provider (IDP) to LiteLLM's database. This ensures that user permissions and team memberships in LiteLLM stay in sync with your IDP.
+Automatically sync user roles and team memberships from your Identity Provider (IDP) to Dheera AI's database. This ensures that user permissions and team memberships in Dheera AI stay in sync with your IDP.
 
 **Note:** This is in beta and might change unexpectedly.
 
 ### Use Cases
 
-- **Role Synchronization**: Automatically update user roles in LiteLLM when they change in your IDP
-- **Team Membership Sync**: Keep team memberships in sync between your IDP and LiteLLM
-- **Centralized Access Management**: Manage all user permissions through your IDP while maintaining LiteLLM functionality
+- **Role Synchronization**: Automatically update user roles in Dheera AI when they change in your IDP
+- **Team Membership Sync**: Keep team memberships in sync between your IDP and Dheera AI
+- **Centralized Access Management**: Manage all user permissions through your IDP while maintaining Dheera AI functionality
 
 ### Setup
 
 #### 1. Configure JWT Role Mapping
 
-Map roles from your JWT token to LiteLLM user roles:
+Map roles from your JWT token to Dheera AI user roles:
 
 ```yaml
 general_settings:
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     user_id_jwt_field: "sub"
     team_ids_jwt_field: "groups"
     roles_jwt_field: "roles"
     user_id_upsert: true
     sync_user_role_and_teams: true # 👈 Enable sync functionality
-    jwt_litellm_role_map: # 👈 Map JWT roles to LiteLLM roles
+    jwt_dheera_ai_role_map: # 👈 Map JWT roles to Dheera AI roles
       - jwt_role: "ADMIN"
-        litellm_role: "proxy_admin"
+        dheera_ai_role: "proxy_admin"
       - jwt_role: "USER"
-        litellm_role: "internal_user"
+        dheera_ai_role: "internal_user"
       - jwt_role: "VIEWER"
-        litellm_role: "internal_user"
+        dheera_ai_role: "internal_user"
 ```
 
 #### 2. JWT Role Mapping Spec
 
 - `jwt_role`: The role name as it appears in your JWT token. Supports wildcard patterns using `fnmatch` (e.g., `"ADMIN_*"` matches `"ADMIN_READ"`, `"ADMIN_WRITE"`, etc.)
-- `litellm_role`: The corresponding LiteLLM user role
+- `dheera_ai_role`: The corresponding Dheera AI user role
 
-**Supported LiteLLM Roles:**
+**Supported Dheera AI Roles:**
 - `proxy_admin`: Full administrative access
 - `internal_user`: Standard user access
 - `internal_user_view_only`: Read-only access
@@ -739,12 +739,12 @@ general_settings:
 When a user makes a request with a JWT token:
 
 1. **Role Sync**: 
-   - LiteLLM checks if the user's role in the JWT matches their role in the database
-   - If different, the user's role is updated in LiteLLM's database
-   - Uses the `jwt_litellm_role_map` to convert JWT roles to LiteLLM roles
+   - Dheera AI checks if the user's role in the JWT matches their role in the database
+   - If different, the user's role is updated in Dheera AI's database
+   - Uses the `jwt_dheera_ai_role_map` to convert JWT roles to Dheera AI roles
 
 2. **Team Membership Sync**:
-   - Compares team memberships from the JWT token with the user's current teams in LiteLLM
+   - Compares team memberships from the JWT token with the user's current teams in Dheera AI
    - Adds the user to new teams found in the JWT
    - Removes the user from teams not present in the JWT
 
@@ -757,7 +757,7 @@ When a user makes a request with a JWT token:
 ```yaml
 general_settings:
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     # Required fields
     user_id_jwt_field: "sub"
     team_ids_jwt_field: "groups"
@@ -768,18 +768,18 @@ general_settings:
     user_id_upsert: true
     
     # Role mapping
-    jwt_litellm_role_map:
+    jwt_dheera_ai_role_map:
       - jwt_role: "AI_ADMIN_*"  # Wildcard pattern
-        litellm_role: "proxy_admin"
+        dheera_ai_role: "proxy_admin"
       - jwt_role: "AI_USER"
-        litellm_role: "internal_user"
+        dheera_ai_role: "internal_user"
 ```
 
 ### Important Notes
 
 - **Performance**: Sync operations happen during authentication, which may add slight latency
 - **Database Access**: Requires database access for user and team updates
-- **Team Creation**: Teams mentioned in JWT tokens must exist in LiteLLM before sync can assign users to them
+- **Team Creation**: Teams mentioned in JWT tokens must exist in Dheera AI before sync can assign users to them
 - **Wildcard Support**: JWT role patterns support wildcard matching using `fnmatch`
 
 ### Testing the Sync Feature
@@ -817,6 +817,6 @@ curl -X GET 'http://0.0.0.0:4000/user/info?user_id=user-123' \
 
 ## All JWT Params
 
-[**See Code**](https://github.com/BerriAI/litellm/blob/b204f0c01c703317d812a1553363ab0cb989d5b6/litellm/proxy/_types.py#L95)
+[**See Code**](https://github.com/BerriAI/dheera_ai/blob/b204f0c01c703317d812a1553363ab0cb989d5b6/dheera_ai/proxy/_types.py#L95)
 
 

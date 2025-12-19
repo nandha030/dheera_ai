@@ -8,7 +8,7 @@ Resolve any Database Deadlocks you see in high traffic by using this setup
 
 ## What causes the problem?
 
-LiteLLM writes `UPDATE` and `UPSERT` queries to the DB. When using 10+ instances of LiteLLM, these queries can cause deadlocks since each instance could simultaneously attempt to update the same `user_id`, `team_id`, `key` etc. 
+Dheera AI writes `UPDATE` and `UPSERT` queries to the DB. When using 10+ instances of Dheera AI, these queries can cause deadlocks since each instance could simultaneously attempt to update the same `user_id`, `team_id`, `key` etc. 
 
 ## How the high availability setup fixes the problem
 - All instances will write to a Redis queue instead of the DB. 
@@ -54,17 +54,17 @@ A single instance flushes the redis queue to the DB
 - Redis
 - Postgres
 
-### Setup on LiteLLM config
+### Setup on Dheera AI config
 
 You can enable using the redis buffer by setting `use_redis_transaction_buffer: true` in the `general_settings` section of your `proxy_config.yaml` file. 
 
-Note: This setup requires litellm to be connected to a redis instance. 
+Note: This setup requires dheera_ai to be connected to a redis instance. 
 
-```yaml showLineNumbers title="litellm proxy_config.yaml"
+```yaml showLineNumbers title="dheera_ai proxy_config.yaml"
 general_settings:
   use_redis_transaction_buffer: true
 
-litellm_settings:
+dheera_ai_settings:
   cache: True
   cache_params:
     type: redis
@@ -73,16 +73,16 @@ litellm_settings:
 
 ## Monitoring
 
-LiteLLM emits the following prometheus metrics to monitor the health/status of the in memory buffer and redis buffer. 
+Dheera AI emits the following prometheus metrics to monitor the health/status of the in memory buffer and redis buffer. 
 
 
 | Metric Name                                         | Description                                                                 | Storage Type |
 |-----------------------------------------------------|-----------------------------------------------------------------------------|--------------|
-| `litellm_pod_lock_manager_size`                     | Indicates which pod has the lock to write updates to the database.         | Redis    |
-| `litellm_in_memory_daily_spend_update_queue_size`   | Number of items in the in-memory daily spend update queue. These are the aggregate spend logs for each user.                 | In-Memory    |
-| `litellm_redis_daily_spend_update_queue_size`       | Number of items in the Redis daily spend update queue.  These are the aggregate spend logs for each user.                    | Redis        |
-| `litellm_in_memory_spend_update_queue_size`         | In-memory aggregate spend values for keys, users, teams, team members, etc.| In-Memory    |
-| `litellm_redis_spend_update_queue_size`             | Redis aggregate spend values for keys, users, teams, etc.                  | Redis        |
+| `dheera_ai_pod_lock_manager_size`                     | Indicates which pod has the lock to write updates to the database.         | Redis    |
+| `dheera_ai_in_memory_daily_spend_update_queue_size`   | Number of items in the in-memory daily spend update queue. These are the aggregate spend logs for each user.                 | In-Memory    |
+| `dheera_ai_redis_daily_spend_update_queue_size`       | Number of items in the Redis daily spend update queue.  These are the aggregate spend logs for each user.                    | Redis        |
+| `dheera_ai_in_memory_spend_update_queue_size`         | In-memory aggregate spend values for keys, users, teams, team members, etc.| In-Memory    |
+| `dheera_ai_redis_spend_update_queue_size`             | Redis aggregate spend values for keys, users, teams, etc.                  | Redis        |
 
 
 ## Troubleshooting: Redis Connection Errors
@@ -90,18 +90,18 @@ LiteLLM emits the following prometheus metrics to monitor the health/status of t
 You may see errors like:
 
 ```
-LiteLLM Redis Caching: async async_increment() - Got exception from REDIS No connection available., Writing value=21
-LiteLLM Redis Caching: async set_cache_pipeline() - Got exception from REDIS No connection available., Writing value=None
+Dheera AI Redis Caching: async async_increment() - Got exception from REDIS No connection available., Writing value=21
+Dheera AI Redis Caching: async set_cache_pipeline() - Got exception from REDIS No connection available., Writing value=None
 ```
  
-This means all available Redis connections are in use, and LiteLLM cannot obtain a new connection from the pool. This can happen under high load or with many concurrent proxy requests.
+This means all available Redis connections are in use, and Dheera AI cannot obtain a new connection from the pool. This can happen under high load or with many concurrent proxy requests.
 
 **Solution:**
 
 - Increase the `max_connections` parameter in your Redis config section in `proxy_config.yaml` to allow more simultaneous connections. For example:
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   cache: True
   cache_params:
     type: redis

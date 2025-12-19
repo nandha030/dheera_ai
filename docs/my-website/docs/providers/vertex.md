@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 | Property | Details |
 |-------|-------|
 | Description | Vertex AI is a fully-managed AI development platform for building and using generative AI. |
-| Provider Route on LiteLLM | `vertex_ai/` |
+| Provider Route on Dheera AI | `vertex_ai/` |
 | Link to Provider Doc | [Vertex AI ↗](https://cloud.google.com/vertex-ai) |
 | Base URL | 1. Regional endpoints<br/>`https://{vertex_location}-aiplatform.googleapis.com/`<br/>2. Global endpoints (limited availability)<br/>`https://aiplatform.googleapis.com/`|
 | Supported Operations | [`/chat/completions`](#sample-usage), `/completions`, [`/embeddings`](#embedding-models), [`/audio/speech`](#text-to-speech-apis), [`/fine_tuning`](#fine-tuning-apis), [`/batches`](#batch-apis), [`/files`](#batch-apis), [`/images`](#image-generation-models), [`/rerank`](#rerank-api) |
@@ -18,7 +18,7 @@ import TabItem from '@theme/TabItem';
 <br />
 <br />
 
-<a target="_blank" href="https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/liteLLM_VertextAI_Example.ipynb">
+<a target="_blank" href="https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/liteLLM_VertextAI_Example.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 
@@ -27,7 +27,7 @@ import TabItem from '@theme/TabItem';
 The `vertex_ai/` route uses uses [VertexAI's REST API](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference#syntax).
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import json 
 
 ## GET CREDENTIALS 
@@ -54,7 +54,7 @@ response = completion(
 ### **System Message**
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import json 
 
 ## GET CREDENTIALS 
@@ -80,7 +80,7 @@ response = completion(
 Force Gemini to make tool calls with `tool_choice="required"`.
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import json 
 
 ## GET CREDENTIALS 
@@ -140,14 +140,14 @@ print(completion(**data))
 
 ### **JSON Schema**
 
-From v`1.40.1+` LiteLLM supports sending `response_schema` as a param for Gemini-1.5-Pro on Vertex AI. For other models (e.g. `gemini-1.5-flash` or `claude-3-5-sonnet`), LiteLLM adds the schema to the message list with a user-controlled prompt.
+From v`1.40.1+` Dheera AI supports sending `response_schema` as a param for Gemini-1.5-Pro on Vertex AI. For other models (e.g. `gemini-1.5-flash` or `claude-3-5-sonnet`), Dheera AI adds the schema to the message list with a user-controlled prompt.
 
 **Response Schema**
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 import json 
 
 ## SETUP ENVIRONMENT
@@ -190,7 +190,7 @@ print(json.loads(completion.choices[0].message.content))
 ```yaml
 model_list:
   - model_name: gemini-2.5-pro
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/gemini-2.5-pro
       vertex_project: "project-id"
       vertex_location: "us-central1"
@@ -200,9 +200,9 @@ or
 ```yaml
 model_list:
  - model_name: gemini-pro
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/gemini-1.5-pro
-      litellm_credential_name: vertex-global
+      dheera_ai_credential_name: vertex-global
       vertex_project: project-name-here
       vertex_location: global
       base_model: gemini
@@ -213,7 +213,7 @@ model_list:
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -254,7 +254,7 @@ To validate the response_schema, set `enforce_validation: true`.
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion, JSONSchemaValidationError
+from dheera_ai import completion, JSONSchemaValidationError
 try: 
 	completion(
     model="vertex_ai/gemini-1.5-pro", 
@@ -276,7 +276,7 @@ except JSONSchemaValidationError as e:
 ```yaml
 model_list:
   - model_name: gemini-2.5-pro
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/gemini-2.5-pro
       vertex_project: "project-id"
       vertex_location: "us-central1"
@@ -286,7 +286,7 @@ model_list:
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -321,7 +321,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 </TabItem>
 </Tabs>
 
-LiteLLM will validate the response against the schema, and raise a `JSONSchemaValidationError` if the response does not match the schema. 
+Dheera AI will validate the response against the schema, and raise a `JSONSchemaValidationError` if the response does not match the schema. 
 
 JSONSchemaValidationError inherits from `openai.APIError` 
 
@@ -330,7 +330,7 @@ Access the raw response with `e.raw_response`
 **Add to prompt yourself**
 
 ```python 
-from litellm import completion 
+from dheera_ai import completion 
 
 ## GET CREDENTIALS 
 file_path = 'path/to/vertex_ai_service_account.json'
@@ -374,14 +374,14 @@ See the grounding metadata with `response_obj._hidden_params["vertex_ai_groundin
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers
-from litellm import completion 
+from dheera_ai import completion 
 
 ## SETUP ENVIRONMENT
 # !gcloud auth application-default login - run this to add vertex credentials to your env
 
 tools = [{"googleSearch": {}}] # 👈 ADD GOOGLE SEARCH
 
-resp = litellm.completion(
+resp = dheera_ai.completion(
                     model="vertex_ai/gemini-1.0-pro-001",
                     messages=[{"role": "user", "content": "Who won the world cup?"}],
                     tools=tools,
@@ -399,8 +399,8 @@ print(resp)
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-1234", # pass litellm proxy key, if you're using virtual keys
-    base_url="http://0.0.0.0:4000/v1/" # point to litellm proxy
+    api_key="sk-1234", # pass dheera_ai proxy key, if you're using virtual keys
+    base_url="http://0.0.0.0:4000/v1/" # point to dheera_ai proxy
 )
 
 response = client.chat.completions.create(
@@ -448,7 +448,7 @@ See the grounding metadata with `response_obj._hidden_params["vertex_ai_url_cont
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GEMINI_API_KEY"] = ".."
@@ -478,14 +478,14 @@ print(f"Retrieval Status: {urlMetadata['urlRetrievalStatus']}")
 ```yaml
 model_list:
   - model_name: gemini-2.0-flash
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.0-flash
       api_key: os.environ/GEMINI_API_KEY
 ```
 
 2. Start Proxy
 ```bash
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -510,14 +510,14 @@ You can also use the `enterpriseWebSearch` tool for an [enterprise compliant sea
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers
-from litellm import completion 
+from dheera_ai import completion 
 
 ## SETUP ENVIRONMENT
 # !gcloud auth application-default login - run this to add vertex credentials to your env
 
 tools = [{"enterpriseWebSearch": {}}] # 👈 ADD GOOGLE ENTERPRISE SEARCH
 
-resp = litellm.completion(
+resp = dheera_ai.completion(
                     model="vertex_ai/gemini-1.0-pro-001",
                     messages=[{"role": "user", "content": "Who won the world cup?"}],
                     tools=tools,
@@ -535,8 +535,8 @@ print(resp)
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-1234", # pass litellm proxy key, if you're using virtual keys
-    base_url="http://0.0.0.0:4000/v1/" # point to litellm proxy
+    api_key="sk-1234", # pass dheera_ai proxy key, if you're using virtual keys
+    base_url="http://0.0.0.0:4000/v1/" # point to dheera_ai proxy
 )
 
 response = client.chat.completions.create(
@@ -581,7 +581,7 @@ curl http://localhost:4000/v1/chat/completions \
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers
-from litellm import completion
+from dheera_ai import completion
 import os
 
 ## SETUP ENVIRONMENT
@@ -633,14 +633,14 @@ Use Google Maps to provide location-based context to your Gemini models.
 **Basic Usage - Enable Widget Only**
 
 ```python showLineNumbers
-from litellm import completion
+from dheera_ai import completion
 
 ## SETUP ENVIRONMENT
 # !gcloud auth application-default login - run this to add vertex credentials to your env
 
 tools = [{"googleMaps": {"enableWidget": "ENABLE_WIDGET"}}] # 👈 ADD GOOGLE MAPS
 
-resp = litellm.completion(
+resp = dheera_ai.completion(
     model="vertex_ai/gemini-2.0-flash",
     messages=[{"role": "user", "content": "What restaurants are nearby?"}],
     tools=tools,
@@ -654,7 +654,7 @@ print(resp)
 You can specify a location to ground the model's responses with location-specific information:
 
 ```python showLineNumbers
-from litellm import completion
+from dheera_ai import completion
 
 ## SETUP ENVIRONMENT
 # !gcloud auth application-default login - run this to add vertex credentials to your env
@@ -668,7 +668,7 @@ tools = [{
     }
 }] # 👈 ADD GOOGLE MAPS WITH LOCATION
 
-resp = litellm.completion(
+resp = dheera_ai.completion(
     model="vertex_ai/gemini-2.0-flash",
     messages=[{"role": "user", "content": "What restaurants are nearby?"}],
     tools=tools,
@@ -689,8 +689,8 @@ print(resp)
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-1234", # pass litellm proxy key, if you're using virtual keys
-    base_url="http://0.0.0.0:4000/v1/" # point to litellm proxy
+    api_key="sk-1234", # pass dheera_ai proxy key, if you're using virtual keys
+    base_url="http://0.0.0.0:4000/v1/" # point to dheera_ai proxy
 )
 
 response = client.chat.completions.create(
@@ -708,8 +708,8 @@ print(response)
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-1234", # pass litellm proxy key, if you're using virtual keys
-    base_url="http://0.0.0.0:4000/v1/" # point to litellm proxy
+    api_key="sk-1234", # pass dheera_ai proxy key, if you're using virtual keys
+    base_url="http://0.0.0.0:4000/v1/" # point to dheera_ai proxy
 )
 
 response = client.chat.completions.create(
@@ -778,7 +778,7 @@ curl http://localhost:4000/v1/chat/completions \
 </TabItem>
 </Tabs>
 
-#### **Moving from Vertex AI SDK to LiteLLM (GROUNDING)**
+#### **Moving from Vertex AI SDK to Dheera AI (GROUNDING)**
 
 
 If this was your initial VertexAI Grounding code,
@@ -810,14 +810,14 @@ print(response)
 then, this is what it looks like now
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 
 # !gcloud auth application-default login - run this to add vertex credentials to your env
 
 tools = [{"googleSearch": {"disable_attributon": False}}] # 👈 ADD GOOGLE SEARCH
 
-resp = litellm.completion(
+resp = dheera_ai.completion(
                     model="vertex_ai/gemini-1.0-pro-001",
                     messages=[{"role": "user", "content": "Who won the world cup?"}],
                     tools=tools,
@@ -830,7 +830,7 @@ print(resp)
 
 ### **Thinking / `reasoning_content`**
 
-LiteLLM translates OpenAI's `reasoning_effort` to Gemini's `thinking` parameter. [Code](https://github.com/BerriAI/litellm/blob/620664921902d7a9bfb29897a7b27c1a7ef4ddfb/litellm/llms/vertex_ai/gemini/vertex_and_google_ai_studio_gemini.py#L362)
+Dheera AI translates OpenAI's `reasoning_effort` to Gemini's `thinking` parameter. [Code](https://github.com/BerriAI/dheera_ai/blob/620664921902d7a9bfb29897a7b27c1a7ef4ddfb/dheera_ai/llms/vertex_ai/gemini/vertex_and_google_ai_studio_gemini.py#L362)
 
 Added an additional non-OpenAI standard "disable" value for non-reasoning Gemini requests.
 
@@ -847,7 +847,7 @@ Added an additional non-OpenAI standard "disable" value for non-reasoning Gemini
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # !gcloud auth application-default login - run this to add vertex credentials to your env
 
@@ -869,7 +869,7 @@ resp = completion(
 
 ```yaml
 - model_name: gemini-2.5-flash
-  litellm_params:
+  dheera_ai_params:
     model: vertex_ai/gemini-2.5-flash-preview-04-17
     vertex_credentials: {"project_id": "project-id", "location": "us-central1", "project_key": "project-key"}
     vertex_project: "project-id"
@@ -879,7 +879,7 @@ resp = completion(
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -948,11 +948,11 @@ This is translated to Gemini's [`thinkingConfig` parameter](https://ai.google.de
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # !gcloud auth application-default login - run this to add vertex credentials to your env
 
-response = litellm.completion(
+response = dheera_ai.completion(
   model="vertex_ai/gemini-2.5-flash-preview-04-17",
   messages=[{"role": "user", "content": "What is the capital of France?"}],
   thinking={"type": "enabled", "budget_tokens": 1024},
@@ -967,7 +967,7 @@ response = litellm.completion(
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "vertex_ai/gemini-2.5-flash-preview-04-17",
     "messages": [{"role": "user", "content": "What is the capital of France?"}],
@@ -992,7 +992,7 @@ Use Vertex AI context caching in the same way as [**Google AI Studio -  Context 
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 
 for _ in range(2): 
     resp = completion(
@@ -1029,7 +1029,7 @@ for _ in range(2):
 <TabItem value="sdk-ttl" label="SDK with Custom TTL">
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 
 # Cache for 2 hours (7200 seconds)
 resp = completion(
@@ -1075,7 +1075,7 @@ print(resp.usage)
 ```yaml
 model_list:
   - model_name: gemini-2.5-pro
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/gemini-2.5-pro
       vertex_project: "project-id"
       vertex_location: "us-central1"
@@ -1085,7 +1085,7 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -1134,7 +1134,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 
 ##### 1. Create the Cache
 
-First, create the cache by sending a `POST` request to the `cachedContents` endpoint via the LiteLLM proxy.
+First, create the cache by sending a `POST` request to the `cachedContents` endpoint via the Dheera AI proxy.
 
 <Tabs>
 <TabItem value="proxy" label="PROXY">
@@ -1142,7 +1142,7 @@ First, create the cache by sending a `POST` request to the `cachedContents` endp
 ```bash
 curl http://0.0.0.0:4000/vertex_ai/v1/projects/{project_id}/locations/{location}/cachedContents \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "projects/{project_id}/locations/{location}/publishers/google/models/gemini-2.5-flash",
     "displayName": "example_cache",
@@ -1188,7 +1188,7 @@ Use the `name` from the response as `cachedContent` or `cached_content` in subse
 
 curl http://0.0.0.0:4000/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "cachedContent": "projects/545201925769/locations/us-central1/cachedContents/4511135542628319232",
     "model": "gemini-2.5-flash",
@@ -1219,16 +1219,16 @@ curl http://0.0.0.0:4000/chat/completions \
 
 ## Sample Usage
 ```python
-import litellm
-litellm.vertex_project = "hardy-device-38811" # Your Project ID
-litellm.vertex_location = "us-central1"  # proj location
+import dheera_ai
+dheera_ai.vertex_project = "hardy-device-38811" # Your Project ID
+dheera_ai.vertex_location = "us-central1"  # proj location
 
-response = litellm.completion(model="gemini-2.5-pro", messages=[{"role": "user", "content": "write code for saying hi from LiteLLM"}])
+response = dheera_ai.completion(model="gemini-2.5-pro", messages=[{"role": "user", "content": "write code for saying hi from Dheera AI"}])
 ```
 
-## Usage with LiteLLM Proxy Server
+## Usage with Dheera AI Proxy Server
 
-Here's how to use Vertex AI with the LiteLLM Proxy Server
+Here's how to use Vertex AI with the Dheera AI Proxy Server
 
 1. Modify the config.yaml 
 
@@ -1241,12 +1241,12 @@ Here's how to use Vertex AI with the LiteLLM Proxy Server
   ```yaml
   model_list:
     - model_name: gemini-vision
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/gemini-1.0-pro-vision-001
         vertex_project: "project-id"
         vertex_location: "us-central1"
     - model_name: gemini-vision
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/gemini-1.0-pro-vision-001
         vertex_project: "project-id2"
         vertex_location: "us-east"
@@ -1254,18 +1254,18 @@ Here's how to use Vertex AI with the LiteLLM Proxy Server
 
   </TabItem>
 
-  <TabItem value="litellm_param" label="One location all vertex models">
+  <TabItem value="dheera_ai_param" label="One location all vertex models">
 
   Use this when you have one vertex location for all models
 
   ```yaml
-  litellm_settings: 
+  dheera_ai_settings: 
     vertex_project: "hardy-device-38811" # Your Project ID
     vertex_location: "us-central1" # proj location
 
   model_list: 
     -model_name: team1-gemini-2.5-pro
-    litellm_params: 
+    dheera_ai_params: 
       model: gemini-2.5-pro
   ```
 
@@ -1276,10 +1276,10 @@ Here's how to use Vertex AI with the LiteLLM Proxy Server
 2. Start the proxy 
 
   ```bash
-  $ litellm --config /path/to/config.yaml
+  $ dheera_ai --config /path/to/config.yaml
   ```
 
-3. Send Request to LiteLLM Proxy Server
+3. Send Request to Dheera AI Proxy Server
 
   <Tabs>
 
@@ -1288,8 +1288,8 @@ Here's how to use Vertex AI with the LiteLLM Proxy Server
   ```python
   import openai
   client = openai.OpenAI(
-      api_key="sk-1234",             # pass litellm proxy key, if you're using virtual keys
-      base_url="http://0.0.0.0:4000" # litellm-proxy-base url
+      api_key="sk-1234",             # pass dheera_ai proxy key, if you're using virtual keys
+      base_url="http://0.0.0.0:4000" # dheera_ai-proxy-base url
   )
 
   response = client.chat.completions.create(
@@ -1342,13 +1342,13 @@ You can set:
 - `vertex_location` (str) - place where vertex model is deployed (us-central1, asia-southeast1, etc.). Some models support the global location, please see [Vertex AI documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/locations#supported_models)
 - `vertex_project` Optional[str] - use if vertex project different from the one in vertex_credentials
 
-as dynamic params for a `litellm.completion` call. 
+as dynamic params for a `dheera_ai.completion` call. 
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import json 
 
 ## GET CREDENTIALS 
@@ -1377,7 +1377,7 @@ response = completion(
 ```yaml
 model_list:
     - model_name: gemini-1.5-pro
-      litellm_params:
+      dheera_ai_params:
         model: gemini-1.5-pro
         vertex_credentials: os.environ/VERTEX_FILE_PATH_ENV_VAR # os.environ["VERTEX_FILE_PATH_ENV_VAR"] = "/path/to/service_account.json" 
         vertex_project: "my-special-project"
@@ -1428,7 +1428,7 @@ In certain use-cases you may need to make calls to the models and pass [safety s
 ```python
 response = completion(
     model="vertex_ai/gemini-2.5-pro", 
-    messages=[{"role": "user", "content": "write code for saying hi from LiteLLM"}]
+    messages=[{"role": "user", "content": "write code for saying hi from Dheera AI"}]
     safety_settings=[
         {
             "category": "HARM_CATEGORY_HARASSMENT",
@@ -1456,9 +1456,9 @@ response = completion(
 ```yaml
 model_list:
   - model_name: gemini-experimental
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/gemini-experimental
-      vertex_project: litellm-epic
+      vertex_project: dheera_ai-epic
       vertex_location: us-central1
       safety_settings:
       - category: HARM_CATEGORY_HARASSMENT
@@ -1518,11 +1518,11 @@ response = client.chat.completions.create(
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm 
+import dheera_ai 
 
-litellm.set_verbose = True 👈 See RAW REQUEST/RESPONSE 
+dheera_ai.set_verbose = True 👈 See RAW REQUEST/RESPONSE 
 
-litellm.vertex_ai_safety_settings = [
+dheera_ai.vertex_ai_safety_settings = [
         {
             "category": "HARM_CATEGORY_HARASSMENT",
             "threshold": "BLOCK_NONE",
@@ -1542,7 +1542,7 @@ litellm.vertex_ai_safety_settings = [
     ]
 response = completion(
     model="vertex_ai/gemini-2.5-pro", 
-    messages=[{"role": "user", "content": "write code for saying hi from LiteLLM"}]
+    messages=[{"role": "user", "content": "write code for saying hi from Dheera AI"}]
 )
 ```
 </TabItem>
@@ -1551,12 +1551,12 @@ response = completion(
 ```yaml
 model_list:
   - model_name: gemini-experimental
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/gemini-experimental
-      vertex_project: litellm-epic
+      vertex_project: dheera_ai-epic
       vertex_location: us-central1
 
-litellm_settings:
+dheera_ai_settings:
     vertex_ai_safety_settings:
       - category: HARM_CATEGORY_HARASSMENT
         threshold: BLOCK_NONE
@@ -1574,7 +1574,7 @@ litellm_settings:
 All calls using Vertex AI require the following parameters:
 * Your Project ID
 ```python
-import os, litellm 
+import os, dheera_ai 
 
 # set via env var
 os.environ["VERTEXAI_PROJECT"] = "hardy-device-38811" # Your Project ID`
@@ -1582,11 +1582,11 @@ os.environ["VERTEXAI_PROJECT"] = "hardy-device-38811" # Your Project ID`
 ### OR ###
 
 # set directly on module 
-litellm.vertex_project = "hardy-device-38811" # Your Project ID`
+dheera_ai.vertex_project = "hardy-device-38811" # Your Project ID`
 ```
 * Your Project Location
 ```python
-import os, litellm 
+import os, dheera_ai 
 
 # set via env var
 os.environ["VERTEXAI_LOCATION"] = "us-central1 # Your Location
@@ -1594,7 +1594,7 @@ os.environ["VERTEXAI_LOCATION"] = "us-central1 # Your Location
 ### OR ###
 
 # set directly on module 
-litellm.vertex_location = "us-central1 # Your Location
+dheera_ai.vertex_location = "us-central1 # Your Location
 ```
 
 ## Gemini Pro
@@ -1606,12 +1606,12 @@ litellm.vertex_location = "us-central1 # Your Location
 
 ## Private Service Connect (PSC) Endpoints
 
-LiteLLM supports Vertex AI models deployed to Private Service Connect (PSC) endpoints, allowing you to use custom `api_base` URLs for private deployments.
+Dheera AI supports Vertex AI models deployed to Private Service Connect (PSC) endpoints, allowing you to use custom `api_base` URLs for private deployments.
 
 ### Usage
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # Use PSC endpoint with custom api_base
 response = completion(
@@ -1637,7 +1637,7 @@ Add PSC endpoints to your `config.yaml`:
 ```yaml
 model_list:
   - model_name: psc-gemini
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/1234567890  # Numeric endpoint ID
       api_base: "http://10.96.32.8"  # Your PSC endpoint
       vertex_project: "my-project-id"
@@ -1645,7 +1645,7 @@ model_list:
       vertex_credentials: "/path/to/service_account.json"
       use_psc_endpoint_format: True
   - model_name: psc-embedding
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/text-embedding-004
       api_base: "http://10.96.32.8"  # Your PSC endpoint
       vertex_project: "my-project-id"
@@ -1656,7 +1656,7 @@ model_list:
 
 ## Fine-tuned Models
 
-You can call fine-tuned Vertex AI Gemini models through LiteLLM
+You can call fine-tuned Vertex AI Gemini models through Dheera AI
 
 | Property | Details |
 |----------|---------|
@@ -1671,24 +1671,24 @@ model="vertex_ai/gemini/<your-finetuned-model>"
 ```
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python showLineNumbers title="Example"
-import litellm
+import dheera_ai
 import os
 
 ## set ENV variables
 os.environ["VERTEXAI_PROJECT"] = "hardy-device-38811"
 os.environ["VERTEXAI_LOCATION"] = "us-central1"
 
-response = litellm.completion(
+response = dheera_ai.completion(
   model="vertex_ai/gemini/<your-finetuned-model>",  # e.g. vertex_ai/gemini/4965075652664360960
   messages=[{ "content": "Hello, how are you?","role": "user"}],
 )
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 1. Add Vertex Credentials to your env 
 
@@ -1698,9 +1698,9 @@ response = litellm.completion(
 
 2. Setup config.yaml 
 
-```yaml showLineNumbers title="Add to litellm config"
+```yaml showLineNumbers title="Add to dheera_ai config"
 - model_name: finetuned-gemini
-  litellm_params:
+  dheera_ai_params:
     model: vertex_ai/gemini/<ENDPOINT_ID>
     vertex_project: <PROJECT_ID>
     vertex_location: <LOCATION>
@@ -1715,7 +1715,7 @@ response = litellm.completion(
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="your-litellm-key",
+    api_key="your-dheera_ai-key",
     base_url="http://0.0.0.0:4000"
 )
 
@@ -1734,7 +1734,7 @@ print(response)
 ```bash showLineNumbers title="Example request"
 curl --location 'https://0.0.0.0:4000/v1/chat/completions' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <LITELLM_KEY>' \
+--header 'Authorization: <DHEERA_AI_KEY>' \
 --data '{"model": "finetuned-gemini" ,"messages":[{"role": "user", "content":[{"type": "text", "text": "hi"}]}]}'
 ```
 
@@ -1761,9 +1761,9 @@ curl --location 'https://0.0.0.0:4000/v1/chat/completions' \
 
 #### Using Gemini Pro Vision
 
-Call `gemini-2.5-pro-vision` in the same input/output format as OpenAI [`gpt-4-vision`](https://docs.litellm.ai/docs/providers/openai#openai-vision-models)
+Call `gemini-2.5-pro-vision` in the same input/output format as OpenAI [`gpt-4-vision`](https://docs.dheera_ai.ai/docs/providers/openai#openai-vision-models)
 
-LiteLLM Supports the following image types passed in `url`
+Dheera AI Supports the following image types passed in `url`
 - Images with Cloud Storage URIs - gs://cloud-samples-data/generative-ai/image/boats.jpeg
 - Images with direct links - https://storage.googleapis.com/github-repo/img/gemini/intro/landmark3.jpg
 - Videos with Cloud Storage URIs - https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/pixel8.mp4
@@ -1776,9 +1776,9 @@ LiteLLM Supports the following image types passed in `url`
 <TabItem value="direct" label="Images with direct links">
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
   model = "vertex_ai/gemini-2.5-pro-vision",
   messages=[
       {
@@ -1805,7 +1805,7 @@ print(response)
 <TabItem value="base" label="Local Base64 Images">
 
 ```python
-import litellm
+import dheera_ai
 
 def encode_image(image_path):
     import base64
@@ -1816,7 +1816,7 @@ def encode_image(image_path):
 image_path = "cached_logo.jpg"
 # Getting the base64 string
 base64_image = encode_image(image_path)
-response = litellm.completion(
+response = dheera_ai.completion(
     model="vertex_ai/gemini-2.5-pro-vision",
     messages=[
         {
@@ -1840,10 +1840,10 @@ print(response)
 
 ## Usage - Function Calling 
 
-LiteLLM supports Function Calling for Vertex AI gemini models. 
+Dheera AI supports Function Calling for Vertex AI gemini models. 
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 # set env
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ".."
@@ -1889,9 +1889,9 @@ assert isinstance(
 
 ## Usage - PDF / Videos / Audio etc. Files 
 
-Pass any file supported by Vertex AI, through LiteLLM. 
+Pass any file supported by Vertex AI, through Dheera AI. 
 
-LiteLLM Supports the following file types passed in url. 
+Dheera AI Supports the following file types passed in url. 
 
 Using `file` message type for VertexAI is live from v1.65.1+ 
 
@@ -1907,7 +1907,7 @@ Base64 Encoded Local Files
 
 ### **Using `gs://` or any URL**
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="vertex_ai/gemini-1.5-flash",
@@ -1934,7 +1934,7 @@ print(response.choices[0])
 
 ### **using base64**
 ```python
-from litellm import completion
+from dheera_ai import completion
 import base64
 import requests
 
@@ -1981,7 +1981,7 @@ print(response.choices[0])
 
 ```yaml
 - model_name: gemini-1.5-flash
-  litellm_params:
+  dheera_ai_params:
     model: vertex_ai/gemini-1.5-flash
     vertex_credentials: "/path/to/service_account.json"
 ```
@@ -1989,7 +1989,7 @@ print(response.choices[0])
 2. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -2100,40 +2100,40 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
-from litellm import embedding
-litellm.vertex_project = "hardy-device-38811" # Your Project ID
-litellm.vertex_location = "us-central1"  # proj location
+import dheera_ai
+from dheera_ai import embedding
+dheera_ai.vertex_project = "hardy-device-38811" # Your Project ID
+dheera_ai.vertex_location = "us-central1"  # proj location
 
 response = embedding(
     model="vertex_ai/textembedding-gecko",
-    input=["good morning from litellm"],
+    input=["good morning from dheera_ai"],
 )
 print(response)
 ```
 </TabItem>
 
-<TabItem value="proxy" label="LiteLLM PROXY">
+<TabItem value="proxy" label="Dheera AI PROXY">
 
 
 1. Add model to config.yaml
 ```yaml
 model_list:
   - model_name: snowflake-arctic-embed-m-long-1731622468876
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/<your-model-id>
       vertex_project: "adroit-crow-413218"
       vertex_location: "us-central1"
       vertex_credentials: adroit-crow-413218-a956eef1a2a8.json 
 
-litellm_settings:
+dheera_ai_settings:
   drop_params: True
 ```
 
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request using OpenAI Python SDK, Langchain Python SDK
@@ -2145,7 +2145,7 @@ client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
 response = client.embeddings.create(
     model="snowflake-arctic-embed-m-long-1731622468876", 
-    input = ["good morning from litellm", "this is another item"],
+    input = ["good morning from dheera_ai", "this is another item"],
 )
 
 print(response)
@@ -2156,7 +2156,7 @@ print(response)
 </Tabs>
 
 #### Supported Embedding Models
-All models listed [here](https://github.com/BerriAI/litellm/blob/57f37f743886a0249f630a6792d49dffc2c5d9b7/model_prices_and_context_window.json#L835) are supported
+All models listed [here](https://github.com/BerriAI/dheera_ai/blob/57f37f743886a0249f630a6792d49dffc2c5d9b7/model_prices_and_context_window.json#L835) are supported
 
 | Model Name               | Function Call                                                                                                                                                      |
 |--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -2173,7 +2173,7 @@ All models listed [here](https://github.com/BerriAI/litellm/blob/57f37f743886a02
 
 ### Supported OpenAI (Unified) Params
 
-| [param](../embedding/supported_embedding.md#input-params-for-litellmembedding) | type | [vertex equivalent](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text-embeddings-api) |
+| [param](../embedding/supported_embedding.md#input-params-for-dheera_aiembedding) | type | [vertex equivalent](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text-embeddings-api) |
 |-------|-------------|--------------------|
 | `input` | **string or List[string]** | `instances` |
 | `dimensions` | **int** | `output_dimensionality` |
@@ -2186,15 +2186,15 @@ All models listed [here](https://github.com/BerriAI/litellm/blob/57f37f743886a02
 <TabItem value="sdk" label="SDK">
 
 ```python
-response = litellm.embedding(
+response = dheera_ai.embedding(
     model="vertex_ai/text-embedding-004",
-    input=["good morning from litellm", "gm"]
+    input=["good morning from dheera_ai", "gm"]
     input_type = "RETRIEVAL_DOCUMENT",
     dimensions=1,
 )
 ```
 </TabItem>
-<TabItem value="proxy" label="LiteLLM PROXY">
+<TabItem value="proxy" label="Dheera AI PROXY">
 
 
 ```python
@@ -2204,7 +2204,7 @@ client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
 response = client.embeddings.create(
     model="text-embedding-004", 
-    input = ["good morning from litellm", "gm"],
+    input = ["good morning from dheera_ai", "gm"],
     dimensions=1,
     extra_body = {
         "input_type": "RETRIEVAL_QUERY",
@@ -2235,9 +2235,9 @@ You can pass any vertex specific params to the embedding model. Just pass them t
 <TabItem value="sdk" label="SDK">
 
 ```python
-response = litellm.embedding(
+response = dheera_ai.embedding(
     model="vertex_ai/text-embedding-004",
-    input=["good morning from litellm", "gm"]
+    input=["good morning from dheera_ai", "gm"]
     task_type = "RETRIEVAL_DOCUMENT",
     title = "test",
     dimensions=1,
@@ -2245,7 +2245,7 @@ response = litellm.embedding(
 )
 ```
 </TabItem>
-<TabItem value="proxy" label="LiteLLM PROXY">
+<TabItem value="proxy" label="Dheera AI PROXY">
 
 
 ```python
@@ -2255,7 +2255,7 @@ client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
 response = client.embeddings.create(
     model="text-embedding-004", 
-    input = ["good morning from litellm", "gm"],
+    input = ["good morning from dheera_ai", "gm"],
     dimensions=1,
     extra_body = {
         "task_type": "RETRIEVAL_QUERY",
@@ -2284,7 +2284,7 @@ Known Limitations:
 Using GCS Images
 
 ```python
-response = await litellm.aembedding(
+response = await dheera_ai.aembedding(
     model="vertex_ai/multimodalembedding@001",
     input="gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png" # will be sent as a gcs image
 )
@@ -2293,33 +2293,33 @@ response = await litellm.aembedding(
 Using base 64 encoded images
 
 ```python
-response = await litellm.aembedding(
+response = await dheera_ai.aembedding(
     model="vertex_ai/multimodalembedding@001",
     input="data:image/jpeg;base64,..." # will be sent as a base64 encoded image
 )
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM PROXY (Unified Endpoint)">
+<TabItem value="proxy" label="Dheera AI PROXY (Unified Endpoint)">
 
 1. Add model to config.yaml
 ```yaml
 model_list:
   - model_name: multimodalembedding@001
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/multimodalembedding@001
       vertex_project: "adroit-crow-413218"
       vertex_location: "us-central1"
       vertex_credentials: adroit-crow-413218-a956eef1a2a8.json 
 
-litellm_settings:
+dheera_ai_settings:
   drop_params: True
 ```
 
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request use OpenAI Python SDK, Langchain Python SDK
@@ -2336,7 +2336,7 @@ import openai
 
 client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
-# # request sent to model set on litellm proxy, `litellm --model`
+# # request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.embeddings.create(
     model="multimodalembedding@001", 
     input = "gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png",
@@ -2352,7 +2352,7 @@ import openai
 
 client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
-# # request sent to model set on litellm proxy, `litellm --model`
+# # request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.embeddings.create(
     model="multimodalembedding@001", 
     input = "data:image/jpeg;base64,...",
@@ -2412,7 +2412,7 @@ print(query_result)
 </TabItem>
 
 
-<TabItem value="proxy-vtx" label="LiteLLM PROXY (Vertex SDK)">
+<TabItem value="proxy-vtx" label="Dheera AI PROXY (Vertex SDK)">
 
 1. Add model to config.yaml
 ```yaml
@@ -2425,7 +2425,7 @@ default_vertex_config:
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request use OpenAI Python SDK
@@ -2438,8 +2438,8 @@ from vertexai.vision_models import VideoSegmentConfig
 from google.auth.credentials import Credentials
 
 
-LITELLM_PROXY_API_KEY = "sk-1234"
-LITELLM_PROXY_BASE = "http://0.0.0.0:4000/vertex-ai"
+DHEERA_AI_PROXY_API_KEY = "sk-1234"
+DHEERA_AI_PROXY_BASE = "http://0.0.0.0:4000/vertex-ai"
 
 import datetime
 
@@ -2463,12 +2463,12 @@ class CredentialsWrapper(Credentials):
     def valid(self):
         return True  # Always consider the credentials as valid
 
-credentials = CredentialsWrapper(token=LITELLM_PROXY_API_KEY)
+credentials = CredentialsWrapper(token=DHEERA_AI_PROXY_API_KEY)
 
 vertexai.init(
     project="adroit-crow-413218",
     location="us-central1",
-    api_endpoint=LITELLM_PROXY_BASE,
+    api_endpoint=DHEERA_AI_PROXY_BASE,
     credentials = credentials,
     api_transport="rest",
    
@@ -2500,7 +2500,7 @@ print(f"Text Embedding: {embeddings.text_embedding}")
 Text + Image 
 
 ```python
-response = await litellm.aembedding(
+response = await dheera_ai.aembedding(
     model="vertex_ai/multimodalembedding@001",
     input=["hey", "gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png"] # will be sent as a gcs image
 )
@@ -2509,7 +2509,7 @@ response = await litellm.aembedding(
 Text + Video 
 
 ```python
-response = await litellm.aembedding(
+response = await dheera_ai.aembedding(
     model="vertex_ai/multimodalembedding@001",
     input=["hey", "gs://my-bucket/embeddings/supermarket-video.mp4"] # will be sent as a gcs image
 )
@@ -2518,7 +2518,7 @@ response = await litellm.aembedding(
 Image + Video 
 
 ```python
-response = await litellm.aembedding(
+response = await dheera_ai.aembedding(
     model="vertex_ai/multimodalembedding@001",
     input=["gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png", "gs://my-bucket/embeddings/supermarket-video.mp4"] # will be sent as a gcs image
 )
@@ -2526,26 +2526,26 @@ response = await litellm.aembedding(
 
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM PROXY (Unified Endpoint)">
+<TabItem value="proxy" label="Dheera AI PROXY (Unified Endpoint)">
 
 1. Add model to config.yaml
 ```yaml
 model_list:
   - model_name: multimodalembedding@001
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/multimodalembedding@001
       vertex_project: "adroit-crow-413218"
       vertex_location: "us-central1"
       vertex_credentials: adroit-crow-413218-a956eef1a2a8.json 
 
-litellm_settings:
+dheera_ai_settings:
   drop_params: True
 ```
 
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request use OpenAI Python SDK, Langchain Python SDK
@@ -2558,7 +2558,7 @@ import openai
 
 client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
-# # request sent to model set on litellm proxy, `litellm --model`
+# # request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.embeddings.create(
     model="multimodalembedding@001", 
     input = ["hey", "gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png"],
@@ -2573,7 +2573,7 @@ import openai
 
 client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
-# # request sent to model set on litellm proxy, `litellm --model`
+# # request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.embeddings.create(
     model="multimodalembedding@001", 
     input = ["hey", "gs://my-bucket/embeddings/supermarket-video.mp4"],
@@ -2588,7 +2588,7 @@ import openai
 
 client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
-# # request sent to model set on litellm proxy, `litellm --model`
+# # request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.embeddings.create(
     model="multimodalembedding@001", 
     input = ["gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png", "gs://my-bucket/embeddings/supermarket-video.mp4"],
@@ -2614,7 +2614,7 @@ print(response)
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
@@ -2636,7 +2636,7 @@ finetune_settings:
 ft_job = await client.fine_tuning.jobs.create(
     model="gemini-1.0-pro-002",                  # Vertex model you want to fine-tune
     training_file="gs://cloud-samples-data/ai-platform/generative_ai/sft_train_data.jsonl",                 # file_id from create file response
-    extra_headers={"custom-llm-provider": "vertex_ai"}, # tell litellm proxy which provider to use
+    extra_headers={"custom-llm-provider": "vertex_ai"}, # tell dheera_ai proxy which provider to use
 )
 ```
 </TabItem>
@@ -2713,13 +2713,13 @@ different applications or users.
 
 ### Usage
 
-You can use that feature through LiteLLM by sending `labels` or `metadata` field in your requests.
+You can use that feature through Dheera AI by sending `labels` or `metadata` field in your requests.
 
-If the client sets the `labels` field in the request to the LiteLLM,
-the LiteLLM will pass the `labels` field to the Vertex AI backend.
+If the client sets the `labels` field in the request to the Dheera AI,
+the Dheera AI will pass the `labels` field to the Vertex AI backend.
 
-If the client sets the `metadata` field in the request to the LiteLLM and the `labels` field is not set,
-the LiteLLM will create the `labels` field filled with `metadata` key/value pairs for all string values and
+If the client sets the `metadata` field in the request to the Dheera AI and the `labels` field is not set,
+the Dheera AI will create the `labels` field filled with `metadata` key/value pairs for all string values and
 pass it to the Vertex AI backend.
 
 
@@ -2789,7 +2789,7 @@ def load_vertex_ai_credentials():
 
 :::info
 
-Trying to deploy LiteLLM on Google Cloud Run? Tutorial [here](https://docs.litellm.ai/docs/proxy/deploy#deploy-on-google-cloud-run)
+Trying to deploy Dheera AI on Google Cloud Run? Tutorial [here](https://docs.dheera_ai.ai/docs/proxy/deploy#deploy-on-google-cloud-run)
 
 :::
 
@@ -2809,7 +2809,7 @@ Click `Add Principal`
 
 <Image img={require('../../img/gcp_acc_3.png')}/>
 
-Once that's done, when you deploy the new container in the Google Cloud Run service, LiteLLM will have automatic access to all Vertex AI endpoints.
+Once that's done, when you deploy the new container in the Google Cloud Run service, Dheera AI will have automatic access to all Vertex AI endpoints.
 
 
 s/o @[Darien Kindlund](https://www.linkedin.com/in/kindlund/) for this tutorial
@@ -2829,7 +2829,7 @@ export VERTEXAI_PROJECT="your-project-id"
 ### Usage
 
 ```python
-from litellm import rerank
+from dheera_ai import rerank
 
 # Using the latest model (recommended)
 response = rerank(
@@ -2881,7 +2881,7 @@ Add to your `config.yaml`:
 ```yaml
 model_list:
   - model_name: semantic-ranker-default@latest
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/semantic-ranker-default@latest
       vertex_ai_project: "your-project-id"
       vertex_ai_location: "us-central1"
@@ -2891,7 +2891,7 @@ model_list:
 Start the proxy:
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 Test with curl:

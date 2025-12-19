@@ -8,7 +8,7 @@ Run experiments or change the specific model (e.g. from gpt-4o to gpt4o-mini fin
 
 | Supported Integrations | Link |
 |------------------------|------|
-| Native LiteLLM GitOps (.prompt files) | [Get Started](native_litellm_prompt) |
+| Native Dheera AI GitOps (.prompt files) | [Get Started](native_dheera_ai_prompt) |
 | Langfuse               | [Get Started](https://langfuse.com/docs/prompts/get-started) |
 | Humanloop              | [Get Started](../observability/humanloop) |
 
@@ -26,13 +26,13 @@ Add a `prompts` field to your config.yaml:
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
 prompts:
   - prompt_id: "my_prompt_id"
-    litellm_params:
+    dheera_ai_params:
       prompt_id: "my_prompt_id"
       prompt_integration: "dotprompt"  # or langfuse, bitbucket, gitlab, custom
       # integration-specific parameters below
@@ -60,12 +60,12 @@ Each integration has its own configuration parameters and access control mechani
 ```yaml
 prompts:
   - prompt_id: "hello"
-    litellm_params:
+    dheera_ai_params:
       prompt_id: "hello"
       prompt_integration: "dotprompt"
       prompt_directory: "./prompts"  # Directory containing .prompt files
 
-litellm_settings:
+dheera_ai_settings:
   global_prompt_directory: "./prompts"  # Global setting for all dotprompt integrations
 ```
 
@@ -74,7 +74,7 @@ litellm_settings:
 ```yaml
 prompts:
   - prompt_id: "my_inline_prompt"
-    litellm_params:
+    dheera_ai_params:
       prompt_id: "my_inline_prompt"
       prompt_integration: "dotprompt"
       prompt_data:
@@ -91,7 +91,7 @@ prompts:
 ```yaml
 prompts:
   - prompt_id: "simple_prompt"
-    litellm_params:
+    dheera_ai_params:
       prompt_id: "simple_prompt"
       prompt_integration: "dotprompt"
       dotprompt_content: |
@@ -124,14 +124,14 @@ User: {{user_message}}
 ```yaml
 prompts:
   - prompt_id: "my_langfuse_prompt"
-    litellm_params:
+    dheera_ai_params:
       prompt_id: "my_langfuse_prompt"
       prompt_integration: "langfuse"
       langfuse_public_key: "os.environ/LANGFUSE_PUBLIC_KEY"
       langfuse_secret_key: "os.environ/LANGFUSE_SECRET_KEY"
       langfuse_host: "https://cloud.langfuse.com"  # optional
 
-litellm_settings:
+dheera_ai_settings:
   langfuse_public_key: "os.environ/LANGFUSE_PUBLIC_KEY"  # Global setting
   langfuse_secret_key: "os.environ/LANGFUSE_SECRET_KEY"  # Global setting
 ```
@@ -143,7 +143,7 @@ litellm_settings:
 ```yaml
 prompts:
   - prompt_id: "my_bitbucket_prompt"
-    litellm_params:
+    dheera_ai_params:
       prompt_id: "my_bitbucket_prompt"
       prompt_integration: "bitbucket"
       bitbucket_workspace: "your-workspace"
@@ -151,7 +151,7 @@ prompts:
       bitbucket_access_token: "os.environ/BITBUCKET_ACCESS_TOKEN"
       bitbucket_branch: "main"  # optional, defaults to main
 
-litellm_settings:
+dheera_ai_settings:
   global_bitbucket_config:
     workspace: "your-workspace"
     repository: "your-repo"
@@ -179,7 +179,7 @@ User: {{user_message}}
 ```yaml
 prompts:
   - prompt_id: "my_gitlab_prompt"
-    litellm_params:
+    dheera_ai_params:
       prompt_id: "my_gitlab_prompt"
       prompt_integration: "gitlab"
       gitlab_project: "group/sub/repo"
@@ -187,7 +187,7 @@ prompts:
       gitlab_branch: "main"  # optional
       gitlab_prompts_path: "prompts"  # optional, defaults to root
 
-litellm_settings:
+dheera_ai_settings:
   global_gitlab_config:
     project: "group/sub/repo"
     access_token: "os.environ/GITLAB_ACCESS_TOKEN"
@@ -217,21 +217,21 @@ Here's a complete example showing multiple prompts with different integrations:
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
 prompts:
   # File-based dotprompt
   - prompt_id: "coding_assistant"
-    litellm_params:
+    dheera_ai_params:
       prompt_id: "coding_assistant"
       prompt_integration: "dotprompt"
       prompt_directory: "./prompts"
   
   # Inline dotprompt
   - prompt_id: "simple_chat"
-    litellm_params:
+    dheera_ai_params:
       prompt_id: "simple_chat"
       prompt_integration: "dotprompt"
       prompt_data:
@@ -243,13 +243,13 @@ prompts:
   
   # Langfuse prompt
   - prompt_id: "langfuse_chat"
-    litellm_params:
+    dheera_ai_params:
       prompt_id: "langfuse_chat"
       prompt_integration: "langfuse"
       langfuse_public_key: "os.environ/LANGFUSE_PUBLIC_KEY"
       langfuse_secret_key: "os.environ/LANGFUSE_SECRET_KEY"
 
-litellm_settings:
+dheera_ai_settings:
   global_prompt_directory: "./prompts"
 ```
 
@@ -283,7 +283,7 @@ curl -L -X POST 'http://0.0.0.0:4000/v1/chat/completions' \
 Each prompt in the `prompts` list requires:
 
 - **`prompt_id`** (string, required): Unique identifier for the prompt
-- **`litellm_params`** (object, required): Configuration for the prompt
+- **`dheera_ai_params`** (object, required): Configuration for the prompt
   - **`prompt_id`** (string, required): Must match the top-level prompt_id
   - **`prompt_integration`** (string, required): One of: `dotprompt`, `langfuse`, `bitbucket`, `gitlab`, `custom`
   - Additional integration-specific parameters (see tabs above)
@@ -307,14 +307,14 @@ Each prompt in the `prompts` list requires:
 
 ```python
 import os 
-import litellm
+import dheera_ai
 
 os.environ["LANGFUSE_PUBLIC_KEY"] = "public_key" # [OPTIONAL] set here or in `.completion`
 os.environ["LANGFUSE_SECRET_KEY"] = "secret_key" # [OPTIONAL] set here or in `.completion`
 
-litellm.set_verbose = True # see raw request to provider
+dheera_ai.set_verbose = True # see raw request to provider
 
-resp = litellm.completion(
+resp = dheera_ai.completion(
     model="langfuse/gpt-3.5-turbo",
     prompt_id="test-chat-prompt",
     prompt_variables={"user_message": "this is used"}, # [OPTIONAL]
@@ -332,12 +332,12 @@ resp = litellm.completion(
 ```yaml
 model_list:
   - model_name: my-langfuse-model
-    litellm_params:
+    dheera_ai_params:
       model: langfuse/openai-model
       prompt_id: "<langfuse_prompt_id>"
       api_key: os.environ/OPENAI_API_KEY
   - model_name: openai-model
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 ```
@@ -345,7 +345,7 @@ model_list:
 2. Start the proxy
 
 ```bash
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 3. Test it! 
@@ -380,7 +380,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages = [
@@ -409,7 +409,7 @@ print(response)
 **Expected Logs:**
 
 ```
-POST Request Sent from LiteLLM:
+POST Request Sent from Dheera AI:
 curl -X POST \
 https://api.openai.com/v1/ \
 -d '{'model': 'gpt-3.5-turbo', 'messages': <YOUR LANGFUSE PROMPT TEMPLATE>}'
@@ -417,15 +417,15 @@ https://api.openai.com/v1/ \
 
 ## How to set model 
 
-### Set the model on LiteLLM 
+### Set the model on Dheera AI 
 
-You can do `langfuse/<litellm_model_name>`
+You can do `langfuse/<dheera_ai_model_name>`
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
-litellm.completion(
+dheera_ai.completion(
     model="langfuse/gpt-3.5-turbo", # or `langfuse/anthropic/claude-3-5-sonnet`
     ...
 )
@@ -437,7 +437,7 @@ litellm.completion(
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: langfuse/gpt-3.5-turbo # OR langfuse/anthropic/claude-3-5-sonnet
       prompt_id: <langfuse_prompt_id>
       api_key: os.environ/OPENAI_API_KEY
@@ -455,7 +455,7 @@ If the model is specified in the Langfuse config, it will be used.
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/chatgpt-v-2
       api_key: os.environ/AZURE_API_KEY
       api_base: os.environ/AZURE_API_BASE
@@ -480,7 +480,7 @@ The `messages` field sent in by the client is ignored.
 
 The Langfuse prompt will replace the `messages` field.
 
-To replace parts of the prompt, use the `prompt_variables` field. [See how prompt variables are used](https://github.com/BerriAI/litellm/blob/017f83d038f85f93202a083cf334de3544a3af01/litellm/integrations/langfuse/langfuse_prompt_management.py#L127)
+To replace parts of the prompt, use the `prompt_variables` field. [See how prompt variables are used](https://github.com/BerriAI/dheera_ai/blob/017f83d038f85f93202a083cf334de3544a3af01/dheera_ai/integrations/langfuse/langfuse_prompt_management.py#L127)
 
 If the Langfuse prompt is a string, it will be sent as a user message (not all providers support system messages).
 
@@ -492,7 +492,7 @@ If the Langfuse prompt is a list, it will be sent as is (Langfuse chat prompts a
 
 ## API Reference
 
-These are the params you can pass to the `litellm.completion` function in SDK and `litellm_params` in config.yaml
+These are the params you can pass to the `dheera_ai.completion` function in SDK and `dheera_ai_params` in config.yaml
 
 ```
 prompt_id: str # required

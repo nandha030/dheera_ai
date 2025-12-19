@@ -1,6 +1,6 @@
 import os
 import sys
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 from functools import partial
 from typing import Optional
 
@@ -17,7 +17,7 @@ from unittest.mock import Mock
 
 import httpx
 
-from litellm.proxy.proxy_server import initialize_pass_through_endpoints
+from dheera_ai.proxy.proxy_server import initialize_pass_through_endpoints
 
 
 # Mock the async_client used in the pass_through_request function
@@ -38,11 +38,11 @@ def remove_rerank_route(app):
 
 @pytest.fixture
 def client():
-    from litellm.proxy.proxy_server import app
+    from dheera_ai.proxy.proxy_server import app
 
     remove_rerank_route(
         app=app
-    )  # remove the native rerank route on the litellm proxy - since we're testing the pass through endpoints
+    )  # remove the native rerank route on the dheera_ai proxy - since we're testing the pass through endpoints
     return TestClient(app)
 
 
@@ -50,7 +50,7 @@ def client():
 async def test_pass_through_endpoint_no_headers(client, monkeypatch):
     # Mock the httpx.AsyncClient.request method
     monkeypatch.setattr("httpx.AsyncClient.request", mock_request)
-    import litellm
+    import dheera_ai
 
     # Define a pass-through endpoint
     pass_through_endpoints = [
@@ -63,10 +63,10 @@ async def test_pass_through_endpoint_no_headers(client, monkeypatch):
     # Initialize the pass-through endpoint
     await initialize_pass_through_endpoints(pass_through_endpoints)
     general_settings: dict = (
-        getattr(litellm.proxy.proxy_server, "general_settings", {}) or {}
+        getattr(dheera_ai.proxy.proxy_server, "general_settings", {}) or {}
     )
     general_settings.update({"pass_through_endpoints": pass_through_endpoints})
-    setattr(litellm.proxy.proxy_server, "general_settings", general_settings)
+    setattr(dheera_ai.proxy.proxy_server, "general_settings", general_settings)
 
     # Make a request to the pass-through endpoint
     response = client.post("/test-endpoint", json={"prompt": "Hello, world!"})
@@ -80,7 +80,7 @@ async def test_pass_through_endpoint_no_headers(client, monkeypatch):
 async def test_pass_through_endpoint(client, monkeypatch):
     # Mock the httpx.AsyncClient.request method
     monkeypatch.setattr("httpx.AsyncClient.request", mock_request)
-    import litellm
+    import dheera_ai
 
     # Define a pass-through endpoint
     pass_through_endpoints = [
@@ -94,10 +94,10 @@ async def test_pass_through_endpoint(client, monkeypatch):
     # Initialize the pass-through endpoint
     await initialize_pass_through_endpoints(pass_through_endpoints)
     general_settings: Optional[dict] = (
-        getattr(litellm.proxy.proxy_server, "general_settings", {}) or {}
+        getattr(dheera_ai.proxy.proxy_server, "general_settings", {}) or {}
     )
     general_settings.update({"pass_through_endpoints": pass_through_endpoints})
-    setattr(litellm.proxy.proxy_server, "general_settings", general_settings)
+    setattr(dheera_ai.proxy.proxy_server, "general_settings", general_settings)
 
     # Make a request to the pass-through endpoint
     response = client.post("/test-endpoint", json={"prompt": "Hello, world!"})
@@ -110,7 +110,7 @@ async def test_pass_through_endpoint(client, monkeypatch):
 @pytest.mark.asyncio
 async def test_pass_through_endpoint_rerank(client):
     _cohere_api_key = os.environ.get("COHERE_API_KEY")
-    import litellm
+    import dheera_ai
 
     # Define a pass-through endpoint
     pass_through_endpoints = [
@@ -124,10 +124,10 @@ async def test_pass_through_endpoint_rerank(client):
     # Initialize the pass-through endpoint
     await initialize_pass_through_endpoints(pass_through_endpoints)
     general_settings: Optional[dict] = (
-        getattr(litellm.proxy.proxy_server, "general_settings", {}) or {}
+        getattr(dheera_ai.proxy.proxy_server, "general_settings", {}) or {}
     )
     general_settings.update({"pass_through_endpoints": pass_through_endpoints})
-    setattr(litellm.proxy.proxy_server, "general_settings", general_settings)
+    setattr(dheera_ai.proxy.proxy_server, "general_settings", general_settings)
 
     _json_data = {
         "model": "rerank-english-v3.0",
@@ -174,17 +174,17 @@ async def test_pass_through_endpoint_rerank(client):
 async def test_pass_through_endpoint_rpm_limit(
     client, auth, rpm_limit, requests_to_make, expected_status_codes, num_users
 ):
-    import litellm
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.proxy.proxy_server import ProxyLogging, hash_token, user_api_key_cache
+    import dheera_ai
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy.proxy_server import ProxyLogging, hash_token, user_api_key_cache
 
     proxy_logging_obj = ProxyLogging(user_api_key_cache=user_api_key_cache)
-    proxy_logging_obj._init_litellm_callbacks()
+    proxy_logging_obj._init_dheera_ai_callbacks()
 
-    setattr(litellm.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    setattr(litellm.proxy.proxy_server, "prisma_client", "FAKE-VAR")
-    setattr(litellm.proxy.proxy_server, "proxy_logging_obj", proxy_logging_obj)
+    setattr(dheera_ai.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", "FAKE-VAR")
+    setattr(dheera_ai.proxy.proxy_server, "proxy_logging_obj", proxy_logging_obj)
 
     # Define a pass-through endpoint
     _cohere_api_key = os.environ.get("COHERE_API_KEY")
@@ -200,10 +200,10 @@ async def test_pass_through_endpoint_rpm_limit(
     # Initialize the pass-through endpoint
     await initialize_pass_through_endpoints(pass_through_endpoints)
     general_settings: Optional[dict] = (
-        getattr(litellm.proxy.proxy_server, "general_settings", {}) or {}
+        getattr(dheera_ai.proxy.proxy_server, "general_settings", {}) or {}
     )
     general_settings.update({"pass_through_endpoints": pass_through_endpoints})
-    setattr(litellm.proxy.proxy_server, "general_settings", general_settings)
+    setattr(dheera_ai.proxy.proxy_server, "general_settings", general_settings)
 
     # Setup API keys and cache
     mock_api_keys = [f"sk-test-{uuid.uuid4().hex}" for _ in range(num_users)]
@@ -274,17 +274,17 @@ async def test_pass_through_endpoint_rpm_limit(
 async def test_pass_through_endpoint_sequential_rpm_limit(
     client, auth, rpm_limit, requests_to_make, expected_status_codes
 ):
-    import litellm
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.proxy.proxy_server import ProxyLogging, hash_token, user_api_key_cache
+    import dheera_ai
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy.proxy_server import ProxyLogging, hash_token, user_api_key_cache
 
     proxy_logging_obj = ProxyLogging(user_api_key_cache=user_api_key_cache)
-    proxy_logging_obj._init_litellm_callbacks()
+    proxy_logging_obj._init_dheera_ai_callbacks()
 
-    setattr(litellm.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    setattr(litellm.proxy.proxy_server, "prisma_client", "FAKE-VAR")
-    setattr(litellm.proxy.proxy_server, "proxy_logging_obj", proxy_logging_obj)
+    setattr(dheera_ai.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", "FAKE-VAR")
+    setattr(dheera_ai.proxy.proxy_server, "proxy_logging_obj", proxy_logging_obj)
 
     # Define a pass-through endpoint
     _cohere_api_key = os.environ.get("COHERE_API_KEY")
@@ -300,10 +300,10 @@ async def test_pass_through_endpoint_sequential_rpm_limit(
     # Initialize the pass-through endpoint
     await initialize_pass_through_endpoints(pass_through_endpoints)
     general_settings: Optional[dict] = (
-        getattr(litellm.proxy.proxy_server, "general_settings", {}) or {}
+        getattr(dheera_ai.proxy.proxy_server, "general_settings", {}) or {}
     )
     general_settings.update({"pass_through_endpoints": pass_through_endpoints})
-    setattr(litellm.proxy.proxy_server, "general_settings", general_settings)
+    setattr(dheera_ai.proxy.proxy_server, "general_settings", general_settings)
 
     # Setup API keys and cache
     mock_api_keys = [f"sk-test-{uuid.uuid4().hex}" for _ in range(2)]
@@ -360,22 +360,22 @@ async def test_pass_through_endpoint_sequential_rpm_limit(
 async def test_aaapass_through_endpoint_pass_through_keys_langfuse(
     auth, expected_error_code, rpm_limit
 ):
-    from litellm.proxy.proxy_server import app
+    from dheera_ai.proxy.proxy_server import app
 
     client = TestClient(app)
-    import litellm
+    import dheera_ai
 
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.proxy.proxy_server import ProxyLogging, hash_token, user_api_key_cache
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy.proxy_server import ProxyLogging, hash_token, user_api_key_cache
 
     # Store original values
     original_user_api_key_cache = getattr(
-        litellm.proxy.proxy_server, "user_api_key_cache", None
+        dheera_ai.proxy.proxy_server, "user_api_key_cache", None
     )
-    original_master_key = getattr(litellm.proxy.proxy_server, "master_key", None)
-    original_prisma_client = getattr(litellm.proxy.proxy_server, "prisma_client", None)
+    original_master_key = getattr(dheera_ai.proxy.proxy_server, "master_key", None)
+    original_prisma_client = getattr(dheera_ai.proxy.proxy_server, "prisma_client", None)
     original_proxy_logging_obj = getattr(
-        litellm.proxy.proxy_server, "proxy_logging_obj", None
+        dheera_ai.proxy.proxy_server, "proxy_logging_obj", None
     )
 
     try:
@@ -390,12 +390,12 @@ async def test_aaapass_through_endpoint_pass_through_keys_langfuse(
         user_api_key_cache.set_cache(key=hash_token(mock_api_key), value=cache_value)
 
         proxy_logging_obj = ProxyLogging(user_api_key_cache=user_api_key_cache)
-        proxy_logging_obj._init_litellm_callbacks()
+        proxy_logging_obj._init_dheera_ai_callbacks()
 
-        setattr(litellm.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
-        setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-        setattr(litellm.proxy.proxy_server, "prisma_client", "FAKE-VAR")
-        setattr(litellm.proxy.proxy_server, "proxy_logging_obj", proxy_logging_obj)
+        setattr(dheera_ai.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
+        setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+        setattr(dheera_ai.proxy.proxy_server, "prisma_client", "FAKE-VAR")
+        setattr(dheera_ai.proxy.proxy_server, "proxy_logging_obj", proxy_logging_obj)
 
         # Define a pass-through endpoint
         pass_through_endpoints = [
@@ -414,11 +414,11 @@ async def test_aaapass_through_endpoint_pass_through_keys_langfuse(
         # Initialize the pass-through endpoint
         await initialize_pass_through_endpoints(pass_through_endpoints)
         general_settings: Optional[dict] = (
-            getattr(litellm.proxy.proxy_server, "general_settings", {}) or {}
+            getattr(dheera_ai.proxy.proxy_server, "general_settings", {}) or {}
         )
         old_general_settings = general_settings
         general_settings.update({"pass_through_endpoints": pass_through_endpoints})
-        setattr(litellm.proxy.proxy_server, "general_settings", general_settings)
+        setattr(dheera_ai.proxy.proxy_server, "general_settings", general_settings)
 
         _json_data = {
             "batch": [
@@ -428,7 +428,7 @@ async def test_aaapass_through_endpoint_pass_through_keys_langfuse(
                     "body": {
                         "id": "0687af7b-4a75-4de8-a4f6-cba1cdc00865",
                         "timestamp": "2024-08-14T02:38:56.092950Z",
-                        "name": "test-trace-litellm-proxy-passthrough",
+                        "name": "test-trace-dheera_ai-proxy-passthrough",
                     },
                     "timestamp": "2024-08-14T02:38:56.093352Z",
                 }
@@ -456,24 +456,24 @@ async def test_aaapass_through_endpoint_pass_through_keys_langfuse(
         # Assert the response
         assert response.status_code == expected_error_code
 
-        setattr(litellm.proxy.proxy_server, "general_settings", old_general_settings)
+        setattr(dheera_ai.proxy.proxy_server, "general_settings", old_general_settings)
     finally:
         # Reset to original values
         setattr(
-            litellm.proxy.proxy_server,
+            dheera_ai.proxy.proxy_server,
             "user_api_key_cache",
             original_user_api_key_cache,
         )
-        setattr(litellm.proxy.proxy_server, "master_key", original_master_key)
-        setattr(litellm.proxy.proxy_server, "prisma_client", original_prisma_client)
+        setattr(dheera_ai.proxy.proxy_server, "master_key", original_master_key)
+        setattr(dheera_ai.proxy.proxy_server, "prisma_client", original_prisma_client)
         setattr(
-            litellm.proxy.proxy_server, "proxy_logging_obj", original_proxy_logging_obj
+            dheera_ai.proxy.proxy_server, "proxy_logging_obj", original_proxy_logging_obj
         )
 
 
 @pytest.mark.asyncio
 async def test_pass_through_endpoint_bing(client, monkeypatch):
-    import litellm
+    import dheera_ai
 
     captured_requests = []
 
@@ -519,10 +519,10 @@ async def test_pass_through_endpoint_bing(client, monkeypatch):
     # Initialize the pass-through endpoint
     await initialize_pass_through_endpoints(pass_through_endpoints)
     general_settings: Optional[dict] = (
-        getattr(litellm.proxy.proxy_server, "general_settings", {}) or {}
+        getattr(dheera_ai.proxy.proxy_server, "general_settings", {}) or {}
     )
     general_settings.update({"pass_through_endpoints": pass_through_endpoints})
-    setattr(litellm.proxy.proxy_server, "general_settings", general_settings)
+    setattr(dheera_ai.proxy.proxy_server, "general_settings", general_settings)
 
     # Make 2 requests thru the pass-through endpoint
     client.get("/bing/search?q=bob+barker")

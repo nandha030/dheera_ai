@@ -5,7 +5,7 @@ import Image from '@theme/IdealImage';
 
 # MCP Cost Tracking
 
-LiteLLM provides two ways to track costs for MCP tool calls:
+Dheera AI provides two ways to track costs for MCP tool calls:
 
 | Method | When to Use | What It Does |
 |--------|-------------|--------------|
@@ -19,7 +19,7 @@ Configure fixed costs for MCP servers directly in your config.yaml:
 ```yaml title="config.yaml" showLineNumbers
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: sk-xxxxxxx
 
@@ -50,8 +50,8 @@ Use this when you need dynamic cost calculation or want to modify the MCP respon
 
 ```python title="custom_mcp_hook.py" showLineNumbers
 from typing import Optional
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.mcp import MCPPostCallResponseObject
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.mcp import MCPPostCallResponseObject
 
 
 class CustomMCPCostTracker(CustomLogger):
@@ -86,7 +86,7 @@ class CustomMCPCostTracker(CustomLogger):
         return response_obj
     
 
-# Create instance for LiteLLM to use
+# Create instance for Dheera AI to use
 custom_mcp_cost_tracker = CustomMCPCostTracker()
 ```
 
@@ -95,7 +95,7 @@ custom_mcp_cost_tracker = CustomMCPCostTracker()
 ```yaml title="config.yaml" showLineNumbers
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: sk-xxxxxxx
 
@@ -111,11 +111,11 @@ mcp_servers:
 #### 3. Start the proxy
 
 ```shell
-$ litellm --config /path/to/config.yaml 
+$ dheera_ai --config /path/to/config.yaml 
 ```
 
 When MCP tools are called, your custom hook will:
 1. Calculate costs based on your custom logic
 2. Modify the response if needed
-3. Track costs in LiteLLM's logging system
+3. Track costs in Dheera AI's logging system
 

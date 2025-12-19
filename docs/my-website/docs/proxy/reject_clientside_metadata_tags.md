@@ -90,13 +90,13 @@ These tags will be automatically inherited by all requests made with that API ke
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 general_settings:
   master_key: sk-1234
-  database_url: "postgresql://user:password@localhost:5432/litellm"
+  database_url: "postgresql://user:password@localhost:5432/dheera_ai"
   
   # Reject client-side tags
   reject_clientside_metadata_tags: true

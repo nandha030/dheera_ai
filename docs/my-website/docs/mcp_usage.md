@@ -5,19 +5,19 @@ import Image from '@theme/IdealImage';
 
 # Using your MCP
 
-This document covers how to use LiteLLM as an MCP Gateway. You can see how to use it with Responses API, Cursor IDE, and OpenAI SDK.
+This document covers how to use Dheera AI as an MCP Gateway. You can see how to use it with Responses API, Cursor IDE, and OpenAI SDK.
 
-### Use on LiteLLM UI 
+### Use on Dheera AI UI 
 
-Follow this walkthrough to use your MCP on LiteLLM UI
+Follow this walkthrough to use your MCP on Dheera AI UI
 
 <iframe width="840" height="500" src="https://www.loom.com/embed/57e0763267254bc79dbe6658d0b8758c" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
 ### Use with Responses API
 
-Replace `http://localhost:4000` with your LiteLLM Proxy base URL.
+Replace `http://localhost:4000` with your Dheera AI Proxy base URL.
 
-Demo Video Using Responses API with LiteLLM Proxy: [Demo video here](https://www.loom.com/share/34587e618c5c47c0b0d67b4e4d02718f?sid=2caf3d45-ead4-4490-bcc1-8d6dd6041c02)
+Demo Video Using Responses API with Dheera AI Proxy: [Demo video here](https://www.loom.com/share/34587e618c5c47c0b0d67b4e4d02718f?sid=2caf3d45-ead4-4490-bcc1-8d6dd6041c02)
 
 
 <Tabs>
@@ -32,15 +32,15 @@ curl --location 'http://localhost:4000/v1/responses' \
     "input": [
     {
       "role": "user",
-      "content": "give me TLDR of what BerriAI/litellm repo is about",
+      "content": "give me TLDR of what BerriAI/dheera_ai repo is about",
       "type": "message"
     }
   ],
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "litellm_proxy",
+            "server_label": "dheera_ai",
+            "server_url": "dheera_ai_proxy",
             "require_approval": "never"
         }
     ],
@@ -54,15 +54,15 @@ curl --location 'http://localhost:4000/v1/responses' \
 
 ```python title="Python SDK Example" showLineNumbers
 """
-Use LiteLLM Proxy MCP Gateway to call MCP tools.
+Use Dheera AI Proxy MCP Gateway to call MCP tools.
 
-When using LiteLLM Proxy, you can use the same MCP tools across all your LLM providers.
+When using Dheera AI Proxy, you can use the same MCP tools across all your LLM providers.
 """
 import openai
 
 client = openai.OpenAI(
-    api_key="sk-1234", # paste your litellm proxy api key here
-    base_url="http://localhost:4000" # paste your litellm proxy base url here
+    api_key="sk-1234", # paste your dheera_ai proxy api key here
+    base_url="http://localhost:4000" # paste your dheera_ai proxy base url here
 )
 print("Making API request to Responses API with MCP tools")
 
@@ -71,15 +71,15 @@ response = client.responses.create(
     input=[
         {
             "role": "user",
-            "content": "give me TLDR of what BerriAI/litellm repo is about",
+            "content": "give me TLDR of what BerriAI/dheera_ai repo is about",
             "type": "message"
         }
     ],
     tools=[
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "litellm_proxy",
+            "server_label": "dheera_ai",
+            "server_url": "dheera_ai_proxy",
             "require_approval": "never"
         }
     ],
@@ -98,7 +98,7 @@ for chunk in response:
 
 You can specify which MCP tools are available by using the `allowed_tools` parameter. This allows you to restrict access to specific tools within an MCP server.
 
-To get the list of allowed tools when using LiteLLM MCP Gateway, you can naigate to the LiteLLM UI on MCP Servers > MCP Tools > Click the Tool > Copy Tool Name.
+To get the list of allowed tools when using Dheera AI MCP Gateway, you can naigate to the Dheera AI UI on MCP Servers > MCP Tools > Click the Tool > Copy Tool Name.
 
 <Tabs>
 <TabItem value="curl" label="cURL">
@@ -112,17 +112,17 @@ curl --location 'http://localhost:4000/v1/responses' \
     "input": [
     {
       "role": "user",
-      "content": "give me TLDR of what BerriAI/litellm repo is about",
+      "content": "give me TLDR of what BerriAI/dheera_ai repo is about",
       "type": "message"
     }
   ],
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "litellm_proxy/mcp",
+            "server_label": "dheera_ai",
+            "server_url": "dheera_ai_proxy/mcp",
             "require_approval": "never",
-            "allowed_tools": ["GitMCP-fetch_litellm_documentation"]
+            "allowed_tools": ["GitMCP-fetch_dheera_ai_documentation"]
         }
     ],
     "stream": true,
@@ -146,17 +146,17 @@ response = client.responses.create(
     input=[
         {
             "role": "user",
-            "content": "give me TLDR of what BerriAI/litellm repo is about",
+            "content": "give me TLDR of what BerriAI/dheera_ai repo is about",
             "type": "message"
         }
     ],
     tools=[
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "litellm_proxy/mcp",
+            "server_label": "dheera_ai",
+            "server_url": "dheera_ai_proxy/mcp",
             "require_approval": "never",
-            "allowed_tools": ["GitMCP-fetch_litellm_documentation"]
+            "allowed_tools": ["GitMCP-fetch_dheera_ai_documentation"]
         }
     ],
     stream=True,
@@ -171,7 +171,7 @@ print(response)
 
 ### Use with Cursor IDE
 
-Use tools directly from Cursor IDE with LiteLLM MCP:
+Use tools directly from Cursor IDE with Dheera AI MCP:
 
 **Setup Instructions:**
 
@@ -182,27 +182,27 @@ Use tools directly from Cursor IDE with LiteLLM MCP:
 ```json title="Basic Cursor MCP Configuration" showLineNumbers
 {
   "mcpServers": {
-    "LiteLLM": {
-      "url": "litellm_proxy",
+    "Dheera AI": {
+      "url": "dheera_ai_proxy",
       "headers": {
-        "x-litellm-api-key": "Bearer $LITELLM_API_KEY"
+        "x-dheera_ai-api-key": "Bearer $DHEERA_AI_API_KEY"
       }
     }
   }
 }
 ```
 
-#### How it works when server_url="litellm_proxy"
+#### How it works when server_url="dheera_ai_proxy"
 
-When server_url="litellm_proxy", LiteLLM bridges non-MCP providers to your MCP tools.
+When server_url="dheera_ai_proxy", Dheera AI bridges non-MCP providers to your MCP tools.
 
-- Tool Discovery: LiteLLM fetches MCP tools and converts them to OpenAI-compatible definitions
+- Tool Discovery: Dheera AI fetches MCP tools and converts them to OpenAI-compatible definitions
 - LLM Call: Tools are sent to the LLM with your input; LLM selects which tools to call
-- Tool Execution: LiteLLM automatically parses arguments, routes calls to MCP servers, executes tools, and retrieves results
+- Tool Execution: Dheera AI automatically parses arguments, routes calls to MCP servers, executes tools, and retrieves results
 - Response Integration: Tool results are sent back to LLM for final response generation
 - Output: Complete response combining LLM reasoning with tool execution results
 
-This enables MCP tool usage with any LiteLLM-supported provider, regardless of native MCP support.
+This enables MCP tool usage with any Dheera AI-supported provider, regardless of native MCP support.
 
 #### Auto-execution for require_approval: "never"
 

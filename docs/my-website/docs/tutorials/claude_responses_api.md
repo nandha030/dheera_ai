@@ -4,11 +4,11 @@ import TabItem from '@theme/TabItem';
 
 # Claude Code
 
-This tutorial shows how to call Claude models through LiteLLM proxy from Claude Code.
+This tutorial shows how to call Claude models through Dheera AI proxy from Claude Code.
 
 :::info 
 
-This tutorial is based on [Anthropic's official LiteLLM configuration documentation](https://docs.anthropic.com/en/docs/claude-code/llm-gateway#litellm-configuration). This integration allows you to use any LiteLLM supported model through Claude Code with centralized authentication, usage tracking, and cost controls.
+This tutorial is based on [Anthropic's official Dheera AI configuration documentation](https://docs.anthropic.com/en/docs/claude-code/llm-gateway#dheera_ai-configuration). This integration allows you to use any Dheera AI supported model through Claude Code with centralized authentication, usage tracking, and cost controls.
 
 :::
 
@@ -25,10 +25,10 @@ This tutorial is based on [Anthropic's official LiteLLM configuration documentat
 
 ## Installation
 
-First, install LiteLLM with proxy support:
+First, install Dheera AI with proxy support:
 
 ```bash
-pip install 'litellm[proxy]'
+pip install 'dheera_ai[proxy]'
 ```
 
 ### 1. Setup config.yaml
@@ -39,31 +39,31 @@ Create a secure configuration using environment variables:
 model_list:
   # Claude models
   - model_name: claude-3-5-sonnet-20241022    
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet-20241022
       api_key: os.environ/ANTHROPIC_API_KEY
   
   - model_name: claude-3-5-haiku-20241022
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-haiku-20241022
       api_key: os.environ/ANTHROPIC_API_KEY
 
   
-litellm_settings:
-  master_key: os.environ/LITELLM_MASTER_KEY
+dheera_ai_settings:
+  master_key: os.environ/DHEERA_AI_MASTER_KEY
 ```
 
 Set your environment variables:
 
 ```bash
 export ANTHROPIC_API_KEY="your-anthropic-api-key"
-export LITELLM_MASTER_KEY="sk-1234567890"  # Generate a secure key
+export DHEERA_AI_MASTER_KEY="sk-1234567890"  # Generate a secure key
 ```
 
 ### 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -74,7 +74,7 @@ Test that your proxy is working correctly:
 
 ```bash
 curl -X POST http://0.0.0.0:4000/v1/messages \
--H "Authorization: Bearer $LITELLM_MASTER_KEY" \
+-H "Authorization: Bearer $DHEERA_AI_MASTER_KEY" \
 -H "Content-Type: application/json" \
 -d '{
     "model": "claude-3-5-sonnet-20241022",
@@ -87,17 +87,17 @@ curl -X POST http://0.0.0.0:4000/v1/messages \
 
 #### Method 1: Unified Endpoint (Recommended)
 
-Configure Claude Code to use LiteLLM's unified endpoint:
+Configure Claude Code to use Dheera AI's unified endpoint:
 
 Either a virtual key / master key can be used here
 
 ```bash
 export ANTHROPIC_BASE_URL="http://0.0.0.0:4000"
-export ANTHROPIC_AUTH_TOKEN="$LITELLM_MASTER_KEY"
+export ANTHROPIC_AUTH_TOKEN="$DHEERA_AI_MASTER_KEY"
 ```
 
 :::tip
-LITELLM_MASTER_KEY gives claude access to all proxy models, whereas a virtual key would be limited to the models set in UI
+DHEERA_AI_MASTER_KEY gives claude access to all proxy models, whereas a virtual key would be limited to the models set in UI
 :::
 
 #### Method 2: Provider-specific Pass-through Endpoint
@@ -106,7 +106,7 @@ Alternatively, use the Anthropic pass-through endpoint:
 
 ```bash
 export ANTHROPIC_BASE_URL="http://0.0.0.0:4000/anthropic"
-export ANTHROPIC_AUTH_TOKEN="$LITELLM_MASTER_KEY"
+export ANTHROPIC_AUTH_TOKEN="$DHEERA_AI_MASTER_KEY"
 ```
 
 ### 5. Use Claude Code
@@ -114,7 +114,7 @@ export ANTHROPIC_AUTH_TOKEN="$LITELLM_MASTER_KEY"
 Start Claude Code and it will automatically use your configured models:
 
 ```bash
-# Claude Code will use the models configured in your LiteLLM proxy
+# Claude Code will use the models configured in your Dheera AI proxy
 claude
 
 # Or specify a model if you have multiple configured
@@ -131,16 +131,16 @@ Common issues and solutions:
 **Claude Code not connecting:**
 - Verify your proxy is running: `curl http://0.0.0.0:4000/health`
 - Check that `ANTHROPIC_BASE_URL` is set correctly
-- Ensure your `ANTHROPIC_AUTH_TOKEN` matches your LiteLLM master key
+- Ensure your `ANTHROPIC_AUTH_TOKEN` matches your Dheera AI master key
 
 **Authentication errors:**
-- Verify your environment variables are set: `echo $LITELLM_MASTER_KEY`
+- Verify your environment variables are set: `echo $DHEERA_AI_MASTER_KEY`
 - Check that your API keys are valid and have sufficient credits
-- Ensure the `ANTHROPIC_AUTH_TOKEN` matches your LiteLLM master key
+- Ensure the `ANTHROPIC_AUTH_TOKEN` matches your Dheera AI master key
 
 **Model not found:**
 - Ensure the model name in Claude Code matches exactly with your `config.yaml`
-- Check LiteLLM logs for detailed error messages
+- Check Dheera AI logs for detailed error messages
 
 ## Using Multiple Models
 
@@ -153,44 +153,44 @@ Expand your configuration to support multiple providers and models:
 model_list:
   # OpenAI models
   - model_name: codex-mini
-    litellm_params:  
+    dheera_ai_params:  
       model: openai/codex-mini
       api_key: os.environ/OPENAI_API_KEY
       api_base: https://api.openai.com/v1
 
   - model_name: o3-pro
-    litellm_params:
+    dheera_ai_params:
       model: openai/o3-pro
       api_key: os.environ/OPENAI_API_KEY
       api_base: https://api.openai.com/v1
 
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
       api_base: https://api.openai.com/v1
 
   # Anthropic models
   - model_name: claude-3-5-sonnet-20241022
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet-20241022
       api_key: os.environ/ANTHROPIC_API_KEY
   
   - model_name: claude-3-5-haiku-20241022
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-haiku-20241022
       api_key: os.environ/ANTHROPIC_API_KEY
 
   # AWS Bedrock
   - model_name: claude-bedrock
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
       aws_region_name: us-east-1
 
-litellm_settings:
-  master_key: os.environ/LITELLM_MASTER_KEY
+dheera_ai_settings:
+  master_key: os.environ/DHEERA_AI_MASTER_KEY
 ```
 
 Switch between models seamlessly:
@@ -214,7 +214,7 @@ claude --model claude-bedrock
 
 ## Connecting MCP Servers
 
-You can also connect MCP servers to Claude Code via LiteLLM Proxy.
+You can also connect MCP servers to Claude Code via Dheera AI Proxy.
 
 :::note
 
@@ -256,10 +256,10 @@ atlassian_mcp:
 </TabItem>
 </Tabs>
 
-2. Start LiteLLM Proxy
+2. Start Dheera AI Proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -267,10 +267,10 @@ litellm --config /path/to/config.yaml
 3. Use the MCP server in Claude Code
 
 ```bash
-claude mcp add --transport http litellm_proxy http://0.0.0.0:4000/github_mcp/mcp --header "Authorization: Bearer sk-LITELLM_VIRTUAL_KEY"
+claude mcp add --transport http dheera_ai_proxy http://0.0.0.0:4000/github_mcp/mcp --header "Authorization: Bearer sk-DHEERA_AI_VIRTUAL_KEY"
 ```
 
-For MCP servers that require dynamic client registration (such as Atlassian), please set `x-litellm-api-key: Bearer sk-LITELLM_VIRTUAL_KEY` instead of using `Authorization: Bearer LITELLM_VIRTUAL_KEY`.
+For MCP servers that require dynamic client registration (such as Atlassian), please set `x-dheera_ai-api-key: Bearer sk-DHEERA_AI_VIRTUAL_KEY` instead of using `Authorization: Bearer DHEERA_AI_VIRTUAL_KEY`.
 
 4. Authenticate via Claude Code
 
@@ -289,7 +289,7 @@ b. Authenticate via Claude Code
 c. Select the MCP server
 
 ```bash
-> litellm_proxy
+> dheera_ai_proxy
 ```
 
 d. Start Oauth flow via Claude Code

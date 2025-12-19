@@ -11,13 +11,13 @@ sys.path.insert(
 from typing import Literal
 
 import pytest
-import litellm
+import dheera_ai
 import asyncio
 import logging
-from litellm._logging import verbose_logger
+from dheera_ai._logging import verbose_logger
 from prometheus_client import REGISTRY, CollectorRegistry
 from unittest.mock import patch
-from litellm.litellm_core_utils.custom_logger_registry import (
+from dheera_ai.dheera_ai_core_utils.custom_logger_registry import (
     CustomLoggerRegistry,
 )
 
@@ -61,12 +61,12 @@ expected_env_vars = {
 
 
 def reset_all_callbacks():
-    litellm.callbacks = []
-    litellm.input_callback = []
-    litellm.success_callback = []
-    litellm.failure_callback = []
-    litellm._async_success_callback = []
-    litellm._async_failure_callback = []
+    dheera_ai.callbacks = []
+    dheera_ai.input_callback = []
+    dheera_ai.success_callback = []
+    dheera_ai.failure_callback = []
+    dheera_ai._async_success_callback = []
+    dheera_ai._async_failure_callback = []
 
 
 initial_env_vars = {}
@@ -98,19 +98,19 @@ async def use_callback_in_llm_call(
         # internal CustomLogger class that expects internal_usage_cache passed to it, it always fails when tested in this way
         return
     elif callback == "argilla":
-        litellm.argilla_transformation_object = {}
+        dheera_ai.argilla_transformation_object = {}
     elif callback == "openmeter":
         # it's currently handled in jank way, TODO: fix openmete and then actually run it's test
         return
     elif callback == "bitbucket" or callback == "gitlab":
         # Set up mock bitbucket configuration required for initialization
-        litellm.global_bitbucket_config = {
+        dheera_ai.global_bitbucket_config = {
             "workspace": "test-workspace",
             "repository": "test-repo",
             "access_token": "test-token",
             "branch": "main"
         }
-        litellm.global_gitlab_config = {
+        dheera_ai.global_gitlab_config = {
             "project": "a/b/<repo_name>",
             "access_token": "your-access-token",
             "base_url": "gitlab url",
@@ -127,7 +127,7 @@ async def use_callback_in_llm_call(
         mock_response.text = ""
         
         patch.object(
-            litellm.module_level_client, "get", return_value=mock_response
+            dheera_ai.module_level_client, "get", return_value=mock_response
         ).start()
     elif callback == "prometheus":
         # pytest teardown - clear existing prometheus collectors
@@ -143,7 +143,7 @@ async def use_callback_in_llm_call(
             status_code=200, json={"items": [{"id": "mocked_dataset_id"}]}
         )
         patch.object(
-            litellm.module_level_client, "get", return_value=mock_response
+            dheera_ai.module_level_client, "get", return_value=mock_response
         ).start()
 
     # Mock the httpx call for Argilla dataset retrieval
@@ -154,16 +154,16 @@ async def use_callback_in_llm_call(
             status_code=200, json={"items": [{"id": "mocked_dataset_id"}]}
         )
         patch.object(
-            litellm.module_level_client, "get", return_value=mock_response
+            dheera_ai.module_level_client, "get", return_value=mock_response
         ).start()
 
     if used_in == "callbacks":
-        litellm.callbacks = [callback]
+        dheera_ai.callbacks = [callback]
     elif used_in == "success_callback":
-        litellm.success_callback = [callback]
+        dheera_ai.success_callback = [callback]
 
     for _ in range(5):
-        await litellm.acompletion(
+        await dheera_ai.acompletion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "hi"}],
             temperature=0.1,
@@ -175,25 +175,25 @@ async def use_callback_in_llm_call(
         expected_class = CustomLoggerRegistry.CALLBACK_CLASS_STR_TO_CLASS_TYPE[callback]
 
         if used_in == "callbacks":
-            assert isinstance(litellm._async_success_callback[0], expected_class)
-            assert isinstance(litellm._async_failure_callback[0], expected_class)
-            assert isinstance(litellm.success_callback[0], expected_class)
-            assert isinstance(litellm.failure_callback[0], expected_class)
+            assert isinstance(dheera_ai._async_success_callback[0], expected_class)
+            assert isinstance(dheera_ai._async_failure_callback[0], expected_class)
+            assert isinstance(dheera_ai.success_callback[0], expected_class)
+            assert isinstance(dheera_ai.failure_callback[0], expected_class)
 
             assert (
-                len(litellm._async_success_callback) == 1
-            ), f"Got={litellm._async_success_callback}"
-            assert len(litellm._async_failure_callback) == 1
-            assert len(litellm.success_callback) == 1
-            assert len(litellm.failure_callback) == 1
-            assert len(litellm.callbacks) == 1
+                len(dheera_ai._async_success_callback) == 1
+            ), f"Got={dheera_ai._async_success_callback}"
+            assert len(dheera_ai._async_failure_callback) == 1
+            assert len(dheera_ai.success_callback) == 1
+            assert len(dheera_ai.failure_callback) == 1
+            assert len(dheera_ai.callbacks) == 1
         elif used_in == "success_callback":
-            print(f"litellm.success_callback: {litellm.success_callback}")
-            print(f"litellm._async_success_callback: {litellm._async_success_callback}")
-            assert isinstance(litellm.success_callback[0], expected_class)
-            assert len(litellm.success_callback) == 1  # ["lago", LagoLogger]
-            assert isinstance(litellm._async_success_callback[0], expected_class)
-            assert len(litellm._async_success_callback) == 1
+            print(f"dheera_ai.success_callback: {dheera_ai.success_callback}")
+            print(f"dheera_ai._async_success_callback: {dheera_ai._async_success_callback}")
+            assert isinstance(dheera_ai.success_callback[0], expected_class)
+            assert len(dheera_ai.success_callback) == 1  # ["lago", LagoLogger]
+            assert isinstance(dheera_ai._async_success_callback[0], expected_class)
+            assert len(dheera_ai._async_success_callback) == 1
 
             # TODO also assert that it's not set for failure_callback
             # As of Oct 21 2024, it's currently set
@@ -204,26 +204,26 @@ async def use_callback_in_llm_call(
 
         if callback == "bitbucket":
             # Clean up bitbucket configuration and patches
-            if hasattr(litellm, 'global_bitbucket_config'):
-                delattr(litellm, 'global_bitbucket_config')
+            if hasattr(dheera_ai, 'global_bitbucket_config'):
+                delattr(dheera_ai, 'global_bitbucket_config')
             patch.stopall()
 
 
 
 def test_dynamic_logging_global_callback():
-    from litellm.litellm_core_utils.litellm_logging import Logging as LiteLLMLoggingObj
-    from litellm.integrations.custom_logger import CustomLogger
-    from litellm.types.utils import ModelResponse, Choices, Message, Usage
+    from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging as DheeraAILoggingObj
+    from dheera_ai.integrations.custom_logger import CustomLogger
+    from dheera_ai.types.utils import ModelResponse, Choices, Message, Usage
 
     cl = CustomLogger()
 
-    litellm_logging = LiteLLMLoggingObj(
+    dheera_ai_logging = DheeraAILoggingObj(
         model="claude-3-opus-20240229",
         messages=[{"role": "user", "content": "hi"}],
         stream=False,
         call_type="completion",
         start_time=datetime.now(),
-        litellm_call_id="123",
+        dheera_ai_call_id="123",
         function_id="456",
         kwargs={
             "langfuse_public_key": "my-mock-public-key",
@@ -234,10 +234,10 @@ def test_dynamic_logging_global_callback():
 
     with patch.object(cl, "log_success_event") as mock_log_success_event:
         cl.log_success_event = mock_log_success_event
-        litellm.success_callback = [cl]
+        dheera_ai.success_callback = [cl]
 
         try:
-            litellm_logging.success_handler(
+            dheera_ai_logging.success_handler(
                 result=ModelResponse(
                     id="chatcmpl-5418737b-ab14-420b-b9c5-b278b6681b70",
                     created=1732306261,
@@ -275,15 +275,15 @@ def test_dynamic_logging_global_callback():
 
 
 def test_get_combined_callback_list():
-    from litellm.litellm_core_utils.litellm_logging import Logging as LiteLLMLoggingObj
+    from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging as DheeraAILoggingObj
 
-    _logging = LiteLLMLoggingObj(
+    _logging = DheeraAILoggingObj(
         model="claude-3-opus-20240229",
         messages=[{"role": "user", "content": "hi"}],
         stream=False,
         call_type="completion",
         start_time=datetime.now(),
-        litellm_call_id="123",
+        dheera_ai_call_id="123",
         function_id="456",
     )
 

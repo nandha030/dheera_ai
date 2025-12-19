@@ -5,7 +5,7 @@ import sys
 from typing import Any, Dict, List
 from unittest.mock import MagicMock, Mock, patch
 import os
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import time
 import base64
 import inspect
@@ -13,25 +13,25 @@ import inspect
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm.exceptions import BadRequestError
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
-from litellm.utils import (
+import dheera_ai
+from dheera_ai.exceptions import BadRequestError
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
+from dheera_ai.utils import (
     CustomStreamWrapper,
     get_supported_openai_params,
     get_optional_params,
     ProviderConfigManager,
 )
-from litellm.main import stream_chunk_builder
+from dheera_ai.main import stream_chunk_builder
 from typing import Union
-from litellm.types.utils import Usage, ModelResponse
+from dheera_ai.types.utils import Usage, ModelResponse
 
 # test_example.py
 from abc import ABC, abstractmethod
 from openai import OpenAI
 
 
-def _usage_format_tests(usage: litellm.Usage):
+def _usage_format_tests(usage: dheera_ai.Usage):
     """
     OpenAI prompt caching
     - prompt_tokens = sum of non-cache hit tokens + cache-hit tokens
@@ -68,11 +68,11 @@ class BaseLLMChatTest(ABC):
 
     @property
     def completion_function(self):
-        return litellm.completion
+        return dheera_ai.completion
 
     @property
     def async_completion_function(self):
-        return litellm.acompletion
+        return dheera_ai.acompletion
 
     @abstractmethod
     def get_base_completion_call_args(self) -> dict:
@@ -88,9 +88,9 @@ class BaseLLMChatTest(ABC):
         """Fixture to handle rate limit errors for all test methods"""
         try:
             yield
-        except litellm.RateLimitError:
+        except dheera_ai.RateLimitError:
             pytest.skip("Rate limit exceeded")
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
     def test_developer_role_translation(self):
@@ -116,7 +116,7 @@ class BaseLLMChatTest(ABC):
                 messages=messages,
             )
             assert response is not None
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
         assert response.choices[0].message.content is not None
@@ -136,18 +136,18 @@ class BaseLLMChatTest(ABC):
                 messages=messages,
             )
             assert response is not None
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
         # for OpenAI the content contains the JSON schema, so we need to assert that the content is not None
         assert response.choices[0].message.content is not None
 
     def test_tool_call_with_property_type_array(self):
-        litellm._turn_on_debug()
-        from litellm.utils import supports_function_calling
+        dheera_ai._turn_on_debug()
+        from dheera_ai.utils import supports_function_calling
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         base_completion_call_args = self.get_base_completion_call_args()
         if not supports_function_calling(base_completion_call_args["model"], None):
@@ -189,11 +189,11 @@ class BaseLLMChatTest(ABC):
 
     @pytest.mark.flaky(retries=3, delay=1)
     def test_tool_call_with_empty_enum_property(self):
-        litellm._turn_on_debug()
-        from litellm.utils import supports_function_calling
+        dheera_ai._turn_on_debug()
+        from dheera_ai.utils import supports_function_calling
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         base_completion_call_args = self.get_base_completion_call_args()
         if not supports_function_calling(base_completion_call_args["model"], None):
@@ -212,7 +212,7 @@ class BaseLLMChatTest(ABC):
                 {
                     "type": "function",
                     "function": {
-                        "name": "litellm_product_search",
+                        "name": "dheera_ai_product_search",
                         "description": "Search for product information and specifications.\n\nSupports filtering by category, brand, price range, and availability.\nCan retrieve detailed product specifications, pricing, and stock information.\nSupports different search modes and result formatting options.\n",
                         "parameters": {
                             "properties": {
@@ -243,12 +243,12 @@ class BaseLLMChatTest(ABC):
         print(json.dumps(response, indent=4, default=str))
 
     def test_streaming(self):
-        """Check if litellm handles streaming correctly"""
-        from litellm.types.utils import ModelResponseStream
+        """Check if dheera_ai handles streaming correctly"""
+        from dheera_ai.types.utils import ModelResponseStream
         from typing import Optional
 
         base_completion_call_args = self.get_base_completion_call_args()
-        # litellm.set_verbose = True
+        # dheera_ai.set_verbose = True
         messages = [
             {
                 "role": "user",
@@ -263,7 +263,7 @@ class BaseLLMChatTest(ABC):
             )
             assert response is not None
             assert isinstance(response, CustomStreamWrapper)
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
         # for OpenAI the content contains the JSON schema, so we need to assert that the content is not None
@@ -277,7 +277,7 @@ class BaseLLMChatTest(ABC):
                     created_at = chunk.created
                 assert chunk.created == created_at
 
-        resp = litellm.stream_chunk_builder(chunks=chunks)
+        resp = dheera_ai.stream_chunk_builder(chunks=chunks)
         print(resp)
 
         # assert resp.usage.prompt_tokens > 0
@@ -285,9 +285,9 @@ class BaseLLMChatTest(ABC):
         # assert resp.usage.total_tokens > 0
 
     def test_pydantic_model_input(self):
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
-        from litellm import completion, Message
+        from dheera_ai import completion, Message
 
         base_completion_call_args = self.get_base_completion_call_args()
         messages = [Message(content="Hello, how are you?", role="user")]
@@ -295,12 +295,12 @@ class BaseLLMChatTest(ABC):
         self.completion_function(**base_completion_call_args, messages=messages)
 
     def test_web_search(self):
-        from litellm.utils import supports_web_search
+        from dheera_ai.utils import supports_web_search
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         base_completion_call_args = self.get_base_completion_call_args()
 
@@ -321,12 +321,12 @@ class BaseLLMChatTest(ABC):
         print(f"response={response}")
 
     def test_url_context(self):
-        from litellm.utils import supports_url_context
+        from dheera_ai.utils import supports_url_context
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         base_completion_call_args = self.get_base_completion_call_args()
 
@@ -350,12 +350,12 @@ class BaseLLMChatTest(ABC):
     @pytest.mark.parametrize("sync_mode", [True, False])
     @pytest.mark.asyncio
     async def test_pdf_handling(self, pdf_messages, sync_mode):
-        from litellm.utils import supports_pdf_input
+        from dheera_ai.utils import supports_pdf_input
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         image_content = [
             {"type": "text", "text": "What's this file about?"},
@@ -389,12 +389,12 @@ class BaseLLMChatTest(ABC):
 
     @pytest.mark.asyncio
     async def test_async_pdf_handling_with_file_id(self):
-        from litellm.utils import supports_pdf_input
+        from dheera_ai.utils import supports_pdf_input
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         image_content = [
             {"type": "text", "text": "What's this file about?"},
@@ -421,9 +421,9 @@ class BaseLLMChatTest(ABC):
         assert response is not None
 
     def test_file_data_unit_test(self, pdf_messages):
-        from litellm.utils import supports_pdf_input, return_raw_request
-        from litellm.types.utils import CallTypes
-        from litellm.litellm_core_utils.prompt_templates.factory import (
+        from dheera_ai.utils import supports_pdf_input, return_raw_request
+        from dheera_ai.types.utils import CallTypes
+        from dheera_ai.dheera_ai_core_utils.prompt_templates.factory import (
             convert_to_anthropic_image_obj,
         )
 
@@ -460,7 +460,7 @@ class BaseLLMChatTest(ABC):
 
     def test_message_with_name(self):
         try:
-            litellm.set_verbose = True
+            dheera_ai.set_verbose = True
             base_completion_call_args = self.get_base_completion_call_args()
             messages = [
                 {"role": "user", "content": "Hello", "name": "test_name"},
@@ -469,7 +469,7 @@ class BaseLLMChatTest(ABC):
                 **base_completion_call_args, messages=messages
             )
             assert response is not None
-        except litellm.RateLimitError:
+        except dheera_ai.RateLimitError:
             pass
 
     @pytest.mark.parametrize(
@@ -484,10 +484,10 @@ class BaseLLMChatTest(ABC):
         """
         Test that the JSON response format is supported by the LLM API
         """
-        from litellm.utils import supports_response_schema
+        from dheera_ai.utils import supports_response_schema
 
         base_completion_call_args = self.get_base_completion_call_args()
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         if not supports_response_schema(base_completion_call_args["model"], None):
             pytest.skip("Model does not support response schema")
@@ -512,7 +512,7 @@ class BaseLLMChatTest(ABC):
         print(f"response={response}")
 
         # OpenAI guarantees that the JSON schema is returned in the content
-        # relevant issue: https://github.com/BerriAI/litellm/issues/6741
+        # relevant issue: https://github.com/BerriAI/dheera_ai/issues/6741
         assert response.choices[0].message.content is not None
 
     @pytest.mark.parametrize(
@@ -562,7 +562,7 @@ class BaseLLMChatTest(ABC):
                 drop_params=True,
             )
             print(f"RESPONSE={response}")
-        except litellm.ContextWindowExceededError:
+        except dheera_ai.ContextWindowExceededError:
             pytest.skip("Model exceeded context window")
         assert response is not None
 
@@ -570,12 +570,12 @@ class BaseLLMChatTest(ABC):
         """
         Test that the response format type text does not lead to tool calls
         """
-        from litellm import LlmProviders
+        from dheera_ai import LlmProviders
 
         base_completion_call_args = self.get_base_completion_call_args()
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
-        _, provider, _, _ = litellm.get_llm_provider(
+        _, provider, _, _ = dheera_ai.get_llm_provider(
             model=base_completion_call_args["model"]
         )
 
@@ -601,12 +601,12 @@ class BaseLLMChatTest(ABC):
 
     @pytest.mark.flaky(retries=6, delay=1)
     def test_json_response_pydantic_obj(self):
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         from pydantic import BaseModel
-        from litellm.utils import supports_response_schema
+        from dheera_ai.utils import supports_response_schema
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         class TestModel(BaseModel):
             first_response: str
@@ -634,27 +634,27 @@ class BaseLLMChatTest(ABC):
 
             assert res.choices[0].message.content is not None
             assert res.choices[0].message.tool_calls is None
-        except litellm.Timeout:
+        except dheera_ai.Timeout:
             pytest.skip("Model took too long to respond")
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
     @pytest.mark.flaky(retries=6, delay=1)
     def test_json_response_pydantic_obj_nested_obj(self):
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         from pydantic import BaseModel
-        from litellm.utils import supports_response_schema
+        from dheera_ai.utils import supports_response_schema
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
     @pytest.mark.flaky(retries=6, delay=1)
     def test_json_response_nested_pydantic_obj(self):
         from pydantic import BaseModel
-        from litellm.utils import supports_response_schema
+        from dheera_ai.utils import supports_response_schema
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         class CalendarEvent(BaseModel):
             name: str
@@ -687,9 +687,9 @@ class BaseLLMChatTest(ABC):
 
             assert res.choices[0].message.content is not None
             assert res.choices[0].message.tool_calls is None
-        except litellm.Timeout:
+        except dheera_ai.Timeout:
             pytest.skip("Model took too long to respond")
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
     @pytest.mark.flaky(retries=6, delay=1)
@@ -697,13 +697,13 @@ class BaseLLMChatTest(ABC):
         """
         PROD Test: ensure nested json schema sent to proxy works as expected.
         """
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         from pydantic import BaseModel
-        from litellm.utils import supports_response_schema
-        from litellm.llms.base_llm.base_utils import type_to_response_format_param
+        from dheera_ai.utils import supports_response_schema
+        from dheera_ai.llms.base_llm.base_utils import type_to_response_format_param
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         class CalendarEvent(BaseModel):
             name: str
@@ -738,9 +738,9 @@ class BaseLLMChatTest(ABC):
 
             assert res.choices[0].message.content is not None
             assert res.choices[0].message.tool_calls is None
-        except litellm.Timeout:
+        except dheera_ai.Timeout:
             pytest.skip("Model took too long to respond")
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
     @pytest.mark.flaky(retries=6, delay=1)
@@ -748,9 +748,9 @@ class BaseLLMChatTest(ABC):
         """
         Test that audio input is supported by the LLM API
         """
-        from litellm.utils import supports_audio_input
+        from dheera_ai.utils import supports_audio_input
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         base_completion_call_args = self.get_base_completion_call_args()
         if not supports_audio_input(base_completion_call_args["model"], None):
             pytest.skip(
@@ -786,10 +786,10 @@ class BaseLLMChatTest(ABC):
         """
         Test that the JSON response format with streaming is supported by the LLM API
         """
-        from litellm.utils import supports_response_schema
+        from dheera_ai.utils import supports_response_schema
 
         base_completion_call_args = self.get_base_completion_call_args()
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         base_completion_call_args = self.get_base_completion_call_args()
         if not supports_response_schema(base_completion_call_args["model"], None):
@@ -813,7 +813,7 @@ class BaseLLMChatTest(ABC):
                 response_format={"type": "json_object"},
                 stream=True,
             )
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
         print(response)
@@ -825,7 +825,7 @@ class BaseLLMChatTest(ABC):
         print(f"content={content}<END>")
 
         # OpenAI guarantees that the JSON schema is returned in the content
-        # relevant issue: https://github.com/BerriAI/litellm/issues/6741
+        # relevant issue: https://github.com/BerriAI/dheera_ai/issues/6741
         # we need to assert that the JSON schema was returned in the content, (for Anthropic we were returning it as part of the tool call)
         assert content is not None
         assert len(content) > 0
@@ -846,7 +846,7 @@ class BaseLLMChatTest(ABC):
 
     @abstractmethod
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
         pass
 
     @pytest.mark.parametrize("detail", [None, "low", "high"])
@@ -859,11 +859,11 @@ class BaseLLMChatTest(ABC):
     )
     @pytest.mark.flaky(retries=4, delay=2)
     def test_image_url(self, detail, image_url):
-        litellm.set_verbose = True
-        from litellm.utils import supports_vision
+        dheera_ai.set_verbose = True
+        from dheera_ai.utils import supports_vision
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         base_completion_call_args = self.get_base_completion_call_args()
         if not supports_vision(base_completion_call_args["model"], None):
@@ -908,17 +908,17 @@ class BaseLLMChatTest(ABC):
             response = self.completion_function(
                 **base_completion_call_args, messages=messages
             )
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
         assert response is not None
 
     def test_image_url_string(self):
-        litellm.set_verbose = True
-        from litellm.utils import supports_vision
+        dheera_ai.set_verbose = True
+        from dheera_ai.utils import supports_vision
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         image_url = "https://awsmp-logos.s3.amazonaws.com/seller-xw5kijmvmzasy/c233c9ade2ccb5491072ae232c814942.png"
 
@@ -948,7 +948,7 @@ class BaseLLMChatTest(ABC):
             response = self.completion_function(
                 **base_completion_call_args, messages=messages
             )
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
         assert response is not None
@@ -956,11 +956,11 @@ class BaseLLMChatTest(ABC):
     @pytest.mark.flaky(retries=4, delay=1)
     def test_prompt_caching(self):
         print("test_prompt_caching")
-        litellm.set_verbose = True
-        from litellm.utils import supports_prompt_caching
+        dheera_ai.set_verbose = True
+        from dheera_ai.utils import supports_prompt_caching
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         base_completion_call_args = self.get_base_completion_call_args()
         if not supports_prompt_caching(base_completion_call_args["model"], None):
@@ -1051,7 +1051,7 @@ class BaseLLMChatTest(ABC):
                 assert (
                     response.usage.prompt_tokens_details.cached_tokens > 0
                 ), f"cached_tokens={response.usage.prompt_tokens_details.cached_tokens} should be greater than 0. Got usage={response.usage}"
-        except litellm.InternalServerError as e:
+        except dheera_ai.InternalServerError as e:
             print("InternalServerError", e)
 
     @pytest.fixture
@@ -1074,17 +1074,17 @@ class BaseLLMChatTest(ABC):
     @pytest.mark.flaky(retries=3, delay=1)
     def test_empty_tools(self):
         """
-        Related Issue: https://github.com/BerriAI/litellm/issues/9080
+        Related Issue: https://github.com/BerriAI/dheera_ai/issues/9080
         """
         try:
-            from litellm import completion, ModelResponse
+            from dheera_ai import completion, ModelResponse
 
-            litellm.set_verbose = True
-            litellm._turn_on_debug()
-            from litellm.utils import supports_function_calling
+            dheera_ai.set_verbose = True
+            dheera_ai._turn_on_debug()
+            from dheera_ai.utils import supports_function_calling
 
-            os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-            litellm.model_cost = litellm.get_model_cost_map(url="")
+            os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+            dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
             base_completion_call_args = self.get_base_completion_call_args()
             if not supports_function_calling(base_completion_call_args["model"], None):
@@ -1098,11 +1098,11 @@ class BaseLLMChatTest(ABC):
             )  # just make sure call doesn't fail
             print("response: ", response)
             assert response is not None
-        except litellm.ContentPolicyViolationError:
+        except dheera_ai.ContentPolicyViolationError:
             pass
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
-        except litellm.RateLimitError:
+        except dheera_ai.RateLimitError:
             pass
         except Exception as e:
             pytest.fail(f"Error occurred: {e}")
@@ -1110,14 +1110,14 @@ class BaseLLMChatTest(ABC):
     @pytest.mark.flaky(retries=3, delay=1)
     def test_basic_tool_calling(self):
         try:
-            from litellm import completion, ModelResponse
+            from dheera_ai import completion, ModelResponse
 
-            litellm.set_verbose = True
-            litellm._turn_on_debug()
-            from litellm.utils import supports_function_calling
+            dheera_ai.set_verbose = True
+            dheera_ai._turn_on_debug()
+            from dheera_ai.utils import supports_function_calling
 
-            os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-            litellm.model_cost = litellm.get_model_cost_map(url="")
+            os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+            dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
             base_completion_call_args = self.get_base_completion_call_args()
             if not supports_function_calling(base_completion_call_args["model"], None):
@@ -1221,11 +1221,11 @@ class BaseLLMChatTest(ABC):
                 second_response.choices[0].message.content is not None
                 or second_response.choices[0].message.tool_calls is not None
             )
-        except litellm.ServiceUnavailableError:
+        except dheera_ai.ServiceUnavailableError:
             pytest.skip("Model is overloaded")
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
-        except litellm.RateLimitError:
+        except dheera_ai.RateLimitError:
             pass
         except Exception as e:
             pytest.fail(f"Error occurred: {e}")
@@ -1233,14 +1233,14 @@ class BaseLLMChatTest(ABC):
     @pytest.mark.flaky(retries=3, delay=1)
     @pytest.mark.asyncio
     async def test_completion_cost(self):
-        from litellm import completion_cost
+        from dheera_ai import completion_cost
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         response = await self.async_completion_function(
             **self.get_base_completion_call_args(),
             messages=[{"role": "user", "content": "Hello, how are you?"}],
@@ -1252,13 +1252,13 @@ class BaseLLMChatTest(ABC):
     @pytest.mark.parametrize("input_type", ["input_audio", "audio_url"])
     @pytest.mark.parametrize("format_specified", [True])
     def test_supports_audio_input(self, input_type, format_specified):
-        from litellm.utils import return_raw_request, supports_audio_input
-        from litellm.types.utils import CallTypes
+        from dheera_ai.utils import return_raw_request, supports_audio_input
+        from dheera_ai.types.utils import CallTypes
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
-        litellm.drop_params = True
+        dheera_ai.drop_params = True
         base_completion_call_args = self.get_base_completion_call_args()
         if not supports_audio_input(base_completion_call_args["model"], None):
             print("Model does not support audio input")
@@ -1319,14 +1319,14 @@ class BaseLLMChatTest(ABC):
             ), "Audio URL not sent to gemini"
 
     def test_function_calling_with_tool_response(self):
-        from litellm.utils import supports_function_calling
-        from litellm import completion
+        from dheera_ai.utils import supports_function_calling
+        from dheera_ai import completion
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         try:
 
-            os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-            litellm.model_cost = litellm.get_model_cost_map(url="")
+            os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+            dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
             base_completion_call_args = self.get_base_completion_call_args()
             if not supports_function_calling(base_completion_call_args["model"], None):
@@ -1413,16 +1413,16 @@ class BaseLLMChatTest(ABC):
                     break
 
             print(response)
-        except litellm.ServiceUnavailableError:
+        except dheera_ai.ServiceUnavailableError:
             pass
 
     def test_reasoning_effort(self):
         """Test that reasoning_effort is passed correctly to the model"""
-        from litellm.utils import supports_reasoning
-        from litellm import completion
+        from dheera_ai.utils import supports_reasoning
+        from dheera_ai import completion
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         base_completion_call_args = (
             self.get_base_completion_call_args_with_reasoning_model()
@@ -1434,7 +1434,7 @@ class BaseLLMChatTest(ABC):
             print("Model does not support reasoning")
             pytest.skip("Model does not support reasoning")
 
-        _, provider, _, _ = litellm.get_llm_provider(
+        _, provider, _, _ = dheera_ai.get_llm_provider(
             model=base_completion_call_args["model"]
         )
 
@@ -1450,7 +1450,7 @@ class BaseLLMChatTest(ABC):
         )
 
         try:
-            litellm._turn_on_debug()
+            dheera_ai._turn_on_debug()
             response = completion(
                 **base_completion_call_args,
                 reasoning_effort="low",
@@ -1473,7 +1473,7 @@ class BaseOSeriesModelsTest(ABC):  # test across azure/openai
     def test_reasoning_effort(self):
         """Test that reasoning_effort is passed correctly to the model"""
 
-        from litellm import completion
+        from dheera_ai import completion
 
         client = self.get_client()
 
@@ -1499,7 +1499,7 @@ class BaseOSeriesModelsTest(ABC):  # test across azure/openai
 
     def test_developer_role_translation(self):
         """Test that developer role is translated correctly to system role for non-OpenAI providers"""
-        from litellm import completion
+        from dheera_ai import completion
 
         client = self.get_client()
 
@@ -1534,7 +1534,7 @@ class BaseOSeriesModelsTest(ABC):  # test across azure/openai
         Test that temperature is not passed to O-series models
         """
         try:
-            from litellm import completion
+            from dheera_ai import completion
 
             client = self.get_client()
 
@@ -1586,7 +1586,7 @@ class BaseAnthropicChatTest(ABC):
 
     @property
     def completion_function(self):
-        return litellm.completion
+        return dheera_ai.completion
 
     def test_anthropic_response_format_streaming_vs_non_streaming(self):
         args = {
@@ -1653,7 +1653,7 @@ class BaseAnthropicChatTest(ABC):
     def test_completion_thinking_with_response_format(self):
         from pydantic import BaseModel
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         class RFormat(BaseModel):
             question: str
@@ -1673,7 +1673,7 @@ class BaseAnthropicChatTest(ABC):
     def test_completion_thinking_with_max_tokens(self):
         from pydantic import BaseModel
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         base_completion_call_args = self.get_base_completion_call_args_with_thinking()
 
@@ -1689,7 +1689,7 @@ class BaseAnthropicChatTest(ABC):
     def test_completion_thinking_without_max_tokens(self):
         from pydantic import BaseModel
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         base_completion_call_args = self.get_base_completion_call_args_with_thinking()
 
@@ -1702,7 +1702,7 @@ class BaseAnthropicChatTest(ABC):
         print(response)
 
     def test_completion_with_thinking_basic(self):
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         base_completion_call_args = self.get_base_completion_call_args_with_thinking()
 
         messages = [{"role": "user", "content": "Generate 5 question + answer pairs"}]
@@ -1721,12 +1721,12 @@ class BaseAnthropicChatTest(ABC):
         assert response.choices[0].message.thinking_blocks[0]["signature"] is not None
 
     def test_anthropic_thinking_output_stream(self):
-        # litellm.set_verbose = True
+        # dheera_ai.set_verbose = True
         try:
             base_completion_call_args = (
                 self.get_base_completion_call_args_with_thinking()
             )
-            resp = litellm.completion(
+            resp = dheera_ai.completion(
                 **base_completion_call_args,
                 messages=[{"role": "user", "content": "Tell me a joke."}],
                 stream=True,
@@ -1755,12 +1755,12 @@ class BaseAnthropicChatTest(ABC):
             assert not tool_call_exists
             assert reasoning_content_exists
             assert signature_block_exists
-        except litellm.Timeout:
+        except dheera_ai.Timeout:
             pytest.skip("Model is timing out")
 
     def test_anthropic_reasoning_effort_thinking_translation(self):
         base_completion_call_args = self.get_base_completion_call_args_with_thinking()
-        _, provider, _, _ = litellm.get_llm_provider(
+        _, provider, _, _ = dheera_ai.get_llm_provider(
             model=base_completion_call_args["model"]
         )
 
@@ -1789,7 +1789,7 @@ class BaseReasoningLLMTests(ABC):
 
     @property
     def completion_function(self):
-        return litellm.completion
+        return dheera_ai.completion
 
     def test_non_streaming_reasoning_effort(self):
         """
@@ -1798,7 +1798,7 @@ class BaseReasoningLLMTests(ABC):
         - Assert that `reasoning_content` is not None from response message
         - Assert that `reasoning_tokens` is greater than 0 from usage
         """
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         base_completion_call_args = self.get_base_completion_call_args()
         response: ModelResponse = self.completion_function(
             **base_completion_call_args, reasoning_effort="low"
@@ -1818,7 +1818,7 @@ class BaseReasoningLLMTests(ABC):
         - Assert that `reasoning_content` is not None from streaming response
         - Assert that `reasoning_tokens` is greater than 0 from usage
         """
-        # litellm._turn_on_debug()
+        # dheera_ai._turn_on_debug()
         base_completion_call_args = self.get_base_completion_call_args()
         response: CustomStreamWrapper = self.completion_function(
             **base_completion_call_args,

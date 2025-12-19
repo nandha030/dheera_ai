@@ -1,11 +1,11 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Using ChatLiteLLM() - Langchain
+# Using ChatDheera AI() - Langchain
 
 ## Pre-Requisites
 ```shell
-!pip install litellm langchain
+!pip install dheera_ai langchain
 ```
 ## Quick Start
 
@@ -14,7 +14,7 @@ import TabItem from '@theme/TabItem';
 
 ```python
 import os
-from langchain_community.chat_models import ChatLiteLLM
+from langchain_community.chat_models import ChatDheera AI
 from langchain_core.prompts import (
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
@@ -24,7 +24,7 @@ from langchain_core.prompts import (
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 os.environ['OPENAI_API_KEY'] = ""
-chat = ChatLiteLLM(model="gpt-3.5-turbo")
+chat = ChatDheera AI(model="gpt-3.5-turbo")
 messages = [
     HumanMessage(
         content="what model are you"
@@ -39,7 +39,7 @@ chat.invoke(messages)
 
 ```python
 import os
-from langchain_community.chat_models import ChatLiteLLM
+from langchain_community.chat_models import ChatDheera AI
 from langchain_core.prompts import (
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
@@ -49,7 +49,7 @@ from langchain_core.prompts import (
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 os.environ['ANTHROPIC_API_KEY'] = ""
-chat = ChatLiteLLM(model="claude-2", temperature=0.3)
+chat = ChatDheera AI(model="claude-2", temperature=0.3)
 messages = [
     HumanMessage(
         content="what model are you"
@@ -64,7 +64,7 @@ chat.invoke(messages)
 
 ```python
 import os
-from langchain_community.chat_models import ChatLiteLLM
+from langchain_community.chat_models import ChatDheera AI
 from langchain_core.prompts.chat import (
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
@@ -74,7 +74,7 @@ from langchain_core.prompts.chat import (
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 os.environ['REPLICATE_API_TOKEN'] = ""
-chat = ChatLiteLLM(model="replicate/llama-2-70b-chat:2c1608e18606fad2812020dc541930f2d0495ce32eee50074220b87300bc16e1")
+chat = ChatDheera AI(model="replicate/llama-2-70b-chat:2c1608e18606fad2812020dc541930f2d0495ce32eee50074220b87300bc16e1")
 messages = [
     HumanMessage(
         content="what model are you?"
@@ -89,7 +89,7 @@ chat.invoke(messages)
 
 ```python
 import os
-from langchain_community.chat_models import ChatLiteLLM
+from langchain_community.chat_models import ChatDheera AI
 from langchain_core.prompts import (
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
@@ -99,7 +99,7 @@ from langchain_core.prompts import (
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 os.environ['COHERE_API_KEY'] = ""
-chat = ChatLiteLLM(model="command-nightly")
+chat = ChatDheera AI(model="command-nightly")
 messages = [
     HumanMessage(
         content="what model are you?"
@@ -111,44 +111,44 @@ chat.invoke(messages)
 </TabItem>
 </Tabs>
 
-## Use Langchain ChatLiteLLM with MLflow
+## Use Langchain ChatDheera AI with MLflow
 
-MLflow provides open-source observability solution for ChatLiteLLM.
+MLflow provides open-source observability solution for ChatDheera AI.
 
-To enable the integration, simply call `mlflow.litellm.autolog()` before in your code. No other setup is necessary.
+To enable the integration, simply call `mlflow.dheera_ai.autolog()` before in your code. No other setup is necessary.
 
 ```python
 import mlflow
 
-mlflow.litellm.autolog()
+mlflow.dheera_ai.autolog()
 ```
 
-Once the auto-tracing is enabled, you can invoke `ChatLiteLLM` and see recorded traces in MLflow.
+Once the auto-tracing is enabled, you can invoke `ChatDheera AI` and see recorded traces in MLflow.
 
 ```python
 import os
-from langchain.chat_models import ChatLiteLLM
+from langchain.chat_models import ChatDheera AI
 
 os.environ['OPENAI_API_KEY']="sk-..."
 
-chat = ChatLiteLLM(model="gpt-4o-mini")
+chat = ChatDheera AI(model="gpt-4o-mini")
 chat.invoke("Hi!")
 ```
 
-## Use Langchain ChatLiteLLM with Lunary
+## Use Langchain ChatDheera AI with Lunary
 ```python
 import os
-from langchain.chat_models import ChatLiteLLM
+from langchain.chat_models import ChatDheera AI
 from langchain.schema import HumanMessage
-import litellm
+import dheera_ai
 
 os.environ["LUNARY_PUBLIC_KEY"] = "" # from https://app.lunary.ai/settings
 os.environ['OPENAI_API_KEY']="sk-..."
 
-litellm.success_callback = ["lunary"] 
-litellm.failure_callback = ["lunary"] 
+dheera_ai.success_callback = ["lunary"] 
+dheera_ai.failure_callback = ["lunary"] 
 
-chat = ChatLiteLLM(
+chat = ChatDheera AI(
   model="gpt-4o"
   messages = [
     HumanMessage(
@@ -160,12 +160,12 @@ chat(messages)
 
 Get more details [here](../observability/lunary_integration.md)
 
-## Use LangChain ChatLiteLLM + Langfuse
-Checkout this section [here](../observability/langfuse_integration#use-langchain-chatlitellm--langfuse) for more details on how to integrate Langfuse with ChatLiteLLM.
+## Use LangChain ChatDheera AI + Langfuse
+Checkout this section [here](../observability/langfuse_integration#use-langchain-chatdheera_ai--langfuse) for more details on how to integrate Langfuse with ChatDheera AI.
 
-## Using Tags with LangChain and LiteLLM
+## Using Tags with LangChain and Dheera AI
 
-Tags are a powerful feature in LiteLLM that allow you to categorize, filter, and track your LLM requests. When using LangChain with LiteLLM, you can pass tags through the `extra_body` parameter in the metadata.
+Tags are a powerful feature in Dheera AI that allow you to categorize, filter, and track your LLM requests. When using LangChain with Dheera AI, you can pass tags through the `extra_body` parameter in the metadata.
 
 ### Basic Tag Usage
 
@@ -230,7 +230,7 @@ print(response)
 
 </TabItem>
 
-<TabItem value="litellm-proxy" label="LiteLLM Proxy">
+<TabItem value="dheera_ai-proxy" label="Dheera AI Proxy">
 
 ```python
 import os
@@ -431,9 +431,9 @@ Consider organizing tags into categories:
 - **Priority**: `critical`, `high`, `medium`, `low`
 - **User Type**: `premium`, `enterprise`, `free`
 
-### Using Tags with LiteLLM Proxy
+### Using Tags with Dheera AI Proxy
 
-When using tags with LiteLLM Proxy, you can:
+When using tags with Dheera AI Proxy, you can:
 
 1. **Filter requests** based on tags
 2. **Track costs** by tags in spend reports
@@ -446,7 +446,7 @@ When using tags with LiteLLM Proxy, you can:
 # config.yaml
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4o
       api_key: your-key
 
@@ -479,4 +479,4 @@ response = requests.get(
 spend_by_tags = response.json()
 ```
 
-This documentation covers the essential patterns for using tags effectively with LangChain and LiteLLM, enabling better organization, tracking, and analytics of your LLM requests.
+This documentation covers the essential patterns for using tags effectively with LangChain and Dheera AI, enabling better organization, tracking, and analytics of your LLM requests.

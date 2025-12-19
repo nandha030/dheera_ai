@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Custom Secret Manager
 
-Integrate your custom secret management system with LiteLLM.
+Integrate your custom secret management system with Dheera AI.
 
 ## Quick Start
 
@@ -14,7 +14,7 @@ Create a new file `my_secret_manager.py` with an in-memory secret store:
 ```python showLineNumbers title="my_secret_manager.py"
 from typing import Optional, Union
 import httpx
-from litellm.integrations.custom_secret_manager import CustomSecretManager
+from dheera_ai.integrations.custom_secret_manager import CustomSecretManager
 
 class InMemorySecretManager(CustomSecretManager):
     def __init__(self):
@@ -50,19 +50,19 @@ Reference your custom secret manager in `config.yaml`:
 
 ```yaml showLineNumbers title="config.yaml"
 general_settings:
-  master_key: os.environ/LITELLM_MASTER_KEY
+  master_key: os.environ/DHEERA_AI_MASTER_KEY
   key_management_system: custom  # 👈 KEY CHANGE
   key_management_settings:
     custom_secret_manager: my_secret_manager.InMemorySecretManager  # 👈 KEY CHANGE
 
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: os.environ/OPENAI_API_KEY  # Read from custom secret manager
 ```
 
-### 3. Start LiteLLM Proxy
+### 3. Start Dheera AI Proxy
 
 <Tabs>
 <TabItem value="docker" label="Docker">
@@ -72,11 +72,11 @@ Mount your custom secret manager file on the container:
 ```bash showLineNumbers
 docker run -d \
   -p 4000:4000 \
-  -e LITELLM_MASTER_KEY=$LITELLM_MASTER_KEY \
-  --name litellm-proxy \
+  -e DHEERA_AI_MASTER_KEY=$DHEERA_AI_MASTER_KEY \
+  --name dheera_ai-proxy \
   -v $(pwd)/config.yaml:/app/config.yaml \
   -v $(pwd)/my_secret_manager.py:/app/my_secret_manager.py \
-  docker.litellm.ai/berriai/litellm:main-latest \
+  docker.dheera_ai.ai/berriai/dheera_ai:main-latest \
   --config /app/config.yaml \
   --port 4000 \
   --detailed_debug
@@ -87,7 +87,7 @@ docker run -d \
 <TabItem value="pip" label="Python Package">
 
 ```bash
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 </TabItem>
@@ -112,7 +112,7 @@ general_settings:
 
 <TabItem value="write_only" label="Store Virtual Keys">
 
-Store LiteLLM proxy virtual keys in your secret manager:
+Store Dheera AI proxy virtual keys in your secret manager:
 
 ```yaml showLineNumbers title="config.yaml"
 general_settings:
@@ -121,8 +121,8 @@ general_settings:
     custom_secret_manager: my_secret_manager.InMemorySecretManager
     access_mode: "write_only"
     store_virtual_keys: true
-    prefix_for_stored_virtual_keys: "litellm/"
-    description: "LiteLLM virtual key"
+    prefix_for_stored_virtual_keys: "dheera_ai/"
+    description: "Dheera AI virtual key"
     tags:
       Environment: "Production"
       Team: "AI"
@@ -140,7 +140,7 @@ general_settings:
     access_mode: "read_and_write"
     hosted_keys: ["OPENAI_API_KEY"]
     store_virtual_keys: true
-    prefix_for_stored_virtual_keys: "litellm/"
+    prefix_for_stored_virtual_keys: "dheera_ai/"
 ```
 
 </TabItem>
@@ -153,8 +153,8 @@ general_settings:
 | `custom_secret_manager` | Path to your custom secret manager class | Required |
 | `access_mode` | `"read_only"`, `"write_only"`, or `"read_and_write"` | `"read_only"` |
 | `hosted_keys` | List of specific keys to check in secret manager | All keys |
-| `store_virtual_keys` | Store LiteLLM virtual keys in secret manager | `false` |
-| `prefix_for_stored_virtual_keys` | Prefix for stored virtual keys | `"litellm/"` |
+| `store_virtual_keys` | Store Dheera AI virtual keys in secret manager | `false` |
+| `prefix_for_stored_virtual_keys` | Prefix for stored virtual keys | `"dheera_ai/"` |
 | `description` | Description for stored secrets | `None` |
 | `tags` | Tags to apply to stored secrets | `None` |
 
@@ -244,9 +244,9 @@ async def async_delete_secret(
 
 ## Example
 
-See [cookbook/litellm_proxy_server/secret_manager/my_secret_manager.py](https://github.com/BerriAI/litellm/blob/main/cookbook/litellm_proxy_server/secret_manager/my_secret_manager.py) for a complete working example with:
+See [cookbook/dheera_ai_proxy_server/secret_manager/my_secret_manager.py](https://github.com/BerriAI/dheera_ai/blob/main/cookbook/dheera_ai_proxy_server/secret_manager/my_secret_manager.py) for a complete working example with:
 
 - In-memory secret manager implementation  
-- Integration with LiteLLM Proxy  
+- Integration with Dheera AI Proxy  
 - Read, write, and delete operations
 

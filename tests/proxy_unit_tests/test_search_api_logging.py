@@ -1,7 +1,7 @@
 """
 Test search API logging and cost tracking in proxy.
 
-Tests that search API requests are properly logged to LiteLLM_SpendLogs
+Tests that search API requests are properly logged to DheeraAI_SpendLogs
 with correct fields populated (call_type, model, custom_llm_provider, 
 model_group, spend, etc.)
 """
@@ -15,21 +15,21 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 sys.path.insert(0, os.path.abspath("../.."))
-import litellm
-from litellm import Router
-from litellm.caching import DualCache
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.proxy.hooks.proxy_track_cost_callback import _ProxyDBLogger
-from litellm.proxy.spend_tracking.spend_management_endpoints import view_spend_logs
-from litellm.proxy.utils import ProxyLogging, hash_token, update_spend
-from litellm.llms.base_llm.search.transformation import SearchResponse, SearchResult
+import dheera_ai
+from dheera_ai import Router
+from dheera_ai.caching import DualCache
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.proxy.hooks.proxy_track_cost_callback import _ProxyDBLogger
+from dheera_ai.proxy.spend_tracking.spend_management_endpoints import view_spend_logs
+from dheera_ai.proxy.utils import ProxyLogging, hash_token, update_spend
+from dheera_ai.llms.base_llm.search.transformation import SearchResponse, SearchResult
 
 
 @pytest.fixture
 def prisma_client():
-    from litellm.proxy import proxy_server
-    from litellm.proxy.proxy_cli import append_query_params
-    from litellm.proxy.utils import PrismaClient
+    from dheera_ai.proxy import proxy_server
+    from dheera_ai.proxy.proxy_cli import append_query_params
+    from dheera_ai.proxy.utils import PrismaClient
 
     params = {"connection_limit": 100, "pool_timeout": 60}
     database_url = os.getenv("DATABASE_URL")
@@ -46,8 +46,8 @@ def prisma_client():
         database_url=os.environ["DATABASE_URL"], proxy_logging_obj=proxy_logging_obj
     )
 
-    proxy_server.litellm_proxy_budget_name = (
-        f"litellm-proxy-budget-{time.time()}"
+    proxy_server.dheera_ai_proxy_budget_name = (
+        f"dheera_ai-proxy-budget-{time.time()}"
     )
     proxy_server.user_custom_key_generate = None
 
@@ -67,9 +67,9 @@ async def test_search_api_logging_and_cost_tracking(prisma_client):
     5. model_group is set to search_tool_name
     6. spend is calculated and logged
     """
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
     # Setup router with search tool
     search_tool_name = "tavily-search"
@@ -79,19 +79,19 @@ async def test_search_api_logging_and_cost_tracking(prisma_client):
     router.search_tools = [
         {
             "search_tool_name": search_tool_name,
-            "litellm_params": {
+            "dheera_ai_params": {
                 "search_provider": search_provider,
             },
         }
     ]
     
-    setattr(litellm.proxy.proxy_server, "llm_router", router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", router)
 
     # Generate a test API key
-    from litellm.proxy.management_endpoints.key_management_endpoints import generate_key_fn
-    from litellm.proxy._types import GenerateKeyRequest
+    from dheera_ai.proxy.management_endpoints.key_management_endpoints import generate_key_fn
+    from dheera_ai.proxy._types import GenerateKeyRequest
 
-    from litellm.proxy._types import LitellmUserRoles
+    from dheera_ai.proxy._types import LitellmUserRoles
     
     user_api_key_dict = UserAPIKeyAuth(
         user_role=LitellmUserRoles.PROXY_ADMIN,
@@ -119,13 +119,13 @@ async def test_search_api_logging_and_cost_tracking(prisma_client):
     )
 
     # Mock the search function to return our mock response
-    with patch("litellm.search.main.asearch", new_callable=AsyncMock) as mock_asearch:
+    with patch("dheera_ai.search.main.asearch", new_callable=AsyncMock) as mock_asearch:
         mock_asearch.return_value = mock_search_response
 
         # Setup proxy logging
         user_api_key_cache = DualCache()
         proxy_logging_obj = ProxyLogging(user_api_key_cache=user_api_key_cache)
-        setattr(litellm.proxy.proxy_server, "proxy_logging_obj", proxy_logging_obj)
+        setattr(dheera_ai.proxy.proxy_server, "proxy_logging_obj", proxy_logging_obj)
 
         # Call the track_cost_callback directly to simulate what happens after a search
         proxy_db_logger = _ProxyDBLogger()
@@ -136,8 +136,8 @@ async def test_search_api_logging_and_cost_tracking(prisma_client):
             "call_type": "asearch",
             "model": search_tool_name,
             "custom_llm_provider": search_provider,
-            "litellm_call_id": request_id,  # Set request_id in kwargs
-            "litellm_params": {
+            "dheera_ai_call_id": request_id,  # Set request_id in kwargs
+            "dheera_ai_params": {
                 "metadata": {
                     "user_api_key": hash_token(generated_key),
                     "user_api_key_user_id": user_id,

@@ -3,11 +3,11 @@ import TabItem from '@theme/TabItem';
 
 # Veo Video Generation with Google AI Studio
 
-Generate videos using Google's Veo model through LiteLLM's pass-through endpoints.
+Generate videos using Google's Veo model through Dheera AI's pass-through endpoints.
 
 ## Quick Start
 
-LiteLLM allows you to use Google AI Studio's Veo video generation API through pass-through routes with zero configuration.
+Dheera AI allows you to use Google AI Studio's Veo video generation API through pass-through routes with zero configuration.
 
 ### 1. Add Google AI Studio API Key to your environment 
 
@@ -15,10 +15,10 @@ LiteLLM allows you to use Google AI Studio's Veo video generation API through pa
 export GEMINI_API_KEY="your_google_ai_studio_api_key"
 ```
 
-### 2. Start LiteLLM Proxy 
+### 2. Start Dheera AI Proxy 
 
 ```bash
-litellm
+dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -76,13 +76,13 @@ def wait_for_completion(operation_name):
 
 # Step 3: Download video
 def download_video(video_uri, filename="generated_video.mp4"):
-    # Replace Google URL with LiteLLM proxy URL
-    litellm_url = video_uri.replace(
+    # Replace Google URL with Dheera AI proxy URL
+    dheera_ai_url = video_uri.replace(
         "https://generativelanguage.googleapis.com/v1beta", 
         BASE_URL
     )
     
-    response = requests.get(litellm_url, headers=headers, stream=True)
+    response = requests.get(dheera_ai_url, headers=headers, stream=True)
     response.raise_for_status()
     
     with open(filename, 'wb') as f:
@@ -140,15 +140,15 @@ curl -X GET "http://localhost:4000/gemini/v1beta/files/VIDEO_ID:download?alt=med
 
 ## Complete Example
 
-For a full working example with error handling and logging, see our [Veo Video Generation Cookbook](https://github.com/BerriAI/litellm/blob/main/cookbook/veo_video_generation.py).
+For a full working example with error handling and logging, see our [Veo Video Generation Cookbook](https://github.com/BerriAI/dheera_ai/blob/main/cookbook/veo_video_generation.py).
 
 ## How It Works
 
 1. **Video Generation Request**: Send a prompt to Veo's `predictLongRunning` endpoint
 2. **Operation Polling**: Monitor the long-running operation until completion
-3. **File Download**: Download the generated video through LiteLLM's pass-through with automatic redirect handling
+3. **File Download**: Download the generated video through Dheera AI's pass-through with automatic redirect handling
 
-LiteLLM handles:
+Dheera AI handles:
 - ✅ Authentication with Google AI Studio
 - ✅ Request routing and proxying
 - ✅ Automatic redirect handling for file downloads

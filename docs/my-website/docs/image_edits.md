@@ -4,7 +4,7 @@ import TabItem from '@theme/TabItem';
 
 # /images/edits
 
-LiteLLM provides image editing functionality that maps to OpenAI's `/images/edits` API endpoint. Now supports both single and multiple image editing.
+Dheera AI provides image editing functionality that maps to OpenAI's `/images/edits` API endpoint. Now supports both single and multiple image editing.
 
 | Feature | Supported | Notes |
 |---------|-----------|--------|
@@ -14,26 +14,26 @@ LiteLLM provides image editing functionality that maps to OpenAI's `/images/edit
 | Fallbacks | ✅ | Works between supported models |
 | Loadbalancing | ✅ | Works between supported models |
 | Supported operations | Create image edits | Single and multiple images supported |
-| Supported LiteLLM SDK Versions | 1.63.8+ | Gemini support requires 1.79.3+ |
-| Supported LiteLLM Proxy Versions | 1.71.1+ | Gemini support requires 1.79.3+ |
+| Supported Dheera AI SDK Versions | 1.63.8+ | Gemini support requires 1.79.3+ |
+| Supported Dheera AI Proxy Versions | 1.71.1+ | Gemini support requires 1.79.3+ |
 | Supported LLM providers | **OpenAI**, **Gemini (Google AI Studio)**, **Vertex AI** | Gemini supports the new `gemini-2.5-flash-image` family. Vertex AI supports both Gemini and Imagen models. |
 
- #### ⚡️See all supported models and providers at [models.litellm.ai](https://models.litellm.ai/)
+ #### ⚡️See all supported models and providers at [models.dheera_ai.ai](https://models.dheera_ai.ai/)
 
 
 ## Usage
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 <Tabs>
 <TabItem value="openai" label="OpenAI">
 
 #### Basic Image Edit
 ```python showLineNumbers title="OpenAI Image Edit"
-import litellm
+import dheera_ai
 
 # Edit an image with a prompt
-response = litellm.image_edit(
+response = dheera_ai.image_edit(
     model="gpt-image-1",
     image=open("original_image.png", "rb"),
     prompt="Add a red hat to the person in the image",
@@ -46,10 +46,10 @@ print(response)
 
 #### Multiple Images Edit
 ```python showLineNumbers title="OpenAI Multiple Images Edit"
-import litellm
+import dheera_ai
 
 # Edit multiple images with a prompt
-response = litellm.image_edit(
+response = dheera_ai.image_edit(
     model="gpt-image-1",
     image=[
         open("image1.png", "rb"),
@@ -66,10 +66,10 @@ print(response)
 
 #### Image Edit with Mask
 ```python showLineNumbers title="OpenAI Image Edit with Mask"
-import litellm
+import dheera_ai
 
 # Edit an image with a mask to specify the area to edit
-response = litellm.image_edit(
+response = dheera_ai.image_edit(
     model="gpt-image-1",
     image=open("original_image.png", "rb"),
     mask=open("mask_image.png", "rb"),  # Transparent areas will be edited
@@ -84,11 +84,11 @@ print(response)
 
 #### Async Image Edit
 ```python showLineNumbers title="Async OpenAI Image Edit"
-import litellm
+import dheera_ai
 import asyncio
 
 async def edit_image():
-    response = await litellm.aimage_edit(
+    response = await dheera_ai.aimage_edit(
         model="gpt-image-1",
         image=open("original_image.png", "rb"),
         prompt="Make the image look like a painting",
@@ -105,11 +105,11 @@ print(response)
 
 #### Async Multiple Images Edit
 ```python showLineNumbers title="Async OpenAI Multiple Images Edit"
-import litellm
+import dheera_ai
 import asyncio
 
 async def edit_multiple_images():
-    response = await litellm.aimage_edit(
+    response = await dheera_ai.aimage_edit(
         model="gpt-image-1",
         image=[
             open("portrait1.png", "rb"),
@@ -129,10 +129,10 @@ print(response)
 
 #### Image Edit with Custom Parameters
 ```python showLineNumbers title="OpenAI Image Edit with Custom Parameters"
-import litellm
+import dheera_ai
 
 # Edit image with additional parameters
-response = litellm.image_edit(
+response = dheera_ai.image_edit(
     model="gpt-image-1",
     image=open("portrait.png", "rb"),
     prompt="Add sunglasses and a smile",
@@ -159,7 +159,7 @@ for i, image_data in enumerate(response.data):
 ```python showLineNumbers title="Gemini Image Edit"
 import base64
 import os
-from litellm import image_edit
+from dheera_ai import image_edit
 
 os.environ["GEMINI_API_KEY"] = "your-api-key"
 
@@ -179,7 +179,7 @@ with open("edited_image.png", "wb") as f:
 ```python showLineNumbers title="Gemini Multiple Images Edit"
 import base64
 import os
-from litellm import image_edit
+from dheera_ai import image_edit
 
 os.environ["GEMINI_API_KEY"] = "your-api-key"
 
@@ -204,14 +204,14 @@ for idx, image_obj in enumerate(response.data):
 #### Basic Image Edit (Gemini)
 ```python showLineNumbers title="Vertex AI Gemini Image Edit"
 import os
-import litellm
+import dheera_ai
 
 # Set Vertex AI credentials
 os.environ["VERTEXAI_PROJECT"] = "your-gcp-project-id"
 os.environ["VERTEXAI_LOCATION"] = "us-central1"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/path/to/service-account.json"
 
-response = litellm.image_edit(
+response = dheera_ai.image_edit(
     model="vertex_ai/gemini-2.5-flash",
     image=open("original_image.png", "rb"),
     prompt="Add neon lights in the background",
@@ -224,7 +224,7 @@ print(response)
 #### Image Edit with Imagen (Supports Masks)
 ```python showLineNumbers title="Vertex AI Imagen Image Edit"
 import os
-import litellm
+import dheera_ai
 
 # Set Vertex AI credentials
 os.environ["VERTEXAI_PROJECT"] = "your-gcp-project-id"
@@ -232,7 +232,7 @@ os.environ["VERTEXAI_LOCATION"] = "us-central1"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/path/to/service-account.json"
 
 # Imagen supports mask for inpainting
-response = litellm.image_edit(
+response = dheera_ai.image_edit(
     model="vertex_ai/imagen-3.0-capability-001",
     image=open("original_image.png", "rb"),
     mask=open("mask_image.png", "rb"),  # Optional: for inpainting
@@ -247,25 +247,25 @@ print(response)
 </TabItem>
 </Tabs>
 
-### LiteLLM Proxy with OpenAI SDK
+### Dheera AI Proxy with OpenAI SDK
 
 
 <Tabs>
 <TabItem value="openai" label="OpenAI">
 
-First, add this to your litellm proxy config.yaml:
+First, add this to your dheera_ai proxy config.yaml:
 ```yaml showLineNumbers title="OpenAI Proxy Configuration"
 model_list:
   - model_name: gpt-image-1
-    litellm_params:
+    dheera_ai_params:
       model: gpt-image-1
       api_key: os.environ/OPENAI_API_KEY
 ```
 
-Start the LiteLLM proxy server:
+Start the Dheera AI proxy server:
 
-```bash showLineNumbers title="Start LiteLLM Proxy Server"
-litellm --config /path/to/config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy Server"
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -329,14 +329,14 @@ curl -X POST "http://localhost:4000/v1/images/edits" \
 ```yaml showLineNumbers title="Gemini Proxy Configuration"
 model_list:
   - model_name: gemini-image-edit
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.5-flash-image
       api_key: os.environ/GEMINI_API_KEY
 ```
 
-2. Start the LiteLLM proxy server:
-```bash showLineNumbers title="Start LiteLLM Proxy Server"
-litellm --config /path/to/config.yaml
+2. Start the Dheera AI proxy server:
+```bash showLineNumbers title="Start Dheera AI Proxy Server"
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make an image edit request (Gemini responses are base64-only):
@@ -357,23 +357,23 @@ curl -X POST "http://0.0.0.0:4000/v1/images/edits" \
 ```yaml showLineNumbers title="Vertex AI Proxy Configuration"
 model_list:
   - model_name: vertex-gemini-image-edit
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/gemini-2.5-flash
       vertex_project: os.environ/VERTEXAI_PROJECT
       vertex_location: os.environ/VERTEXAI_LOCATION
       vertex_credentials: os.environ/GOOGLE_APPLICATION_CREDENTIALS
 
   - model_name: vertex-imagen-image-edit
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/imagen-3.0-capability-001
       vertex_project: os.environ/VERTEXAI_PROJECT
       vertex_location: os.environ/VERTEXAI_LOCATION
       vertex_credentials: os.environ/GOOGLE_APPLICATION_CREDENTIALS
 ```
 
-2. Start the LiteLLM proxy server:
-```bash showLineNumbers title="Start LiteLLM Proxy Server"
-litellm --config /path/to/config.yaml
+2. Start the Dheera AI proxy server:
+```bash showLineNumbers title="Start Dheera AI Proxy Server"
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make an image edit request:

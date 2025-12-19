@@ -4,17 +4,17 @@
 
 ✨ **This is an Enterprise Feature**
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+[Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
-## Usage with LiteLLM Proxy Server
+## Usage with Dheera AI Proxy Server
 
 1. Install Proxy dependencies 
 ```bash
-pip install 'litellm[proxy]' 'litellm[extra_proxy]'
+pip install 'dheera_ai[proxy]' 'dheera_ai[extra_proxy]'
 ```
 
 2. Save Azure details in your environment
@@ -29,7 +29,7 @@ export["AZURE_KEY_VAULT_URI"]="your-azure-key-vault-uri"
 ```yaml
 model_list: 
     - model_name: "my-azure-models" # model alias 
-        litellm_params:
+        dheera_ai_params:
             model: "azure/<your-deployment-name>"
             api_key: "os.environ/AZURE-API-KEY" # reads from key vault - get_secret("AZURE_API_KEY")
             api_base: "os.environ/AZURE-API-BASE" # reads from key vault - get_secret("AZURE_API_BASE")
@@ -40,8 +40,8 @@ general_settings:
 
 You can now test this by starting your proxy: 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
-[Quick Test Proxy](../proxy/quick_start#using-litellm-proxy---curl-request-openai-package-langchain-langchain-js)
+[Quick Test Proxy](../proxy/quick_start#using-dheera_ai-proxy---curl-request-openai-package-langchain-langchain-js)
 

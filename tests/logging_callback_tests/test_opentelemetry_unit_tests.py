@@ -16,17 +16,17 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 import pytest
-import litellm
+import dheera_ai
 from unittest.mock import patch, MagicMock, AsyncMock
 from base_test import BaseLoggingCallbackTest
-from litellm.types.utils import ModelResponse
+from dheera_ai.types.utils import ModelResponse
 
 
 class TestOpentelemetryUnitTests(BaseLoggingCallbackTest):
     def test_parallel_tool_calls(self, mock_response_obj: ModelResponse):
         tool_calls = mock_response_obj.choices[0].message.tool_calls
-        from litellm.integrations.opentelemetry import OpenTelemetry
-        from litellm.proxy._types import SpanAttributes
+        from dheera_ai.integrations.opentelemetry import OpenTelemetry
+        from dheera_ai.proxy._types import SpanAttributes
 
         kv_pair_dict = OpenTelemetry._tool_calls_kv_pair(tool_calls)
 
@@ -43,16 +43,16 @@ class TestOpentelemetryUnitTests(BaseLoggingCallbackTest):
         Unit test to confirm the parent otel span is ended.
         """
         # Reset all callbacks to ensure clean state
-        litellm.logging_callback_manager._reset_all_callbacks()
+        dheera_ai.logging_callback_manager._reset_all_callbacks()
         
         parent_otel_span = MagicMock()
-        litellm.callbacks = ["otel"]
+        dheera_ai.callbacks = ["otel"]
 
-        await litellm.acompletion(
+        await dheera_ai.acompletion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hello, world!"}],
             mock_response="Hey!",
-            metadata={"litellm_parent_otel_span": parent_otel_span},
+            metadata={"dheera_ai_parent_otel_span": parent_otel_span},
         )
 
         await asyncio.sleep(1)
@@ -65,11 +65,11 @@ class TestOpentelemetryUnitTests(BaseLoggingCallbackTest):
         Unit test: _init_tracing() should respect existing TracerProvider.
 
         When a TracerProvider already exists (e.g., set by Langfuse SDK),
-        LiteLLM should use it instead of creating a new one.
+        DheeraAI should use it instead of creating a new one.
         """
         from opentelemetry import trace
         from opentelemetry.sdk.trace import TracerProvider
-        from litellm.integrations.opentelemetry import OpenTelemetry
+        from dheera_ai.integrations.opentelemetry import OpenTelemetry
 
         # Setup: Create and set an existing TracerProvider
         tracer_provider = TracerProvider()
@@ -93,7 +93,7 @@ class TestOpentelemetryUnitTests(BaseLoggingCallbackTest):
         """
         from opentelemetry import trace
         from opentelemetry.sdk.trace import TracerProvider
-        from litellm.integrations.opentelemetry import OpenTelemetry
+        from dheera_ai.integrations.opentelemetry import OpenTelemetry
 
         # Setup: Create TracerProvider and tracer
         tracer_provider = TracerProvider()
@@ -108,7 +108,7 @@ class TestOpentelemetryUnitTests(BaseLoggingCallbackTest):
             parent_span_context = parent_span.get_span_context()
 
             # Call _get_span_context without explicit parent in metadata
-            kwargs = {"litellm_params": {"metadata": {}}}
+            kwargs = {"dheera_ai_params": {"metadata": {}}}
             detected_context, detected_span = otel_integration._get_span_context(kwargs)
 
             # Assert: Should detect the active span
@@ -132,8 +132,8 @@ class TestOpentelemetryUnitTests(BaseLoggingCallbackTest):
         """
         from opentelemetry import trace
         from opentelemetry.sdk.trace import TracerProvider
-        from litellm.integrations.opentelemetry import OpenTelemetry
-        from litellm.integrations._types.open_inference import ErrorAttributes
+        from dheera_ai.integrations.opentelemetry import OpenTelemetry
+        from dheera_ai.integrations._types.open_inference import ErrorAttributes
 
         # Setup: Create TracerProvider and tracer
         tracer_provider = TracerProvider()
@@ -193,8 +193,8 @@ class TestOpentelemetryUnitTests(BaseLoggingCallbackTest):
         """
         from opentelemetry import trace
         from opentelemetry.sdk.trace import TracerProvider
-        from litellm.integrations.opentelemetry import OpenTelemetry
-        from litellm.integrations._types.open_inference import ErrorAttributes
+        from dheera_ai.integrations.opentelemetry import OpenTelemetry
+        from dheera_ai.integrations._types.open_inference import ErrorAttributes
 
         # Setup: Create TracerProvider and tracer
         tracer_provider = TracerProvider()

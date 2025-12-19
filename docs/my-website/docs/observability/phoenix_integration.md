@@ -7,7 +7,7 @@ Open source tracing and evaluation platform
 :::tip
 
 This is community maintained. Please make an issue if you run into a bug:
-https://github.com/BerriAI/litellm
+https://github.com/BerriAI/dheera_ai
 
 :::
 
@@ -19,29 +19,29 @@ OR self-host your own instance of [Phoenix](https://docs.arize.com/phoenix/deplo
 ## Quick Start
 Use just 2 lines of code, to instantly log your responses **across all providers** with Phoenix
 
-You can also use the instrumentor option instead of the callback, which you can find [here](https://docs.arize.com/phoenix/tracing/integrations-tracing/litellm).
+You can also use the instrumentor option instead of the callback, which you can find [here](https://docs.arize.com/phoenix/tracing/integrations-tracing/dheera_ai).
 
 ```bash
-pip install opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp litellm[proxy]
+pip install opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp dheera_ai[proxy]
 ```
 ```python
-litellm.callbacks = ["arize_phoenix"]
+dheera_ai.callbacks = ["arize_phoenix"]
 ```
 ```python
-import litellm
+import dheera_ai
 import os
 
 # Set env variables
 os.environ["PHOENIX_API_KEY"] = "d0*****" # Set the Phoenix API key here. It is necessary only when using Phoenix Cloud.
 os.environ["PHOENIX_COLLECTOR_HTTP_ENDPOINT"] = "https://app.phoenix.arize.com/s/<space-name>/v1/traces" # Set the URL of your Phoenix OSS instance, otherwise tracer would use https://app.phoenix.arize.com/v1/traces for Phoenix Cloud.
-os.environ["PHOENIX_PROJECT_NAME"] = "litellm" # Configure the project name, otherwise traces would go to "default" project.
+os.environ["PHOENIX_PROJECT_NAME"] = "dheera_ai" # Configure the project name, otherwise traces would go to "default" project.
 os.environ['OPENAI_API_KEY'] = "fake-key" # Set the OpenAI API key here.
 
-# Set arize_phoenix as a callback & LiteLLM will send the data to Phoenix.
-litellm.callbacks = ["arize_phoenix"]
+# Set arize_phoenix as a callback & Dheera AI will send the data to Phoenix.
+dheera_ai.callbacks = ["arize_phoenix"]
 
 # OpenAI call
-response = litellm.completion(
+response = dheera_ai.completion(
   model="gpt-3.5-turbo",
   messages=[
     {"role": "user", "content": "Hi 👋 - i'm openai"}
@@ -49,19 +49,19 @@ response = litellm.completion(
 )
 ```
 
-## Using with LiteLLM Proxy
+## Using with Dheera AI Proxy
 
 1. Setup config.yaml
 
 ```yaml
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["arize_phoenix"]
 
 general_settings:
@@ -76,7 +76,7 @@ environment_variables:
 2. Start the proxy
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 3. Test it!
@@ -123,7 +123,7 @@ Depending on which Phoenix Cloud version or deployment you are using, you should
 
 ## Support & Talk to Founders
 
-- [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-litellm-hosted-version)
+- [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-dheera_ai-hosted-version)
 - [Community Discord 💭](https://discord.gg/wuPM9dRgDw)
 - Our numbers 📞 +1 (770) 8783-106 / ‭+1 (412) 618-6238‬
 - Our emails ✉️ ishaan@berri.ai / krrish@berri.ai

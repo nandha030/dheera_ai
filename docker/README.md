@@ -1,6 +1,6 @@
 # Docker Development Guide
 
-This guide provides instructions for building and running the LiteLLM application using Docker and Docker Compose.
+This guide provides instructions for building and running the Dheera AI application using Docker and Docker Compose.
 
 ## Prerequisites
 
@@ -34,7 +34,7 @@ docker compose up -d --build
 This command will:
 
 -   Build the Docker image using `Dockerfile.non_root`.
--   Start the `litellm`, `litellm_db`, and `prometheus` services in detached mode (`-d`).
+-   Start the `dheera_ai`, `dheera_ai_db`, and `prometheus` services in detached mode (`-d`).
 -   The `--build` flag ensures that the image is rebuilt if there are any changes to the Dockerfile or the application code.
 
 ### 3. Verifying the Application is Running
@@ -45,10 +45,10 @@ You can check the status of the running containers with the following command:
 docker compose ps
 ```
 
-To view the logs of the `litellm` container, run:
+To view the logs of the `dheera_ai` container, run:
 
 ```bash
-docker compose logs -f litellm
+docker compose logs -f dheera_ai
 ```
 
 ### 4. Stopping the Application
@@ -72,13 +72,13 @@ This setup:
 - Builds from `docker/Dockerfile.non_root` with Prisma engines and Node toolchain baked into the image.
 - Runs the proxy as a non-root user with a read-only rootfs and only two writable tmpfs mounts:
   - `/app/cache` (Prisma/NPM cache; backing `PRISMA_BINARY_CACHE_DIR`, `NPM_CONFIG_CACHE`, `XDG_CACHE_HOME`)
-  - `/app/migrations` (Prisma migration workspace; backing `LITELLM_MIGRATION_DIR`)
+  - `/app/migrations` (Prisma migration workspace; backing `DHEERA_AI_MIGRATION_DIR`)
 - Routes all outbound traffic through a local Squid proxy that denies egress, so Prisma migrations must use the cached CLI and engines.
 
 You should also verify offline Prisma behaviour with:
 
 ```bash
-docker run --rm --network none --entrypoint prisma ghcr.io/berriai/litellm:main-stable --version
+docker run --rm --network none --entrypoint prisma ghcr.io/berriai/dheera_ai:main-stable --version
 ```
 
 This command should succeed (showing engine versions) even with `--network none`, confirming that Prisma binaries are available without network access.

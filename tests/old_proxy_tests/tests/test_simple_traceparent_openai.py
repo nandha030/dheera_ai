@@ -1,5 +1,5 @@
 # mypy: ignore-errors
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 
 import openai
 

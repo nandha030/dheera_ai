@@ -10,8 +10,8 @@ import pytest
 
 sys.path.insert(0, os.path.abspath("../../.."))
 
-import litellm
-from litellm.types.rag import RAGIngestOptions, OpenAIVectorStoreOptions
+import dheera_ai
+from dheera_ai.types.rag import RAGIngestOptions, OpenAIVectorStoreOptions
 from tests.vector_store_tests.rag.base_rag_tests import BaseRAGTest
 
 
@@ -32,7 +32,7 @@ class TestRAGOpenAI(BaseRAGTest):
         query: str,
     ) -> Optional[Dict[str, Any]]:
         """Query OpenAI vector store."""
-        search_response = await litellm.vector_stores.asearch(
+        search_response = await dheera_ai.vector_stores.asearch(
             vector_store_id=vector_store_id,
             query=query,
             custom_llm_provider="openai",

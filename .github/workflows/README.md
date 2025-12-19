@@ -1,6 +1,6 @@
 # Simple PyPI Publishing
 
-A GitHub workflow to manually publish LiteLLM packages to PyPI with a specified version.
+A GitHub workflow to manually publish Dheera AI packages to PyPI with a specified version.
 
 ## How to Use
 

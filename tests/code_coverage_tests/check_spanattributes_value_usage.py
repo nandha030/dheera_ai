@@ -29,9 +29,9 @@ import re
 from typing import List, Tuple
 import sys
 
-# Add parent directory to path so we can import litellm
+# Add parent directory to path so we can import dheera_ai
 sys.path.insert(0, os.path.abspath("../.."))
-import litellm
+import dheera_ai
 
 
 class SpanAttributesUsageChecker(ast.NodeVisitor):
@@ -138,11 +138,11 @@ def main():
     args = parser.parse_args()
     
     # Path to the OpenTelemetry integration file
-    target_file = os.path.join("litellm", "integrations", "opentelemetry.py")
+    target_file = os.path.join("dheera_ai", "integrations", "opentelemetry.py")
     
     if not os.path.exists(target_file):
         # Try alternate path for local development
-        target_file = os.path.join("..", "..", "litellm", "integrations", "opentelemetry.py")
+        target_file = os.path.join("..", "..", "dheera_ai", "integrations", "opentelemetry.py")
     
     if not os.path.exists(target_file):
         print(f"Error: Could not find file at {target_file}")

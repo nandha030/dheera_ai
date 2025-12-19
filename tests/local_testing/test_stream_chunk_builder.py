@@ -6,7 +6,7 @@ import traceback
 
 import pytest
 from typing import List
-from litellm.types.utils import StreamingChoices, ChatCompletionAudioResponse
+from dheera_ai.types.utils import StreamingChoices, ChatCompletionAudioResponse
 
 
 def check_non_streaming_response(completion):
@@ -26,9 +26,9 @@ import os
 import dotenv
 from openai import OpenAI
 
-import litellm
+import dheera_ai
 import stream_chunk_testdata
-from litellm import completion, stream_chunk_builder
+from dheera_ai import completion, stream_chunk_builder
 
 dotenv.load_dotenv()
 
@@ -74,7 +74,7 @@ tools_schema = [
 
 # def test_stream_chunk_builder_tools():
 #     try:
-#       litellm.set_verbose = False
+#       dheera_ai.set_verbose = False
 #       response = client.chat.completions.create(
 #           model="gpt-3.5-turbo",
 #           messages=messages,
@@ -91,10 +91,10 @@ tools_schema = [
 # test_stream_chunk_builder_tools()
 
 
-def test_stream_chunk_builder_litellm_function_call():
+def test_stream_chunk_builder_dheera_ai_function_call():
     try:
-        litellm.set_verbose = False
-        response = litellm.completion(
+        dheera_ai.set_verbose = False
+        response = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=messages,
             functions=[function_schema],
@@ -107,13 +107,13 @@ def test_stream_chunk_builder_litellm_function_call():
         pytest.fail(f"An exception occurred - {str(e)}")
 
 
-# test_stream_chunk_builder_litellm_function_call()
+# test_stream_chunk_builder_dheera_ai_function_call()
 
 
-def test_stream_chunk_builder_litellm_tool_call():
+def test_stream_chunk_builder_dheera_ai_tool_call():
     try:
-        litellm.set_verbose = True
-        response = litellm.completion(
+        dheera_ai.set_verbose = True
+        response = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=messages,
             tools=tools_schema,
@@ -133,14 +133,14 @@ def test_stream_chunk_builder_litellm_tool_call():
         pytest.fail(f"An exception occurred - {str(e)}")
 
 
-# test_stream_chunk_builder_litellm_tool_call()
+# test_stream_chunk_builder_dheera_ai_tool_call()
 
 
-def test_stream_chunk_builder_litellm_tool_call_regular_message():
+def test_stream_chunk_builder_dheera_ai_tool_call_regular_message():
     try:
         messages = [{"role": "user", "content": "Hey, how's it going?"}]
-        # litellm.set_verbose = True
-        response = litellm.completion(
+        # dheera_ai.set_verbose = True
+        response = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=messages,
             tools=tools_schema,
@@ -165,10 +165,10 @@ def test_stream_chunk_builder_litellm_tool_call_regular_message():
         pytest.fail(f"An exception occurred - {str(e)}")
 
 
-# test_stream_chunk_builder_litellm_tool_call_regular_message()
+# test_stream_chunk_builder_dheera_ai_tool_call_regular_message()
 
 
-def test_stream_chunk_builder_litellm_mixed_calls():
+def test_stream_chunk_builder_dheera_ai_mixed_calls():
     response = stream_chunk_builder(stream_chunk_testdata.chunks)
     assert (
         response.choices[0].message.content
@@ -188,8 +188,8 @@ def test_stream_chunk_builder_litellm_mixed_calls():
     }
 
 
-def test_stream_chunk_builder_litellm_empty_chunks():
-    with pytest.raises(litellm.APIError):
+def test_stream_chunk_builder_dheera_ai_empty_chunks():
+    with pytest.raises(dheera_ai.APIError):
         response = stream_chunk_builder(chunks=None)
 
     response = stream_chunk_builder(chunks=[])
@@ -542,7 +542,7 @@ def test_stream_chunk_builder_multiple_tool_calls():
 
     chunks = []
     for chunk in init_chunks:
-        chunks.append(litellm.ModelResponse(**chunk, stream=True))
+        chunks.append(dheera_ai.ModelResponse(**chunk, stream=True))
     response = stream_chunk_builder(chunks=chunks)
 
     print(f"Returned response: {response}")
@@ -585,7 +585,7 @@ def test_stream_chunk_builder_multiple_tool_calls():
         "service_tier": None,
     }
 
-    expected_response = litellm.ModelResponse(**completed_response)
+    expected_response = dheera_ai.ModelResponse(**completed_response)
 
     print(f"\n\nexpected_response:\n{expected_response}\n\n")
     assert (
@@ -613,14 +613,14 @@ def test_stream_chunk_builder_openai_prompt_caching():
         stream=True,
         stream_options={"include_usage": True},
     )
-    chunks: List[litellm.ModelResponse] = []
+    chunks: List[dheera_ai.ModelResponse] = []
     usage_obj = None
     for chunk in chat_completion:
-        chunks.append(litellm.ModelResponse(**chunk.model_dump(), stream=True))
+        chunks.append(dheera_ai.ModelResponse(**chunk.model_dump(), stream=True))
 
     print(f"chunks: {chunks}")
 
-    usage_obj: litellm.Usage = chunks[-1].usage  # type: ignore
+    usage_obj: dheera_ai.Usage = chunks[-1].usage  # type: ignore
 
     response = stream_chunk_builder(chunks=chunks)
     print(f"response: {response}")
@@ -661,9 +661,9 @@ def test_stream_chunk_builder_openai_audio_output_usage():
 
     chunks = []
     for chunk in completion:
-        chunks.append(litellm.ModelResponse(**chunk.model_dump(), stream=True))
+        chunks.append(dheera_ai.ModelResponse(**chunk.model_dump(), stream=True))
 
-    usage_obj: Optional[litellm.Usage] = None
+    usage_obj: Optional[dheera_ai.Usage] = None
 
     for index, chunk in enumerate(chunks):
         if hasattr(chunk, "usage"):
@@ -688,7 +688,7 @@ def test_stream_chunk_builder_openai_audio_output_usage():
 
 
 def test_stream_chunk_builder_empty_initial_chunk():
-    from litellm.litellm_core_utils.streaming_chunk_builder_utils import (
+    from dheera_ai.dheera_ai_core_utils.streaming_chunk_builder_utils import (
         ChunkProcessor,
     )
 
@@ -703,10 +703,10 @@ def test_stream_chunk_builder_empty_initial_chunk():
 
 
 def test_stream_chunk_builder_tool_calls_list():
-    from litellm.litellm_core_utils.streaming_chunk_builder_utils import (
+    from dheera_ai.dheera_ai_core_utils.streaming_chunk_builder_utils import (
         ChunkProcessor,
     )
-    from litellm.types.utils import (
+    from dheera_ai.types.utils import (
         ChatCompletionMessageToolCall,
         Function,
         ModelResponseStream,
@@ -850,7 +850,7 @@ def load_env():
     tools = [
         {
             "type": "function",
-            "function": litellm.utils.function_to_dict(get_current_weather),
+            "function": dheera_ai.utils.function_to_dict(get_current_weather),
         }
     ]
     OPENAI_GPT4oMINI = {
@@ -873,20 +873,20 @@ def load_env():
 
 def execute_completion(opts: dict):
     partial_streaming_chunks = []
-    response_gen = litellm.completion(**opts)
+    response_gen = dheera_ai.completion(**opts)
     for i, part in enumerate(response_gen):
         partial_streaming_chunks.append(part)
     print("\n\n")
     print(f"partial_streaming_chunks: {partial_streaming_chunks}")
     print("\n\n")
-    assembly = litellm.stream_chunk_builder(partial_streaming_chunks)
+    assembly = dheera_ai.stream_chunk_builder(partial_streaming_chunks)
     print(f"assembly.choices[0].message.tool_calls: {assembly.choices[0].message.tool_calls}")
     print(assembly.choices[0].message.tool_calls)
     for tool_call in assembly.choices[0].message.tool_calls:
-        json.loads(tool_call.function.arguments) # assert valid json - https://github.com/BerriAI/litellm/issues/10034
+        json.loads(tool_call.function.arguments) # assert valid json - https://github.com/BerriAI/dheera_ai/issues/10034
 
 
 def test_grok_bug(load_env):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     _, LLAMA3_3 = load_env
     execute_completion(LLAMA3_3)

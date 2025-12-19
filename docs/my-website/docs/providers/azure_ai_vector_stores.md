@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Azure AI Search - Vector Store (Unified API)
 
-Use this to **search** Azure AI Search Vector Stores, with LiteLLM's unified `/chat/completions` API.
+Use this to **search** Azure AI Search Vector Stores, with Dheera AI's unified `/chat/completions` API.
 
 ## Quick Start
 
@@ -20,7 +20,7 @@ You need three things:
 ### Basic Search
 
 ```python
-from litellm import vector_stores
+from dheera_ai import vector_stores
 import os
 
 # Set your credentials
@@ -34,8 +34,8 @@ response = vector_stores.search(
     query="What is the capital of France?",
     custom_llm_provider="azure_ai",
     azure_search_service_name="your-search-service",
-    litellm_embedding_model="azure/text-embedding-3-large",
-    litellm_embedding_config={
+    dheera_ai_embedding_model="azure/text-embedding-3-large",
+    dheera_ai_embedding_config={
         "api_base": os.getenv("AZURE_AI_SEARCH_EMBEDDING_API_BASE"),
         "api_key": os.getenv("AZURE_AI_SEARCH_EMBEDDING_API_KEY"),
     },
@@ -48,15 +48,15 @@ print(response)
 ### Async Search
 
 ```python
-from litellm import vector_stores
+from dheera_ai import vector_stores
 
 response = await vector_stores.asearch(
     vector_store_id="my-vector-index",
     query="What is the capital of France?",
     custom_llm_provider="azure_ai",
     azure_search_service_name="your-search-service",
-    litellm_embedding_model="azure/text-embedding-3-large",
-    litellm_embedding_config={
+    dheera_ai_embedding_model="azure/text-embedding-3-large",
+    dheera_ai_embedding_config={
         "api_base": os.getenv("AZURE_AI_SEARCH_EMBEDDING_API_BASE"),
         "api_key": os.getenv("AZURE_AI_SEARCH_EMBEDDING_API_KEY"),
     },
@@ -69,15 +69,15 @@ print(response)
 ### Advanced Options
 
 ```python
-from litellm import vector_stores
+from dheera_ai import vector_stores
 
 response = vector_stores.search(
     vector_store_id="my-vector-index",
     query="What is the capital of France?",
     custom_llm_provider="azure_ai",
     azure_search_service_name="your-search-service",
-    litellm_embedding_model="azure/text-embedding-3-large",
-    litellm_embedding_config={
+    dheera_ai_embedding_model="azure/text-embedding-3-large",
+    dheera_ai_embedding_config={
         "api_base": os.getenv("AZURE_AI_SEARCH_EMBEDDING_API_BASE"),
         "api_key": os.getenv("AZURE_AI_SEARCH_EMBEDDING_API_KEY"),
     },
@@ -99,13 +99,13 @@ Add this to your config.yaml:
 
 ```yaml
 vector_store_registry:
-  - vector_store_name: "azure-ai-search-litellm-website-knowledgebase"
-    litellm_params:
-        vector_store_id: "test-litellm-app_1761094730750"
+  - vector_store_name: "azure-ai-search-dheera_ai-website-knowledgebase"
+    dheera_ai_params:
+        vector_store_id: "test-dheera_ai-app_1761094730750"
         custom_llm_provider: "azure_ai"
         api_key: os.environ/AZURE_SEARCH_API_KEY
-        litellm_embedding_model: "azure/text-embedding-3-large"
-        litellm_embedding_config:
+        dheera_ai_embedding_model: "azure/text-embedding-3-large"
+        dheera_ai_embedding_config:
             api_base: https://krris-mh44uf7y-eastus2.cognitiveservices.azure.com/
             api_key: os.environ/AZURE_API_KEY
             api_version: "2025-09-01"
@@ -114,7 +114,7 @@ vector_store_registry:
 ### Start Proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 ### Search via API
@@ -138,8 +138,8 @@ curl -X POST 'http://0.0.0.0:4000/v1/vector_stores/my-vector-index/search' \
 | `vector_store_id` | string | Your Azure AI Search index name |
 | `custom_llm_provider` | string | Set to `"azure_ai"` |
 | `azure_search_service_name` | string | Name of your Azure AI Search service |
-| `litellm_embedding_model` | string | Model to generate query embeddings (e.g., `"azure/text-embedding-3-large"`) |
-| `litellm_embedding_config` | dict | Config for the embedding model (api_base, api_key, api_version) |
+| `dheera_ai_embedding_model` | string | Model to generate query embeddings (e.g., `"azure/text-embedding-3-large"`) |
+| `dheera_ai_embedding_config` | dict | Config for the embedding model (api_base, api_key, api_version) |
 | `api_key` | string | Your Azure AI Search API key |
 
 ## Supported Features
@@ -154,7 +154,7 @@ curl -X POST 'http://0.0.0.0:4000/v1/vector_stores/my-vector-index/search' \
 
 ## Response Format
 
-The response follows the standard LiteLLM vector store format:
+The response follows the standard Dheera AI vector store format:
 
 ```json
 {
@@ -183,12 +183,12 @@ The response follows the standard LiteLLM vector store format:
 
 When you search:
 
-1. LiteLLM converts your query to a vector using the embedding model you specified
+1. Dheera AI converts your query to a vector using the embedding model you specified
 2. It sends the vector to Azure AI Search
 3. Azure AI Search finds the most similar documents in your index
 4. Results come back with similarity scores
 
-The embedding model can be any model supported by LiteLLM - Azure OpenAI, OpenAI, Bedrock, etc.
+The embedding model can be any model supported by Dheera AI - Azure OpenAI, OpenAI, Bedrock, etc.
 
 ## Setting Up Your Azure AI Search Index
 
@@ -229,7 +229,7 @@ The vector dimensions must match your embedding model. For example:
 **"Failed to generate embedding for query"**
 
 Your embedding model config is wrong. Check:
-- `litellm_embedding_config` has the right api_base and api_key
+- `dheera_ai_embedding_config` has the right api_base and api_key
 - The embedding model name is correct
 - Your credentials work
 

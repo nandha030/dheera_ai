@@ -2,7 +2,7 @@ import Image from '@theme/IdealImage';
 
 # A2A Agent Cost Tracking
 
-LiteLLM supports adding custom cost tracking for A2A agents. You can configure:
+Dheera AI supports adding custom cost tracking for A2A agents. You can configure:
 
 - **Flat cost per query** - A fixed cost charged for each agent request
 - **Cost by input/output tokens** - Variable cost based on token usage

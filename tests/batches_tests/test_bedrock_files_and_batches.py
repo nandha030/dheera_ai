@@ -17,7 +17,7 @@ sys.path.insert(
 
 import pytest
 from typing import Optional
-import litellm
+import dheera_ai
 from unittest.mock import patch, MagicMock
 import httpx
 
@@ -29,17 +29,17 @@ async def test_async_create_file():
     2. Create Batch Request
     3. Retrieve the specific batch
     """
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     print("Testing async create batch")
 
     file_name = "bedrock_batch_completions.jsonl"
     _current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(_current_dir, file_name)
-    file_obj = await litellm.acreate_file(
+    file_obj = await dheera_ai.acreate_file(
         file=open(file_path, "rb"),
         purpose="batch",
         custom_llm_provider="bedrock",
-        s3_bucket_name="litellm-proxy",
+        s3_bucket_name="dheera_ai-proxy",
     )
 
 @pytest.mark.asyncio()
@@ -47,20 +47,20 @@ async def test_async_file_and_batch():
     """
     Test file retrieval
     """
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     file_name = "bedrock_batch_completions.jsonl"
     _current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(_current_dir, file_name)
-    file_obj = await litellm.acreate_file(
+    file_obj = await dheera_ai.acreate_file(
         file=open(file_path, "rb"),
         purpose="batch",
         custom_llm_provider="bedrock",
-        s3_bucket_name="litellm-proxy",
+        s3_bucket_name="dheera_ai-proxy",
     )
     print("CREATED FILE RESPONSE=", file_obj)
 
     # create batch
-    create_batch_response = await litellm.acreate_batch(
+    create_batch_response = await dheera_ai.acreate_batch(
         completion_window="24h",
         endpoint="/v1/chat/completions",
         input_file_id=file_obj.id,
@@ -76,7 +76,7 @@ async def test_async_file_and_batch():
     print("CREATED BATCH RESPONSE=", create_batch_response)
 
     # retrieve batch
-    retrieve_batch_response = await litellm.aretrieve_batch(
+    retrieve_batch_response = await dheera_ai.aretrieve_batch(
         batch_id=create_batch_response.id,
         custom_llm_provider="bedrock",
         model="us.anthropic.claude-3-5-sonnet-20240620-v1:0",
@@ -105,17 +105,17 @@ async def test_mock_bedrock_file_url_mapping():
             captured_put_url = transformed_request["url"]
         
         # Call the real method to get actual response
-        from litellm.files.main import base_llm_http_handler
+        from dheera_ai.files.main import base_llm_http_handler
         return await base_llm_http_handler.__class__.async_create_file(
             base_llm_http_handler, transformed_request, **kwargs
         )
     
-    with patch('litellm.files.main.base_llm_http_handler.async_create_file', side_effect=mock_async_create_file):
-        file_obj = await litellm.acreate_file(
+    with patch('dheera_ai.files.main.base_llm_http_handler.async_create_file', side_effect=mock_async_create_file):
+        file_obj = await dheera_ai.acreate_file(
             file=open(os.path.join(os.path.dirname(__file__), "bedrock_batch_completions.jsonl"), "rb"),
             purpose="batch",
             custom_llm_provider="bedrock",
-            s3_bucket_name="litellm-proxy",
+            s3_bucket_name="dheera_ai-proxy",
         )
         
         print(f"PUT URL: {captured_put_url}")
@@ -126,7 +126,7 @@ async def test_mock_bedrock_file_url_mapping():
         assert file_obj.id.startswith("s3://")
         
         # Verify mapping
-        from litellm.llms.bedrock.files.transformation import BedrockFilesConfig
+        from dheera_ai.llms.bedrock.files.transformation import BedrockFilesConfig
         bedrock_config = BedrockFilesConfig()
         expected_s3_uri, _ = bedrock_config._convert_https_url_to_s3_uri(captured_put_url)
         assert file_obj.id == expected_s3_uri
@@ -170,12 +170,12 @@ async def test_bedrock_retrieve_batch():
     # Print the mock response to debug
     print("MOCK RESPONSE DATA:", mock_bedrock_response)
     
-    with patch("litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.get") as mock_get:
+    with patch("dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.get") as mock_get:
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
         
         # Test retrieve batch
-        batch_response = await litellm.aretrieve_batch(
+        batch_response = await dheera_ai.aretrieve_batch(
             batch_id="arn:aws:bedrock:us-west-2:123456789012:model-invocation-job/test-job-123",
             custom_llm_provider="bedrock",
             model="us.anthropic.claude-3-5-sonnet-20240620-v1:0",
@@ -199,7 +199,7 @@ def test_bedrock_batch_with_encryption_key_in_post_request():
     Test that s3_encryption_key_id is included in the AWS POST request payload.
     """
     import json
-    import litellm
+    import dheera_ai
     
     test_kms_key_id = "arn:aws:kms:us-west-2:123456789012:key/12345678-1234-1234-1234-123456789012"
     
@@ -220,8 +220,8 @@ def test_bedrock_batch_with_encryption_key_in_post_request():
         mock_response.raise_for_status.return_value = None
         return mock_response
     
-    with patch("litellm.llms.custom_httpx.http_handler.HTTPHandler.post", side_effect=mock_post):
-        response = litellm.create_batch(
+    with patch("dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post", side_effect=mock_post):
+        response = dheera_ai.create_batch(
             completion_window="24h",
             endpoint="/v1/chat/completions",
             input_file_id="s3://test-bucket/input/test.jsonl",

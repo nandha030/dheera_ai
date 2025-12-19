@@ -4,9 +4,9 @@ Automatically keep your model pricing and context window data up to date without
 
 ## Overview
 
-When providers like OpenAI or Anthropic release new models (e.g., GPT-5, Claude 4), you typically need to restart your LiteLLM service to get the latest pricing and context window data. 
+When providers like OpenAI or Anthropic release new models (e.g., GPT-5, Claude 4), you typically need to restart your Dheera AI service to get the latest pricing and context window data. 
 
-With auto-sync, LiteLLM automatically pulls the latest model data from GitHub's [`model_prices_and_context_window.json`](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) without requiring a restart. This means:
+With auto-sync, Dheera AI automatically pulls the latest model data from GitHub's [`model_prices_and_context_window.json`](https://github.com/BerriAI/dheera_ai/blob/main/model_prices_and_context_window.json) without requiring a restart. This means:
 
 - **Zero downtime** when new models are released
 - **Always accurate pricing** for cost tracking and budgets
@@ -65,10 +65,10 @@ print(result['message'])
 
 **Custom model cost map URL:**
 ```bash
-export LITELLM_MODEL_COST_MAP_URL="https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json"
+export DHEERA_AI_MODEL_COST_MAP_URL="https://raw.githubusercontent.com/BerriAI/dheera_ai/main/model_prices_and_context_window.json"
 ```
 
 **Use local model cost map:**
 ```bash
-export LITELLM_LOCAL_MODEL_COST_MAP=True
+export DHEERA_AI_LOCAL_MODEL_COST_MAP=True
 ```

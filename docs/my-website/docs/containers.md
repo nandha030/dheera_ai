@@ -21,20 +21,20 @@ Containers provide isolated execution environments for code interpreter sessions
 
 :::
 
-## **LiteLLM Python SDK Usage**
+## **Dheera AI Python SDK Usage**
 
 ### Quick Start
 
 **Create a Container**
 
 ```python
-import litellm
+import dheera_ai
 import os 
 
 # setup env
 os.environ["OPENAI_API_KEY"] = "sk-.."
 
-container = litellm.create_container(
+container = dheera_ai.create_container(
     name="My Code Interpreter Container",
     custom_llm_provider="openai",
     expires_after={
@@ -50,7 +50,7 @@ print(f"Container Name: {container.name}")
 ### Async Usage
 
 ```python
-from litellm import acreate_container
+from dheera_ai import acreate_container
 import os 
 
 os.environ["OPENAI_API_KEY"] = "sk-.."
@@ -71,7 +71,7 @@ print(f"Container Name: {container.name}")
 ### List Containers
 
 ```python
-from litellm import list_containers
+from dheera_ai import list_containers
 import os 
 
 os.environ["OPENAI_API_KEY"] = "sk-.."
@@ -90,7 +90,7 @@ for container in containers.data:
 **Async Usage:**
 
 ```python
-from litellm import alist_containers
+from dheera_ai import alist_containers
 
 containers = await alist_containers(
     custom_llm_provider="openai",
@@ -106,7 +106,7 @@ for container in containers.data:
 ### Retrieve a Container
 
 ```python
-from litellm import retrieve_container
+from dheera_ai import retrieve_container
 import os 
 
 os.environ["OPENAI_API_KEY"] = "sk-.."
@@ -124,7 +124,7 @@ print(f"Created: {container.created_at}")
 **Async Usage:**
 
 ```python
-from litellm import aretrieve_container
+from dheera_ai import aretrieve_container
 
 container = await aretrieve_container(
     container_id="cntr_123...",
@@ -139,7 +139,7 @@ print(f"Created: {container.created_at}")
 ### Delete a Container
 
 ```python
-from litellm import delete_container
+from dheera_ai import delete_container
 import os 
 
 os.environ["OPENAI_API_KEY"] = "sk-.."
@@ -156,7 +156,7 @@ print(f"Container ID: {result.id}")
 **Async Usage:**
 
 ```python
-from litellm import adelete_container
+from dheera_ai import adelete_container
 
 result = await adelete_container(
     container_id="cntr_123...",
@@ -167,9 +167,9 @@ print(f"Deleted: {result.deleted}")
 print(f"Container ID: {result.id}")
 ```
 
-## **LiteLLM Proxy Usage**
+## **Dheera AI Proxy Usage**
 
-LiteLLM provides OpenAI API compatible container endpoints for managing code interpreter sessions:
+Dheera AI provides OpenAI API compatible container endpoints for managing code interpreter sessions:
 
 - `/v1/containers` - Create and list containers
 - `/v1/containers/{container_id}` - Retrieve and delete containers
@@ -179,7 +179,7 @@ LiteLLM provides OpenAI API compatible container endpoints for managing code int
 ```bash
 $ export OPENAI_API_KEY="sk-..."
 
-$ litellm
+$ dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -250,20 +250,20 @@ curl -X DELETE "http://localhost:4000/v1/containers/cntr_123..." \
     -H "Authorization: Bearer sk-1234"
 ```
 
-## **Using OpenAI Client with LiteLLM Proxy**
+## **Using OpenAI Client with Dheera AI Proxy**
 
-You can use the standard OpenAI Python client to interact with LiteLLM's container endpoints. This provides a familiar interface while leveraging LiteLLM's proxy features.
+You can use the standard OpenAI Python client to interact with Dheera AI's container endpoints. This provides a familiar interface while leveraging Dheera AI's proxy features.
 
 ### Setup
 
-First, configure your OpenAI client to point to your LiteLLM proxy:
+First, configure your OpenAI client to point to your Dheera AI proxy:
 
 ```python
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-1234",  # Your LiteLLM proxy key
-    base_url="http://localhost:4000"  # LiteLLM proxy URL
+    api_key="sk-1234",  # Your Dheera AI proxy key
+    base_url="http://localhost:4000"  # Dheera AI proxy URL
 )
 ```
 
@@ -470,5 +470,5 @@ Currently, only OpenAI supports container management for code interpreter sessio
 ## Related
 
 - [Container Files API](/docs/container_files) - Manage files within containers
-- [Code Interpreter Guide](/docs/guides/code_interpreter) - Using Code Interpreter with LiteLLM
+- [Code Interpreter Guide](/docs/guides/code_interpreter) - Using Code Interpreter with Dheera AI
 

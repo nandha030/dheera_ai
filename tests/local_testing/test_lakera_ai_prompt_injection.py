@@ -10,7 +10,7 @@ from fastapi import HTTPException, Request, Response
 from fastapi.routing import APIRoute
 from starlette.datastructures import URL
 
-from litellm.types.guardrails import GuardrailItem
+from dheera_ai.types.guardrails import GuardrailItem
 
 load_dotenv()
 import os
@@ -23,13 +23,13 @@ from unittest.mock import patch
 
 import pytest
 
-import litellm
-from litellm._logging import verbose_proxy_logger
-from litellm.caching.caching import DualCache
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.proxy.guardrails.guardrail_hooks.lakera_ai import lakeraAI_Moderation
-from litellm.proxy.proxy_server import embeddings
-from litellm.proxy.utils import ProxyLogging, hash_token
+import dheera_ai
+from dheera_ai._logging import verbose_proxy_logger
+from dheera_ai.caching.caching import DualCache
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.proxy.guardrails.guardrail_hooks.lakera_ai import lakeraAI_Moderation
+from dheera_ai.proxy.proxy_server import embeddings
+from dheera_ai.proxy.utils import ProxyLogging, hash_token
 
 verbose_proxy_logger.setLevel(logging.DEBUG)
 
@@ -43,7 +43,7 @@ def make_config_map(config: dict):
 
 
 @patch(
-    "litellm.guardrail_name_config_map",
+    "dheera_ai.guardrail_name_config_map",
     make_config_map(
         {
             "prompt_injection": {
@@ -111,7 +111,7 @@ async def test_lakera_prompt_injection_detection():
 
 
 @patch(
-    "litellm.guardrail_name_config_map",
+    "dheera_ai.guardrail_name_config_map",
     make_config_map(
         {
             "prompt_injection": {
@@ -151,11 +151,11 @@ async def test_lakera_safe_prompt():
 @pytest.mark.skip(reason="lakera deprecated their v1 endpoint.")
 async def test_moderations_on_embeddings():
     try:
-        temp_router = litellm.Router(
+        temp_router = dheera_ai.Router(
             model_list=[
                 {
                     "model_name": "text-embedding-ada-002",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "model": "text-embedding-ada-002",
                         "api_key": "any",
                         "api_base": "https://exampleopenaiendpoint-production.up.railway.app/",
@@ -164,10 +164,10 @@ async def test_moderations_on_embeddings():
             ]
         )
 
-        setattr(litellm.proxy.proxy_server, "llm_router", temp_router)
+        setattr(dheera_ai.proxy.proxy_server, "llm_router", temp_router)
 
         api_route = APIRoute(path="/embeddings", endpoint=embeddings)
-        litellm.callbacks = [lakeraAI_Moderation()]
+        dheera_ai.callbacks = [lakeraAI_Moderation()]
         request = Request(
             {
                 "type": "http",
@@ -198,9 +198,9 @@ async def test_moderations_on_embeddings():
 
 
 @pytest.mark.asyncio
-@patch("litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post")
+@patch("dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post")
 @patch(
-    "litellm.guardrail_name_config_map",
+    "dheera_ai.guardrail_name_config_map",
     new=make_config_map(
         {
             "prompt_injection": {
@@ -237,9 +237,9 @@ async def test_messages_for_disabled_role(spy_post):
 
 
 @pytest.mark.asyncio
-@patch("litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post")
+@patch("dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post")
 @patch(
-    "litellm.guardrail_name_config_map",
+    "dheera_ai.guardrail_name_config_map",
     new=make_config_map(
         {
             "prompt_injection": {
@@ -249,7 +249,7 @@ async def test_messages_for_disabled_role(spy_post):
         }
     ),
 )
-@patch("litellm.add_function_to_prompt", False)
+@patch("dheera_ai.add_function_to_prompt", False)
 @pytest.mark.skip(reason="lakera deprecated their v1 endpoint.")
 async def test_system_message_with_function_input(spy_post):
     moderation = lakeraAI_Moderation()
@@ -282,9 +282,9 @@ async def test_system_message_with_function_input(spy_post):
 
 
 @pytest.mark.asyncio
-@patch("litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post")
+@patch("dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post")
 @patch(
-    "litellm.guardrail_name_config_map",
+    "dheera_ai.guardrail_name_config_map",
     new=make_config_map(
         {
             "prompt_injection": {
@@ -294,7 +294,7 @@ async def test_system_message_with_function_input(spy_post):
         }
     ),
 )
-@patch("litellm.add_function_to_prompt", False)
+@patch("dheera_ai.add_function_to_prompt", False)
 @pytest.mark.skip(reason="lakera deprecated their v1 endpoint.")
 async def test_multi_message_with_function_input(spy_post):
     moderation = lakeraAI_Moderation()
@@ -331,9 +331,9 @@ async def test_multi_message_with_function_input(spy_post):
 
 
 @pytest.mark.asyncio
-@patch("litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post")
+@patch("dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post")
 @patch(
-    "litellm.guardrail_name_config_map",
+    "dheera_ai.guardrail_name_config_map",
     new=make_config_map(
         {
             "prompt_injection": {
@@ -374,10 +374,10 @@ async def test_message_ordering(spy_post):
 async def test_callback_specific_param_run_pre_call_check_lakera():
     from typing import Dict, List, Optional, Union
 
-    import litellm
-    from litellm.proxy.guardrails.guardrail_hooks.lakera_ai import lakeraAI_Moderation
-    from litellm.proxy.guardrails.init_guardrails import initialize_guardrails
-    from litellm.types.guardrails import GuardrailItem, GuardrailItemSpec
+    import dheera_ai
+    from dheera_ai.proxy.guardrails.guardrail_hooks.lakera_ai import lakeraAI_Moderation
+    from dheera_ai.proxy.guardrails.init_guardrails import initialize_guardrails
+    from dheera_ai.types.guardrails import GuardrailItem, GuardrailItemSpec
 
     guardrails_config: List[Dict[str, GuardrailItemSpec]] = [
         {
@@ -390,21 +390,21 @@ async def test_callback_specific_param_run_pre_call_check_lakera():
             }
         }
     ]
-    litellm_settings = {"guardrails": guardrails_config}
+    dheera_ai_settings = {"guardrails": guardrails_config}
 
-    assert len(litellm.guardrail_name_config_map) == 0
+    assert len(dheera_ai.guardrail_name_config_map) == 0
     initialize_guardrails(
         guardrails_config=guardrails_config,
         premium_user=True,
         config_file_path="",
-        litellm_settings=litellm_settings,
+        dheera_ai_settings=dheera_ai_settings,
     )
 
-    assert len(litellm.guardrail_name_config_map) == 1
+    assert len(dheera_ai.guardrail_name_config_map) == 1
 
     prompt_injection_obj: Optional[lakeraAI_Moderation] = None
-    print("litellm callbacks={}".format(litellm.callbacks))
-    for callback in litellm.callbacks:
+    print("dheera_ai callbacks={}".format(dheera_ai.callbacks))
+    for callback in dheera_ai.callbacks:
         if isinstance(callback, lakeraAI_Moderation):
             prompt_injection_obj = callback
         else:
@@ -421,10 +421,10 @@ async def test_callback_specific_param_run_pre_call_check_lakera():
 async def test_callback_specific_thresholds():
     from typing import Dict, List, Optional, Union
 
-    import litellm
-    from litellm.proxy.guardrails.guardrail_hooks.lakera_ai import lakeraAI_Moderation
-    from litellm.proxy.guardrails.init_guardrails import initialize_guardrails
-    from litellm.types.guardrails import GuardrailItem, GuardrailItemSpec
+    import dheera_ai
+    from dheera_ai.proxy.guardrails.guardrail_hooks.lakera_ai import lakeraAI_Moderation
+    from dheera_ai.proxy.guardrails.init_guardrails import initialize_guardrails
+    from dheera_ai.types.guardrails import GuardrailItem, GuardrailItemSpec
 
     guardrails_config: List[Dict[str, GuardrailItemSpec]] = [
         {
@@ -443,21 +443,21 @@ async def test_callback_specific_thresholds():
             }
         }
     ]
-    litellm_settings = {"guardrails": guardrails_config}
+    dheera_ai_settings = {"guardrails": guardrails_config}
 
-    assert len(litellm.guardrail_name_config_map) == 0
+    assert len(dheera_ai.guardrail_name_config_map) == 0
     initialize_guardrails(
         guardrails_config=guardrails_config,
         premium_user=True,
         config_file_path="",
-        litellm_settings=litellm_settings,
+        dheera_ai_settings=dheera_ai_settings,
     )
 
-    assert len(litellm.guardrail_name_config_map) == 1
+    assert len(dheera_ai.guardrail_name_config_map) == 1
 
     prompt_injection_obj: Optional[lakeraAI_Moderation] = None
-    print("litellm callbacks={}".format(litellm.callbacks))
-    for callback in litellm.callbacks:
+    print("dheera_ai callbacks={}".format(dheera_ai.callbacks))
+    for callback in dheera_ai.callbacks:
         if isinstance(callback, lakeraAI_Moderation):
             prompt_injection_obj = callback
         else:

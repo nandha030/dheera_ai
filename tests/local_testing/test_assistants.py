@@ -18,17 +18,17 @@ import pytest
 from openai.types.beta.assistant import Assistant
 from typing_extensions import override
 
-import litellm
-from litellm import create_thread, get_thread
-from litellm.llms.openai.openai import (
+import dheera_ai
+from dheera_ai import create_thread, get_thread
+from dheera_ai.llms.openai.openai import (
     AssistantEventHandler,
     AsyncAssistantEventHandler,
     AsyncCursorPage,
     MessageData,
     OpenAIAssistantsAPI,
 )
-from litellm.llms.openai.openai import OpenAIMessage as Message
-from litellm.llms.openai.openai import SyncCursorPage, Thread
+from dheera_ai.llms.openai.openai import OpenAIMessage as Message
+from dheera_ai.llms.openai.openai import SyncCursorPage, Thread
 
 """
 V0 Scope:
@@ -58,10 +58,10 @@ async def test_get_assistants(provider, sync_mode):
         data = _add_azure_related_dynamic_params(data)
 
     if sync_mode == True:
-        assistants = litellm.get_assistants(**data)
+        assistants = dheera_ai.get_assistants(**data)
         assert isinstance(assistants, SyncCursorPage)
     else:
-        assistants = await litellm.aget_assistants(**data)
+        assistants = await dheera_ai.aget_assistants(**data)
         assert isinstance(assistants, AsyncCursorPage)
 
 
@@ -73,8 +73,8 @@ async def test_get_assistants(provider, sync_mode):
 @pytest.mark.asyncio()
 @pytest.mark.flaky(retries=3, delay=1)
 async def test_create_delete_assistants(provider, sync_mode):
-    litellm.ssl_verify = False
-    litellm._turn_on_debug()
+    dheera_ai.ssl_verify = False
+    dheera_ai._turn_on_debug()
     data = {
         "custom_llm_provider": provider,
         "model": "gpt-4.1",
@@ -86,7 +86,7 @@ async def test_create_delete_assistants(provider, sync_mode):
         data = _add_azure_related_dynamic_params(data)
 
     if sync_mode == True:
-        assistant = litellm.create_assistants(**data)
+        assistant = dheera_ai.create_assistants(**data)
 
         print("New assistants", assistant)
         assert isinstance(assistant, Assistant)
@@ -103,11 +103,11 @@ async def test_create_delete_assistants(provider, sync_mode):
         }
         if provider == "azure":
             delete_data = _add_azure_related_dynamic_params(delete_data)
-        response = litellm.delete_assistant(**delete_data)
+        response = dheera_ai.delete_assistant(**delete_data)
         print("Response deleting assistant", response)
         assert response.id == assistant.id
     else:
-        assistant = await litellm.acreate_assistants(**data)
+        assistant = await dheera_ai.acreate_assistants(**data)
         print("New assistants", assistant)
         assert isinstance(assistant, Assistant)
         assert (
@@ -123,7 +123,7 @@ async def test_create_delete_assistants(provider, sync_mode):
         }
         if provider == "azure":
             delete_data = _add_azure_related_dynamic_params(delete_data)
-        response = await litellm.adelete_assistant(**delete_data)
+        response = await dheera_ai.adelete_assistant(**delete_data)
         print("Response deleting assistant", response)
         assert response.id == assistant.id
 
@@ -131,7 +131,7 @@ async def test_create_delete_assistants(provider, sync_mode):
 @pytest.mark.parametrize("provider", ["openai", "azure"])
 @pytest.mark.parametrize("sync_mode", [True, False])
 @pytest.mark.asyncio
-async def test_create_thread_litellm(sync_mode, provider) -> Thread:
+async def test_create_thread_dheera_ai(sync_mode, provider) -> Thread:
     message: MessageData = {"role": "user", "content": "Hey, how's it going?"}  # type: ignore
     data = {
         "custom_llm_provider": provider,
@@ -143,7 +143,7 @@ async def test_create_thread_litellm(sync_mode, provider) -> Thread:
     if sync_mode:
         new_thread = create_thread(**data)
     else:
-        new_thread = await litellm.acreate_thread(**data)
+        new_thread = await dheera_ai.acreate_thread(**data)
 
     assert isinstance(
         new_thread, Thread
@@ -155,8 +155,8 @@ async def test_create_thread_litellm(sync_mode, provider) -> Thread:
 @pytest.mark.parametrize("provider", ["openai", "azure"])
 @pytest.mark.parametrize("sync_mode", [True, False])
 @pytest.mark.asyncio
-async def test_get_thread_litellm(provider, sync_mode):
-    new_thread = test_create_thread_litellm(sync_mode, provider)
+async def test_get_thread_dheera_ai(provider, sync_mode):
+    new_thread = test_create_thread_dheera_ai(sync_mode, provider)
 
     if asyncio.iscoroutine(new_thread):
         _new_thread = await new_thread
@@ -173,7 +173,7 @@ async def test_get_thread_litellm(provider, sync_mode):
     if sync_mode:
         received_thread = get_thread(**data)
     else:
-        received_thread = await litellm.aget_thread(**data)
+        received_thread = await dheera_ai.aget_thread(**data)
 
     assert isinstance(
         received_thread, Thread
@@ -184,9 +184,9 @@ async def test_get_thread_litellm(provider, sync_mode):
 @pytest.mark.parametrize("provider", ["openai", "azure"])
 @pytest.mark.parametrize("sync_mode", [True, False])
 @pytest.mark.asyncio
-async def test_add_message_litellm(sync_mode, provider):
+async def test_add_message_dheera_ai(sync_mode, provider):
     message: MessageData = {"role": "user", "content": "Hey, how's it going?"}  # type: ignore
-    new_thread = test_create_thread_litellm(sync_mode, provider)
+    new_thread = test_create_thread_dheera_ai(sync_mode, provider)
 
     if asyncio.iscoroutine(new_thread):
         _new_thread = await new_thread
@@ -199,9 +199,9 @@ async def test_add_message_litellm(sync_mode, provider):
     if provider == "azure":
         data = _add_azure_related_dynamic_params(data)
     if sync_mode:
-        added_message = litellm.add_message(**data)
+        added_message = dheera_ai.add_message(**data)
     else:
-        added_message = await litellm.a_add_message(**data)
+        added_message = await dheera_ai.a_add_message(**data)
 
     print(f"added message: {added_message}")
 
@@ -228,7 +228,7 @@ async def test_add_message_litellm(sync_mode, provider):
 )  #
 @pytest.mark.asyncio
 @pytest.mark.flaky(retries=3, delay=1)
-async def test_aarun_thread_litellm(sync_mode, provider, is_streaming):
+async def test_aarun_thread_dheera_ai(sync_mode, provider, is_streaming):
     """
     - Get Assistants
     - Create thread
@@ -245,9 +245,9 @@ async def test_aarun_thread_litellm(sync_mode, provider, is_streaming):
         if provider == "azure":
             get_assistants_data = _add_azure_related_dynamic_params(get_assistants_data)
         if sync_mode:
-            assistants = litellm.get_assistants(**get_assistants_data)
+            assistants = dheera_ai.get_assistants(**get_assistants_data)
         else:
-            assistants = await litellm.aget_assistants(**get_assistants_data)
+            assistants = await dheera_ai.aget_assistants(**get_assistants_data)
 
         ## get the first assistant ###
         try:
@@ -255,7 +255,7 @@ async def test_aarun_thread_litellm(sync_mode, provider, is_streaming):
         except IndexError:
             pytest.skip("No assistants found")
 
-        new_thread = test_create_thread_litellm(sync_mode=sync_mode, provider=provider)
+        new_thread = test_create_thread_dheera_ai(sync_mode=sync_mode, provider=provider)
 
         if asyncio.iscoroutine(new_thread):
             _new_thread = await new_thread
@@ -272,20 +272,20 @@ async def test_aarun_thread_litellm(sync_mode, provider, is_streaming):
             data = _add_azure_related_dynamic_params(data)
 
         if sync_mode:
-            added_message = litellm.add_message(**data)
+            added_message = dheera_ai.add_message(**data)
 
             if is_streaming:
-                run = litellm.run_thread_stream(assistant_id=assistant_id, **data)
+                run = dheera_ai.run_thread_stream(assistant_id=assistant_id, **data)
                 with run as run:
                     assert isinstance(run, AssistantEventHandler)
                     print(run)
                     run.until_done()
             else:
-                run = litellm.run_thread(
+                run = dheera_ai.run_thread(
                     assistant_id=assistant_id, stream=is_streaming, **data
                 )
                 if run.status == "completed":
-                    messages = litellm.get_messages(
+                    messages = dheera_ai.get_messages(
                         thread_id=_new_thread.id, custom_llm_provider=provider
                     )
                     assert isinstance(messages.data[0], Message)
@@ -297,10 +297,10 @@ async def test_aarun_thread_litellm(sync_mode, provider, is_streaming):
                     )
 
         else:
-            added_message = await litellm.a_add_message(**data)
+            added_message = await dheera_ai.a_add_message(**data)
 
             if is_streaming:
-                run = litellm.arun_thread_stream(assistant_id=assistant_id, **data)
+                run = dheera_ai.arun_thread_stream(assistant_id=assistant_id, **data)
                 async with run as run:
                     print(f"run: {run}")
                     assert isinstance(
@@ -310,14 +310,14 @@ async def test_aarun_thread_litellm(sync_mode, provider, is_streaming):
                     print(run)
                     await run.until_done()
             else:
-                run = await litellm.arun_thread(
+                run = await dheera_ai.arun_thread(
                     custom_llm_provider=provider,
                     thread_id=thread_id,
                     assistant_id=assistant_id,
                 )
 
                 if run.status == "completed":
-                    messages = await litellm.aget_messages(
+                    messages = await dheera_ai.aget_messages(
                         thread_id=_new_thread.id, custom_llm_provider=provider
                     )
                     assert isinstance(messages.data[0], Message)

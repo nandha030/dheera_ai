@@ -14,17 +14,17 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm import DualCache
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.proxy.hooks.batch_rate_limiter import (
+import dheera_ai
+from dheera_ai import DualCache
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.proxy.hooks.batch_rate_limiter import (
     BatchFileUsage,
     _PROXY_BatchRateLimiter,
 )
-from litellm.proxy.hooks.parallel_request_limiter_v3 import (
+from dheera_ai.proxy.hooks.parallel_request_limiter_v3 import (
     _PROXY_MaxParallelRequestsHandler_v3,
 )
-from litellm.proxy.utils import InternalUsageCache
+from dheera_ai.proxy.utils import InternalUsageCache
 
 
 def get_expected_batch_file_usage(file_path: str) -> tuple[int, int]:
@@ -45,7 +45,7 @@ def get_expected_batch_file_usage(file_path: str) -> tuple[int, int]:
         model = body.get("model", "")
         messages = body.get("messages", [])
         if messages:
-            item_tokens = litellm.token_counter(model=model, messages=messages)
+            item_tokens = dheera_ai.token_counter(model=model, messages=messages)
             expected_total_tokens += item_tokens
     
     return expected_request_count, expected_total_tokens
@@ -61,7 +61,7 @@ async def test_batch_rate_limits():
     Integration test for batch rate limits with real OpenAI API calls.
     Tests the full flow: file creation -> token counting -> cleanup
     """
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     CUSTOM_LLM_PROVIDER = "openai"
     BATCH_LIMITER = _PROXY_BatchRateLimiter(
         internal_usage_cache=None,
@@ -74,7 +74,7 @@ async def test_batch_rate_limits():
 
     # Create file on OpenAI
     print(f"Creating file from {file_path}")
-    file_obj = await litellm.acreate_file(
+    file_obj = await dheera_ai.acreate_file(
         file=open(file_path, "rb"),
         purpose="batch",
         custom_llm_provider=CUSTOM_LLM_PROVIDER,
@@ -152,7 +152,7 @@ async def test_batch_rate_limit_single_file():
     
     try:
         # Upload file to OpenAI
-        file_obj_small = await litellm.acreate_file(
+        file_obj_small = await dheera_ai.acreate_file(
             file=open(small_file_path, "rb"),
             purpose="batch",
             custom_llm_provider=CUSTOM_LLM_PROVIDER,
@@ -217,7 +217,7 @@ async def test_batch_rate_limit_single_file():
     
     try:
         # Upload file to OpenAI
-        file_obj_large = await litellm.acreate_file(
+        file_obj_large = await dheera_ai.acreate_file(
             file=open(large_file_path, "rb"),
             purpose="batch",
             custom_llm_provider=CUSTOM_LLM_PROVIDER,
@@ -306,7 +306,7 @@ async def test_batch_rate_limit_multiple_requests():
     
     try:
         # Upload file to OpenAI
-        file_obj_1 = await litellm.acreate_file(
+        file_obj_1 = await dheera_ai.acreate_file(
             file=open(file_path_1, "rb"),
             purpose="batch",
             custom_llm_provider=CUSTOM_LLM_PROVIDER,
@@ -360,7 +360,7 @@ async def test_batch_rate_limit_multiple_requests():
     
     try:
         # Upload file to OpenAI
-        file_obj_2 = await litellm.acreate_file(
+        file_obj_2 = await dheera_ai.acreate_file(
             file=open(file_path_2, "rb"),
             purpose="batch",
             custom_llm_provider=CUSTOM_LLM_PROVIDER,

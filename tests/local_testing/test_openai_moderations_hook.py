@@ -15,14 +15,14 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 import pytest
-import litellm
-from litellm.proxy.enterprise.enterprise_hooks.openai_moderation import (
+import dheera_ai
+from dheera_ai.proxy.enterprise.enterprise_hooks.openai_moderation import (
     _ENTERPRISE_OpenAI_Moderation,
 )
-from litellm import Router, mock_completion
-from litellm.proxy.utils import ProxyLogging, hash_token
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.caching.caching import DualCache
+from dheera_ai import Router, mock_completion
+from dheera_ai.proxy.utils import ProxyLogging, hash_token
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.caching.caching import DualCache
 
 ### UNIT TESTS FOR OpenAI Moderation ###
 
@@ -33,22 +33,22 @@ async def test_openai_moderation_error_raising(monkeypatch):
     Tests to see OpenAI Moderation raises an error for a flagged response
     """
     from unittest.mock import AsyncMock, MagicMock
-    from litellm.types.llms.openai import OpenAIModerationResponse
+    from dheera_ai.types.llms.openai import OpenAIModerationResponse
     
-    litellm.openai_moderations_model_name = "text-moderation-latest"
+    dheera_ai.openai_moderations_model_name = "text-moderation-latest"
     openai_mod = _ENTERPRISE_OpenAI_Moderation()
     _api_key = "sk-12345"
     _api_key = hash_token("sk-12345")
     user_api_key_dict = UserAPIKeyAuth(api_key=_api_key)
     local_cache = DualCache()
 
-    from litellm.proxy.proxy_server import llm_router
+    from dheera_ai.proxy.proxy_server import llm_router
 
-    llm_router = litellm.Router(
+    llm_router = dheera_ai.Router(
         model_list=[
             {
                 "model_name": "text-moderation-latest",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "text-moderation-latest",
                     "api_key": os.environ.get("OPENAI_API_KEY", "fake-key"),
                 },
@@ -65,7 +65,7 @@ async def test_openai_moderation_error_raising(monkeypatch):
     
     llm_router.amoderation = mock_amoderation
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     try:
         await openai_mod.async_moderation_hook(

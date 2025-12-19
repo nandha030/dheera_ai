@@ -1,7 +1,7 @@
 import os
 import sys
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import datetime as dt
 from datetime import datetime
 
@@ -15,7 +15,7 @@ import os
 import time
 
 
-# this file is to test litellm/proxy
+# this file is to test dheera_ai/proxy
 
 sys.path.insert(
     0, os.path.abspath("../..")
@@ -25,14 +25,14 @@ import logging
 
 from fastapi import HTTPException, Request
 import pytest
-from litellm.proxy.auth.route_checks import RouteChecks
-from litellm.proxy._types import LiteLLM_UserTable, LitellmUserRoles, UserAPIKeyAuth
-from litellm.proxy.pass_through_endpoints.llm_passthrough_endpoints import (
+from dheera_ai.proxy.auth.route_checks import RouteChecks
+from dheera_ai.proxy._types import DheeraAI_UserTable, LitellmUserRoles, UserAPIKeyAuth
+from dheera_ai.proxy.pass_through_endpoints.llm_passthrough_endpoints import (
     router as llm_passthrough_router,
 )
 
 # Replace the actual hash_token function with our mock
-import litellm.proxy.auth.route_checks
+import dheera_ai.proxy.auth.route_checks
 
 
 # Mock objects and functions
@@ -45,7 +45,7 @@ def mock_hash_token(token):
     return token
 
 
-litellm.proxy.auth.route_checks.hash_token = mock_hash_token
+dheera_ai.proxy.auth.route_checks.hash_token = mock_hash_token
 
 
 # Test is_llm_api_route

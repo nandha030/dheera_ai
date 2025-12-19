@@ -10,13 +10,13 @@ import TokenComponent from '../src/components/queryParamToken.js'
 
 This section assumes you've already added your API keys in <TokenComponent/>
 
-If you want to use the non-hosted version, [go here](https://docs.litellm.ai/docs/#quick-start)
+If you want to use the non-hosted version, [go here](https://docs.dheera_ai.ai/docs/#quick-start)
 
 :::
 
 
 ```
-pip install litellm
+pip install dheera_ai
 ```
 
 <QueryParamReader/>

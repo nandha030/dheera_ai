@@ -10,12 +10,12 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock
 from starlette.datastructures import Headers
 
-from litellm.proxy._experimental.mcp_server.auth.user_api_key_auth_mcp import (
+from dheera_ai.proxy._experimental.mcp_server.auth.user_api_key_auth_mcp import (
     MCPRequestHandler,
 )
-from litellm.proxy._experimental.mcp_server.mcp_server_manager import MCPServerManager
-from litellm.types.mcp import MCPAuth, MCPTransport
-from litellm.types.mcp_server.mcp_server_manager import MCPServer
+from dheera_ai.proxy._experimental.mcp_server.mcp_server_manager import MCPServerManager
+from dheera_ai.types.mcp import MCPAuth, MCPTransport
+from dheera_ai.types.mcp_server.mcp_server_manager import MCPServer
 
 
 class TestRestEndpointAuthHeaderExtraction:
@@ -66,15 +66,15 @@ class TestCaseInsensitiveServerMatching:
         server = MCPServer(
             server_id="test-server",
             name="Test Server",
-            alias="LiteLLMAGCGateway",
-            server_name="litellm_gateway",
+            alias="DheeraAIAGCGateway",
+            server_name="dheera_ai_gateway",
             url="https://api.example.com",
             transport=MCPTransport.http,
             auth_type=MCPAuth.authorization,
         )
         
         mcp_server_auth_headers = {
-            "litellmagcgateway": {"Authorization": "Bearer token"}
+            "dheera_aiagcgateway": {"Authorization": "Bearer token"}
         }
         
         # Test the case-insensitive matching logic from _call_regular_mcp_tool

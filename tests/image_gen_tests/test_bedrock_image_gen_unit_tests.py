@@ -10,7 +10,7 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-from litellm.llms.bedrock.image.amazon_nova_canvas_transformation import (
+from dheera_ai.llms.bedrock.image.amazon_nova_canvas_transformation import (
     AmazonNovaCanvasConfig,
 )
 
@@ -22,27 +22,27 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 import pytest
-from litellm.llms.bedrock.image.cost_calculator import cost_calculator
-from litellm.types.utils import ImageResponse, ImageObject
+from dheera_ai.llms.bedrock.image.cost_calculator import cost_calculator
+from dheera_ai.types.utils import ImageResponse, ImageObject
 import os
 
-import litellm
-from litellm.llms.bedrock.image.amazon_stability3_transformation import (
+import dheera_ai
+from dheera_ai.llms.bedrock.image.amazon_stability3_transformation import (
     AmazonStability3Config,
 )
-from litellm.llms.bedrock.image.amazon_stability1_transformation import (
+from dheera_ai.llms.bedrock.image.amazon_stability1_transformation import (
     AmazonStabilityConfig,
 )
-from litellm.types.llms.bedrock import (
+from dheera_ai.types.llms.bedrock import (
     AmazonStability3TextToImageRequest,
     AmazonStability3TextToImageResponse,
 )
 from unittest.mock import MagicMock, patch
-from litellm.llms.bedrock.image.image_handler import (
+from dheera_ai.llms.bedrock.image.image_handler import (
     BedrockImageGeneration,
     BedrockImagePreparedRequest,
 )
-from litellm.llms.bedrock.common_utils import BedrockError
+from dheera_ai.llms.bedrock.common_utils import BedrockError
 
 
 @pytest.mark.parametrize(
@@ -412,8 +412,8 @@ def test_cost_calculator_basic():
 
 
 def test_bedrock_image_gen_with_aws_region_name():
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
-    from litellm import image_generation
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai import image_generation
 
     client = HTTPHandler()
 
@@ -528,11 +528,11 @@ def test_backward_compatibility_regular_nova_model():
 
 
 def test_amazon_titan_image_gen():
-    from litellm import image_generation
+    from dheera_ai import image_generation
 
     model_id = "bedrock/amazon.titan-image-generator-v1"
 
-    response = litellm.image_generation(
+    response = dheera_ai.image_generation(
         model=model_id,
         prompt="A serene mountain landscape at sunset with a lake reflection",
         aws_region_name="us-east-1",

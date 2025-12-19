@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # /generateContent
 
-Use LiteLLM to call Google AI's generateContent endpoints for text generation, multimodal interactions, and streaming responses.
+Use Dheera AI to call Google AI's generateContent endpoints for text generation, multimodal interactions, and streaming responses.
 
 ## Overview 
 
@@ -19,14 +19,14 @@ Use LiteLLM to call Google AI's generateContent endpoints for text generation, m
 ## Usage 
 ---
 
-### LiteLLM Python SDK 
+### Dheera AI Python SDK 
 
 <Tabs>
 <TabItem value="basic" label="Basic Usage">
 
 #### Non-streaming example
 ```python showLineNumbers title="Basic Text Generation"
-from litellm.google_genai import agenerate_content
+from dheera_ai.google_genai import agenerate_content
 from google.genai.types import ContentDict, PartDict
 import os
 
@@ -50,7 +50,7 @@ print(response)
 
 #### Streaming example
 ```python showLineNumbers title="Streaming Text Generation"
-from litellm.google_genai import agenerate_content_stream
+from dheera_ai.google_genai import agenerate_content_stream
 from google.genai.types import ContentDict, PartDict
 import os
 
@@ -80,7 +80,7 @@ async for chunk in response:
 
 #### Sync non-streaming example
 ```python showLineNumbers title="Sync Text Generation"
-from litellm.google_genai import generate_content
+from dheera_ai.google_genai import generate_content
 from google.genai.types import ContentDict, PartDict
 import os
 
@@ -104,7 +104,7 @@ print(response)
 
 #### Sync streaming example
 ```python showLineNumbers title="Sync Streaming Text Generation"
-from litellm.google_genai import generate_content_stream
+from dheera_ai.google_genai import generate_content_stream
 from google.genai.types import ContentDict, PartDict
 import os
 
@@ -131,14 +131,14 @@ for chunk in response:
 </TabItem>
 </Tabs>
 
-### LiteLLM Proxy Server 
+### Dheera AI Proxy Server 
 
 1. Setup config.yaml
 
 ```yaml
 model_list:
     - model_name: gemini-flash
-      litellm_params:
+      dheera_ai_params:
         model: gemini/gemini-2.0-flash
         api_key: os.environ/GEMINI_API_KEY
 ```
@@ -146,7 +146,7 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -154,11 +154,11 @@ litellm --config /path/to/config.yaml
 <Tabs>
 <TabItem value="gemini-proxy" label="Google GenAI SDK">
 
-```python showLineNumbers title="Google GenAI SDK with LiteLLM Proxy"
+```python showLineNumbers title="Google GenAI SDK with Dheera AI Proxy"
 from google.genai import Client
 import os
 
-# Configure Google GenAI SDK to use LiteLLM proxy
+# Configure Google GenAI SDK to use Dheera AI proxy
 os.environ["GOOGLE_GEMINI_BASE_URL"] = "http://localhost:4000"
 os.environ["GEMINI_API_KEY"] = "sk-1234"
 
@@ -183,7 +183,7 @@ response = client.models.generate_content(
 
 #### Generate Content
 
-```bash showLineNumbers title="generateContent via LiteLLM Proxy"
+```bash showLineNumbers title="generateContent via Dheera AI Proxy"
 curl -L -X POST 'http://localhost:4000/v1beta/models/gemini-flash:generateContent' \
 -H 'content-type: application/json' \
 -H 'authorization: Bearer sk-1234' \
@@ -206,7 +206,7 @@ curl -L -X POST 'http://localhost:4000/v1beta/models/gemini-flash:generateConten
 
 #### Stream Generate Content
 
-```bash showLineNumbers title="streamGenerateContent via LiteLLM Proxy"
+```bash showLineNumbers title="streamGenerateContent via Dheera AI Proxy"
 curl -L -X POST 'http://localhost:4000/v1beta/models/gemini-flash:streamGenerateContent' \
 -H 'content-type: application/json' \
 -H 'authorization: Bearer sk-1234' \
@@ -233,4 +233,4 @@ curl -L -X POST 'http://localhost:4000/v1beta/models/gemini-flash:streamGenerate
 
 ## Related 
 
-- [Use LiteLLM with gemini-cli](../docs/tutorials/litellm_gemini_cli)
+- [Use Dheera AI with gemini-cli](../docs/tutorials/dheera_ai_gemini_cli)

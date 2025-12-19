@@ -4,7 +4,7 @@ import TabItem from '@theme/TabItem';
 
 # Custom Prompt Management
 
-Connect LiteLLM to your prompt management system with custom hooks.
+Connect Dheera AI to your prompt management system with custom hooks.
 
 ## Overview
 
@@ -29,9 +29,9 @@ Create a new file called `custom_prompt.py` and add this code. The key method he
 
 ```python
 from typing import List, Tuple, Optional
-from litellm.integrations.custom_prompt_management import CustomPromptManagement
-from litellm.types.llms.openai import AllMessageValues
-from litellm.types.utils import StandardCallbackDynamicParams
+from dheera_ai.integrations.custom_prompt_management import CustomPromptManagement
+from dheera_ai.types.llms.openai import AllMessageValues
+from dheera_ai.types.utils import StandardCallbackDynamicParams
 
 class MyCustomPromptManagement(CustomPromptManagement):
     def get_chat_completion_prompt(
@@ -65,25 +65,25 @@ class MyCustomPromptManagement(CustomPromptManagement):
 prompt_management = MyCustomPromptManagement()
 ```
 
-### 2. Configure Your Prompt Manager in LiteLLM `config.yaml`
+### 2. Configure Your Prompt Manager in Dheera AI `config.yaml`
 
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
-  callbacks: custom_prompt.prompt_management  # sets litellm.callbacks = [prompt_management]
+dheera_ai_settings:
+  callbacks: custom_prompt.prompt_management  # sets dheera_ai.callbacks = [prompt_management]
 ```
 
-### 3. Start LiteLLM Gateway
+### 3. Start Dheera AI Gateway
 
 <Tabs>
 <TabItem value="docker" label="Docker Run">
 
-Mount your `custom_logger.py` on the LiteLLM Docker container.
+Mount your `custom_logger.py` on the Dheera AI Docker container.
 
 ```shell
 docker run -d \
@@ -100,10 +100,10 @@ docker run -d \
 
 </TabItem>
 
-<TabItem value="py" label="litellm pip">
+<TabItem value="py" label="dheera_ai pip">
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 </TabItem>
@@ -173,19 +173,19 @@ curl -X POST http://0.0.0.0:4000/v1/chat/completions \
 </TabItem>
 </Tabs>
 
-### Using the LiteLLM SDK Directly
+### Using the Dheera AI SDK Directly
 
-If you call `litellm.completion()` from a Python script (without going through the proxy), register your custom prompt manager before making the request:
+If you call `dheera_ai.completion()` from a Python script (without going through the proxy), register your custom prompt manager before making the request:
 
 ```python
 
-import litellm
+import dheera_ai
 from custom_prompt import prompt_management
 
-litellm.callbacks = [prompt_management]
-litellm.use_litellm_proxy = True
+dheera_ai.callbacks = [prompt_management]
+dheera_ai.use_dheera_ai_proxy = True
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gpt-4",
     messages=[{"role": "user", "content": "hi"}],
     prompt_id="1234",
@@ -193,7 +193,7 @@ response = litellm.completion(
 )
 ```
 
-> **Note:** `litellm.callbacks = [prompt_management]` (or equivalently `litellm.logging_callback_manager.add_litellm_callback(prompt_management)`) is required in SDK scripts. The proxy reads `callbacks` from `config.yaml` automatically, but standalone scripts do not.
+> **Note:** `dheera_ai.callbacks = [prompt_management]` (or equivalently `dheera_ai.logging_callback_manager.add_dheera_ai_callback(prompt_management)`) is required in SDK scripts. The proxy reads `callbacks` from `config.yaml` automatically, but standalone scripts do not.
 
 The request will be transformed from:
 ```json

@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, os.path.abspath("../.."))
 
 import asyncio
-import litellm
+import dheera_ai
 import gzip
 import json
 import logging
@@ -15,12 +15,12 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-import litellm
-from litellm import completion
-from litellm._logging import verbose_logger
-from litellm.integrations.gcs_pubsub.pub_sub import *
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai._logging import verbose_logger
+from dheera_ai.integrations.gcs_pubsub.pub_sub import *
 from datetime import datetime, timedelta
-from litellm.types.utils import (
+from dheera_ai.types.utils import (
     StandardLoggingPayload,
     StandardLoggingModelInformation,
     StandardLoggingMetadata,
@@ -39,7 +39,7 @@ ignored_keys = [
     "metadata.model_map_information",
     "metadata.usage_object",
     "metadata.cold_storage_object_key",
-    "metadata.litellm_overhead_time_ms",
+    "metadata.dheera_ai_overhead_time_ms",
 ]
 
 
@@ -194,10 +194,10 @@ async def test_async_gcs_pub_sub():
     mock_construct_request_headers = AsyncMock()
     mock_construct_request_headers.return_value = {"Authorization": "Bearer mock_token"}
     gcs_pub_sub_logger.construct_request_headers = mock_construct_request_headers
-    litellm.callbacks = [gcs_pub_sub_logger]
+    dheera_ai.callbacks = [gcs_pub_sub_logger]
 
     # Make the completion call
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-4o",
         messages=[{"role": "user", "content": "Hello, world!"}],
         mock_response="hi",
@@ -213,7 +213,7 @@ async def test_async_gcs_pub_sub():
     print("sent to url", actual_url)
     assert (
         actual_url
-        == "https://pubsub.googleapis.com/v1/projects/reliableKeys/topics/litellmDB:publish"
+        == "https://pubsub.googleapis.com/v1/projects/reliableKeys/topics/dheera_aiDB:publish"
     )
     actual_request = mock_post.call_args[1]["json"]
 
@@ -237,7 +237,7 @@ async def test_async_gcs_pub_sub():
 @pytest.mark.asyncio
 async def test_async_gcs_pub_sub_v1():
     # Create a mock for the async_httpx_client's post method
-    litellm.gcs_pub_sub_use_v1 = True
+    dheera_ai.gcs_pub_sub_use_v1 = True
     mock_post = AsyncMock()
     mock_post.return_value.status_code = 202
     mock_post.return_value.text = "Accepted"
@@ -249,10 +249,10 @@ async def test_async_gcs_pub_sub_v1():
     mock_construct_request_headers = AsyncMock()
     mock_construct_request_headers.return_value = {"Authorization": "Bearer mock_token"}
     gcs_pub_sub_logger.construct_request_headers = mock_construct_request_headers
-    litellm.callbacks = [gcs_pub_sub_logger]
+    dheera_ai.callbacks = [gcs_pub_sub_logger]
 
     # Make the completion call
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-4o",
         messages=[{"role": "user", "content": "Hello, world!"}],
         mock_response="hi",
@@ -268,7 +268,7 @@ async def test_async_gcs_pub_sub_v1():
     print("sent to url", actual_url)
     assert (
         actual_url
-        == "https://pubsub.googleapis.com/v1/projects/reliableKeys/topics/litellmDB:publish"
+        == "https://pubsub.googleapis.com/v1/projects/reliableKeys/topics/dheera_aiDB:publish"
     )
     actual_request = mock_post.call_args[1]["json"]
 

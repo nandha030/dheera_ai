@@ -7,9 +7,9 @@ Validates that:
 """
 
 import pytest
-from litellm.proxy._experimental.mcp_server.mcp_server_manager import MCPServerManager
-from litellm.types.mcp import MCPAuth, MCPTransport, MCPSpecVersion
-from litellm.types.mcp_server.mcp_server_manager import MCPServer
+from dheera_ai.proxy._experimental.mcp_server.mcp_server_manager import MCPServerManager
+from dheera_ai.types.mcp import MCPAuth, MCPTransport, MCPSpecVersion
+from dheera_ai.types.mcp_server.mcp_server_manager import MCPServer
 
 
 def test_mcp_server_works_without_config_auth_value():

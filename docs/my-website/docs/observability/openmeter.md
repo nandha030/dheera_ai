@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 <Image img={require('../../img/openmeter.png')} />
 
 :::info
-We want to learn how we can make the callbacks better! Meet the LiteLLM [founders](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-litellm-hosted-version) or
+We want to learn how we can make the callbacks better! Meet the Dheera AI [founders](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-dheera_ai-hosted-version) or
 join our [discord](https://discord.gg/wuPM9dRgDw)
 ::: 
 
@@ -20,7 +20,7 @@ Use just 2 lines of code, to instantly log your responses **across all providers
 Get your OpenMeter API Key from https://openmeter.cloud/meters
 
 ```python
-litellm.callbacks = ["openmeter"] # logs cost + usage of successful calls to openmeter
+dheera_ai.callbacks = ["openmeter"] # logs cost + usage of successful calls to openmeter
 ```
 
 
@@ -29,7 +29,7 @@ litellm.callbacks = ["openmeter"] # logs cost + usage of successful calls to ope
 
 ```python
 # pip install openmeter 
-import litellm
+import dheera_ai
 import os
 
 # from https://openmeter.cloud
@@ -39,11 +39,11 @@ os.environ["OPENMETER_API_KEY"] = ""
 # LLM API Keys
 os.environ['OPENAI_API_KEY']=""
 
-# set openmeter as a callback, litellm will send the data to openmeter
-litellm.callbacks = ["openmeter"] 
+# set openmeter as a callback, dheera_ai will send the data to openmeter
+dheera_ai.callbacks = ["openmeter"] 
  
 # openai call
-response = litellm.completion(
+response = dheera_ai.completion(
   model="gpt-3.5-turbo",
   messages=[
     {"role": "user", "content": "Hi 👋 - i'm openai"}
@@ -57,20 +57,20 @@ response = litellm.completion(
 1. Add to Config.yaml
 ```yaml
 model_list:
-- litellm_params:
+- dheera_ai_params:
     api_base: https://openai-function-calling-workers.tasslexyz.workers.dev/
     api_key: my-fake-key
     model: openai/my-fake-model
   model_name: fake-openai-endpoint
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["openmeter"] # 👈 KEY CHANGE
 ```
 
 2. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 

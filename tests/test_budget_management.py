@@ -1,6 +1,6 @@
 # What is this?
 ## Unit tests for the /budget/* endpoints
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 from datetime import datetime, timedelta
 
 import aiohttp

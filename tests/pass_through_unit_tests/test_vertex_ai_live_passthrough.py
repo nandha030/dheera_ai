@@ -18,15 +18,15 @@ import httpx
 # Add the parent directory to the system path
 sys.path.insert(0, os.path.abspath("../.."))
 
-from litellm.proxy.pass_through_endpoints.llm_provider_handlers.vertex_ai_live_passthrough_logging_handler import (
+from dheera_ai.proxy.pass_through_endpoints.llm_provider_handlers.vertex_ai_live_passthrough_logging_handler import (
     VertexAILivePassthroughLoggingHandler,
 )
-from litellm.proxy.pass_through_endpoints.success_handler import (
+from dheera_ai.proxy.pass_through_endpoints.success_handler import (
     PassThroughEndpointLogging,
 )
-from litellm.litellm_core_utils.litellm_logging import Logging as LiteLLMLoggingObj
-from litellm.types.utils import LlmProviders
-from litellm.proxy._types import UserAPIKeyAuth
+from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging as DheeraAILoggingObj
+from dheera_ai.types.utils import LlmProviders
+from dheera_ai.proxy._types import UserAPIKeyAuth
 
 
 class TestVertexAILivePassthroughLoggingHandler:
@@ -40,7 +40,7 @@ class TestVertexAILivePassthroughLoggingHandler:
     @pytest.fixture
     def mock_logging_obj(self):
         """Create a mock logging object"""
-        mock = MagicMock(spec=LiteLLMLoggingObj)
+        mock = MagicMock(spec=DheeraAILoggingObj)
         mock.model_call_details = {}
         return mock
 
@@ -218,7 +218,7 @@ class TestVertexAILivePassthroughLoggingHandler:
         assert text_prompt["tokenCount"] == 10
         assert audio_prompt["tokenCount"] == 10
 
-    @patch('litellm.proxy.pass_through_endpoints.llm_provider_handlers.vertex_ai_live_passthrough_logging_handler.get_model_info')
+    @patch('dheera_ai.proxy.pass_through_endpoints.llm_provider_handlers.vertex_ai_live_passthrough_logging_handler.get_model_info')
     def test_calculate_cost_basic(self, mock_get_model_info, handler):
         """Test basic cost calculation"""
         mock_get_model_info.return_value = {
@@ -239,7 +239,7 @@ class TestVertexAILivePassthroughLoggingHandler:
         assert cost >= expected_min_cost
         assert cost > 0
 
-    @patch('litellm.proxy.pass_through_endpoints.llm_provider_handlers.vertex_ai_live_passthrough_logging_handler.get_model_info')
+    @patch('dheera_ai.proxy.pass_through_endpoints.llm_provider_handlers.vertex_ai_live_passthrough_logging_handler.get_model_info')
     def test_calculate_cost_with_audio(self, mock_get_model_info, handler):
         """Test cost calculation with audio tokens"""
         mock_get_model_info.return_value = {
@@ -269,7 +269,7 @@ class TestVertexAILivePassthroughLoggingHandler:
         assert cost > 0
         assert cost > (100 * 0.000001) + (50 * 0.000002)  # Should be higher due to audio
 
-    @patch('litellm.proxy.pass_through_endpoints.llm_provider_handlers.vertex_ai_live_passthrough_logging_handler.get_model_info')
+    @patch('dheera_ai.proxy.pass_through_endpoints.llm_provider_handlers.vertex_ai_live_passthrough_logging_handler.get_model_info')
     def test_calculate_cost_with_web_search(self, mock_get_model_info, handler):
         """Test cost calculation with web search (tool use)"""
         mock_get_model_info.return_value = {
@@ -379,14 +379,14 @@ class TestVertexAILivePassthroughIntegration:
     @pytest.fixture
     def mock_logging_obj(self):
         """Create a mock logging object"""
-        mock = MagicMock(spec=LiteLLMLoggingObj)
+        mock = MagicMock(spec=DheeraAILoggingObj)
         mock.model_call_details = {}
         return mock
 
-    @patch('litellm.proxy.pass_through_endpoints.llm_passthrough_endpoints.websocket_passthrough_request')
-    @patch('litellm.proxy.pass_through_endpoints.llm_passthrough_endpoints.passthrough_endpoint_router')
-    @patch('litellm.proxy.pass_through_endpoints.llm_passthrough_endpoints.vertex_llm_base._ensure_access_token_async')
-    @patch('litellm.proxy.proxy_server.proxy_logging_obj')
+    @patch('dheera_ai.proxy.pass_through_endpoints.llm_passthrough_endpoints.websocket_passthrough_request')
+    @patch('dheera_ai.proxy.pass_through_endpoints.llm_passthrough_endpoints.passthrough_endpoint_router')
+    @patch('dheera_ai.proxy.pass_through_endpoints.llm_passthrough_endpoints.vertex_llm_base._ensure_access_token_async')
+    @patch('dheera_ai.proxy.proxy_server.proxy_logging_obj')
     @pytest.mark.asyncio
     async def test_vertex_ai_live_websocket_passthrough_route(
         self,
@@ -399,7 +399,7 @@ class TestVertexAILivePassthroughIntegration:
         mock_logging_obj
     ):
         """Test the Vertex AI Live WebSocket passthrough route"""
-        from litellm.proxy.pass_through_endpoints.llm_passthrough_endpoints import (
+        from dheera_ai.proxy.pass_through_endpoints.llm_passthrough_endpoints import (
             vertex_ai_live_websocket_passthrough
         )
         
@@ -437,7 +437,7 @@ class TestVertexAILivePassthroughIntegration:
 
     def test_vertex_ai_live_route_detection(self):
         """Test that the route detection works correctly"""
-        from litellm.proxy.pass_through_endpoints.success_handler import (
+        from dheera_ai.proxy.pass_through_endpoints.success_handler import (
             PassThroughEndpointLogging
         )
         
@@ -453,7 +453,7 @@ class TestVertexAILivePassthroughIntegration:
         assert handler.is_vertex_ai_live_route("/vertex_ai/discovery") == False
         assert handler.is_vertex_ai_live_route("/openai/chat/completions") == False
 
-    @patch('litellm.proxy.pass_through_endpoints.llm_provider_handlers.vertex_ai_live_passthrough_logging_handler.VertexAILivePassthroughLoggingHandler')
+    @patch('dheera_ai.proxy.pass_through_endpoints.llm_provider_handlers.vertex_ai_live_passthrough_logging_handler.VertexAILivePassthroughLoggingHandler')
     @pytest.mark.asyncio
     async def test_success_handler_vertex_ai_live_integration(
         self,
@@ -461,7 +461,7 @@ class TestVertexAILivePassthroughIntegration:
         mock_logging_obj
     ):
         """Test the success handler integration with Vertex AI Live"""
-        from litellm.proxy.pass_through_endpoints.success_handler import (
+        from dheera_ai.proxy.pass_through_endpoints.success_handler import (
             PassThroughEndpointLogging
         )
         
@@ -515,7 +515,7 @@ class TestVertexAILivePassthroughErrorHandling:
     @pytest.fixture
     def mock_logging_obj(self):
         """Create a mock logging object"""
-        mock = MagicMock(spec=LiteLLMLoggingObj)
+        mock = MagicMock(spec=DheeraAILoggingObj)
         mock.model_call_details = {}
         return mock
 
@@ -546,7 +546,7 @@ class TestVertexAILivePassthroughErrorHandling:
         result = handler._extract_usage_metadata_from_websocket_messages(messages)
         assert result is None
 
-    @patch('litellm.proxy.pass_through_endpoints.llm_provider_handlers.vertex_ai_live_passthrough_logging_handler.get_model_info')
+    @patch('dheera_ai.proxy.pass_through_endpoints.llm_provider_handlers.vertex_ai_live_passthrough_logging_handler.get_model_info')
     def test_cost_calculation_with_missing_model_info(self, mock_get_model_info):
         """Test cost calculation when model info is missing"""
         handler = VertexAILivePassthroughLoggingHandler()

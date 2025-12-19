@@ -5,18 +5,18 @@
 | Property | Details |
 |----------|---------|
 | Description | WatsonX audio transcription using Whisper models for speech-to-text |
-| Provider Route on LiteLLM | `watsonx/` |
+| Provider Route on Dheera AI | `watsonx/` |
 | Supported Operations | `/v1/audio/transcriptions` |
 | Link to Provider Doc | [IBM WatsonX.ai ↗](https://www.ibm.com/watsonx) |
 
 ## Quick Start
 
-### **LiteLLM SDK**
+### **Dheera AI SDK**
 
 ```python showLineNumbers title="transcription.py"
-import litellm
+import dheera_ai
 
-response = litellm.transcription(
+response = dheera_ai.transcription(
     model="watsonx/whisper-large-v3-turbo",
     file=open("audio.mp3", "rb"),
     api_base="https://us-south.ml.cloud.ibm.com",
@@ -26,12 +26,12 @@ response = litellm.transcription(
 print(response.text)
 ```
 
-### **LiteLLM Proxy**
+### **Dheera AI Proxy**
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: whisper-large-v3-turbo
-    litellm_params:
+    dheera_ai_params:
       model: watsonx/whisper-large-v3-turbo
       api_key: os.environ/WATSONX_APIKEY
       api_base: os.environ/WATSONX_URL

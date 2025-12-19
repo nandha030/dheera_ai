@@ -24,26 +24,26 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-import litellm
-from litellm.llms.custom_httpx.http_handler import HTTPHandler
+import dheera_ai
+from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
 
 def test_braintrust_logging():
-    import litellm
+    import dheera_ai
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     http_client = HTTPHandler()
 
     with patch(
-        "litellm.integrations.braintrust_logging.HTTPHandler.post",
+        "dheera_ai.integrations.braintrust_logging.HTTPHandler.post",
         new=MagicMock(),
     ) as mock_client:
-        # set braintrust as a callback, litellm will send the data to braintrust
-        litellm.callbacks = ["braintrust"]
+        # set braintrust as a callback, dheera_ai will send the data to braintrust
+        dheera_ai.callbacks = ["braintrust"]
 
         # openai call
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hi 👋 - i'm openai"}],
         )
@@ -52,18 +52,18 @@ def test_braintrust_logging():
         mock_client.assert_called()
 
 def test_braintrust_logging_specific_project_id():
-    import litellm
+    import dheera_ai
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     with patch(
-        "litellm.integrations.braintrust_logging.HTTPHandler.post",
+        "dheera_ai.integrations.braintrust_logging.HTTPHandler.post",
         new=MagicMock(),
     ) as mock_client:
-        # set braintrust as a callback, litellm will send the data to braintrust
-        litellm.callbacks = ["braintrust"]
+        # set braintrust as a callback, dheera_ai will send the data to braintrust
+        dheera_ai.callbacks = ["braintrust"]
 
-        response = litellm.completion(model="openai/gpt-4o", messages=[{ "content": "Hello, how are you?","role": "user"}], metadata={"project_id": "123"})
+        response = dheera_ai.completion(model="openai/gpt-4o", messages=[{ "content": "Hello, how are you?","role": "user"}], metadata={"project_id": "123"})
 
         time.sleep(2)
         

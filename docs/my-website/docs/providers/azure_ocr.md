@@ -5,7 +5,7 @@
 | Property | Details |
 |-------|-------|
 | Description | Azure AI OCR provides document intelligence capabilities powered by Mistral, enabling text extraction from PDFs and images |
-| Provider Route on LiteLLM | `azure_ai/` |
+| Provider Route on Dheera AI | `azure_ai/` |
 | Supported Operations | `/ocr` |
 | Link to Provider Doc | [Azure AI ↗](https://ai.azure.com/)
 
@@ -13,10 +13,10 @@ Extract text from documents and images using Azure AI's OCR models, powered by M
 
 ## Quick Start
 
-### **LiteLLM SDK**
+### **Dheera AI SDK**
 
 ```python showLineNumbers title="SDK Usage"
-import litellm
+import dheera_ai
 import os
 
 # Set environment variables
@@ -24,7 +24,7 @@ os.environ["AZURE_AI_API_KEY"] = ""
 os.environ["AZURE_AI_API_BASE"] = ""
 
 # OCR with PDF URL
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/mistral-document-ai-2505",
     document={
         "type": "document_url",
@@ -37,12 +37,12 @@ for page in response.pages:
     print(page.text)
 ```
 
-### **LiteLLM PROXY**
+### **Dheera AI PROXY**
 
 ```yaml showLineNumbers title="proxy_config.yaml"
 model_list:
   - model_name: azure-ocr
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/mistral-document-ai-2505
       api_key: "os.environ/AZURE_AI_API_KEY"
       api_base: "os.environ/AZURE_AI_API_BASE"
@@ -57,7 +57,7 @@ Azure AI OCR supports both PDFs and images.
 ### PDF Documents
 
 ```python showLineNumbers title="PDF OCR"
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/mistral-document-ai-2505",
     document={
         "type": "document_url",
@@ -69,7 +69,7 @@ response = litellm.ocr(
 ### Image Documents
 
 ```python showLineNumbers title="Image OCR"
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/mistral-document-ai-2505",
     document={
         "type": "image_url",
@@ -87,7 +87,7 @@ import base64
 with open("document.pdf", "rb") as f:
     pdf_base64 = base64.b64encode(f.read()).decode()
 
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/mistral-document-ai-2505",
     document={
         "type": "document_url",
@@ -99,7 +99,7 @@ response = litellm.ocr(
 ## Supported Parameters
 
 ```python showLineNumbers title="All Parameters"
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="azure_ai/mistral-document-ai-2505",
     document={                           # Required: Document to process
         "type": "document_url",
@@ -129,9 +129,9 @@ for page in response.pages:
 ## Async Support
 
 ```python showLineNumbers title="Async Usage"
-import litellm
+import dheera_ai
 
-response = await litellm.aocr(
+response = await dheera_ai.aocr(
     model="azure_ai/mistral-document-ai-2505",
     document={
         "type": "document_url",
@@ -143,7 +143,7 @@ response = await litellm.aocr(
 ## Important Notes
 
 :::info URL Conversion
-Azure AI OCR endpoints don't have internet access. LiteLLM automatically converts public URLs to base64 data URIs before sending requests to Azure AI.
+Azure AI OCR endpoints don't have internet access. Dheera AI automatically converts public URLs to base64 data URIs before sending requests to Azure AI.
 :::
 
 ## Supported Models

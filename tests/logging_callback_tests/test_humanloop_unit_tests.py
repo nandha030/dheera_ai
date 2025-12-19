@@ -8,9 +8,9 @@ sys.path.insert(
 )  # Adds the parent directory to the system-path
 
 import pytest
-from litellm.integrations.humanloop import HumanLoopPromptManager
-from litellm.types.utils import StandardCallbackDynamicParams
-from litellm.litellm_core_utils.litellm_logging import DynamicLoggingCache
+from dheera_ai.integrations.humanloop import HumanLoopPromptManager
+from dheera_ai.types.utils import StandardCallbackDynamicParams
+from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import DynamicLoggingCache
 from unittest.mock import Mock, patch
 
 

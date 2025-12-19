@@ -12,14 +12,14 @@ Azure AI Speech is Azure's Cognitive Services text-to-speech API, separate from 
 | Property | Details |
 |-------|-------|
 | Description | Azure AI Speech is Azure's Cognitive Services text-to-speech API, separate from Azure OpenAI. It provides high-quality neural voices with broader language support and advanced speech customization. |
-| Provider Route on LiteLLM | `azure/speech/` |
+| Provider Route on Dheera AI | `azure/speech/` |
 
 ## Quick Start
 
-**LiteLLM SDK**
+**Dheera AI SDK**
 
 ```python showLineNumbers title="SDK Usage"
-from litellm import speech
+from dheera_ai import speech
 from pathlib import Path
 import os
 
@@ -36,12 +36,12 @@ response = speech(
 response.stream_to_file(speech_file_path)
 ```
 
-**LiteLLM Proxy**
+**Dheera AI Proxy**
 
 ```yaml showLineNumbers title="proxy_config.yaml"
 model_list:
   - model_name: azure-speech
-    litellm_params:
+    dheera_ai_params:
       model: azure/speech/azure-tts
       api_base: https://eastus.tts.speech.microsoft.com
       api_key: os.environ/AZURE_TTS_API_KEY
@@ -56,7 +56,7 @@ model_list:
 
 ## Cost Tracking (Pricing)
 
-LiteLLM automatically tracks costs for Azure AI Speech based on the number of characters processed.
+Dheera AI automatically tracks costs for Azure AI Speech based on the number of characters processed.
 
 ### Available Models
 
@@ -67,13 +67,13 @@ LiteLLM automatically tracks costs for Azure AI Speech based on the number of ch
 
 ### How Costs are Calculated
 
-Azure AI Speech charges based on the number of characters in your input text. LiteLLM automatically:
+Azure AI Speech charges based on the number of characters in your input text. Dheera AI automatically:
 - Counts the number of characters in your `input` parameter
 - Calculates the cost based on the model pricing
 - Returns the cost in the response object
 
 ```python showLineNumbers title="View Request Cost"
-from litellm import speech
+from dheera_ai import speech
 
 response = speech(
     model="azure/speech/azure-tts",
@@ -102,7 +102,7 @@ To check the latest Azure AI Speech pricing:
 
 ## Voice Mapping
 
-LiteLLM automatically maps OpenAI voice names to Azure Neural voices:
+Dheera AI automatically maps OpenAI voice names to Azure Neural voices:
 
 | OpenAI Voice | Azure Neural Voice | Description |
 |-------------|-------------------|-------------|
@@ -138,17 +138,17 @@ response = speech(
 
 ## Passing Raw SSML
 
-LiteLLM automatically detects when your `input` contains SSML (by checking for `<speak>` tags) and passes it through to Azure without any transformation. This gives you complete control over speech synthesis.
+Dheera AI automatically detects when your `input` contains SSML (by checking for `<speak>` tags) and passes it through to Azure without any transformation. This gives you complete control over speech synthesis.
 
 **When to use raw SSML:**
 - Using the `<lang>` element with multilingual voices to translate text (e.g., English text → Spanish speech)
 - Complex SSML structures with multiple voices or prosody changes
 - Fine-grained control over pronunciation, breaks, emphasis, and other speech features
 
-### LiteLLM SDK
+### Dheera AI SDK
 
 ```python showLineNumbers title="Raw SSML for Multilingual Translation"
-from litellm import speech
+from dheera_ai import speech
 
 # Use <lang> element to convert English text to Spanish speech
 # The <lang> element forces the output language regardless of input text language
@@ -168,7 +168,7 @@ ssml = f"""<speak version="1.0"
 response = speech(
     model="azure/speech/azure-tts",
     voice=voice,
-    input=ssml,  # LiteLLM auto-detects SSML and sends as-is
+    input=ssml,  # Dheera AI auto-detects SSML and sends as-is
     api_base="https://eastus.tts.speech.microsoft.com",
     api_key=os.environ["AZURE_TTS_API_KEY"],
 )
@@ -176,7 +176,7 @@ response.stream_to_file("speech.mp3")
 ```
 
 ```python showLineNumbers title="Raw SSML with Complex Features"
-from litellm import speech
+from dheera_ai import speech
 
 # Complex SSML with multiple prosody adjustments
 ssml = """<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' 
@@ -197,14 +197,14 @@ ssml = """<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis'
 response = speech(
     model="azure/speech/azure-tts",
     voice="en-US-JennyNeural",
-    input=ssml,  # LiteLLM detects <speak> and passes through unchanged
+    input=ssml,  # Dheera AI detects <speak> and passes through unchanged
     api_base="https://eastus.tts.speech.microsoft.com",
     api_key=os.environ["AZURE_TTS_API_KEY"],
 )
 response.stream_to_file("speech.mp3")
 ```
 
-### LiteLLM Proxy
+### Dheera AI Proxy
 
 ```bash
 curl http://0.0.0.0:4000/v1/audio/speech \
@@ -228,12 +228,12 @@ Azure AI Speech supports advanced SSML features through optional parameters:
 - `role`: Voice role (e.g., "Girl", "Boy", "SeniorFemale", "SeniorMale")
 - `lang`: Language code for multilingual voices (e.g., "es-ES", "fr-FR", "hi-IN")
 
-### **LiteLLM SDK**
+### **Dheera AI SDK**
 
 #### Custom Azure Voice
 
 ```python showLineNumbers title="Custom Azure Voice"
-from litellm import speech
+from dheera_ai import speech
 
 response = speech(
     model="azure/speech/azure-tts",
@@ -249,7 +249,7 @@ response.stream_to_file("speech.mp3")
 #### Speaking Style
 
 ```python showLineNumbers title="Speaking Style"
-from litellm import speech
+from dheera_ai import speech
 
 response = speech(
     model="azure/speech/azure-tts",
@@ -265,7 +265,7 @@ response.stream_to_file("speech.mp3")
 #### Style with Degree and Role
 
 ```python showLineNumbers title="Style with Degree and Role"
-from litellm import speech
+from dheera_ai import speech
 
 response = speech(
     model="azure/speech/azure-tts",
@@ -283,7 +283,7 @@ response.stream_to_file("speech.mp3")
 #### Language Override for Multilingual Voices
 
 ```python showLineNumbers title="Language Override"
-from litellm import speech
+from dheera_ai import speech
 
 response = speech(
     model="azure/speech/azure-tts",
@@ -296,16 +296,16 @@ response = speech(
 response.stream_to_file("speech.mp3")
 ```
 
-### **LiteLLM AI Gateway (CURL)**
+### **Dheera AI AI Gateway (CURL)**
 
-First, ensure you have set up your proxy config as shown in the [LiteLLM Proxy setup](#quick-start) above.
+First, ensure you have set up your proxy config as shown in the [Dheera AI Proxy setup](#quick-start) above.
 
 **Using the model name from your config:**
 
 ```yaml
 model_list:
   - model_name: azure-speech  # This is what you'll use in your API calls
-    litellm_params:
+    dheera_ai_params:
       model: azure/speech/azure-tts
       api_base: https://eastus.tts.speech.microsoft.com
       api_key: os.environ/AZURE_TTS_API_KEY
@@ -385,7 +385,7 @@ curl http://0.0.0.0:4000/v1/audio/speech \
 
 ```python showLineNumbers title="Async Usage"
 import asyncio
-from litellm import aspeech
+from dheera_ai import aspeech
 from pathlib import Path
 
 async def generate_speech():
@@ -435,8 +435,8 @@ Browse available voices in the [Azure Speech Gallery](https://speech.microsoft.c
 ## Error Handling
 
 ```python showLineNumbers title="Error Handling"
-from litellm import speech
-from litellm.exceptions import APIError
+from dheera_ai import speech
+from dheera_ai.exceptions import APIError
 
 try:
     response = speech(

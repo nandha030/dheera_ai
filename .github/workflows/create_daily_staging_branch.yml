@@ -24,7 +24,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           # Generate branch name with MM_DD_YYYY format
-          BRANCH_NAME="litellm_staging_$(date +'%m_%d_%Y')"
+          BRANCH_NAME="dheera_ai_staging_$(date +'%m_%d_%Y')"
           echo "Creating branch: $BRANCH_NAME"
 
           # Fetch all branches

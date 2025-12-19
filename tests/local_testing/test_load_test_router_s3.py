@@ -8,13 +8,13 @@
 #     0, os.path.abspath("../..")
 # )  # Adds the parent directory to the system path
 # import asyncio
-# from litellm import Router, Timeout
+# from dheera_ai import Router, Timeout
 # import time
-# from litellm.caching.caching import Cache
-# import litellm
+# from dheera_ai.caching.caching import Cache
+# import dheera_ai
 
-# litellm.cache = Cache(
-#     type="s3", s3_bucket_name="litellm-my-test-bucket-2", s3_region_name="us-west-2"
+# dheera_ai.cache = Cache(
+#     type="s3", s3_bucket_name="dheera_ai-my-test-bucket-2", s3_region_name="us-west-2"
 # )
 
 # ### Test calling router with s3 Cache
@@ -38,14 +38,14 @@
 #     model_list = [
 #         {
 #             "model_name": "gpt-3.5-turbo",
-#             "litellm_params": {
+#             "dheera_ai_params": {
 #                 "model": "gpt-3.5-turbo",
 #                 "api_key": os.getenv("OPENAI_API_KEY"),
 #             },
 #         },
 #         {
 #             "model_name": "gpt-3.5-turbo",
-#             "litellm_params": {
+#             "dheera_ai_params": {
 #                 "model": "azure/gpt-4.1-mini",
 #                 "api_key": os.getenv("AZURE_API_KEY"),
 #                 "api_base": os.getenv("AZURE_API_BASE"),

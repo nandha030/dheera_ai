@@ -4,14 +4,14 @@ import Image from '@theme/IdealImage';
 
 # MCP Overview
 
-LiteLLM Proxy provides an MCP Gateway that allows you to use a fixed endpoint for all MCP tools and control MCP access by Key, Team. 
+Dheera AI Proxy provides an MCP Gateway that allows you to use a fixed endpoint for all MCP tools and control MCP access by Key, Team. 
 
 <Image 
   img={require('../img/mcp_2.png')}
   style={{width: '100%', display: 'block', margin: '2rem auto'}}
 />
 <p style={{textAlign: 'left', color: '#666'}}>
-  LiteLLM MCP Architecture: Use MCP tools with all LiteLLM supported models
+  Dheera AI MCP Architecture: Use MCP tools with all Dheera AI supported models
 </p>
 
 ## Overview
@@ -19,7 +19,7 @@ LiteLLM Proxy provides an MCP Gateway that allows you to use a fixed endpoint fo
 |---------|-------------|
 | MCP Operations | • List Tools<br/>• Call Tools |
 | Supported MCP Transports | • Streamable HTTP<br/>• SSE<br/>• Standard Input/Output (stdio) |
-| LiteLLM Permission Management | • By Key<br/>• By Team<br/>• By Organization |
+| Dheera AI Permission Management | • By Key<br/>• By Team<br/>• By Organization |
 
 ## Adding your MCP
 
@@ -51,7 +51,7 @@ general_settings:
 
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: sk-xxxxxxx
 ```
@@ -61,13 +61,13 @@ model_list:
 If `supported_db_objects` is not set, all object types are loaded from the database (default behavior).
 
 <Tabs>
-<TabItem value="ui" label="LiteLLM UI">
+<TabItem value="ui" label="Dheera AI UI">
 
-On the LiteLLM UI, Navigate to "MCP Servers" and click "Add New MCP Server".
+On the Dheera AI UI, Navigate to "MCP Servers" and click "Add New MCP Server".
 
 On this form, you should enter your MCP Server URL and the transport you want to use.
 
-LiteLLM supports the following MCP transports:
+Dheera AI supports the following MCP transports:
 - Streamable HTTP
 - SSE (Server-Sent Events)
 - Standard Input/Output (stdio)
@@ -82,7 +82,7 @@ LiteLLM supports the following MCP transports:
 
 ### Add HTTP MCP Server
 
-This video walks through adding and using an HTTP MCP server on LiteLLM UI and using it in Cursor IDE.
+This video walks through adding and using an HTTP MCP server on Dheera AI UI and using it in Cursor IDE.
 
 <iframe width="840" height="500" src="https://www.loom.com/embed/e2aebce78e8d46beafeb4bacdde31f14" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
@@ -91,7 +91,7 @@ This video walks through adding and using an HTTP MCP server on LiteLLM UI and u
 
 ### Add SSE MCP Server
 
-This video walks through adding and using an SSE MCP server on LiteLLM UI and using it in Cursor IDE.
+This video walks through adding and using an SSE MCP server on Dheera AI UI and using it in Cursor IDE.
 
 <iframe width="840" height="500" src="https://www.loom.com/embed/07e04e27f5e74475b9cf8ef8247d2c3e" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
@@ -136,11 +136,11 @@ Add your MCP servers directly in your `config.yaml` file:
 ```yaml title="config.yaml" showLineNumbers
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: sk-xxxxxxx
 
-litellm_settings:
+dheera_ai_settings:
   # MCP Aliases - Map aliases to server names for easier tool access
   mcp_aliases:
     "github": "github_mcp_server"
@@ -285,7 +285,7 @@ mcp_servers:
 
 ### MCP Aliases
 
-You can define aliases for your MCP servers in the `litellm_settings` section. This allows you to:
+You can define aliases for your MCP servers in the `dheera_ai_settings` section. This allows you to:
 
 1. **Map friendly names to server names**: Use shorter, more memorable aliases
 2. **Override server aliases**: If a server doesn't have an alias defined, the system will use the first matching alias from `mcp_aliases`
@@ -293,7 +293,7 @@ You can define aliases for your MCP servers in the `litellm_settings` section. T
 
 **Example:**
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   mcp_aliases:
     "github": "github_mcp_server"      # Maps "github" alias to "github_mcp_server"
     "zapier": "zapier_mcp_server"      # Maps "zapier" alias to "zapier_mcp_server"
@@ -311,12 +311,12 @@ litellm_settings:
 
 ## Converting OpenAPI Specs to MCP Servers
 
-LiteLLM can automatically convert OpenAPI specifications into MCP servers, allowing you to expose any REST API as MCP tools. This is useful when you have existing APIs with OpenAPI/Swagger documentation and want to make them available as MCP tools.
+Dheera AI can automatically convert OpenAPI specifications into MCP servers, allowing you to expose any REST API as MCP tools. This is useful when you have existing APIs with OpenAPI/Swagger documentation and want to make them available as MCP tools.
 
 **Benefits:**
 
 - **Rapid Integration**: Convert existing APIs to MCP tools without writing custom MCP server code
-- **Automatic Tool Generation**: LiteLLM automatically generates MCP tools from your OpenAPI spec
+- **Automatic Tool Generation**: Dheera AI automatically generates MCP tools from your OpenAPI spec
 - **Unified Interface**: Use the same MCP interface for both native MCP servers and OpenAPI-based APIs
 - **Easy Testing**: Test and iterate on API integrations quickly
 
@@ -327,7 +327,7 @@ Add your OpenAPI-based MCP server to your `config.yaml`:
 ```yaml title="config.yaml - OpenAPI to MCP" showLineNumbers
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: sk-xxxxxxx
 
@@ -361,10 +361,10 @@ mcp_servers:
 | `spec_path` | Yes | Path or URL to your OpenAPI specification file (JSON or YAML) |
 | `auth_type` | No | Authentication type: `none`, `api_key`, `bearer_token`, `basic`, `authorization` |
 | `auth_value` | No | Authentication value (required if `auth_type` is set) |
-| `authorization_url` | No | For `auth_type: oauth2`. Optional override; if omitted LiteLLM auto-discovers it. |
-| `token_url` | No | For `auth_type: oauth2`. Optional override; if omitted LiteLLM auto-discovers it. |
-| `registration_url` | No | For `auth_type: oauth2`. Optional override; if omitted LiteLLM auto-discovers it. |
-| `scopes` | No | For `auth_type: oauth2`. Optional override; if omitted LiteLLM uses the scopes advertised by the server. |
+| `authorization_url` | No | For `auth_type: oauth2`. Optional override; if omitted Dheera AI auto-discovers it. |
+| `token_url` | No | For `auth_type: oauth2`. Optional override; if omitted Dheera AI auto-discovers it. |
+| `registration_url` | No | For `auth_type: oauth2`. Optional override; if omitted Dheera AI auto-discovers it. |
+| `scopes` | No | For `auth_type: oauth2`. Optional override; if omitted Dheera AI uses the scopes advertised by the server. |
 | `description` | No | Optional description for the MCP server |
 | `allowed_tools` | No | List of specific tools to allow (see [MCP Tool Filtering](#mcp-tool-filtering)) |
 | `disallowed_tools` | No | List of specific tools to block (see [MCP Tool Filtering](#mcp-tool-filtering)) |
@@ -386,7 +386,7 @@ config = {
         "petstore": {
             "url": "http://localhost:4000/petstore_mcp/mcp",
             "headers": {
-                "x-litellm-api-key": "Bearer sk-1234"
+                "x-dheera_ai-api-key": "Bearer sk-1234"
             }
         }
     }
@@ -429,7 +429,7 @@ if __name__ == "__main__":
     "Petstore": {
       "url": "http://localhost:4000/petstore_mcp/mcp",
       "headers": {
-        "x-litellm-api-key": "Bearer $LITELLM_API_KEY"
+        "x-dheera_ai-api-key": "Bearer $DHEERA_AI_API_KEY"
       }
     }
   }
@@ -453,7 +453,7 @@ curl --location 'https://api.openai.com/v1/responses' \
             "server_url": "http://localhost:4000/petstore_mcp/mcp",
             "require_approval": "never",
             "headers": {
-                "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY"
+                "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY"
             }
         }
     ],
@@ -467,10 +467,10 @@ curl --location 'https://api.openai.com/v1/responses' \
 
 **How It Works**
 
-1. **Spec Loading**: LiteLLM loads your OpenAPI specification from the provided `spec_path`
+1. **Spec Loading**: Dheera AI loads your OpenAPI specification from the provided `spec_path`
 2. **Tool Generation**: Each API endpoint in the spec becomes an MCP tool
 3. **Parameter Mapping**: OpenAPI parameters are automatically mapped to MCP tool parameters
-4. **Request Handling**: When a tool is called, LiteLLM converts the MCP request to the appropriate HTTP request
+4. **Request Handling**: When a tool is called, Dheera AI converts the MCP request to the appropriate HTTP request
 5. **Response Translation**: API responses are converted back to MCP format
 
 **OpenAPI Spec Requirements**
@@ -483,7 +483,7 @@ Your OpenAPI specification should follow standard OpenAPI/Swagger conventions:
 
 ## MCP Oauth
 
-LiteLLM v 1.77.6 added support for OAuth 2.0 Client Credentials for MCP servers.
+Dheera AI v 1.77.6 added support for OAuth 2.0 Client Credentials for MCP servers.
 
 This configuration is currently available on the config.yaml, with UI support coming soon.
 
@@ -504,69 +504,69 @@ mcp_servers:
 sequenceDiagram
     participant Browser as User-Agent (Browser)
     participant Client as Client
-    participant LiteLLM as LiteLLM Proxy
+    participant Dheera AI as Dheera AI Proxy
     participant MCP as MCP Server (Resource Server)
     participant Auth as Authorization Server
 
-    Note over Client,LiteLLM: Step 1 – Resource discovery
-    Client->>LiteLLM: GET /.well-known/oauth-protected-resource/{mcp_server_name}/mcp
-    LiteLLM->>Client: Return resource metadata
+    Note over Client,Dheera AI: Step 1 – Resource discovery
+    Client->>Dheera AI: GET /.well-known/oauth-protected-resource/{mcp_server_name}/mcp
+    Dheera AI->>Client: Return resource metadata
 
-    Note over Client,LiteLLM: Step 2 – Authorization server discovery
-    Client->>LiteLLM: GET /.well-known/oauth-authorization-server/{mcp_server_name}
-    LiteLLM->>Client: Return authorization server metadata
+    Note over Client,Dheera AI: Step 2 – Authorization server discovery
+    Client->>Dheera AI: GET /.well-known/oauth-authorization-server/{mcp_server_name}
+    Dheera AI->>Client: Return authorization server metadata
 
     Note over Client,Auth: Step 3 – Dynamic client registration
-    Client->>LiteLLM: POST /{mcp_server_name}/register
-    LiteLLM->>Auth: Forward registration request
-    Auth->>LiteLLM: Issue client credentials
-    LiteLLM->>Client: Return client credentials
+    Client->>Dheera AI: POST /{mcp_server_name}/register
+    Dheera AI->>Auth: Forward registration request
+    Auth->>Dheera AI: Issue client credentials
+    Dheera AI->>Client: Return client credentials
 
     Note over Client,Browser: Step 4 – User authorization (PKCE)
     Client->>Browser: Open authorization URL + code_challenge + resource
     Browser->>Auth: Authorization request
     Note over Auth: User authorizes
     Auth->>Browser: Redirect with authorization code
-    Browser->>LiteLLM: Callback to LiteLLM with code
-    LiteLLM->>Browser: Redirect back with authorization code
+    Browser->>Dheera AI: Callback to Dheera AI with code
+    Dheera AI->>Browser: Redirect back with authorization code
     Browser->>Client: Callback with authorization code
 
     Note over Client,Auth: Step 5 – Token exchange
-    Client->>LiteLLM: Token request + code_verifier + resource
-    LiteLLM->>Auth: Forward token request
-    Auth->>LiteLLM: Access (and refresh) token
-    LiteLLM->>Client: Return tokens
+    Client->>Dheera AI: Token request + code_verifier + resource
+    Dheera AI->>Auth: Forward token request
+    Auth->>Dheera AI: Access (and refresh) token
+    Dheera AI->>Client: Return tokens
 
     Note over Client,MCP: Step 6 – Authenticated MCP call
-    Client->>LiteLLM: MCP request with access token + LiteLLM API key
-    LiteLLM->>MCP: MCP request with Bearer token
-    MCP-->>LiteLLM: MCP response
-    LiteLLM-->>Client: Return MCP response
+    Client->>Dheera AI: MCP request with access token + Dheera AI API key
+    Dheera AI->>MCP: MCP request with Bearer token
+    MCP-->>Dheera AI: MCP response
+    Dheera AI-->>Client: Return MCP response
 ```
 
 **Participants**
 
 - **Client** – The MCP-capable AI agent (e.g., Claude Code, Cursor, or another IDE/agent) that initiates OAuth discovery, authorization, and tool invocations on behalf of the user.
-- **LiteLLM Proxy** – Mediates all OAuth discovery, registration, token exchange, and MCP traffic while protecting stored credentials.
+- **Dheera AI Proxy** – Mediates all OAuth discovery, registration, token exchange, and MCP traffic while protecting stored credentials.
 - **Authorization Server** – Issues OAuth 2.0 tokens via dynamic client registration, PKCE authorization, and token endpoints.
-- **MCP Server (Resource Server)** – The protected MCP endpoint that receives LiteLLM’s authenticated JSON-RPC requests.
+- **MCP Server (Resource Server)** – The protected MCP endpoint that receives Dheera AI’s authenticated JSON-RPC requests.
 - **User-Agent (Browser)** – Temporarily involved so the end user can grant consent during the authorization step.
 
 **Flow Steps**
 
-1. **Resource Discovery**: The client fetches MCP resource metadata from LiteLLM’s `.well-known/oauth-protected-resource` endpoint to understand scopes and capabilities.
-2. **Authorization Server Discovery**: The client retrieves the OAuth server metadata (token endpoint, authorization endpoint, supported PKCE methods) through LiteLLM’s `.well-known/oauth-authorization-server` endpoint.
-3. **Dynamic Client Registration**: The client registers through LiteLLM, which forwards the request to the authorization server (RFC 7591). If the provider doesn’t support dynamic registration, you can pre-store `client_id`/`client_secret` in LiteLLM (e.g., GitHub MCP) and the flow proceeds the same way.
-4. **User Authorization**: The client launches a browser session (with code challenge and resource hints). The user approves access, the authorization server sends the code through LiteLLM back to the client.
-5. **Token Exchange**: The client calls LiteLLM with the authorization code, code verifier, and resource. LiteLLM exchanges them with the authorization server and returns the issued access/refresh tokens.
-6. **MCP Invocation**: With a valid token, the client sends the MCP JSON-RPC request (plus LiteLLM API key) to LiteLLM, which forwards it to the MCP server and relays the tool response.
+1. **Resource Discovery**: The client fetches MCP resource metadata from Dheera AI’s `.well-known/oauth-protected-resource` endpoint to understand scopes and capabilities.
+2. **Authorization Server Discovery**: The client retrieves the OAuth server metadata (token endpoint, authorization endpoint, supported PKCE methods) through Dheera AI’s `.well-known/oauth-authorization-server` endpoint.
+3. **Dynamic Client Registration**: The client registers through Dheera AI, which forwards the request to the authorization server (RFC 7591). If the provider doesn’t support dynamic registration, you can pre-store `client_id`/`client_secret` in Dheera AI (e.g., GitHub MCP) and the flow proceeds the same way.
+4. **User Authorization**: The client launches a browser session (with code challenge and resource hints). The user approves access, the authorization server sends the code through Dheera AI back to the client.
+5. **Token Exchange**: The client calls Dheera AI with the authorization code, code verifier, and resource. Dheera AI exchanges them with the authorization server and returns the issued access/refresh tokens.
+6. **MCP Invocation**: With a valid token, the client sends the MCP JSON-RPC request (plus Dheera AI API key) to Dheera AI, which forwards it to the MCP server and relays the tool response.
 
 See the official [MCP Authorization Flow](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization#authorization-flow-steps) for additional reference.
 
 
 ## Forwarding Custom Headers to MCP Servers
 
-LiteLLM supports forwarding additional custom headers from MCP clients to backend MCP servers using the `extra_headers` configuration parameter. This allows you to pass custom authentication tokens, API keys, or other headers that your MCP server requires.
+Dheera AI supports forwarding additional custom headers from MCP clients to backend MCP servers using the `extra_headers` configuration parameter. This allows you to pass custom authentication tokens, API keys, or other headers that your MCP server requires.
 
 **Configuration**
 
@@ -610,7 +610,7 @@ config = {
             "url": "http://localhost:4000/mcp",
             "headers": {
                 "x-mcp-servers": "dev_group", # assume this gives access to github, zapier and deepwiki
-                "x-litellm-api-key": "Bearer sk-1234",
+                "x-dheera_ai-api-key": "Bearer sk-1234",
                 "x-mcp-github-authorization": "Bearer gho_token", 
                 "x-mcp-zapier-x-api-key": "sk-xxxxxxxxx",
                 "x-mcp-deepwiki-authorization": "Basic base64_encoded_creds",
@@ -671,7 +671,7 @@ config = {
         "github": {
             "url": "http://localhost:4000/github_mcp/mcp",
             "headers": {
-                "x-litellm-api-key": "Bearer sk-1234",
+                "x-dheera_ai-api-key": "Bearer sk-1234",
                 "Authorization": "Bearer gho_token", 
                 "custom_key": "custom_value",
                 "x-custom-header": "additional_data"
@@ -708,7 +708,7 @@ asyncio.run(main())
     "GitHub": {
       "url": "http://localhost:4000/github_mcp/mcp",
       "headers": {
-        "x-litellm-api-key": "Bearer $LITELLM_API_KEY",
+        "x-dheera_ai-api-key": "Bearer $DHEERA_AI_API_KEY",
         "Authorization": "Bearer $GITHUB_TOKEN",
         "custom_key": "custom_value",
         "x-custom-header": "additional_data"
@@ -725,7 +725,7 @@ asyncio.run(main())
 ```bash title="cURL with Custom Headers" showLineNumbers
 curl --location 'http://localhost:4000/github_mcp/mcp' \
 --header 'Content-Type: application/json' \
---header 'x-litellm-api-key: Bearer sk-1234' \
+--header 'x-dheera_ai-api-key: Bearer sk-1234' \
 --header 'Authorization: Bearer gho_token' \
 --header 'custom_key: custom_value' \
 --header 'x-custom-header: additional_data' \
@@ -743,7 +743,7 @@ curl --location 'http://localhost:4000/github_mcp/mcp' \
 
 1. **Configuration**: Define `extra_headers` in your MCP server config with the header names you want to forward
 2. **Client Headers**: Include the corresponding headers in your MCP client requests
-3. **Header Forwarding**: LiteLLM automatically forwards matching headers to the backend MCP server
+3. **Header Forwarding**: Dheera AI automatically forwards matching headers to the backend MCP server
 4. **Authentication**: The backend MCP server receives both the configured auth headers and the custom headers
 
 ---
@@ -751,7 +751,7 @@ curl --location 'http://localhost:4000/github_mcp/mcp' \
 
 ## Using your MCP with client side credentials
 
-Use this if you want to pass a client side authentication token to LiteLLM to then pass to your MCP to auth to your MCP.
+Use this if you want to pass a client side authentication token to Dheera AI to then pass to your MCP to auth to your MCP.
 
 
 ### New Server-Specific Auth Headers (Recommended)
@@ -784,11 +784,11 @@ curl --location 'https://api.openai.com/v1/responses' \
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "litellm_proxy",
+            "server_label": "dheera_ai",
+            "server_url": "dheera_ai_proxy",
             "require_approval": "never",
             "headers": {
-                "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY",
+                "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY",
                 "x-mcp-github-authorization": "Bearer YOUR_GITHUB_TOKEN",
                 "x-mcp-zapier-x-api-key": "YOUR_ZAPIER_API_KEY"
             }
@@ -812,11 +812,11 @@ curl --location 'https://api.openai.com/v1/responses' \
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "litellm_proxy",
+            "server_label": "dheera_ai",
+            "server_url": "dheera_ai_proxy",
             "require_approval": "never",
             "headers": {
-                "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY",
+                "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY",
                 "x-mcp-auth": YOUR_MCP_AUTH_TOKEN
             }
         }
@@ -828,26 +828,26 @@ curl --location 'https://api.openai.com/v1/responses' \
 
 </TabItem>
 
-<TabItem value="litellm" label="LiteLLM Proxy">
+<TabItem value="dheera_ai" label="Dheera AI Proxy">
 
-#### Connect via LiteLLM Proxy Responses API with Server-Specific Auth
+#### Connect via Dheera AI Proxy Responses API with Server-Specific Auth
 
-Use this when calling LiteLLM Proxy for LLM API requests to `/v1/responses` endpoint with server-specific authentication:
+Use this when calling Dheera AI Proxy for LLM API requests to `/v1/responses` endpoint with server-specific authentication:
 
 ```bash title="cURL Example with Server-Specific Auth" showLineNumbers
-curl --location '<your-litellm-proxy-base-url>/v1/responses' \
+curl --location '<your-dheera_ai-proxy-base-url>/v1/responses' \
 --header 'Content-Type: application/json' \
---header "Authorization: Bearer $LITELLM_API_KEY" \
+--header "Authorization: Bearer $DHEERA_AI_API_KEY" \
 --data '{
     "model": "gpt-4o",
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "litellm_proxy",
+            "server_label": "dheera_ai",
+            "server_url": "dheera_ai_proxy",
             "require_approval": "never",
             "headers": {
-                "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY",
+                "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY",
                 "x-mcp-github-authorization": "Bearer YOUR_GITHUB_TOKEN",
                 "x-mcp-zapier-x-api-key": "YOUR_ZAPIER_API_KEY"
             }
@@ -858,24 +858,24 @@ curl --location '<your-litellm-proxy-base-url>/v1/responses' \
 }'
 ```
 
-#### Connect via LiteLLM Proxy Responses API with Legacy Auth
+#### Connect via Dheera AI Proxy Responses API with Legacy Auth
 
-Use this when calling LiteLLM Proxy for LLM API requests to `/v1/responses` endpoint with MCP authentication:
+Use this when calling Dheera AI Proxy for LLM API requests to `/v1/responses` endpoint with MCP authentication:
 
 ```bash title="cURL Example with Legacy MCP Auth" showLineNumbers
-curl --location '<your-litellm-proxy-base-url>/v1/responses' \
+curl --location '<your-dheera_ai-proxy-base-url>/v1/responses' \
 --header 'Content-Type: application/json' \
---header "Authorization: Bearer $LITELLM_API_KEY" \
+--header "Authorization: Bearer $DHEERA_AI_API_KEY" \
 --data '{
     "model": "gpt-4o",
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "litellm_proxy",
+            "server_label": "dheera_ai",
+            "server_url": "dheera_ai_proxy",
             "require_approval": "never",
             "headers": {
-                "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY",
+                "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY",
                 "x-mcp-auth": "YOUR_MCP_AUTH_TOKEN"
             }
         }
@@ -891,7 +891,7 @@ curl --location '<your-litellm-proxy-base-url>/v1/responses' \
 
 #### Connect via Cursor IDE with Server-Specific Auth
 
-Use tools directly from Cursor IDE with LiteLLM MCP and include server-specific authentication:
+Use tools directly from Cursor IDE with Dheera AI MCP and include server-specific authentication:
 
 **Setup Instructions:**
 
@@ -902,10 +902,10 @@ Use tools directly from Cursor IDE with LiteLLM MCP and include server-specific 
 ```json title="Cursor MCP Configuration with Server-Specific Auth" showLineNumbers
 {
   "mcpServers": {
-    "LiteLLM": {
-      "url": "litellm_proxy",
+    "Dheera AI": {
+      "url": "dheera_ai_proxy",
       "headers": {
-        "x-litellm-api-key": "Bearer $LITELLM_API_KEY",
+        "x-dheera_ai-api-key": "Bearer $DHEERA_AI_API_KEY",
         "x-mcp-github-authorization": "Bearer $GITHUB_TOKEN",
         "x-mcp-zapier-x-api-key": "$ZAPIER_API_KEY"
       }
@@ -916,7 +916,7 @@ Use tools directly from Cursor IDE with LiteLLM MCP and include server-specific 
 
 #### Connect via Cursor IDE with Legacy Auth
 
-Use tools directly from Cursor IDE with LiteLLM MCP and include your MCP authentication token:
+Use tools directly from Cursor IDE with Dheera AI MCP and include your MCP authentication token:
 
 **Setup Instructions:**
 
@@ -927,10 +927,10 @@ Use tools directly from Cursor IDE with LiteLLM MCP and include your MCP authent
 ```json title="Cursor MCP Configuration with Legacy Auth" showLineNumbers
 {
   "mcpServers": {
-    "LiteLLM": {
-      "url": "litellm_proxy",
+    "Dheera AI": {
+      "url": "dheera_ai_proxy",
       "headers": {
-        "x-litellm-api-key": "Bearer $LITELLM_API_KEY",
+        "x-dheera_ai-api-key": "Bearer $DHEERA_AI_API_KEY",
         "x-mcp-auth": "$MCP_AUTH_TOKEN"
       }
     }
@@ -944,32 +944,32 @@ Use tools directly from Cursor IDE with LiteLLM MCP and include your MCP authent
 
 #### Connect via Streamable HTTP Transport with Server-Specific Auth
 
-Connect to LiteLLM MCP using HTTP transport with server-specific authentication:
+Connect to Dheera AI MCP using HTTP transport with server-specific authentication:
 
 **Server URL:**
 ```text showLineNumbers
-litellm_proxy
+dheera_ai_proxy
 ```
 
 **Headers:**
 ```text showLineNumbers
-x-litellm-api-key: Bearer YOUR_LITELLM_API_KEY
+x-dheera_ai-api-key: Bearer YOUR_DHEERA_AI_API_KEY
 x-mcp-github-authorization: Bearer YOUR_GITHUB_TOKEN
 x-mcp-zapier-x-api-key: YOUR_ZAPIER_API_KEY
 ```
 
 #### Connect via Streamable HTTP Transport with Legacy Auth
 
-Connect to LiteLLM MCP using HTTP transport with MCP authentication:
+Connect to Dheera AI MCP using HTTP transport with MCP authentication:
 
 **Server URL:**
 ```text showLineNumbers
-litellm_proxy
+dheera_ai_proxy
 ```
 
 **Headers:**
 ```text showLineNumbers
-x-litellm-api-key: Bearer YOUR_LITELLM_API_KEY
+x-dheera_ai-api-key: Bearer YOUR_DHEERA_AI_API_KEY
 x-mcp-auth: Bearer YOUR_MCP_AUTH_TOKEN
 ```
 
@@ -981,7 +981,7 @@ This URL can be used with any MCP client that supports HTTP transport. The `x-mc
 
 #### Connect via Python FastMCP Client with Server-Specific Auth
 
-Use the Python FastMCP client to connect to your LiteLLM MCP server with server-specific authentication:
+Use the Python FastMCP client to connect to your Dheera AI MCP server with server-specific authentication:
 
 ```python title="Python FastMCP Example with Server-Specific Auth" showLineNumbers
 import asyncio
@@ -990,12 +990,12 @@ import json
 from fastmcp import Client
 from fastmcp.client.transports import StreamableHttpTransport
 
-# Create the transport with your LiteLLM MCP server URL and server-specific auth headers
-server_url = "litellm_proxy"
+# Create the transport with your Dheera AI MCP server URL and server-specific auth headers
+server_url = "dheera_ai_proxy"
 transport = StreamableHttpTransport(
     server_url,
     headers={
-        "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY",
+        "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY",
         "x-mcp-github-authorization": "Bearer YOUR_GITHUB_TOKEN",
         "x-mcp-zapier-x-api-key": "YOUR_ZAPIER_API_KEY"
     }
@@ -1007,7 +1007,7 @@ client = Client(transport=transport)
 
 async def main():
     # Connection is established here
-    print("Connecting to LiteLLM MCP server with server-specific authentication...")
+    print("Connecting to Dheera AI MCP server with server-specific authentication...")
     async with client:
         print(f"Client connected: {client.is_connected()}")
 
@@ -1034,7 +1034,7 @@ if __name__ == "__main__":
 
 #### Connect via Python FastMCP Client with Legacy Auth
 
-Use the Python FastMCP client to connect to your LiteLLM MCP server with MCP authentication:
+Use the Python FastMCP client to connect to your Dheera AI MCP server with MCP authentication:
 
 ```python title="Python FastMCP Example with Legacy MCP Auth" showLineNumbers
 import asyncio
@@ -1043,12 +1043,12 @@ import json
 from fastmcp import Client
 from fastmcp.client.transports import StreamableHttpTransport
 
-# Create the transport with your LiteLLM MCP server URL and auth headers
-server_url = "litellm_proxy"
+# Create the transport with your Dheera AI MCP server URL and auth headers
+server_url = "dheera_ai_proxy"
 transport = StreamableHttpTransport(
     server_url,
     headers={
-        "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY",
+        "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY",
         "x-mcp-auth": "Bearer YOUR_MCP_AUTH_TOKEN"
     }
 )
@@ -1059,7 +1059,7 @@ client = Client(transport=transport)
 
 async def main():
     # Connection is established here
-    print("Connecting to LiteLLM MCP server with authentication...")
+    print("Connecting to Dheera AI MCP server with authentication...")
     async with client:
         print(f"Client connected: {client.is_connected()}")
 
@@ -1089,11 +1089,11 @@ if __name__ == "__main__":
 
 ### Customize the MCP Auth Header Name
 
-By default, LiteLLM uses `x-mcp-auth` to pass your credentials to MCP servers. You can change this header name in one of the following ways:
-1. Set the `LITELLM_MCP_CLIENT_SIDE_AUTH_HEADER_NAME` environment variable
+By default, Dheera AI uses `x-mcp-auth` to pass your credentials to MCP servers. You can change this header name in one of the following ways:
+1. Set the `DHEERA_AI_MCP_CLIENT_SIDE_AUTH_HEADER_NAME` environment variable
 
 ```bash title="Environment Variable" showLineNumbers
-export LITELLM_MCP_CLIENT_SIDE_AUTH_HEADER_NAME="authorization"
+export DHEERA_AI_MCP_CLIENT_SIDE_AUTH_HEADER_NAME="authorization"
 ```
 
 
@@ -1102,7 +1102,7 @@ export LITELLM_MCP_CLIENT_SIDE_AUTH_HEADER_NAME="authorization"
 ```yaml title="config.yaml" showLineNumbers
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: sk-xxxxxxx
 
@@ -1115,19 +1115,19 @@ general_settings:
 In this example the `authorization` header will be passed to the MCP server for authentication.
 
 ```bash title="cURL with authorization header" showLineNumbers
-curl --location '<your-litellm-proxy-base-url>/v1/responses' \
+curl --location '<your-dheera_ai-proxy-base-url>/v1/responses' \
 --header 'Content-Type: application/json' \
---header "Authorization: Bearer $LITELLM_API_KEY" \
+--header "Authorization: Bearer $DHEERA_AI_API_KEY" \
 --data '{
     "model": "gpt-4o",
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "litellm_proxy",
+            "server_label": "dheera_ai",
+            "server_url": "dheera_ai_proxy",
             "require_approval": "never",
             "headers": {
-                "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY",
+                "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY",
                 "authorization": "Bearer sk-zapier-token-123"
             }
         }
@@ -1140,15 +1140,15 @@ curl --location '<your-litellm-proxy-base-url>/v1/responses' \
 ## Use MCP tools with `/chat/completions`
 
 :::tip Works with all providers
-This flow is **provider-agnostic**: the same MCP tool definition works for _every_ LLM backend behind LiteLLM (OpenAI, Azure OpenAI, Anthropic, Amazon Bedrock, Vertex, self-hosted deployments, etc.).
+This flow is **provider-agnostic**: the same MCP tool definition works for _every_ LLM backend behind Dheera AI (OpenAI, Azure OpenAI, Anthropic, Amazon Bedrock, Vertex, self-hosted deployments, etc.).
 :::
 
-LiteLLM Proxy also supports MCP-aware tooling on the classic `/v1/chat/completions` endpoint. Provide the MCP tool definition directly in the `tools` array and LiteLLM will fetch and transform the MCP server's tools into OpenAI-compatible function calls. When `require_approval` is set to `"never"`, the proxy automatically executes the returned tool calls and feeds the results back into the model before returning the assistant response.
+Dheera AI Proxy also supports MCP-aware tooling on the classic `/v1/chat/completions` endpoint. Provide the MCP tool definition directly in the `tools` array and Dheera AI will fetch and transform the MCP server's tools into OpenAI-compatible function calls. When `require_approval` is set to `"never"`, the proxy automatically executes the returned tool calls and feeds the results back into the model before returning the assistant response.
 
 ```bash title="Chat Completions with MCP Tools" showLineNumbers
-curl --location '<your-litellm-proxy-base-url>/v1/chat/completions' \
+curl --location '<your-dheera_ai-proxy-base-url>/v1/chat/completions' \
 --header 'Content-Type: application/json' \
---header "Authorization: Bearer $LITELLM_API_KEY" \
+--header "Authorization: Bearer $DHEERA_AI_API_KEY" \
 --data '{
   "model": "gpt-4o-mini",
   "messages": [
@@ -1157,7 +1157,7 @@ curl --location '<your-litellm-proxy-base-url>/v1/chat/completions' \
   "tools": [
     {
       "type": "mcp",
-      "server_url": "litellm_proxy/mcp/github",
+      "server_url": "dheera_ai_proxy/mcp/github",
       "server_label": "github_mcp",
       "require_approval": "never"
     }
@@ -1168,29 +1168,29 @@ curl --location '<your-litellm-proxy-base-url>/v1/chat/completions' \
 If you omit `require_approval` or set it to any value other than `"never"`, the MCP tool calls are returned to the client so that you can review and execute them manually, matching the upstream OpenAI behavior.
 
 
-## LiteLLM Proxy - Walk through MCP Gateway
-LiteLLM exposes an MCP Gateway for admins to add all their MCP servers to LiteLLM. The key benefits of using LiteLLM Proxy with MCP are:
+## Dheera AI Proxy - Walk through MCP Gateway
+Dheera AI exposes an MCP Gateway for admins to add all their MCP servers to Dheera AI. The key benefits of using Dheera AI Proxy with MCP are:
 
 1. Use a fixed endpoint for all MCP tools
 2. MCP Permission management by Key, Team, or User
 
-This video demonstrates how you can onboard an MCP server to LiteLLM Proxy, use it and set access controls.
+This video demonstrates how you can onboard an MCP server to Dheera AI Proxy, use it and set access controls.
 
 <iframe width="840" height="500" src="https://www.loom.com/embed/f7aa8d217879430987f3e64291757bfc" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
-## LiteLLM Python SDK MCP Bridge
+## Dheera AI Python SDK MCP Bridge
 
-LiteLLM Python SDK acts as a MCP bridge to utilize MCP tools with all LiteLLM supported models. LiteLLM offers the following features for using MCP
+Dheera AI Python SDK acts as a MCP bridge to utilize MCP tools with all Dheera AI supported models. Dheera AI offers the following features for using MCP
 
 - **List** Available MCP Tools: OpenAI clients can view all available MCP tools
-  - `litellm.experimental_mcp_client.load_mcp_tools` to list all available MCP tools
+  - `dheera_ai.experimental_mcp_client.load_mcp_tools` to list all available MCP tools
 - **Call** MCP Tools: OpenAI clients can call MCP tools
-  - `litellm.experimental_mcp_client.call_openai_tool` to call an OpenAI tool on an MCP server
+  - `dheera_ai.experimental_mcp_client.call_openai_tool` to call an OpenAI tool on an MCP server
 
 
 ### 1. List Available MCP Tools
 
-In this example we'll use `litellm.experimental_mcp_client.load_mcp_tools` to list all available MCP tools on any MCP server. This method can be used in two ways:
+In this example we'll use `dheera_ai.experimental_mcp_client.load_mcp_tools` to list all available MCP tools on any MCP server. This method can be used in two ways:
 
 - `format="mcp"` - (default) Return MCP tools 
   - Returns: `mcp.types.Tool`
@@ -1198,15 +1198,15 @@ In this example we'll use `litellm.experimental_mcp_client.load_mcp_tools` to li
   - Returns: `openai.types.chat.ChatCompletionToolParam`
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python title="MCP Client List Tools" showLineNumbers
 # Create server parameters for stdio connection
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 import os
-import litellm
-from litellm import experimental_mcp_client
+import dheera_ai
+from dheera_ai import experimental_mcp_client
 
 
 server_params = StdioServerParameters(
@@ -1225,7 +1225,7 @@ async with stdio_client(server_params) as (read, write):
         print("MCP TOOLS: ", tools)
 
         messages = [{"role": "user", "content": "what's (3 + 5)"}]
-        llm_response = await litellm.acompletion(
+        llm_response = await dheera_ai.acompletion(
             model="gpt-4o",
             api_key=os.getenv("OPENAI_API_KEY"),
             messages=messages,
@@ -1236,9 +1236,9 @@ async with stdio_client(server_params) as (read, write):
 
 </TabItem>
 
-<TabItem value="openai" label="OpenAI SDK + LiteLLM Proxy">
+<TabItem value="openai" label="OpenAI SDK + Dheera AI Proxy">
 
-In this example we'll walk through how you can use the OpenAI SDK pointed to the LiteLLM proxy to call MCP tools. The key difference here is we use the OpenAI SDK to make the LLM API request
+In this example we'll walk through how you can use the OpenAI SDK pointed to the Dheera AI proxy to call MCP tools. The key difference here is we use the OpenAI SDK to make the LLM API request
 
 ```python title="MCP Client List Tools" showLineNumbers
 # Create server parameters for stdio connection
@@ -1246,7 +1246,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 import os
 from openai import OpenAI
-from litellm import experimental_mcp_client
+from dheera_ai import experimental_mcp_client
 
 server_params = StdioServerParameters(
     command="python3",
@@ -1259,14 +1259,14 @@ async with stdio_client(server_params) as (read, write):
         # Initialize the connection
         await session.initialize()
 
-        # Get tools using litellm mcp client
+        # Get tools using dheera_ai mcp client
         tools = await experimental_mcp_client.load_mcp_tools(session=session, format="openai")
         print("MCP TOOLS: ", tools)
 
-        # Use OpenAI SDK pointed to LiteLLM proxy
+        # Use OpenAI SDK pointed to Dheera AI proxy
         client = OpenAI(
-            api_key="your-api-key",  # Your LiteLLM proxy API key
-            base_url="http://localhost:4000"  # Your LiteLLM proxy URL
+            api_key="your-api-key",  # Your Dheera AI proxy API key
+            base_url="http://localhost:4000"  # Your Dheera AI proxy URL
         )
 
         messages = [{"role": "user", "content": "what's (3 + 5)"}]
@@ -1284,12 +1284,12 @@ async with stdio_client(server_params) as (read, write):
 ### 2. List and Call MCP Tools
 
 In this example we'll use 
-- `litellm.experimental_mcp_client.load_mcp_tools` to list all available MCP tools on any MCP server
-- `litellm.experimental_mcp_client.call_openai_tool` to call an OpenAI tool on an MCP server
+- `dheera_ai.experimental_mcp_client.load_mcp_tools` to list all available MCP tools on any MCP server
+- `dheera_ai.experimental_mcp_client.call_openai_tool` to call an OpenAI tool on an MCP server
 
-The first llm response returns a list of OpenAI tools. We take the first tool call from the LLM response and pass it to `litellm.experimental_mcp_client.call_openai_tool` to call the tool on the MCP server.
+The first llm response returns a list of OpenAI tools. We take the first tool call from the LLM response and pass it to `dheera_ai.experimental_mcp_client.call_openai_tool` to call the tool on the MCP server.
 
-#### How `litellm.experimental_mcp_client.call_openai_tool` works
+#### How `dheera_ai.experimental_mcp_client.call_openai_tool` works
 
 - Accepts an OpenAI Tool Call from the LLM response
 - Converts the OpenAI Tool Call to an MCP Tool
@@ -1297,15 +1297,15 @@ The first llm response returns a list of OpenAI tools. We take the first tool ca
 - Returns the result of the MCP Tool call
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python title="MCP Client List and Call Tools" showLineNumbers
 # Create server parameters for stdio connection
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 import os
-import litellm
-from litellm import experimental_mcp_client
+import dheera_ai
+from dheera_ai import experimental_mcp_client
 
 
 server_params = StdioServerParameters(
@@ -1324,7 +1324,7 @@ async with stdio_client(server_params) as (read, write):
         print("MCP TOOLS: ", tools)
 
         messages = [{"role": "user", "content": "what's (3 + 5)"}]
-        llm_response = await litellm.acompletion(
+        llm_response = await dheera_ai.acompletion(
             model="gpt-4o",
             api_key=os.getenv("OPENAI_API_KEY"),
             messages=messages,
@@ -1350,7 +1350,7 @@ async with stdio_client(server_params) as (read, write):
             }
         )
         print("final messages with tool result: ", messages)
-        llm_response = await litellm.acompletion(
+        llm_response = await dheera_ai.acompletion(
             model="gpt-4o",
             api_key=os.getenv("OPENAI_API_KEY"),
             messages=messages,
@@ -1362,9 +1362,9 @@ async with stdio_client(server_params) as (read, write):
 ```
 
 </TabItem>
-<TabItem value="proxy" label="OpenAI SDK + LiteLLM Proxy">
+<TabItem value="proxy" label="OpenAI SDK + Dheera AI Proxy">
 
-In this example we'll walk through how you can use the OpenAI SDK pointed to the LiteLLM proxy to call MCP tools. The key difference here is we use the OpenAI SDK to make the LLM API request
+In this example we'll walk through how you can use the OpenAI SDK pointed to the Dheera AI proxy to call MCP tools. The key difference here is we use the OpenAI SDK to make the LLM API request
 
 ```python title="MCP Client with OpenAI SDK" showLineNumbers
 # Create server parameters for stdio connection
@@ -1372,7 +1372,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 import os
 from openai import OpenAI
-from litellm import experimental_mcp_client
+from dheera_ai import experimental_mcp_client
 
 server_params = StdioServerParameters(
     command="python3",
@@ -1385,14 +1385,14 @@ async with stdio_client(server_params) as (read, write):
         # Initialize the connection
         await session.initialize()
 
-        # Get tools using litellm mcp client
+        # Get tools using dheera_ai mcp client
         tools = await experimental_mcp_client.load_mcp_tools(session=session, format="openai")
         print("MCP TOOLS: ", tools)
 
-        # Use OpenAI SDK pointed to LiteLLM proxy
+        # Use OpenAI SDK pointed to Dheera AI proxy
         client = OpenAI(
-            api_key="your-api-key",  # Your LiteLLM proxy API key
-            base_url="http://localhost:8000"  # Your LiteLLM proxy URL
+            api_key="your-api-key",  # Your Dheera AI proxy API key
+            base_url="http://localhost:8000"  # Your Dheera AI proxy URL
         )
 
         messages = [{"role": "user", "content": "what's (3 + 5)"}]

@@ -7,7 +7,7 @@ import ast
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-from litellm import Router
+from dheera_ai import Router
 
 
 class TestRouterIndexManagement:
@@ -56,12 +56,12 @@ class TestRouterIndexManagement:
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {"model": "gpt-3.5-turbo"},
+                "dheera_ai_params": {"model": "gpt-3.5-turbo"},
                 "model_info": {"id": "model-1"},
             },
             {
                 "model_name": "gpt-4",
-                "litellm_params": {"model": "gpt-4"},
+                "dheera_ai_params": {"model": "gpt-4"},
                 "model_info": {"id": "model-2"},
             },
         ]
@@ -147,17 +147,17 @@ class TestRouterIndexManagement:
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {"model": "gpt-3.5-turbo"},
+                "dheera_ai_params": {"model": "gpt-3.5-turbo"},
                 "model_info": {"id": "model-1"},
             },
             {
                 "model_name": "gpt-4",
-                "litellm_params": {"model": "gpt-4"},
+                "dheera_ai_params": {"model": "gpt-4"},
                 "model_info": {"id": "model-2"},
             },
             {
                 "model_name": "gpt-4",  # Duplicate model_name, different deployment
-                "litellm_params": {"model": "gpt-4"},
+                "dheera_ai_params": {"model": "gpt-4"},
                 "model_info": {"id": "model-3"},
             },
         ]
@@ -179,7 +179,7 @@ class TestRouterIndexManagement:
         new_model_list = [
             {
                 "model_name": "claude-3",
-                "litellm_params": {"model": "claude-3"},
+                "dheera_ai_params": {"model": "claude-3"},
                 "model_info": {"id": "model-4"},
             },
         ]
@@ -206,13 +206,13 @@ class TestRouterIndexManagement:
         """
         # Methods that are allowed to iterate through self.model_list
         ALLOWED_METHODS = [
-            "_get_deployment_by_litellm_model",  # Edge case: lookup by litellm_params.model (not indexed)
+            "_get_deployment_by_dheera_ai_model",  # Edge case: lookup by dheera_ai_params.model (not indexed)
         ]
         
         # Get path to router.py
         router_file = os.path.join(
             os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
-            "litellm",
+            "dheera_ai",
             "router.py"
         )
         

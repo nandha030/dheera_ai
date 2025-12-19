@@ -1,7 +1,7 @@
 import os
 import sys
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 from typing import List
 from datetime import datetime, timezone, timedelta
 
@@ -17,7 +17,7 @@ import os
 import time
 import fakeredis
 
-# this file is to test litellm/proxy
+# this file is to test dheera_ai/proxy
 
 sys.path.insert(
     0, os.path.abspath("../..")
@@ -26,16 +26,16 @@ import asyncio
 import logging
 
 import pytest
-from litellm.proxy.db.db_transaction_queue.pod_lock_manager import PodLockManager
-import litellm
-from litellm._logging import verbose_proxy_logger
-from litellm.proxy.management_endpoints.internal_user_endpoints import (
+from dheera_ai.proxy.db.db_transaction_queue.pod_lock_manager import PodLockManager
+import dheera_ai
+from dheera_ai._logging import verbose_proxy_logger
+from dheera_ai.proxy.management_endpoints.internal_user_endpoints import (
     new_user,
     user_info,
     user_update,
 )
-from litellm.proxy.auth.auth_checks import get_key_object
-from litellm.proxy.management_endpoints.key_management_endpoints import (
+from dheera_ai.proxy.auth.auth_checks import get_key_object
+from dheera_ai.proxy.management_endpoints.key_management_endpoints import (
     delete_key_fn,
     generate_key_fn,
     generate_key_helper_fn,
@@ -44,12 +44,12 @@ from litellm.proxy.management_endpoints.key_management_endpoints import (
     regenerate_key_fn,
     update_key_fn,
 )
-from litellm.proxy.management_endpoints.team_endpoints import (
+from dheera_ai.proxy.management_endpoints.team_endpoints import (
     new_team,
     team_info,
     update_team,
 )
-from litellm.proxy.proxy_server import (
+from dheera_ai.proxy.proxy_server import (
     LitellmUserRoles,
     audio_transcriptions,
     chat_completion,
@@ -59,24 +59,24 @@ from litellm.proxy.proxy_server import (
     moderations,
     user_api_key_auth,
 )
-from litellm.proxy.management_endpoints.customer_endpoints import (
+from dheera_ai.proxy.management_endpoints.customer_endpoints import (
     new_end_user,
 )
-from litellm.proxy.spend_tracking.spend_management_endpoints import (
+from dheera_ai.proxy.spend_tracking.spend_management_endpoints import (
     global_spend,
     spend_key_fn,
     spend_user_fn,
     view_spend_logs,
 )
-from litellm.proxy.utils import PrismaClient, ProxyLogging, hash_token, update_spend
+from dheera_ai.proxy.utils import PrismaClient, ProxyLogging, hash_token, update_spend
 
 verbose_proxy_logger.setLevel(level=logging.DEBUG)
 
 from starlette.datastructures import URL
 
-from litellm.caching.caching import DualCache, RedisCache
-from litellm.types.proxy.management_endpoints.ui_sso import LiteLLM_UpperboundKeyGenerateParams
-from litellm.proxy._types import (
+from dheera_ai.caching.caching import DualCache, RedisCache
+from dheera_ai.types.proxy.management_endpoints.ui_sso import DheeraAI_UpperboundKeyGenerateParams
+from dheera_ai.proxy._types import (
     DynamoDBArgs,
     GenerateKeyRequest,
     KeyRequest,
@@ -105,7 +105,7 @@ request_data = {
 
 @pytest.fixture
 def prisma_client():
-    from litellm.proxy.proxy_cli import append_query_params
+    from dheera_ai.proxy.proxy_cli import append_query_params
 
     ### add connection pool + pool timeout args
     params = {"connection_limit": 100, "pool_timeout": 60}
@@ -118,19 +118,19 @@ def prisma_client():
         database_url=os.environ["DATABASE_URL"], proxy_logging_obj=proxy_logging_obj
     )
 
-    # Reset litellm.proxy.proxy_server.prisma_client to None
-    litellm.proxy.proxy_server.litellm_proxy_budget_name = (
-        f"litellm-proxy-budget-{time.time()}"
+    # Reset dheera_ai.proxy.proxy_server.prisma_client to None
+    dheera_ai.proxy.proxy_server.dheera_ai_proxy_budget_name = (
+        f"dheera_ai-proxy-budget-{time.time()}"
     )
-    litellm.proxy.proxy_server.user_custom_key_generate = None
+    dheera_ai.proxy.proxy_server.user_custom_key_generate = None
 
     return prisma_client
 
 
 async def setup_db_connection(prisma_client):
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
 
 @pytest.mark.asyncio
@@ -376,17 +376,17 @@ async def test_e2e_size_of_redis_buffer():
 
     Goal of this is to ensure Redis does not blow up in size
     """
-    from litellm.proxy.db.db_spend_update_writer import DBSpendUpdateWriter
-    from litellm.proxy.db.db_transaction_queue.base_update_queue import BaseUpdateQueue
-    from litellm.caching import RedisCache
-    from litellm._uuid import uuid
+    from dheera_ai.proxy.db.db_spend_update_writer import DBSpendUpdateWriter
+    from dheera_ai.proxy.db.db_transaction_queue.base_update_queue import BaseUpdateQueue
+    from dheera_ai.caching import RedisCache
+    from dheera_ai._uuid import uuid
 
 
     redis_cache = RedisCache(host=os.getenv("REDIS_HOST"), port=os.getenv("REDIS_PORT"), password=os.getenv("REDIS_PASSWORD"))
     fake_redis_client = fakeredis.FakeAsyncRedis()
     redis_cache.redis_async_client = fake_redis_client
 
-    setattr(litellm.proxy.proxy_server, "use_redis_transaction_buffer", True)
+    setattr(dheera_ai.proxy.proxy_server, "use_redis_transaction_buffer", True)
     db_writer = DBSpendUpdateWriter(redis_cache=redis_cache)
     
     # get all the queues
@@ -411,7 +411,7 @@ async def test_e2e_size_of_redis_buffer():
 
 
     # flush from in-memory -> redis -> to DB
-    with patch("litellm.proxy.db.db_spend_update_writer.PodLockManager.acquire_lock", return_value=True):
+    with patch("dheera_ai.proxy.db.db_spend_update_writer.PodLockManager.acquire_lock", return_value=True):
         await db_writer._commit_spend_updates_to_db_with_redis(
             prisma_client=MagicMock(),
             n_retry_times=3,

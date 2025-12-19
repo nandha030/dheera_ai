@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 | Property | Details |
 |-------|-------|
 | Description | Hyperbolic provides access to the latest models at a fraction of legacy cloud costs, with OpenAI-compatible APIs for LLMs, image generation, and more. |
-| Provider Route on LiteLLM | `hyperbolic/` |
+| Provider Route on Dheera AI | `hyperbolic/` |
 | Link to Provider Doc | [Hyperbolic Documentation ↗](https://docs.hyperbolic.xyz) |
 | Base URL | `https://api.hyperbolic.xyz/v1` |
 | Supported Operations | [`/chat/completions`](#sample-usage) |
@@ -46,14 +46,14 @@ os.environ["HYPERBOLIC_API_KEY"] = ""  # your Hyperbolic API key
 
 Get your API key from [Hyperbolic dashboard](https://app.hyperbolic.ai).
 
-## Usage - LiteLLM Python SDK
+## Usage - Dheera AI Python SDK
 
 ### Non-streaming
 
 ```python showLineNumbers title="Hyperbolic Non-streaming Completion"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["HYPERBOLIC_API_KEY"] = ""  # your Hyperbolic API key
 
@@ -72,8 +72,8 @@ print(response)
 
 ```python showLineNumbers title="Hyperbolic Streaming Completion"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["HYPERBOLIC_API_KEY"] = ""  # your Hyperbolic API key
 
@@ -94,8 +94,8 @@ for chunk in response:
 
 ```python showLineNumbers title="Hyperbolic Function Calling"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["HYPERBOLIC_API_KEY"] = ""  # your Hyperbolic API key
 
@@ -133,32 +133,32 @@ response = completion(
 print(response)
 ```
 
-## Usage - LiteLLM Proxy
+## Usage - Dheera AI Proxy
 
-Add the following to your LiteLLM Proxy configuration file:
+Add the following to your Dheera AI Proxy configuration file:
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: deepseek-fast
-    litellm_params:
+    dheera_ai_params:
       model: hyperbolic/deepseek-ai/DeepSeek-V3
       api_key: os.environ/HYPERBOLIC_API_KEY
 
   - model_name: qwen-coder
-    litellm_params:
+    dheera_ai_params:
       model: hyperbolic/Qwen/Qwen2.5-Coder-32B-Instruct
       api_key: os.environ/HYPERBOLIC_API_KEY
 
   - model_name: deepseek-reasoning
-    litellm_params:
+    dheera_ai_params:
       model: hyperbolic/deepseek-ai/DeepSeek-R1
       api_key: os.environ/HYPERBOLIC_API_KEY
 ```
 
-Start your LiteLLM Proxy server:
+Start your Dheera AI Proxy server:
 
-```bash showLineNumbers title="Start LiteLLM Proxy"
-litellm --config config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy"
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -207,14 +207,14 @@ for chunk in response:
 
 </TabItem>
 
-<TabItem value="litellm-sdk" label="LiteLLM SDK">
+<TabItem value="dheera_ai-sdk" label="Dheera AI SDK">
 
-```python showLineNumbers title="Hyperbolic via Proxy - LiteLLM SDK"
-import litellm
+```python showLineNumbers title="Hyperbolic via Proxy - Dheera AI SDK"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy
-response = litellm.completion(
-    model="litellm_proxy/deepseek-fast",
+# Configure Dheera AI to use your proxy
+response = dheera_ai.completion(
+    model="dheera_ai_proxy/deepseek-fast",
     messages=[{"role": "user", "content": "What are the benefits of renewable energy?"}],
     api_base="http://localhost:4000",
     api_key="your-proxy-api-key"
@@ -223,12 +223,12 @@ response = litellm.completion(
 print(response.choices[0].message.content)
 ```
 
-```python showLineNumbers title="Hyperbolic via Proxy - LiteLLM SDK Streaming"
-import litellm
+```python showLineNumbers title="Hyperbolic via Proxy - Dheera AI SDK Streaming"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy with streaming
-response = litellm.completion(
-    model="litellm_proxy/qwen-coder",
+# Configure Dheera AI to use your proxy with streaming
+response = dheera_ai.completion(
+    model="dheera_ai_proxy/qwen-coder",
     messages=[{"role": "user", "content": "Implement a binary search algorithm"}],
     api_base="http://localhost:4000",
     api_key="your-proxy-api-key",
@@ -268,7 +268,7 @@ curl http://localhost:4000/v1/chat/completions \
 </TabItem>
 </Tabs>
 
-For more detailed information on using the LiteLLM Proxy, see the [LiteLLM Proxy documentation](../providers/litellm_proxy).
+For more detailed information on using the Dheera AI Proxy, see the [Dheera AI Proxy documentation](../providers/dheera_ai_proxy).
 
 ## Supported OpenAI Parameters
 
@@ -299,9 +299,9 @@ Hyperbolic supports the following OpenAI-compatible parameters:
 If you're using a custom Hyperbolic deployment:
 
 ```python showLineNumbers title="Custom API Base"
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="hyperbolic/deepseek-ai/DeepSeek-V3",
     messages=[{"role": "user", "content": "Hello"}],
     api_base="https://your-custom-hyperbolic-endpoint.com/v1",

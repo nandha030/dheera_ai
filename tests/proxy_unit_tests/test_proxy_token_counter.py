@@ -8,23 +8,23 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 
-# this file is to test litellm/proxy
+# this file is to test dheera_ai/proxy
 
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 import pytest, logging
-import litellm
-from litellm.proxy.proxy_server import token_counter
-from litellm._logging import verbose_proxy_logger
+import dheera_ai
+from dheera_ai.proxy.proxy_server import token_counter
+from dheera_ai._logging import verbose_proxy_logger
 
 verbose_proxy_logger.setLevel(level=logging.DEBUG)
 
-from litellm.proxy._types import TokenCountRequest
+from dheera_ai.proxy._types import TokenCountRequest
 import json, tempfile
 
 
-from litellm import Router
+from dheera_ai import Router
 
 
 def get_vertex_ai_creds_json() -> dict:
@@ -113,7 +113,7 @@ async def test_vLLM_token_counting():
         model_list=[
             {
                 "model_name": "special-alias",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/wolfram/miquliz-120b-v2.0",
                     "api_base": "https://exampleopenaiendpoint-production.up.railway.app/",
                 },
@@ -121,7 +121,7 @@ async def test_vLLM_token_counting():
         ]
     )
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     response = await token_counter(
         request=TokenCountRequest(
@@ -149,14 +149,14 @@ async def test_token_counting_model_not_in_model_list():
         model_list=[
             {
                 "model_name": "gpt-4",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4",
                 },
             }
         ]
     )
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     response = await token_counter(
         request=TokenCountRequest(
@@ -184,14 +184,14 @@ async def test_gpt_token_counting():
         model_list=[
             {
                 "model_name": "gpt-4",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4",
                 },
             }
         ]
     )
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     response = await token_counter(
         request=TokenCountRequest(
@@ -215,7 +215,7 @@ async def test_anthropic_messages_count_tokens_endpoint():
     - Should return response in Anthropic format: {"input_tokens": <count>}
     - Should work as wrapper around internal token_counter function
     """
-    from litellm.proxy.anthropic_endpoints.endpoints import count_tokens
+    from dheera_ai.proxy.anthropic_endpoints.endpoints import count_tokens
     from fastapi import Request
     from unittest.mock import MagicMock
 
@@ -234,7 +234,7 @@ async def test_anthropic_messages_count_tokens_endpoint():
     mock_user_api_key_dict = MagicMock()
 
     # Patch the _read_request_body function
-    import litellm.proxy.anthropic_endpoints.endpoints as anthropic_endpoints
+    import dheera_ai.proxy.anthropic_endpoints.endpoints as anthropic_endpoints
 
     original_read_request_body = anthropic_endpoints._read_request_body
     anthropic_endpoints._read_request_body = mock_read_request_body
@@ -247,7 +247,7 @@ async def test_anthropic_messages_count_tokens_endpoint():
         assert request.model == "claude-3-sonnet-20240229"
         assert request.messages == [{"role": "user", "content": "Hello Claude!"}]
 
-        from litellm.types.utils import TokenCountResponse
+        from dheera_ai.types.utils import TokenCountResponse
 
         return TokenCountResponse(
             total_tokens=15,
@@ -257,7 +257,7 @@ async def test_anthropic_messages_count_tokens_endpoint():
         )
 
     # Patch the imported token_counter function from proxy_server
-    import litellm.proxy.proxy_server as proxy_server
+    import dheera_ai.proxy.proxy_server as proxy_server
 
     original_token_counter = proxy_server.token_counter
     proxy_server.token_counter = mock_token_counter
@@ -287,7 +287,7 @@ async def test_anthropic_messages_count_tokens_with_non_anthropic_model():
     - Should still work and return Anthropic format
     - Should call internal token_counter with from_anthropic_endpoint=True
     """
-    from litellm.proxy.anthropic_endpoints.endpoints import count_tokens
+    from dheera_ai.proxy.anthropic_endpoints.endpoints import count_tokens
     from fastapi import Request
     from unittest.mock import MagicMock
 
@@ -306,7 +306,7 @@ async def test_anthropic_messages_count_tokens_with_non_anthropic_model():
     mock_user_api_key_dict = MagicMock()
 
     # Patch the _read_request_body function
-    import litellm.proxy.anthropic_endpoints.endpoints as anthropic_endpoints
+    import dheera_ai.proxy.anthropic_endpoints.endpoints as anthropic_endpoints
 
     original_read_request_body = anthropic_endpoints._read_request_body
     anthropic_endpoints._read_request_body = mock_read_request_body
@@ -319,7 +319,7 @@ async def test_anthropic_messages_count_tokens_with_non_anthropic_model():
         assert request.model == "gpt-4"
         assert request.messages == [{"role": "user", "content": "Hello GPT!"}]
 
-        from litellm.types.utils import TokenCountResponse
+        from dheera_ai.types.utils import TokenCountResponse
 
         return TokenCountResponse(
             total_tokens=12,
@@ -329,7 +329,7 @@ async def test_anthropic_messages_count_tokens_with_non_anthropic_model():
         )
 
     # Patch the imported token_counter function from proxy_server
-    import litellm.proxy.proxy_server as proxy_server
+    import dheera_ai.proxy.proxy_server as proxy_server
 
     original_token_counter = proxy_server.token_counter
     proxy_server.token_counter = mock_token_counter
@@ -364,7 +364,7 @@ async def test_internal_token_counter_anthropic_provider_detection():
         model_list=[
             {
                 "model_name": "claude-test",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "anthropic/claude-3-sonnet-20240229",
                     "api_key": "test-key",
                 },
@@ -372,7 +372,7 @@ async def test_internal_token_counter_anthropic_provider_detection():
         ]
     )
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     # Test with is_direct_request=False (simulating call from Anthropic endpoint)
     response = await token_counter(
@@ -395,14 +395,14 @@ async def test_internal_token_counter_anthropic_provider_detection():
         model_list=[
             {
                 "model_name": "gpt-test",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4",
                 },
             }
         ]
     )
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     # Test with is_direct_request=False but non-Anthropic provider
     response = await token_counter(
@@ -419,7 +419,7 @@ async def test_internal_token_counter_anthropic_provider_detection():
     assert response.request_model == "gpt-test"
     assert response.model_used == "gpt-4"
     assert response.total_tokens > 0
-    assert response.tokenizer_type == "openai_tokenizer"  # Should use LiteLLM tokenizer
+    assert response.tokenizer_type == "openai_tokenizer"  # Should use DheeraAI tokenizer
 
 
 @pytest.mark.asyncio
@@ -427,7 +427,7 @@ async def test_anthropic_endpoint_error_handling():
     """
     Test error handling in the /v1/messages/count_tokens endpoint
     """
-    from litellm.proxy.anthropic_endpoints.endpoints import count_tokens
+    from dheera_ai.proxy.anthropic_endpoints.endpoints import count_tokens
     from fastapi import Request, HTTPException
     from unittest.mock import MagicMock
 
@@ -444,7 +444,7 @@ async def test_anthropic_endpoint_error_handling():
     async def mock_read_request_body(request):
         return mock_request_data
 
-    import litellm.proxy.anthropic_endpoints.endpoints as anthropic_endpoints
+    import dheera_ai.proxy.anthropic_endpoints.endpoints as anthropic_endpoints
 
     original_read_request_body = anthropic_endpoints._read_request_body
     anthropic_endpoints._read_request_body = mock_read_request_body
@@ -468,11 +468,11 @@ async def test_factory_anthropic_endpoint_calls_anthropic_counter():
     """Test that /v1/messages/count_tokens with Anthropic model uses Anthropic counter."""
     from unittest.mock import patch, AsyncMock
     from fastapi.testclient import TestClient
-    from litellm.proxy.proxy_server import app
+    from dheera_ai.proxy.proxy_server import app
 
     # Mock the anthropic token counting function
     with patch(
-        "litellm.proxy.utils.count_tokens_with_anthropic_api"
+        "dheera_ai.proxy.utils.count_tokens_with_anthropic_api"
     ) as mock_anthropic_count:
         mock_anthropic_count.return_value = {
             "total_tokens": 42,
@@ -480,11 +480,11 @@ async def test_factory_anthropic_endpoint_calls_anthropic_counter():
         }
 
         # Mock router to return Anthropic deployment
-        with patch("litellm.proxy.proxy_server.llm_router") as mock_router:
+        with patch("dheera_ai.proxy.proxy_server.llm_router") as mock_router:
             mock_router.model_list = [
                 {
                     "model_name": "claude-3-5-sonnet",
-                    "litellm_params": {"model": "anthropic/claude-3-5-sonnet-20241022"},
+                    "dheera_ai_params": {"model": "anthropic/claude-3-5-sonnet-20241022"},
                     "model_info": {},
                 }
             ]
@@ -493,7 +493,7 @@ async def test_factory_anthropic_endpoint_calls_anthropic_counter():
             mock_router.async_get_available_deployment = AsyncMock(
                 return_value={
                     "model_name": "claude-3-5-sonnet",
-                    "litellm_params": {"model": "anthropic/claude-3-5-sonnet-20241022"},
+                    "dheera_ai_params": {"model": "anthropic/claude-3-5-sonnet-20241022"},
                     "model_info": {},
                 }
             )
@@ -522,22 +522,22 @@ async def test_factory_gpt4_endpoint_does_not_call_anthropic_counter():
     """Test that /v1/messages/count_tokens with GPT-4 does NOT use Anthropic counter."""
     from unittest.mock import patch, AsyncMock
     from fastapi.testclient import TestClient
-    from litellm.proxy.proxy_server import app
+    from dheera_ai.proxy.proxy_server import app
 
     # Mock the anthropic token counting function
     with patch(
-        "litellm.proxy.utils.count_tokens_with_anthropic_api"
+        "dheera_ai.proxy.utils.count_tokens_with_anthropic_api"
     ) as mock_anthropic_count:
-        # Mock litellm token counter
-        with patch("litellm.token_counter") as mock_litellm_counter:
-            mock_litellm_counter.return_value = 50
+        # Mock dheera_ai token counter
+        with patch("dheera_ai.token_counter") as mock_dheera_ai_counter:
+            mock_dheera_ai_counter.return_value = 50
 
             # Mock router to return GPT-4 deployment
-            with patch("litellm.proxy.proxy_server.llm_router") as mock_router:
+            with patch("dheera_ai.proxy.proxy_server.llm_router") as mock_router:
                 mock_router.model_list = [
                     {
                         "model_name": "gpt-4",
-                        "litellm_params": {"model": "openai/gpt-4"},
+                        "dheera_ai_params": {"model": "openai/gpt-4"},
                         "model_info": {},
                     }
                 ]
@@ -546,7 +546,7 @@ async def test_factory_gpt4_endpoint_does_not_call_anthropic_counter():
                 mock_router.async_get_available_deployment = AsyncMock(
                     return_value={
                         "model_name": "gpt-4",
-                        "litellm_params": {"model": "openai/gpt-4"},
+                        "dheera_ai_params": {"model": "openai/gpt-4"},
                         "model_info": {},
                     }
                 )
@@ -575,22 +575,22 @@ async def test_factory_normal_token_counter_endpoint_does_not_call_anthropic():
     """Test that /utils/token_counter does NOT use Anthropic counter even with Anthropic model."""
     from unittest.mock import patch, AsyncMock
     from fastapi.testclient import TestClient
-    from litellm.proxy.proxy_server import app
+    from dheera_ai.proxy.proxy_server import app
 
     # Mock the anthropic token counting function
     with patch(
-        "litellm.proxy.utils.count_tokens_with_anthropic_api"
+        "dheera_ai.proxy.utils.count_tokens_with_anthropic_api"
     ) as mock_anthropic_count:
-        # Mock litellm token counter
-        with patch("litellm.token_counter") as mock_litellm_counter:
-            mock_litellm_counter.return_value = 35
+        # Mock dheera_ai token counter
+        with patch("dheera_ai.token_counter") as mock_dheera_ai_counter:
+            mock_dheera_ai_counter.return_value = 35
 
             # Mock router to return Anthropic deployment
-            with patch("litellm.proxy.proxy_server.llm_router") as mock_router:
+            with patch("dheera_ai.proxy.proxy_server.llm_router") as mock_router:
                 mock_router.model_list = [
                     {
                         "model_name": "claude-3-5-sonnet",
-                        "litellm_params": {
+                        "dheera_ai_params": {
                             "model": "anthropic/claude-3-5-sonnet-20241022"
                         },
                         "model_info": {},
@@ -601,7 +601,7 @@ async def test_factory_normal_token_counter_endpoint_does_not_call_anthropic():
                 mock_router.async_get_available_deployment = AsyncMock(
                     return_value={
                         "model_name": "claude-3-5-sonnet",
-                        "litellm_params": {
+                        "dheera_ai_params": {
                             "model": "anthropic/claude-3-5-sonnet-20241022"
                         },
                         "model_info": {},
@@ -630,7 +630,7 @@ async def test_factory_normal_token_counter_endpoint_does_not_call_anthropic():
 @pytest.mark.asyncio
 async def test_factory_registration():
     """Test that the new factory pattern correctly provides counters."""
-    from litellm.llms.anthropic.common_utils import AnthropicModelInfo
+    from dheera_ai.llms.anthropic.common_utils import AnthropicModelInfo
 
     # Test Anthropic ModelInfo provides token counter
     anthropic_model_info = AnthropicModelInfo()
@@ -639,10 +639,10 @@ async def test_factory_registration():
 
     # Create test deployments
     anthropic_deployment = {
-        "litellm_params": {"model": "anthropic/claude-3-5-sonnet-20241022"}
+        "dheera_ai_params": {"model": "anthropic/claude-3-5-sonnet-20241022"}
     }
 
-    non_anthropic_deployment = {"litellm_params": {"model": "openai/gpt-4"}}
+    non_anthropic_deployment = {"dheera_ai_params": {"model": "openai/gpt-4"}}
 
     # Test Anthropic counter supports provider
     assert counter.should_use_token_counting_api(custom_llm_provider="anthropic")
@@ -666,20 +666,20 @@ async def test_vertex_ai_gemini_token_counting_with_contents(model_name):
         model_list=[
             {
                 "model_name": "gemini-2.5-pro",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gemini/gemini-2.5-pro",
                 },
             },
             {
                 "model_name": "vertex-ai-gemini-2.5-pro",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "vertex_ai/gemini-2.5-pro",
                 },
             },
         ]
     )
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     # Test with contents format and call_endpoint=True
     response = await token_counter(
@@ -708,10 +708,10 @@ async def test_bedrock_count_tokens_endpoint():
     """
     Test that Bedrock CountTokens endpoint correctly extracts model from request body.
     """
-    from litellm.router import Router
+    from dheera_ai.router import Router
 
     # Mock the Bedrock CountTokens handler
-    async def mock_count_tokens_handler(request_data, litellm_params, resolved_model):
+    async def mock_count_tokens_handler(request_data, dheera_ai_params, resolved_model):
         # Verify the correct model was resolved
         assert resolved_model == "anthropic.claude-3-sonnet-20240229-v1:0"
         assert request_data["model"] == "anthropic.claude-3-sonnet-20240229-v1:0"
@@ -724,14 +724,14 @@ async def test_bedrock_count_tokens_endpoint():
         model_list=[
             {
                 "model_name": "claude-bedrock",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "bedrock/anthropic.claude-3-sonnet-20240229-v1:0"
                 },
             }
         ]
     )
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     # Test the mock handler directly to verify correct parameter extraction
     request_data = {
@@ -765,7 +765,7 @@ async def test_vertex_ai_anthropic_token_counting():
         model_list=[
             {
                 "model_name": "vertex_ai/claude-3-5-sonnet-20241022",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "vertex_ai/claude-3-5-sonnet-20241022",
                     "vertex_project": "test-project",
                     "vertex_location": "us-east5",
@@ -774,11 +774,11 @@ async def test_vertex_ai_anthropic_token_counting():
         ]
     )
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     # Mock the lower level handler method
     with patch(
-        "litellm.llms.vertex_ai.vertex_ai_partner_models.count_tokens.handler.VertexAIPartnerModelsTokenCounter.handle_count_tokens_request"
+        "dheera_ai.llms.vertex_ai.vertex_ai_partner_models.count_tokens.handler.VertexAIPartnerModelsTokenCounter.handle_count_tokens_request"
     ) as mock_handle_count_tokens:
         mock_handle_count_tokens.return_value = mock_token_response
 
@@ -826,7 +826,7 @@ def test_vertex_ai_partner_models_token_counting_endpoint(vertex_location):
     Test that the VertexAIPartnerModelsTokenCounter builds the correct endpoint URL
     for different vertex locations, including the special 'global' location.
     """
-    from litellm.llms.vertex_ai.vertex_ai_partner_models.count_tokens.handler import (
+    from dheera_ai.llms.vertex_ai.vertex_ai_partner_models.count_tokens.handler import (
         VertexAIPartnerModelsTokenCounter,
     )
 

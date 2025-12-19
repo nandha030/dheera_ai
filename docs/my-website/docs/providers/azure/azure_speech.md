@@ -5,16 +5,16 @@
 | Property | Details |
 |-------|-------|
 | Description | Convert text to natural-sounding speech using Azure OpenAI's Text to Speech models |
-| Provider Route on LiteLLM | `azure/` |
+| Provider Route on Dheera AI | `azure/` |
 | Supported Operations | `/audio/speech` |
 | Link to Provider Doc | [Azure OpenAI TTS ↗](https://learn.microsoft.com/en-us/azure/ai-services/openai/text-to-speech-quickstart)
 
 ## Quick Start
 
-### **LiteLLM SDK**
+### **Dheera AI SDK**
 
 ```python showLineNumbers title="SDK Usage"
-from litellm import speech
+from dheera_ai import speech
 from pathlib import Path
 import os
 
@@ -33,12 +33,12 @@ response = speech(
 response.stream_to_file(speech_file_path)
 ```
 
-### **LiteLLM PROXY**
+### **Dheera AI PROXY**
 
 ```yaml showLineNumbers title="proxy_config.yaml"
 model_list:
  - model_name: azure/tts-1
-    litellm_params:
+    dheera_ai_params:
       model: azure/tts-1
       api_base: "os.environ/AZURE_API_BASE_TTS"
       api_key: "os.environ/AZURE_API_KEY_TTS"

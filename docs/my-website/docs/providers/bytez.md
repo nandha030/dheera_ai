@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Bytez
 
-LiteLLM supports all chat models on [Bytez](https://www.bytez.com)!
+Dheera AI supports all chat models on [Bytez](https://www.bytez.com)!
 
 That also means multi-modal models are supported 🔥
 
@@ -24,7 +24,7 @@ os.environ["BYTEZ_API_KEY"] = "YOUR_BYTEZ_KEY_GOES_HERE"
 ### Example Call
 
 ```py
-from litellm import completion
+from dheera_ai import completion
 import os
 ## set ENV variables
 os.environ["BYTEZ_API_KEY"] = "YOUR_BYTEZ_KEY_GOES_HERE"
@@ -43,7 +43,7 @@ response = completion(
 ```yaml
 model_list:
   - model_name: gemma-3
-    litellm_params:
+    dheera_ai_params:
       model: bytez/google/gemma-3-4b-it
       api_key: os.environ/BYTEZ_API_KEY
 ```
@@ -51,10 +51,10 @@ model_list:
 2. Start the proxy
 
 ```bash
-$ BYTEZ_API_KEY=YOUR_BYTEZ_API_KEY_HERE litellm --config /path/to/config.yaml --debug
+$ BYTEZ_API_KEY=YOUR_BYTEZ_API_KEY_HERE dheera_ai --config /path/to/config.yaml --debug
 ```
 
-3. Send Request to LiteLLM Proxy Server
+3. Send Request to Dheera AI Proxy Server
 
   <Tabs>
 
@@ -63,8 +63,8 @@ $ BYTEZ_API_KEY=YOUR_BYTEZ_API_KEY_HERE litellm --config /path/to/config.yaml --
 ```py
 import openai
 client = openai.OpenAI(
-    api_key="sk-1234",             # pass litellm proxy key, if you're using virtual keys
-    base_url="http://0.0.0.0:4000" # litellm-proxy-base url
+    api_key="sk-1234",             # pass dheera_ai proxy key, if you're using virtual keys
+    base_url="http://0.0.0.0:4000" # dheera_ai-proxy-base url
 )
 
 response = client.chat.completions.create(
@@ -123,11 +123,11 @@ If you wish to use custom formatting, please let us know via either [help@bytez.
 
 ## Passing additional params - max_tokens, temperature
 
-See all litellm.completion supported params [here](https://docs.litellm.ai/docs/completion/input)
+See all dheera_ai.completion supported params [here](https://docs.dheera_ai.ai/docs/completion/input)
 
 ```py
-# !pip install litellm
-from litellm import completion
+# !pip install dheera_ai
+from dheera_ai import completion
 import os
 ## set ENV variables
 os.environ["BYTEZ_API_KEY"] = "YOUR_BYTEZ_KEY_HERE"
@@ -146,7 +146,7 @@ response = completion(
 ```yaml
 model_list:
   - model_name: gemma-3
-    litellm_params:
+    dheera_ai_params:
       model: bytez/google/gemma-3-4b-it
       api_key: os.environ/BYTEZ_API_KEY
       max_tokens: 20
@@ -160,8 +160,8 @@ Any kwarg supported by huggingface we also support! (Provided the model supports
 Example `repetition_penalty`
 
 ```py
-# !pip install litellm
-from litellm import completion
+# !pip install dheera_ai
+from dheera_ai import completion
 import os
 ## set ENV variables
 os.environ["BYTEZ_API_KEY"] = "YOUR_BYTEZ_KEY_HERE"
@@ -179,7 +179,7 @@ response = completion(
 ```yaml
 model_list:
   - model_name: gemma-3
-    litellm_params:
+    dheera_ai_params:
       model: bytez/google/gemma-3-4b-it
       api_key: os.environ/BYTEZ_API_KEY
       repetition_penalty: 1.2

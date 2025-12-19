@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.abspath("../.."))
 
 import pytest
 
-import litellm
+import dheera_ai
 
 
 @pytest.mark.asyncio
@@ -37,7 +37,7 @@ async def test_langgraph_acompletion_non_streaming():
     api_base = os.environ.get("LANGGRAPH_API_BASE", "http://localhost:2024")
 
     try:
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="langgraph/agent",
             messages=[{"role": "user", "content": "What is 25 * 4?"}],
             api_base=api_base,
@@ -64,7 +64,7 @@ async def test_langgraph_acompletion_streaming():
     api_base = os.environ.get("LANGGRAPH_API_BASE", "http://localhost:2024")
 
     try:
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="langgraph/agent",
             messages=[{"role": "user", "content": "What is the weather in Tokyo?"}],
             api_base=api_base,
@@ -93,7 +93,7 @@ def test_langgraph_config_get_complete_url():
     """
     Test that LangGraphConfig correctly generates URLs for streaming and non-streaming.
     """
-    from litellm.llms.langgraph.chat.transformation import LangGraphConfig
+    from dheera_ai.llms.langgraph.chat.transformation import LangGraphConfig
 
     config = LangGraphConfig()
 
@@ -102,7 +102,7 @@ def test_langgraph_config_get_complete_url():
         api_key=None,
         model="agent",
         optional_params={},
-        litellm_params={},
+        dheera_ai_params={},
         stream=False,
     )
     assert non_streaming_url == "http://localhost:2024/runs/wait"
@@ -112,7 +112,7 @@ def test_langgraph_config_get_complete_url():
         api_key=None,
         model="agent",
         optional_params={},
-        litellm_params={},
+        dheera_ai_params={},
         stream=True,
     )
     assert streaming_url == "http://localhost:2024/runs/stream"
@@ -122,7 +122,7 @@ def test_langgraph_config_transform_request():
     """
     Test that LangGraphConfig correctly transforms requests.
     """
-    from litellm.llms.langgraph.chat.transformation import LangGraphConfig
+    from dheera_ai.llms.langgraph.chat.transformation import LangGraphConfig
 
     config = LangGraphConfig()
 
@@ -135,7 +135,7 @@ def test_langgraph_config_transform_request():
         model="langgraph/agent",
         messages=messages,
         optional_params={},
-        litellm_params={"stream": False},
+        dheera_ai_params={"stream": False},
         headers={},
     )
 
@@ -150,7 +150,7 @@ def test_langgraph_config_transform_request():
         model="langgraph/agent",
         messages=messages,
         optional_params={},
-        litellm_params={"stream": True},
+        dheera_ai_params={"stream": True},
         headers={},
     )
 
@@ -161,7 +161,7 @@ def test_langgraph_provider_detection():
     """
     Test that the langgraph provider is correctly detected from model name.
     """
-    from litellm.litellm_core_utils.get_llm_provider_logic import get_llm_provider
+    from dheera_ai.dheera_ai_core_utils.get_llm_provider_logic import get_llm_provider
 
     model, provider, api_key, api_base = get_llm_provider(
         model="langgraph/agent",

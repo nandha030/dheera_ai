@@ -10,7 +10,7 @@ Fal AI provides fast, scalable access to state-of-the-art image generation model
 | Property | Details |
 |----------|---------|
 | Description | Fal AI offers optimized infrastructure for running image generation models at scale with low latency. |
-| Provider Route on LiteLLM | `fal_ai/` |
+| Provider Route on Dheera AI | `fal_ai/` |
 | Provider Doc | [Fal AI Documentation ↗](https://fal.ai/models) |
 | Supported Operations | [`/images/generations`](#image-generation) |
 
@@ -44,20 +44,20 @@ Get your API key from [fal.ai](https://fal.ai/).
 
 ## Image Generation
 
-### Usage - LiteLLM Python SDK
+### Usage - Dheera AI Python SDK
 
 <Tabs>
 <TabItem value="basic" label="Basic Usage">
 
 ```python showLineNumbers title="Basic Image Generation"
-import litellm
+import dheera_ai
 import os
 
 # Set your API key
 os.environ["FAL_AI_API_KEY"] = "your-fal-api-key"
 
 # Generate an image
-response = litellm.image_generation(
+response = dheera_ai.image_generation(
     model="fal_ai/fal-ai/flux-pro/v1.1-ultra",
     prompt="A serene mountain landscape at sunset with vibrant colors"
 )
@@ -70,13 +70,13 @@ print(response.data[0].url)
 <TabItem value="imagen4" label="Imagen 4">
 
 ```python showLineNumbers title="Google Imagen 4 Generation"
-import litellm
+import dheera_ai
 import os
 
 os.environ["FAL_AI_API_KEY"] = "your-fal-api-key"
 
 # Generate with Imagen 4
-response = litellm.image_generation(
+response = dheera_ai.image_generation(
     model="fal_ai/fal-ai/imagen4/preview",
     prompt="A vintage 1960s kitchen with flour package on countertop",
     aspect_ratio="16:9",
@@ -91,13 +91,13 @@ print(response.data[0].url)
 <TabItem value="recraft" label="Recraft v3">
 
 ```python showLineNumbers title="Recraft v3 with Style"
-import litellm
+import dheera_ai
 import os
 
 os.environ["FAL_AI_API_KEY"] = "your-fal-api-key"
 
 # Generate with specific style
-response = litellm.image_generation(
+response = dheera_ai.image_generation(
     model="fal_ai/fal-ai/recraft/v3/text-to-image",
     prompt="A red panda eating bamboo",
     style="realistic_image",
@@ -112,14 +112,14 @@ print(response.data[0].url)
 <TabItem value="async" label="Async Usage">
 
 ```python showLineNumbers title="Async Image Generation"
-import litellm
+import dheera_ai
 import asyncio
 import os
 
 async def generate_image():
     os.environ["FAL_AI_API_KEY"] = "your-fal-api-key"
     
-    response = await litellm.aimage_generation(
+    response = await dheera_ai.aimage_generation(
         model="fal_ai/fal-ai/stable-diffusion-v35-medium",
         prompt="A cyberpunk cityscape with neon lights",
         guidance_scale=7.5,
@@ -137,13 +137,13 @@ asyncio.run(generate_image())
 <TabItem value="advanced" label="Advanced Parameters">
 
 ```python showLineNumbers title="Advanced FLUX Pro Generation"
-import litellm
+import dheera_ai
 import os
 
 os.environ["FAL_AI_API_KEY"] = "your-fal-api-key"
 
 # Generate with advanced parameters
-response = litellm.image_generation(
+response = dheera_ai.image_generation(
     model="fal_ai/fal-ai/flux-pro/v1.1-ultra",
     prompt="A majestic dragon soaring over mountains",
     n=2,
@@ -160,28 +160,28 @@ for image in response.data:
 </TabItem>
 </Tabs>
 
-### Usage - LiteLLM Proxy Server
+### Usage - Dheera AI Proxy Server
 
 #### 1. Configure your config.yaml
 
 ```yaml showLineNumbers title="Fal AI Image Generation Configuration"
 model_list:
   - model_name: flux-ultra
-    litellm_params:
+    dheera_ai_params:
       model: fal_ai/fal-ai/flux-pro/v1.1-ultra
       api_key: os.environ/FAL_AI_API_KEY
     model_info:
       mode: image_generation
   
   - model_name: imagen4
-    litellm_params:
+    dheera_ai_params:
       model: fal_ai/fal-ai/imagen4/preview
       api_key: os.environ/FAL_AI_API_KEY
     model_info:
       mode: image_generation
   
   - model_name: stable-diffusion
-    litellm_params:
+    dheera_ai_params:
       model: fal_ai/fal-ai/stable-diffusion-v35-medium
       api_key: os.environ/FAL_AI_API_KEY
     model_info:
@@ -191,10 +191,10 @@ general_settings:
   master_key: sk-1234
 ```
 
-#### 2. Start LiteLLM Proxy Server
+#### 2. Start Dheera AI Proxy Server
 
 ```bash showLineNumbers title="Start Proxy Server"
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -224,13 +224,13 @@ print(response.data[0].url)
 
 </TabItem>
 
-<TabItem value="litellm-sdk" label="LiteLLM SDK">
+<TabItem value="dheera_ai-sdk" label="Dheera AI SDK">
 
-```python showLineNumbers title="Generate via Proxy - LiteLLM SDK"
-import litellm
+```python showLineNumbers title="Generate via Proxy - Dheera AI SDK"
+import dheera_ai
 
-response = litellm.image_generation(
-    model="litellm_proxy/imagen4",
+response = dheera_ai.image_generation(
+    model="dheera_ai_proxy/imagen4",
     prompt="A cozy coffee shop interior",
     api_base="http://localhost:4000",
     api_key="sk-1234"
@@ -262,13 +262,13 @@ curl --location 'http://localhost:4000/v1/images/generations' \
 
 ## Using Model-Specific Parameters
 
-LiteLLM forwards any additional parameters directly to the Fal AI API. You can pass model-specific parameters in your request and they will be sent to Fal AI.
+Dheera AI forwards any additional parameters directly to the Fal AI API. You can pass model-specific parameters in your request and they will be sent to Fal AI.
 
 ```python showLineNumbers title="Pass Model-Specific Parameters"
-import litellm
+import dheera_ai
 
 # Any parameters beyond the standard ones are forwarded to Fal AI
-response = litellm.image_generation(
+response = dheera_ai.image_generation(
     model="fal_ai/fal-ai/flux-pro/v1.1-ultra",
     prompt="A beautiful sunset",
     # Model-specific Fal AI parameters
@@ -304,7 +304,7 @@ Standard OpenAI-compatible parameters that work across all models:
 2. Get your API key from your account settings
 3. Set `FAL_AI_API_KEY` environment variable
 4. Choose a model from the [Fal AI model gallery](https://fal.ai/models)
-5. Start generating images with LiteLLM
+5. Start generating images with Dheera AI
 
 ## Additional Resources
 

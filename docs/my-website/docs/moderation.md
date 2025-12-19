@@ -6,35 +6,35 @@ import TabItem from '@theme/TabItem';
 
 ### Usage
 <Tabs>
-<TabItem value="python" label="LiteLLM Python SDK">
+<TabItem value="python" label="Dheera AI Python SDK">
 
 ```python
-from litellm import moderation
+from dheera_ai import moderation
 
 response = moderation(
-    input="hello from litellm",
+    input="hello from dheera_ai",
     model="text-moderation-stable"
 )
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy Server">
+<TabItem value="proxy" label="Dheera AI Proxy Server">
 
-For `/moderations` endpoint, there is **no need to specify `model` in the request or on the litellm config.yaml**
+For `/moderations` endpoint, there is **no need to specify `model` in the request or on the dheera_ai config.yaml**
 
 
 1. Setup config.yaml
 ```yaml
 model_list:
   - model_name: text-moderation-stable
-    litellm_params:
+    dheera_ai_params:
       model: openai/omni-moderation-latest
 ```
 
-2. Start litellm proxy server 
+2. Start dheera_ai proxy server 
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 
@@ -49,7 +49,7 @@ from openai import OpenAI
 client = OpenAI(api_key="<proxy-api-key>", base_url="http://0.0.0.0:4000")
 
 response = client.moderations.create(
-    input="hello from litellm",
+    input="hello from dheera_ai",
     model="text-moderation-stable"
 )
 
@@ -72,7 +72,7 @@ curl --location 'http://0.0.0.0:4000/moderations' \
 </Tabs>
 
 ## Input Params
-LiteLLM accepts and translates the [OpenAI Moderation params](https://platform.openai.com/docs/api-reference/moderations) across all supported providers.
+Dheera AI accepts and translates the [OpenAI Moderation params](https://platform.openai.com/docs/api-reference/moderations) across all supported providers.
 
 ### Required Fields
 
@@ -94,7 +94,7 @@ LiteLLM accepts and translates the [OpenAI Moderation params](https://platform.o
 ## Output Format
 Here's the exact json output and type you can expect from all moderation calls:
 
-[**LiteLLM follows OpenAI's output format**](https://platform.openai.com/docs/api-reference/moderations/object)
+[**Dheera AI follows OpenAI's output format**](https://platform.openai.com/docs/api-reference/moderations/object)
 
 
 ```python
@@ -139,7 +139,7 @@ Here's the exact json output and type you can expect from all moderation calls:
 
 ## **Supported Providers**
 
-#### ⚡️See all supported models and providers at [models.litellm.ai](https://models.litellm.ai/)
+#### ⚡️See all supported models and providers at [models.dheera_ai.ai](https://models.dheera_ai.ai/)
 
 | Provider    |
 |-------------|

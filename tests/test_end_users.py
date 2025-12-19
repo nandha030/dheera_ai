@@ -4,7 +4,7 @@ import pytest
 import asyncio
 import aiohttp
 import time
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 from openai import AsyncOpenAI
 from typing import Optional
 
@@ -195,7 +195,7 @@ async def test_aaaend_user_specific_region():
             user=end_user_obj["user_id"],
         )
 
-        assert result.headers.get("x-litellm-model-region") == "eu"
+        assert result.headers.get("x-dheera_ai-model-region") == "eu"
 
 
 @pytest.mark.asyncio

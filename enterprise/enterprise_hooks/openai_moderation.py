@@ -15,18 +15,18 @@ import sys
 
 from fastapi import HTTPException
 
-import litellm
-from litellm._logging import verbose_proxy_logger
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.types.utils import CallTypesLiteral
+import dheera_ai
+from dheera_ai._logging import verbose_proxy_logger
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.types.utils import CallTypesLiteral
 
 
 class _ENTERPRISE_OpenAI_Moderation(CustomLogger):
     def __init__(self):
         self.model_name = (
-            litellm.openai_moderations_model_name or "text-moderation-latest"
-        )  # pass the model_name you initialized on litellm.Router()
+            dheera_ai.openai_moderations_model_name or "text-moderation-latest"
+        )  # pass the model_name you initialized on dheera_ai.Router()
         pass
 
     #### CALL HOOKS - proxy only ####
@@ -43,7 +43,7 @@ class _ENTERPRISE_OpenAI_Moderation(CustomLogger):
                 if "content" in m and isinstance(m["content"], str):
                     text += m["content"]
 
-        from litellm.proxy.proxy_server import llm_router
+        from dheera_ai.proxy.proxy_server import llm_router
 
         if llm_router is None:
             return

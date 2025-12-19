@@ -4,7 +4,7 @@ import Image from '@theme/IdealImage';
 
 # Track Usage for Coding Tools
 
-Track usage and costs for AI-powered coding tools like Claude Code, Roo Code, Gemini CLI, and OpenAI Codex through LiteLLM.
+Track usage and costs for AI-powered coding tools like Claude Code, Roo Code, Gemini CLI, and OpenAI Codex through Dheera AI.
 
 Monitor requests, costs, and user engagement metrics for each coding tool using User-Agent headers.
 
@@ -16,7 +16,7 @@ Monitor requests, costs, and user engagement metrics for each coding tool using 
 
 ## Who This Is For
 
-Central AI Platform teams providing developers access to coding tools through LiteLLM. Monitor tool engagement and track individual user usage patterns.
+Central AI Platform teams providing developers access to coding tools through Dheera AI. Monitor tool engagement and track individual user usage patterns.
 
 ## What You Can Track
 
@@ -29,22 +29,22 @@ Central AI Platform teams providing developers access to coding tools through Li
 
 ## Quick Start
 
-### 1. Connect Your Coding Tool to LiteLLM
+### 1. Connect Your Coding Tool to Dheera AI
 
-Configure your coding tool to send requests through the LiteLLM proxy with appropriate User-Agent headers.
+Configure your coding tool to send requests through the Dheera AI proxy with appropriate User-Agent headers.
 
 **Setup guides:**
-- [Use LiteLLM with Claude Code](../../docs/tutorials/claude_responses_api)
-- [Use LiteLLM with Gemini CLI](../../docs/tutorials/litellm_gemini_cli)
-- [Use LiteLLM with OpenAI Codex](../../docs/tutorials/openai_codex)
+- [Use Dheera AI with Claude Code](../../docs/tutorials/claude_responses_api)
+- [Use Dheera AI with Gemini CLI](../../docs/tutorials/dheera_ai_gemini_cli)
+- [Use Dheera AI with OpenAI Codex](../../docs/tutorials/openai_codex)
 
 ### 2. Send Requests with User-Agent Headers
 
 Ensure your coding tool includes identifying User-Agent headers in API requests.
 
-### 3. Verify Tracking in LiteLLM Logs
+### 3. Verify Tracking in Dheera AI Logs
 
-Confirm LiteLLM is properly tracking requests by checking logs for the expected User-Agent values.
+Confirm Dheera AI is properly tracking requests by checking logs for the expected User-Agent values.
 
 <Image 
   img={require('../../img/agent_2.png')}
@@ -53,7 +53,7 @@ Confirm LiteLLM is properly tracking requests by checking logs for the expected 
 
 ### 4. View Usage Dashboard
 
-Access the LiteLLM dashboard to view aggregated usage metrics and user engagement data.
+Access the Dheera AI dashboard to view aggregated usage metrics and user engagement data.
 
 #### Summary Metrics
 
@@ -73,9 +73,9 @@ View active user metrics for each coding tool.
   style={{width: '80%', display: 'block', margin: '2rem auto'}}
 />
 
-## How LiteLLM Identifies Coding Tools
+## How Dheera AI Identifies Coding Tools
 
-LiteLLM tracks coding tools by monitoring the `User-Agent` header in incoming API requests (`/chat/completions`, `/responses`, etc.). Each unique User-Agent is tracked separately for usage analytics.
+Dheera AI tracks coding tools by monitoring the `User-Agent` header in incoming API requests (`/chat/completions`, `/responses`, etc.). Each unique User-Agent is tracked separately for usage analytics.
 
 ### Example Request
 

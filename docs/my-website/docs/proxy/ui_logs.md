@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 # Getting Started with UI Logs
 
-View Spend, Token Usage, Key, Team Name for Each Request to LiteLLM
+View Spend, Token Usage, Key, Team Name for Each Request to Dheera AI
 
 
 <Image img={require('../../img/ui_request_logs.png')}/>
@@ -21,11 +21,11 @@ View Spend, Token Usage, Key, Team Name for Each Request to LiteLLM
 
 
 
-**By default LiteLLM does not track the request and response content.**
+**By default Dheera AI does not track the request and response content.**
 
 ## Tracking - Request / Response Content in Logs Page 
 
-If you want to view request and response content on LiteLLM Logs, you need to opt in with this setting
+If you want to view request and response content on Dheera AI Logs, you need to opt in with this setting
 
 ```yaml
 general_settings:
@@ -57,7 +57,7 @@ general_settings:
 
 If you're storing spend logs, it might be a good idea to delete them regularly to keep the database fast.
 
-LiteLLM lets you configure this in your `proxy_config.yaml`:
+Dheera AI lets you configure this in your `proxy_config.yaml`:
 
 ```yaml
 general_settings:
@@ -78,4 +78,4 @@ For detailed architecture and how it works, see [Spend Logs Deletion](../proxy/s
 
 ## What gets logged? 
 
-[Here's a schema](https://github.com/BerriAI/litellm/blob/1cdd4065a645021aea931afb9494e7694b4ec64b/schema.prisma#L285) breakdown of what gets logged.
+[Here's a schema](https://github.com/BerriAI/dheera_ai/blob/1cdd4065a645021aea931afb9494e7694b4ec64b/schema.prisma#L285) breakdown of what gets logged.

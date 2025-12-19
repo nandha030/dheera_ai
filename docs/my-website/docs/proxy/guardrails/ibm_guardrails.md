@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # IBM Guardrails
 
-LiteLLM works with [IBM's FMS Guardrails](https://github.com/foundation-model-stack/fms-guardrails-orchestrator) for content safety. You can use it to detect jailbreaks, PII, hate speech, and more. 
+Dheera AI works with [IBM's FMS Guardrails](https://github.com/foundation-model-stack/fms-guardrails-orchestrator) for content safety. You can use it to detect jailbreaks, PII, hate speech, and more. 
 
 ## What it does
 
@@ -28,13 +28,13 @@ You can run these checks:
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: ibm-jailbreak-detector
-    litellm_params:
+    dheera_ai_params:
       guardrail: ibm_guardrails
       mode: pre_call
       auth_token: os.environ/IBM_GUARDRAILS_AUTH_TOKEN
@@ -56,7 +56,7 @@ export IBM_GUARDRAILS_AUTH_TOKEN="your-token"
 ### 3. Start the proxy
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 ### 4. Make a request
@@ -110,7 +110,7 @@ IBM Guardrails has two APIs you can use:
 ```yaml
 guardrails:
   - guardrail_name: ibm-detector
-    litellm_params:
+    dheera_ai_params:
       guardrail: ibm_guardrails
       mode: pre_call
       auth_token: os.environ/IBM_GUARDRAILS_AUTH_TOKEN
@@ -126,7 +126,7 @@ If you're using the IBM FMS Guardrails Orchestrator, you can use [FMS Orchestrat
 ```yaml
 guardrails:
   - guardrail_name: ibm-orchestrator
-    litellm_params:
+    dheera_ai_params:
       guardrail: ibm_guardrails
       mode: pre_call
       auth_token: os.environ/IBM_GUARDRAILS_AUTH_TOKEN
@@ -142,7 +142,7 @@ guardrails:
 ```yaml
 guardrails:
   - guardrail_name: jailbreak-check
-    litellm_params:
+    dheera_ai_params:
       guardrail: ibm_guardrails
       mode: pre_call
       auth_token: os.environ/IBM_GUARDRAILS_AUTH_TOKEN
@@ -159,7 +159,7 @@ guardrails:
 ```yaml
 guardrails:
   - guardrail_name: pii-check
-    litellm_params:
+    dheera_ai_params:
       guardrail: ibm_guardrails
       mode: post_call
       auth_token: os.environ/IBM_GUARDRAILS_AUTH_TOKEN
@@ -176,7 +176,7 @@ guardrails:
 ```yaml
 guardrails:
   - guardrail_name: jailbreak-check
-    litellm_params:
+    dheera_ai_params:
       guardrail: ibm_guardrails
       mode: pre_call
       auth_token: os.environ/IBM_GUARDRAILS_AUTH_TOKEN
@@ -185,7 +185,7 @@ guardrails:
       is_detector_server: true
       
   - guardrail_name: pii-check
-    litellm_params:
+    dheera_ai_params:
       guardrail: ibm_guardrails
       mode: post_call
       auth_token: os.environ/IBM_GUARDRAILS_AUTH_TOKEN

@@ -6,13 +6,13 @@ from copy import deepcopy
 from unittest.mock import AsyncMock, MagicMock, patch
 from urllib.parse import unquote
 
-import litellm
+import dheera_ai
 import pytest
 
-from litellm.integrations.sqs import SQSLogger
-from litellm.types.utils import StandardLoggingPayload
+from dheera_ai.integrations.sqs import SQSLogger
+from dheera_ai.types.utils import StandardLoggingPayload
 
-from litellm.litellm_core_utils.app_crypto import AppCrypto
+from dheera_ai.dheera_ai_core_utils.app_crypto import AppCrypto
 
 
 @pytest.mark.asyncio
@@ -31,9 +31,9 @@ async def test_async_sqs_logger_flush():
     mock_response.raise_for_status = MagicMock()
     sqs_logger.async_httpx_client.post = AsyncMock(return_value=mock_response)
 
-    litellm.callbacks = [sqs_logger]
+    dheera_ai.callbacks = [sqs_logger]
 
-    await litellm.acompletion(
+    await dheera_ai.acompletion(
         model="gpt-4o",
         messages=[{"role": "user", "content": "hello"}],
         mock_response="hi",
@@ -94,9 +94,9 @@ async def test_async_sqs_logger_error_flush():
     mock_response.raise_for_status = Exception("Something went wrong")
     sqs_logger.async_httpx_client.post = AsyncMock(return_value=mock_response)
 
-    litellm.callbacks = [sqs_logger]
+    dheera_ai.callbacks = [sqs_logger]
 
-    await litellm.acompletion(
+    await dheera_ai.acompletion(
         model="gpt-4o",
         messages=[{"role": "user", "content": "hello"}],
         mock_response="Error occurred"
@@ -148,7 +148,7 @@ async def test_async_sqs_logger_error_flush():
 
 @pytest.mark.asyncio
 async def test_async_log_success_event_adds_to_queue(monkeypatch):
-    monkeypatch.setattr("litellm.aws_sqs_callback_params", {})
+    monkeypatch.setattr("dheera_ai.aws_sqs_callback_params", {})
     logger = SQSLogger(sqs_queue_url="https://example.com", sqs_region_name="us-west-2")
 
     fake_payload = {"some": "data"}
@@ -160,7 +160,7 @@ async def test_async_log_success_event_adds_to_queue(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_async_log_failure_event_adds_to_queue(monkeypatch):
-    monkeypatch.setattr("litellm.aws_sqs_callback_params", {})
+    monkeypatch.setattr("dheera_ai.aws_sqs_callback_params", {})
     logger = SQSLogger(sqs_queue_url="https://example.com", sqs_region_name="us-west-2")
 
     fake_payload = {"fail": True}
@@ -177,7 +177,7 @@ async def test_async_log_failure_event_adds_to_queue(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_async_send_batch_triggers_tasks(monkeypatch):
-    monkeypatch.setattr("litellm.aws_sqs_callback_params", {})
+    monkeypatch.setattr("dheera_ai.aws_sqs_callback_params", {})
     logger = SQSLogger(sqs_queue_url="https://example.com", sqs_region_name="us-west-2")
     logger.async_send_message = AsyncMock()
 
@@ -212,7 +212,7 @@ def test_appcrypto_invalid_key_length():
 # =============================================================================
 
 def test_sqs_logger_init_without_encryption(monkeypatch):
-    monkeypatch.setattr("litellm.aws_sqs_callback_params", {})
+    monkeypatch.setattr("dheera_ai.aws_sqs_callback_params", {})
     # Patch asyncio.create_task to avoid RuntimeError
     monkeypatch.setattr(asyncio, "create_task", MagicMock())
     logger = SQSLogger(sqs_queue_url="https://example.com", sqs_region_name="us-west-2")
@@ -221,7 +221,7 @@ def test_sqs_logger_init_without_encryption(monkeypatch):
 
 
 def test_sqs_logger_init_with_encryption(monkeypatch):
-    monkeypatch.setattr("litellm.aws_sqs_callback_params", {})
+    monkeypatch.setattr("dheera_ai.aws_sqs_callback_params", {})
     monkeypatch.setattr(asyncio, "create_task", MagicMock())
     key_b64 = base64.b64encode(os.urandom(32)).decode()
 
@@ -237,7 +237,7 @@ def test_sqs_logger_init_with_encryption(monkeypatch):
 
 
 def test_sqs_logger_init_with_encryption_missing_key(monkeypatch):
-    monkeypatch.setattr("litellm.aws_sqs_callback_params", {})
+    monkeypatch.setattr("dheera_ai.aws_sqs_callback_params", {})
     monkeypatch.setattr(asyncio, "create_task", MagicMock())
     with pytest.raises(ValueError, match="required when encryption is enabled"):
         SQSLogger(
@@ -253,7 +253,7 @@ def test_sqs_logger_init_with_encryption_missing_key(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_async_log_success_event_adds_to_queue(monkeypatch):
-    monkeypatch.setattr("litellm.aws_sqs_callback_params", {})
+    monkeypatch.setattr("dheera_ai.aws_sqs_callback_params", {})
     monkeypatch.setattr(asyncio, "create_task", MagicMock())
     logger = SQSLogger(sqs_queue_url="https://example.com", sqs_region_name="us-west-2")
 
@@ -266,7 +266,7 @@ async def test_async_log_success_event_adds_to_queue(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_async_log_failure_event_adds_to_queue(monkeypatch):
-    monkeypatch.setattr("litellm.aws_sqs_callback_params", {})
+    monkeypatch.setattr("dheera_ai.aws_sqs_callback_params", {})
     monkeypatch.setattr(asyncio, "create_task", MagicMock())
     logger = SQSLogger(sqs_queue_url="https://example.com", sqs_region_name="us-west-2")
 
@@ -283,7 +283,7 @@ async def test_async_log_failure_event_adds_to_queue(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_async_send_batch_triggers_tasks(monkeypatch):
-    monkeypatch.setattr("litellm.aws_sqs_callback_params", {})
+    monkeypatch.setattr("dheera_ai.aws_sqs_callback_params", {})
     monkeypatch.setattr(asyncio, "create_task", MagicMock())
     logger = SQSLogger(sqs_queue_url="https://example.com", sqs_region_name="us-west-2")
 
@@ -436,7 +436,7 @@ async def test_strip_base64_recursive_redaction():
 
 @pytest.mark.asyncio
 async def test_async_health_check_healthy(monkeypatch):
-    monkeypatch.setattr("litellm.aws_sqs_callback_params", {})
+    monkeypatch.setattr("dheera_ai.aws_sqs_callback_params", {})
     monkeypatch.setattr(asyncio, "create_task", MagicMock())
     logger = SQSLogger(sqs_queue_url="https://example.com", sqs_region_name="us-west-2")
     logger.async_send_message = AsyncMock(return_value=None)
@@ -448,7 +448,7 @@ async def test_async_health_check_healthy(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_async_health_check_unhealthy(monkeypatch):
-    monkeypatch.setattr("litellm.aws_sqs_callback_params", {})
+    monkeypatch.setattr("dheera_ai.aws_sqs_callback_params", {})
     monkeypatch.setattr(asyncio, "create_task", MagicMock())
     logger = SQSLogger(sqs_queue_url="https://example.com", sqs_region_name="us-west-2")
     logger.async_send_message = AsyncMock(side_effect=Exception("boom"))

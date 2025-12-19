@@ -1,14 +1,14 @@
 # OpenRouter
-LiteLLM supports all the text / chat / vision models from [OpenRouter](https://openrouter.ai/docs)
+Dheera AI supports all the text / chat / vision models from [OpenRouter](https://openrouter.ai/docs)
 
-<a target="_blank" href="https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/LiteLLM_OpenRouter.ipynb">
+<a target="_blank" href="https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/Dheera AI_OpenRouter.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 
 ## Usage
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["OPENROUTER_API_KEY"] = ""
 os.environ["OPENROUTER_API_BASE"] = "" # [OPTIONAL] defaults to https://openrouter.ai/api/v1
@@ -27,13 +27,13 @@ For production environments, you can dynamically configure the base_url using en
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # Configure with environment variables
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_BASE_URL = os.getenv("OPENROUTER_API_BASE", "https://openrouter.ai/api/v1")
 
-# Set environment for LiteLLM
+# Set environment for Dheera AI
 os.environ["OPENROUTER_API_KEY"] = OPENROUTER_API_KEY
 os.environ["OPENROUTER_API_BASE"] = OPENROUTER_BASE_URL
 
@@ -47,7 +47,7 @@ response = completion(
 This approach provides better flexibility for managing configurations across different environments (dev, staging, production) and makes it easier to switch between self-hosted and cloud endpoints.
 
 ## OpenRouter Completion Models
-🚨 LiteLLM supports ALL OpenRouter models, send `model=openrouter/<your-openrouter-model>` to send it to open router. See all openrouter models [here](https://openrouter.ai/models)
+🚨 Dheera AI supports ALL OpenRouter models, send `model=openrouter/<your-openrouter-model>` to send it to open router. See all openrouter models [here](https://openrouter.ai/models)
 
 | Model Name                | Function Call                                       |
 |---------------------------|-----------------------------------------------------|
@@ -63,11 +63,11 @@ This approach provides better flexibility for managing configurations across dif
 | openrouter/meta-llama/llama-2-70b-chat | `completion('openrouter/meta-llama/llama-2-70b-chat', messages)` | `os.environ['OR_SITE_URL']`,`os.environ['OR_APP_NAME']`,`os.environ['OPENROUTER_API_KEY']` |
 
 ## Passing OpenRouter Params - transforms, models, route
-Pass `transforms`, `models`, `route`as arguments to `litellm.completion()`
+Pass `transforms`, `models`, `route`as arguments to `dheera_ai.completion()`
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["OPENROUTER_API_KEY"] = ""
 

@@ -5,13 +5,13 @@ import Image from '@theme/IdealImage';
 
 # 🪢 Langfuse OpenTelemetry Integration
 
-The Langfuse OpenTelemetry integration allows you to send LiteLLM traces and observability data to Langfuse using the OpenTelemetry protocol. This provides a standardized way to collect and analyze your LLM usage data.
+The Langfuse OpenTelemetry integration allows you to send Dheera AI traces and observability data to Langfuse using the OpenTelemetry protocol. This provides a standardized way to collect and analyze your LLM usage data.
 
 <Image img={require('../../img/langfuse_otel.png')} />
 
 ## Features
 
-- Automatic trace collection for all LiteLLM requests
+- Automatic trace collection for all Dheera AI requests
 - Support for Langfuse Cloud (EU and US regions)
 - Support for self-hosted Langfuse instances
 - Custom endpoint configuration
@@ -24,7 +24,7 @@ The Langfuse OpenTelemetry integration allows you to send LiteLLM traces and obs
 2. **API Keys**: Get your public and secret keys from your Langfuse project settings
 3. **Dependencies**: Install required packages:
    ```bash
-   pip install litellm opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp
+   pip install dheera_ai opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp
    ```
 
 ## Configuration
@@ -50,17 +50,17 @@ The integration automatically constructs the OTEL endpoint from `LANGFUSE_OTEL_H
 
 ```python
 import os
-import litellm
+import dheera_ai
 
 # Set your Langfuse credentials
 os.environ["LANGFUSE_PUBLIC_KEY"] = "pk-lf-..."
 os.environ["LANGFUSE_SECRET_KEY"] = "sk-lf-..."
 
 # Enable Langfuse OTEL integration
-litellm.callbacks = ["langfuse_otel"]
+dheera_ai.callbacks = ["langfuse_otel"]
 
 # Make LLM requests as usual
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gpt-3.5-turbo",
     messages=[{"role": "user", "content": "Hello!"}]
 )
@@ -70,7 +70,7 @@ response = litellm.completion(
 
 ```python
 import os
-import litellm
+import dheera_ai
 
 # Set your Langfuse credentials
 os.environ["LANGFUSE_PUBLIC_KEY"] = "pk-lf-..."
@@ -83,7 +83,7 @@ os.environ["LANGFUSE_OTEL_HOST"] = "https://cloud.langfuse.com"  # EU region
 # Or use self-hosted instance
 # os.environ["LANGFUSE_OTEL_HOST"] = "https://my-langfuse.company.com"
 
-litellm.callbacks = ["langfuse_otel"]
+dheera_ai.callbacks = ["langfuse_otel"]
 ```
 
 ### Manual OTEL Configuration
@@ -93,7 +93,7 @@ If you need direct control over the OpenTelemetry configuration:
 ```python
 import os
 import base64
-import litellm
+import dheera_ai
 
 # Get keys for your project from the project settings page: https://cloud.langfuse.com
 os.environ["LANGFUSE_PUBLIC_KEY"] = "pk-lf-..." 
@@ -110,10 +110,10 @@ host = os.environ.get("LANGFUSE_OTEL_HOST")
 os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = host + "/api/public/otel"
 os.environ["OTEL_EXPORTER_OTLP_HEADERS"] = f"Authorization=Basic {LANGFUSE_AUTH}"
 
-litellm.callbacks = ["langfuse_otel"]
+dheera_ai.callbacks = ["langfuse_otel"]
 ```
 
-### With LiteLLM Proxy
+### With Dheera AI Proxy
 
 Add the integration to your proxy configuration:
 
@@ -130,14 +130,14 @@ export LANGFUSE_OTEL_HOST="https://us.cloud.langfuse.com"  # Default US region
 
 ```yaml
 # config.yaml
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["langfuse_otel"]
 ```
 
 3. Run the proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 ## Data Collected
@@ -161,7 +161,7 @@ All metadata fields available in the vanilla Langfuse integration are now **full
 ### Passing Metadata – Example
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gpt-3.5-turbo",
     messages=[{"role": "user", "content": "Hello!"}],
     metadata={
@@ -223,15 +223,15 @@ Enable verbose logging to see detailed information:
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
-litellm._turn_on_debug()
+import dheera_ai
+dheera_ai._turn_on_debug()
 ```
 
 </TabItem>
 <TabItem value="proxy" label="PROXY">
 
 ```bash
-export LITELLM_LOG="DEBUG"
+export DHEERA_AI_LOG="DEBUG"
 ```
 
 </TabItem>
@@ -247,4 +247,4 @@ This will show:
 - [Langfuse Documentation](https://langfuse.com/docs)
 - [Langfuse OpenTelemetry Guide](https://langfuse.com/docs/integrations/opentelemetry)
 - [OpenTelemetry Python SDK](https://opentelemetry.io/docs/languages/python/)
-- [LiteLLM Observability](https://docs.litellm.ai/docs/observability/) 
+- [Dheera AI Observability](https://docs.dheera_ai.ai/docs/observability/) 

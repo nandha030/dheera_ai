@@ -13,15 +13,15 @@ Fallbacks | ✅ (Between supported models) |
 
 :::tip
 
-LiteLLM follows the [OpenAI Video Generation API specification](https://platform.openai.com/docs/guides/video-generation)
+Dheera AI follows the [OpenAI Video Generation API specification](https://platform.openai.com/docs/guides/video-generation)
 
 :::
 
-## **LiteLLM Python SDK Usage**
+## **Dheera AI Python SDK Usage**
 ### Quick Start 
 
 ```python
-from litellm import video_generation, video_status, video_content
+from dheera_ai import video_generation, video_status, video_content
 import os
 import time
 
@@ -67,7 +67,7 @@ with open("generated_video.mp4", "wb") as f:
 ### Async Usage 
 
 ```python
-from litellm import avideo_generation, avideo_status, avideo_content
+from dheera_ai import avideo_generation, avideo_status, avideo_content
 import os, asyncio
 
 os.environ["OPENAI_API_KEY"] = "sk-.."
@@ -114,7 +114,7 @@ asyncio.run(test_async_video())
 ### Video Status Checking
 
 ```python
-from litellm import video_status
+from dheera_ai import video_status
 
 status_response = video_status(
     video_id="video_1234567890"
@@ -130,7 +130,7 @@ print(f"Model: {status_response.model}")
 For listing videos, you need to specify the provider since there's no video_id to decode from:
 
 ```python
-from litellm import video_list
+from dheera_ai import video_list
 
 # List videos from OpenAI
 videos = video_list(custom_llm_provider="openai")
@@ -142,7 +142,7 @@ for video in videos:
 ### Video Generation with Reference Image
 
 ```python
-from litellm import video_generation
+from dheera_ai import video_generation
 
 # Video generation with reference image
 response = video_generation(
@@ -159,7 +159,7 @@ print(f"Video ID: {response.id}")
 ### Video Remix (Video Editing)
 
 ```python
-from litellm import video_remix
+from dheera_ai import video_remix
 
 # Video remix with reference image
 response = video_remix(
@@ -188,7 +188,7 @@ response = video_generation(
 ### Azure Video Generation
 
 ```python
-from litellm import video_generation
+from dheera_ai import video_generation
 import os
 
 os.environ["AZURE_OPENAI_API_KEY"] = "your-azure-api-key"
@@ -205,9 +205,9 @@ response = video_generation(
 print(f"Video ID: {response.id}")
 ```
 
-## **LiteLLM Proxy Usage**
+## **Dheera AI Proxy Usage**
 
-LiteLLM provides OpenAI API compatible video endpoints for complete video generation workflow:
+Dheera AI provides OpenAI API compatible video endpoints for complete video generation workflow:
 
 - `/videos` - Generate new videos
 - `/videos/remix` - Edit existing videos with reference images  
@@ -216,25 +216,25 @@ LiteLLM provides OpenAI API compatible video endpoints for complete video genera
 
 **Setup**
 
-Add this to your litellm proxy config.yaml
+Add this to your dheera_ai proxy config.yaml
 
 ```yaml
 model_list:
   - model_name: sora-2
-    litellm_params:
+    dheera_ai_params:
       model: openai/sora-2
       api_key: os.environ/OPENAI_API_KEY
   - model_name: azure-sora-2
-    litellm_params:
+    dheera_ai_params:
       model: azure/sora-2
       api_key: os.environ/AZURE_OPENAI_API_KEY
       api_base: os.environ/AZURE_OPENAI_API_BASE
 ```
 
-Start litellm
+Start dheera_ai
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -244,7 +244,7 @@ Test video generation request
 ```bash
 curl --location 'http://localhost:4000/v1/videos' \
 --header 'Content-Type: application/json' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --data '{
     "model": "sora-2",
     "prompt": "A beautiful sunset over the ocean"
@@ -255,14 +255,14 @@ Test video status request
 
 ```bash
 curl --location 'http://localhost:4000/v1/videos/{video_id}' \
---header 'x-litellm-api-key: sk-1234'
+--header 'x-dheera_ai-api-key: sk-1234'
 ```
 
 Test video retrieval request
 
 ```bash
 curl --location 'http://localhost:4000/v1/videos/{video_id}/content' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --output video.mp4
 ```
 
@@ -271,7 +271,7 @@ Test video remix request
 ```bash
 curl --location --request POST 'http://localhost:4000/v1/videos/{video_id}/remix' \
 --header 'Content-Type: application/json' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --data '{
     "prompt": "New remix instructions"
 }'
@@ -282,11 +282,11 @@ Test video list request (requires custom_llm_provider)
 ```bash
 # Note: video_list requires custom_llm_provider since there's no video_id to decode from
 curl --location 'http://localhost:4000/v1/videos?custom_llm_provider=openai' \
---header 'x-litellm-api-key: sk-1234'
+--header 'x-dheera_ai-api-key: sk-1234'
 
 # Or using header
 curl --location 'http://localhost:4000/v1/videos' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --header 'custom-llm-provider: azure'
 ```
 
@@ -304,21 +304,21 @@ curl http://localhost:4000/v1/videos \
   }'
 ```
 
-## **Using OpenAI Client with LiteLLM Proxy**
+## **Using OpenAI Client with Dheera AI Proxy**
 
-You can use the standard OpenAI Python client to interact with LiteLLM's video endpoints. This provides a familiar interface while leveraging LiteLLM's provider abstraction and proxy features.
+You can use the standard OpenAI Python client to interact with Dheera AI's video endpoints. This provides a familiar interface while leveraging Dheera AI's provider abstraction and proxy features.
 
 ### Setup
 
-First, configure your OpenAI client to point to your LiteLLM proxy:
+First, configure your OpenAI client to point to your Dheera AI proxy:
 
 ```python
 from openai import OpenAI
 
-# Point the OpenAI client to your LiteLLM proxy
+# Point the OpenAI client to your Dheera AI proxy
 client = OpenAI(
-    api_key="sk-1234",  # Your LiteLLM proxy API key
-    base_url="http://localhost:4000/v1"  # Your LiteLLM proxy URL
+    api_key="sk-1234",  # Your Dheera AI proxy API key
+    base_url="http://localhost:4000/v1"  # Your Dheera AI proxy URL
 )
 ```
 
@@ -490,7 +490,7 @@ print(f"Remix started. ID: {remix_response.id}")
 
 :::info
 
-LiteLLM follows the **OpenAI Video Generation API specification**. 
+Dheera AI follows the **OpenAI Video Generation API specification**. 
 
 See the [official OpenAI Video Generation documentation](https://platform.openai.com/docs/guides/video-generation) for complete details.
 

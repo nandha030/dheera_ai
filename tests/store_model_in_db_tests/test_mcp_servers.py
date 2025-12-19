@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 import pytest
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import os
 import asyncio
 from unittest import mock
@@ -10,33 +10,33 @@ from fastapi import FastAPI
 
 from starlette import status
 
-from litellm.constants import LITELLM_PROXY_ADMIN_NAME
-from litellm.proxy._types import (
+from dheera_ai.constants import DHEERA_AI_PROXY_ADMIN_NAME
+from dheera_ai.proxy._types import (
     MCPTransportType,
     MCPTransport,
     NewMCPServerRequest,
     UpdateMCPServerRequest,
-    LiteLLM_MCPServerTable,
+    DheeraAI_MCPServerTable,
     LitellmUserRoles,
     UserAPIKeyAuth,
 )
-from litellm.types.mcp import MCPAuth
-from litellm.proxy.management_endpoints.mcp_management_endpoints import (
+from dheera_ai.types.mcp import MCPAuth
+from dheera_ai.proxy.management_endpoints.mcp_management_endpoints import (
     does_mcp_server_exist,
 )
 
-TEST_MASTER_KEY = os.getenv("LITELLM_MASTER_KEY", "sk-1234")
+TEST_MASTER_KEY = os.getenv("DHEERA_AI_MASTER_KEY", "sk-1234")
 
 
 def generate_mcpserver_record(
     url: Optional[str] = None, transport: Optional[MCPTransportType] = None
-) -> LiteLLM_MCPServerTable:
+) -> DheeraAI_MCPServerTable:
     """
     Generate a mock record for testing.
     """
     now = datetime.now()
 
-    return LiteLLM_MCPServerTable(
+    return DheeraAI_MCPServerTable(
         server_id=str(uuid.uuid4()),
         alias="Test Server",
         url=url or "http://localhost.com:8080/mcp",
@@ -72,7 +72,7 @@ def generate_mcpserver_create_request(
 
 
 def assert_mcp_server_record_same(
-    mcp_server: NewMCPServerRequest, resp: LiteLLM_MCPServerTable
+    mcp_server: NewMCPServerRequest, resp: DheeraAI_MCPServerTable
 ):
     """
     Assert that the mcp server record is created correctly.
@@ -88,15 +88,15 @@ def assert_mcp_server_record_same(
     assert resp.auth_type == mcp_server.auth_type
     assert resp.created_at is not None
     assert resp.updated_at is not None
-    assert resp.created_by == LITELLM_PROXY_ADMIN_NAME
-    assert resp.updated_by == LITELLM_PROXY_ADMIN_NAME
+    assert resp.created_by == DHEERA_AI_PROXY_ADMIN_NAME
+    assert resp.updated_by == DHEERA_AI_PROXY_ADMIN_NAME
 
 
 def test_does_mcp_server_exist():
     """
     Unit Test if the MCP server exists in the list.
     """
-    mcp_server_records: List[LiteLLM_MCPServerTable] = [
+    mcp_server_records: List[DheeraAI_MCPServerTable] = [
         generate_mcpserver_record(),
         generate_mcpserver_record(),
     ]
@@ -116,21 +116,21 @@ async def test_create_mcp_server_direct():
     """
     # Mock the database functions directly
     with mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.MCP_AVAILABLE",
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.MCP_AVAILABLE",
         True,
     ), mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.get_prisma_client_or_throw"
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.get_prisma_client_or_throw"
     ) as mock_get_prisma, mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.create_mcp_server",
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.create_mcp_server",
         new_callable=mock.AsyncMock,
     ) as mock_create, mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.get_mcp_server",
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.get_mcp_server",
         new_callable=mock.AsyncMock,
     ) as mock_get_server, mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.global_mcp_server_manager"
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.global_mcp_server_manager"
     ) as mock_manager:
         # Import after mocking
-        from litellm.proxy.management_endpoints.mcp_management_endpoints import (
+        from dheera_ai.proxy.management_endpoints.mcp_management_endpoints import (
             add_mcp_server,
         )
 
@@ -153,7 +153,7 @@ async def test_create_mcp_server_direct():
             else None
         )
 
-        expected_response = LiteLLM_MCPServerTable(
+        expected_response = DheeraAI_MCPServerTable(
             server_id=server_id,
             alias=expected_alias,  # Use the normalized alias
             description=mcp_server_request.description,
@@ -162,8 +162,8 @@ async def test_create_mcp_server_direct():
             auth_type=mcp_server_request.auth_type,
             created_at=datetime.now(),
             updated_at=datetime.now(),
-            created_by=LITELLM_PROXY_ADMIN_NAME,
-            updated_by=LITELLM_PROXY_ADMIN_NAME,
+            created_by=DHEERA_AI_PROXY_ADMIN_NAME,
+            updated_by=DHEERA_AI_PROXY_ADMIN_NAME,
             teams=[],
         )
         expected_response.credentials = {"auth_value": "secret"}
@@ -205,16 +205,16 @@ async def test_create_duplicate_mcp_server():
     """
     # Mock the database functions directly
     with mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.MCP_AVAILABLE",
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.MCP_AVAILABLE",
         True,
     ), mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.get_prisma_client_or_throw"
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.get_prisma_client_or_throw"
     ) as mock_get_prisma, mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.get_mcp_server",
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.get_mcp_server",
         new_callable=mock.AsyncMock,
     ) as mock_get_server:
         # Import after mocking
-        from litellm.proxy.management_endpoints.mcp_management_endpoints import (
+        from dheera_ai.proxy.management_endpoints.mcp_management_endpoints import (
             add_mcp_server,
         )
         from fastapi import HTTPException
@@ -227,7 +227,7 @@ async def test_create_duplicate_mcp_server():
         server_id = str(uuid.uuid4())
         mcp_server_request = generate_mcpserver_create_request(server_id=server_id)
 
-        existing_server = LiteLLM_MCPServerTable(
+        existing_server = DheeraAI_MCPServerTable(
             server_id=server_id,
             alias="Existing Server",
             url="http://existing.com",
@@ -265,13 +265,13 @@ async def test_create_mcp_server_auth_failure():
     """
     # Mock the database functions directly
     with mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.MCP_AVAILABLE",
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.MCP_AVAILABLE",
         True,
     ), mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.get_prisma_client_or_throw"
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.get_prisma_client_or_throw"
     ) as mock_get_prisma:
         # Import after mocking
-        from litellm.proxy.management_endpoints.mcp_management_endpoints import (
+        from dheera_ai.proxy.management_endpoints.mcp_management_endpoints import (
             add_mcp_server,
         )
         from fastapi import HTTPException
@@ -308,16 +308,16 @@ async def test_create_mcp_server_invalid_alias():
     Test that creating an MCP server with a '-' in the alias fails with the correct error.
     """
     with mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.MCP_AVAILABLE",
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.MCP_AVAILABLE",
         True,
     ), mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.get_prisma_client_or_throw"
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.get_prisma_client_or_throw"
     ) as mock_get_prisma, mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.get_mcp_server"
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.get_mcp_server"
     ) as mock_get_server, mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.create_mcp_server"
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.create_mcp_server"
     ) as mock_create:
-        from litellm.proxy.management_endpoints.mcp_management_endpoints import (
+        from dheera_ai.proxy.management_endpoints.mcp_management_endpoints import (
             add_mcp_server,
         )
         from fastapi import HTTPException
@@ -359,20 +359,20 @@ async def test_create_mcp_server_invalid_alias():
 @pytest.mark.asyncio
 async def test_edit_mcp_server_redacts_credentials():
     with mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.MCP_AVAILABLE",
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.MCP_AVAILABLE",
         True,
     ), mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.get_prisma_client_or_throw"
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.get_prisma_client_or_throw"
     ) as mock_get_prisma, mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.update_mcp_server",
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.update_mcp_server",
         new_callable=mock.AsyncMock,
     ) as mock_update, mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.validate_and_normalize_mcp_server_payload",
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.validate_and_normalize_mcp_server_payload",
         autospec=True,
     ) as mock_validate, mock.patch(
-        "litellm.proxy.management_endpoints.mcp_management_endpoints.global_mcp_server_manager"
+        "dheera_ai.proxy.management_endpoints.mcp_management_endpoints.global_mcp_server_manager"
     ) as mock_manager:
-        from litellm.proxy.management_endpoints.mcp_management_endpoints import (
+        from dheera_ai.proxy.management_endpoints.mcp_management_endpoints import (
             edit_mcp_server,
         )
 
@@ -383,7 +383,7 @@ async def test_edit_mcp_server_redacts_credentials():
         mock_manager.reload_servers_from_database = mock.AsyncMock()
 
         server_id = str(uuid.uuid4())
-        updated_server = LiteLLM_MCPServerTable(
+        updated_server = DheeraAI_MCPServerTable(
             server_id=server_id,
             alias="Updated Server",
             url="https://updated.example.com/mcp",
@@ -423,7 +423,7 @@ def test_validate_mcp_server_name_direct():
     """
     Test the validation function directly to ensure it works.
     """
-    from litellm.proxy._experimental.mcp_server.utils import validate_mcp_server_name
+    from dheera_ai.proxy._experimental.mcp_server.utils import validate_mcp_server_name
     from fastapi import HTTPException
 
     # Test that valid names pass

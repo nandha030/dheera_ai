@@ -34,17 +34,17 @@ class TestRouterSearch:
         """
         Test router's asearch method with search_tools configuration.
         """
-        from litellm import Router
-        import litellm
+        from dheera_ai import Router
+        import dheera_ai
         
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         
         # Create router with search_tools config
         router = Router(
             search_tools=[
                 {
-                    "search_tool_name": "litellm-search",
-                    "litellm_params": {
+                    "search_tool_name": "dheera_ai-search",
+                    "dheera_ai_params": {
                         "search_provider": "perplexity",
                         "api_key": os.environ.get("PERPLEXITYAI_API_KEY"),
                     }
@@ -55,7 +55,7 @@ class TestRouterSearch:
         # Test the search
         response = await router.asearch(
             query="latest AI developments",
-            search_tool_name="litellm-search",
+            search_tool_name="dheera_ai-search",
             max_results=3
         )
         

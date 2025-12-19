@@ -10,13 +10,13 @@ from unittest.mock import MagicMock, patch
 logging.basicConfig(level=logging.DEBUG)
 sys.path.insert(0, os.path.abspath("../.."))
 
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
-litellm.num_retries = 3
-litellm.success_callback = ["helicone"]
+dheera_ai.num_retries = 3
+dheera_ai.success_callback = ["helicone"]
 os.environ["HELICONE_DEBUG"] = "True"
-os.environ["LITELLM_LOG"] = "DEBUG"
+os.environ["DHEERA_AI_LOG"] = "DEBUG"
 
 import pytest
 
@@ -39,12 +39,12 @@ def pre_helicone_setup():
 def test_helicone_logging_async():
     try:
         pre_helicone_setup()
-        litellm.success_callback = []
+        dheera_ai.success_callback = []
         start_time_empty_callback = asyncio.run(make_async_calls())
         print("done with no callback test")
 
         print("starting helicone test")
-        litellm.success_callback = ["helicone"]
+        dheera_ai.success_callback = ["helicone"]
         start_time_helicone = asyncio.run(make_async_calls())
         print("done with helicone test")
 
@@ -53,7 +53,7 @@ def test_helicone_logging_async():
 
         assert abs(start_time_helicone - start_time_empty_callback) < 1
 
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         pass
     except Exception as e:
         pytest.fail(f"An exception occurred - {e}")
@@ -88,7 +88,7 @@ def create_async_task(**completion_kwargs):
         "mock_response": "It's simple to use and easy to get started",
     }
     completion_args.update(completion_kwargs)
-    return asyncio.create_task(litellm.acompletion(**completion_args))
+    return asyncio.create_task(dheera_ai.acompletion(**completion_args))
 
 
 @pytest.mark.asyncio
@@ -97,9 +97,9 @@ def create_async_task(**completion_kwargs):
     reason="Authentication missing for openai",
 )
 async def test_helicone_logging_metadata():
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
-    litellm.success_callback = ["helicone"]
+    dheera_ai.success_callback = ["helicone"]
 
     request_id = str(uuid.uuid4())
     trace_common_metadata = {"Helicone-Property-Request-Id": request_id}
@@ -127,10 +127,10 @@ async def test_helicone_logging_metadata():
 
 def test_helicone_removes_otel_span_from_metadata():
     """
-    Test that HeliconeLogger removes litellm_parent_otel_span from metadata
+    Test that HeliconeLogger removes dheera_ai_parent_otel_span from metadata
     to prevent JSON serialization errors.
     """
-    from litellm.integrations.helicone import HeliconeLogger
+    from dheera_ai.integrations.helicone import HeliconeLogger
     from unittest.mock import MagicMock
     
     # Create a mock span object (similar to what OpenTelemetry would create)
@@ -141,7 +141,7 @@ def test_helicone_removes_otel_span_from_metadata():
     metadata = {
         "user_id": "test_user",
         "request_id": "test_request_123",
-        "litellm_parent_otel_span": mock_span,  # This would cause JSON serialization error
+        "dheera_ai_parent_otel_span": mock_span,  # This would cause JSON serialization error
         "other_metadata": "some_value"
     }
     
@@ -149,11 +149,11 @@ def test_helicone_removes_otel_span_from_metadata():
     logger = HeliconeLogger()
     
     # Test the add_metadata_from_header method
-    litellm_params = {"proxy_server_request": {"headers": {}}}
-    result_metadata = logger.add_metadata_from_header(litellm_params, metadata)
+    dheera_ai_params = {"proxy_server_request": {"headers": {}}}
+    result_metadata = logger.add_metadata_from_header(dheera_ai_params, metadata)
     
-    # Verify that litellm_parent_otel_span was removed
-    assert "litellm_parent_otel_span" not in result_metadata
+    # Verify that dheera_ai_parent_otel_span was removed
+    assert "dheera_ai_parent_otel_span" not in result_metadata
     assert "user_id" in result_metadata
     assert "request_id" in result_metadata
     assert "other_metadata" in result_metadata
@@ -161,4 +161,4 @@ def test_helicone_removes_otel_span_from_metadata():
     assert result_metadata["request_id"] == "test_request_123"
     assert result_metadata["other_metadata"] == "some_value"
     
-    print("✅ Test passed: litellm_parent_otel_span was successfully removed from metadata")
+    print("✅ Test passed: dheera_ai_parent_otel_span was successfully removed from metadata")

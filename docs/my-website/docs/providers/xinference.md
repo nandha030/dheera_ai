@@ -6,11 +6,11 @@ https://inference.readthedocs.io/en/latest/index.html
 | Property | Details |
 |-------|-------|
 | Description | Xinference is an open-source platform to run inference with any open-source LLMs, image generation models, and more. |
-| Provider Route on LiteLLM | `xinference/` |
+| Provider Route on Dheera AI | `xinference/` |
 | Link to Provider Doc | [Xinference ↗](https://inference.readthedocs.io/en/latest/index.html) |
 | Supported Operations | [`/embeddings`](#sample-usage---embedding), [`/images/generations`](#image-generation) |
 
-LiteLLM supports Xinference Embedding + Image Generation calls.
+Dheera AI supports Xinference Embedding + Image Generation calls.
 
 ## API Base, Key
 ```python
@@ -21,36 +21,36 @@ os.environ['XINFERENCE_API_KEY'] = "anything" #[optional] no api key required
 
 ## Sample Usage - Embedding
 ```python showLineNumbers
-from litellm import embedding
+from dheera_ai import embedding
 import os
 
 os.environ['XINFERENCE_API_BASE'] = "http://127.0.0.1:9997/v1"
 response = embedding(
     model="xinference/bge-base-en",
-    input=["good morning from litellm"],
+    input=["good morning from dheera_ai"],
 )
 print(response)
 ```
 
 ## Sample Usage `api_base` param
 ```python showLineNumbers
-from litellm import embedding
+from dheera_ai import embedding
 import os
 
 response = embedding(
     model="xinference/bge-base-en",
     api_base="http://127.0.0.1:9997/v1",
-    input=["good morning from litellm"],
+    input=["good morning from dheera_ai"],
 )
 print(response)
 ```
 
 ## Image Generation
 
-### Usage - LiteLLM Python SDK
+### Usage - Dheera AI Python SDK
 
 ```python showLineNumbers
-from litellm import image_generation
+from dheera_ai import image_generation
 import os
 
 # xinference image generation call
@@ -62,14 +62,14 @@ response = image_generation(
 print(response)
 ```
 
-### Usage - LiteLLM Proxy Server
+### Usage - Dheera AI Proxy Server
 
 #### 1. Setup config.yaml
 
 ```yaml showLineNumbers
 model_list:
   - model_name: xinference-sd
-    litellm_params:
+    dheera_ai_params:
       model: xinference/stabilityai/stable-diffusion-3.5-large
       api_base: http://127.0.0.1:9997/v1
       api_key: anything
@@ -83,7 +83,7 @@ general_settings:
 #### 2. Start the proxy
 
 ```bash showLineNumbers
-litellm --config config.yaml
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -106,7 +106,7 @@ curl --location 'http://0.0.0.0:4000/v1/images/generations' \
 ### Advanced Usage - With Additional Parameters
 
 ```python showLineNumbers
-from litellm import image_generation
+from dheera_ai import image_generation
 import os
 
 os.environ['XINFERENCE_API_BASE'] = "http://127.0.0.1:9997/v1"

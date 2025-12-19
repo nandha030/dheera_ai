@@ -6,7 +6,7 @@ import TabItem from '@theme/TabItem';
 
 :::info
 
-This is an Enterprise only endpoint [Get Started with Enterprise here](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+This is an Enterprise only endpoint [Get Started with Enterprise here](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
@@ -14,17 +14,17 @@ This is an Enterprise only endpoint [Get Started with Enterprise here](https://c
 |-------|-------|-------|
 | Supported Providers | OpenAI, Azure OpenAI, Vertex AI | - |
 
-#### ⚡️See an exhaustive list of supported models and providers at [models.litellm.ai](https://models.litellm.ai/)
-| Cost Tracking | 🟡 | [Let us know if you need this](https://github.com/BerriAI/litellm/issues) |
+#### ⚡️See an exhaustive list of supported models and providers at [models.dheera_ai.ai](https://models.dheera_ai.ai/)
+| Cost Tracking | 🟡 | [Let us know if you need this](https://github.com/BerriAI/dheera_ai/issues) |
 | Logging | ✅ | Works across all logging integrations |
 
 
-Add `finetune_settings` and `files_settings` to your litellm config.yaml to use the fine-tuning endpoints.
+Add `finetune_settings` and `files_settings` to your dheera_ai config.yaml to use the fine-tuning endpoints.
 ## Example config.yaml for `finetune_settings` and `files_settings`
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
@@ -58,11 +58,11 @@ files_settings:
 <TabItem value="openai" label="OpenAI Python SDK">
 
 ```python
-client = AsyncOpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000") # base_url is your litellm proxy url
+client = AsyncOpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000") # base_url is your dheera_ai proxy url
 
 file_name = "openai_batch_completions.jsonl"
 response = await client.files.create(
-    extra_headers={"custom-llm-provider": "azure"}, # tell litellm proxy which provider to use
+    extra_headers={"custom-llm-provider": "azure"}, # tell dheera_ai proxy which provider to use
     file=open(file_name, "rb"),
     purpose="fine-tune",
 )
@@ -92,7 +92,7 @@ curl http://localhost:4000/v1/files \
 ft_job = await client.fine_tuning.jobs.create(
     model="gpt-35-turbo-1106",                   # Azure OpenAI model you want to fine-tune
     training_file="file-abc123",                 # file_id from create file response
-    extra_headers={"custom-llm-provider": "azure"}, # tell litellm proxy which provider to use
+    extra_headers={"custom-llm-provider": "azure"}, # tell dheera_ai proxy which provider to use
 )
 ```
 </TabItem>
@@ -215,7 +215,7 @@ curl http://localhost:4000/v1/fine_tuning/jobs \
 # cancel specific fine tuning job
 cancel_ft_job = await client.fine_tuning.jobs.cancel(
     fine_tuning_job_id="123",                          # fine tuning job id
-    extra_headers={"custom-llm-provider": "azure"},       # tell litellm proxy which provider to use
+    extra_headers={"custom-llm-provider": "azure"},       # tell dheera_ai proxy which provider to use
 )
 
 print("response from cancel ft job={}".format(cancel_ft_job))
@@ -242,7 +242,7 @@ curl -X POST http://localhost:4000/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
 ```python
 list_ft_jobs = await client.fine_tuning.jobs.list(
-    extra_headers={"custom-llm-provider": "azure"}   # tell litellm proxy which provider to use
+    extra_headers={"custom-llm-provider": "azure"}   # tell dheera_ai proxy which provider to use
 )
 
 print("list of ft jobs={}".format(list_ft_jobs))
@@ -263,4 +263,4 @@ curl -X GET 'http://localhost:4000/v1/fine_tuning/jobs' \
 
 
 
-## [👉 Proxy API Reference](https://litellm-api.up.railway.app/#/fine-tuning)
+## [👉 Proxy API Reference](https://dheera_ai-api.up.railway.app/#/fine-tuning)

@@ -10,7 +10,7 @@ Litellm supports Ragflow's chat completions APIs
 - ✅ Chat completions
 - ✅ Streaming responses
 - ✅ Both chat and agent endpoints
-- ✅ Multiple credential sources (params, env vars, litellm_params)
+- ✅ Multiple credential sources (params, env vars, dheera_ai_params)
 - ✅ OpenAI-compatible API format
 
 
@@ -43,7 +43,7 @@ The model name format embeds the endpoint type and ID:
 ## Sample Usage - Chat Endpoint
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['RAGFLOW_API_KEY'] = "your-ragflow-api-key"
@@ -59,7 +59,7 @@ print(response)
 ## Sample Usage - Agent Endpoint
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['RAGFLOW_API_KEY'] = "your-ragflow-api-key"
@@ -77,7 +77,7 @@ print(response)
 You can also pass `api_key` and `api_base` directly as parameters:
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="ragflow/chat/my-chat-id/gpt-4o-mini",
@@ -91,7 +91,7 @@ print(response)
 ## Sample Usage - Streaming
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['RAGFLOW_API_KEY'] = "your-ragflow-api-key"
@@ -131,14 +131,14 @@ Where:
 
 ## Configuration Sources
 
-LiteLLM supports multiple ways to provide credentials, checked in this order:
+Dheera AI supports multiple ways to provide credentials, checked in this order:
 
 1. **Function parameters**: `api_key="..."`, `api_base="..."`
-2. **litellm_params**: `litellm_params={"api_key": "...", "api_base": "..."}`
+2. **dheera_ai_params**: `dheera_ai_params={"api_key": "...", "api_base": "..."}`
 3. **Environment variables**: `RAGFLOW_API_KEY`, `RAGFLOW_API_BASE`
-4. **Global litellm settings**: `litellm.api_key`, `litellm.api_base`
+4. **Global dheera_ai settings**: `dheera_ai.api_key`, `dheera_ai.api_base`
 
-## Usage - LiteLLM Proxy Server
+## Usage - Dheera AI Proxy Server
 
 ### 1. Save key in your environment
 
@@ -155,12 +155,12 @@ export RAGFLOW_API_BASE="http://localhost:9380"
 ```yaml
 model_list:
   - model_name: ragflow-chat-gpt4
-    litellm_params:
+    dheera_ai_params:
       model: ragflow/chat/my-chat-id/gpt-4o-mini
       api_key: os.environ/RAGFLOW_API_KEY
       api_base: os.environ/RAGFLOW_API_BASE
   - model_name: ragflow-agent-gpt4
-    litellm_params:
+    dheera_ai_params:
       model: ragflow/agent/my-agent-id/gpt-4o-mini
       api_key: os.environ/RAGFLOW_API_KEY
       api_base: os.environ/RAGFLOW_API_BASE
@@ -170,7 +170,7 @@ model_list:
 <TabItem value="cli" label="CLI">
 
 ```bash
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 
 # Server running on http://0.0.0.0:4000
 ```
@@ -202,7 +202,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-1234",  # Your LiteLLM proxy key
+    api_key="sk-1234",  # Your Dheera AI proxy key
     base_url="http://0.0.0.0:4000"
 )
 
@@ -220,7 +220,7 @@ print(response)
 
 ## API Base URL Handling
 
-The `api_base` parameter can be provided with or without `/v1` suffix. LiteLLM will automatically handle it:
+The `api_base` parameter can be provided with or without `/v1` suffix. Dheera AI will automatically handle it:
 
 - `http://localhost:9380` → `http://localhost:9380/api/v1/chats_openai/{chat_id}/chat/completions`
 - `http://localhost:9380/v1` → `http://localhost:9380/api/v1/chats_openai/{chat_id}/chat/completions`
@@ -233,7 +233,7 @@ All three formats will work correctly.
 If you encounter errors:
 
 1. **Invalid model format**: Ensure your model name follows `ragflow/{chat|agent}/{id}/{model_name}` format
-2. **Missing api_base**: Provide `api_base` via parameter, environment variable, or litellm_params
+2. **Missing api_base**: Provide `api_base` via parameter, environment variable, or dheera_ai_params
 3. **Connection errors**: Verify your RAGFlow server is running and accessible at the provided `api_base`
 
 :::info

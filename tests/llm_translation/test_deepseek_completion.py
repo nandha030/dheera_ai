@@ -1,6 +1,6 @@
 from base_llm_unit_tests import BaseLLMChatTest
 import pytest
-import litellm
+import dheera_ai
 
 # Test implementations
 @pytest.mark.skip(reason="Deepseek API is hanging")
@@ -11,7 +11,7 @@ class TestDeepSeekChatCompletion(BaseLLMChatTest):
         }
 
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
         pass
 
 
@@ -20,10 +20,10 @@ def test_deepseek_mock_completion(stream):
     """
     Deepseek API is hanging. Mock the call, to a fake endpoint, so we can confirm our integration is working.
     """
-    import litellm
-    from litellm import completion
+    import dheera_ai
+    from dheera_ai import completion
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     response = completion(
         model="deepseek/deepseek-reasoner",
@@ -45,12 +45,12 @@ async def test_deepseek_provider_async_completion(stream):
     """
     Test that Deepseek provider requests are formatted correctly with the proper parameters
     """
-    import litellm
+    import dheera_ai
     import json
     from unittest.mock import patch, AsyncMock, MagicMock
-    from litellm import acompletion
+    from dheera_ai import acompletion
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     # Set up the test parameters
     api_key = "fake_api_key"
@@ -59,12 +59,12 @@ async def test_deepseek_provider_async_completion(stream):
 
     # Mock AsyncHTTPHandler.post method for async test
     with patch(
-        "litellm.llms.custom_httpx.llm_http_handler.AsyncHTTPHandler.post"
+        "dheera_ai.llms.custom_httpx.llm_http_handler.AsyncHTTPHandler.post"
     ) as mock_post:
-        mock_response_data = litellm.ModelResponse(
+        mock_response_data = dheera_ai.ModelResponse(
             choices=[
-                litellm.Choices(
-                    message=litellm.Message(content="Hello!"),
+                dheera_ai.Choices(
+                    message=dheera_ai.Message(content="Hello!"),
                     index=0,
                     finish_reason="stop",
                 )
@@ -107,7 +107,7 @@ async def test_deepseek_provider_async_completion(stream):
 
 
 def test_completion_cost_deepseek():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "deepseek/deepseek-chat"
     messages_1 = [
         {
@@ -156,8 +156,8 @@ def test_completion_cost_deepseek():
         {"role": "user", "content": "When did the Shang Dynasty fall?"},
     ]
     try:
-        response_1 = litellm.completion(model=model_name, messages=messages_1)
-        response_2 = litellm.completion(model=model_name, messages=message_2)
+        response_1 = dheera_ai.completion(model=model_name, messages=messages_1)
+        response_2 = dheera_ai.completion(model=model_name, messages=message_2)
         # Add any assertions here to check the response
         print(response_2)
         assert response_2.usage.prompt_cache_hit_tokens is not None
@@ -171,7 +171,7 @@ def test_completion_cost_deepseek():
             response_2.usage._cache_read_input_tokens
             == response_2.usage.prompt_cache_hit_tokens
         )
-    except litellm.APIError as e:
+    except dheera_ai.APIError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")

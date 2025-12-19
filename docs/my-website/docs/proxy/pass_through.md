@@ -4,7 +4,7 @@ import TabItem from '@theme/TabItem';
 
 # Create Pass Through Endpoints 
 
-Route requests from your LiteLLM proxy to any external API. Perfect for custom models, image generation APIs, or any service you want to proxy through LiteLLM.
+Route requests from your Dheera AI proxy to any external API. Perfect for custom models, image generation APIs, or any service you want to proxy through Dheera AI.
 
 **Key Benefits:**
 - Onboard third-party endpoints like Bria API and Mistral OCR
@@ -14,20 +14,20 @@ Route requests from your LiteLLM proxy to any external API. Perfect for custom m
 
 ## Quick Start with UI (Recommended)
 
-The easiest way to create pass through endpoints is through the LiteLLM UI. In this example, we'll onboard the [Bria API](https://docs.bria.ai/image-generation/endpoints/text-to-image-base) and set a cost per request.
+The easiest way to create pass through endpoints is through the Dheera AI UI. In this example, we'll onboard the [Bria API](https://docs.bria.ai/image-generation/endpoints/text-to-image-base) and set a cost per request.
 
 ### Step 1: Create Route Mappings
 
 To create a pass through endpoint:
 
-1. Navigate to the LiteLLM Proxy UI
+1. Navigate to the Dheera AI Proxy UI
 2. Go to the `Models + Endpoints` tab
 3. Click on `Pass Through Endpoints`
 4. Click "Add Pass Through Endpoint"
 5. Enter the following details:
 
 **Required Fields:**
-- `Path Prefix`: The route clients will use when calling LiteLLM Proxy (e.g., `/bria`, `/mistral-ocr`)
+- `Path Prefix`: The route clients will use when calling Dheera AI Proxy (e.g., `/bria`, `/mistral-ocr`)
 - `Target URL`: The URL where requests will be forwarded
 
 <Image 
@@ -39,7 +39,7 @@ To create a pass through endpoint:
 
 The above configuration creates these route mappings:
 
-| LiteLLM Proxy Route | Target URL |
+| Dheera AI Proxy Route | Target URL |
 |-------------------|------------|
 | `/bria` | `https://engine.prod.bria-api.com` |
 | `/bria/v1/text-to-image/base/model` | `https://engine.prod.bria-api.com/v1/text-to-image/base/model` |
@@ -47,7 +47,7 @@ The above configuration creates these route mappings:
 | `/bria/<any-sub-path>` | `https://engine.prod.bria-api.com/<any-sub-path>` |
 
 :::info
-All routes are prefixed with your LiteLLM proxy base URL: `https://<litellm-proxy-base-url>`
+All routes are prefixed with your Dheera AI proxy base URL: `https://<dheera_ai-proxy-base-url>`
 :::
 
 ### Step 2: Configure Headers and Pricing
@@ -76,13 +76,13 @@ Once you've completed the configuration:
 
 ### Step 4: Test Your Endpoint
 
-Verify your setup by making a test request to the Bria API through your LiteLLM Proxy:
+Verify your setup by making a test request to the Bria API through your Dheera AI Proxy:
 
 ```shell
 curl -i -X POST \
   'http://localhost:4000/bria/v1/text-to-image/base/2.3' \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <your-litellm-api-key>' \
+  -H 'Authorization: Bearer <your-dheera_ai-api-key>' \
   -d '{
     "prompt": "a book",
     "num_results": 2,
@@ -105,7 +105,7 @@ You can also create pass through endpoints using the `config.yaml` file. Here's 
 general_settings:
   master_key: sk-1234
   pass_through_endpoints:
-    - path: "/v1/rerank"                                  # Route on LiteLLM Proxy
+    - path: "/v1/rerank"                                  # Route on Dheera AI Proxy
       target: "https://api.cohere.com/v1/rerank"          # Target endpoint
       headers:                                            # Headers to forward
         Authorization: "bearer os.environ/COHERE_API_KEY"
@@ -118,7 +118,7 @@ general_settings:
 
 1. **Start the proxy:**
    ```shell
-   litellm --config config.yaml --detailed_debug
+   dheera_ai --config config.yaml --detailed_debug
    ```
 
 2. **Make a test request:**
@@ -161,9 +161,9 @@ general_settings:
 ```yaml
 general_settings:
   pass_through_endpoints:
-    - path: string                    # Route on LiteLLM Proxy Server
+    - path: string                    # Route on Dheera AI Proxy Server
       target: string                  # Target URL for forwarding
-      auth: boolean                   # Enable LiteLLM authentication (Enterprise)
+      auth: boolean                   # Enable Dheera AI authentication (Enterprise)
       forward_headers: boolean        # Forward all incoming headers
       headers:                        # Custom headers to add
         Authorization: string         # Auth header for target API
@@ -190,21 +190,21 @@ For complex integrations (like Anthropic/Bedrock clients), you can create custom
 ### 1. Create an Adapter
 
 ```python
-from litellm import adapter_completion
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.llms.anthropic import AnthropicMessagesRequest, AnthropicResponse
+from dheera_ai import adapter_completion
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.llms.anthropic import AnthropicMessagesRequest, AnthropicResponse
 
 class AnthropicAdapter(CustomLogger):
     def translate_completion_input_params(self, kwargs):
         """Translate Anthropic format to OpenAI format"""
         request_body = AnthropicMessagesRequest(**kwargs)
-        return litellm.AnthropicConfig().translate_anthropic_to_openai(
+        return dheera_ai.AnthropicConfig().translate_anthropic_to_openai(
             anthropic_message_request=request_body
         )
 
     def translate_completion_output_params(self, response):
         """Translate OpenAI response back to Anthropic format"""
-        return litellm.AnthropicConfig().translate_openai_response_to_anthropic(
+        return dheera_ai.AnthropicConfig().translate_openai_response_to_anthropic(
             response=response
         )
 
@@ -216,7 +216,7 @@ anthropic_adapter = AnthropicAdapter()
 ```yaml
 model_list:
   - model_name: my-claude-endpoint
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
@@ -226,7 +226,7 @@ general_settings:
     - path: "/v1/messages"
       target: custom_callbacks.anthropic_adapter
       headers:
-        litellm_user_api_key: "x-api-key"
+        dheera_ai_user_api_key: "x-api-key"
 ```
 
 ### 3. Test Custom Endpoint
@@ -247,7 +247,7 @@ curl --location 'http://0.0.0.0:4000/v1/messages' \
 
 ## Tutorial - Add Azure OpenAI Assistants API as a Pass Through Endpoint
 
-In this video, we'll add the Azure OpenAI Assistants API as a pass through endpoint to LiteLLM Proxy.
+In this video, we'll add the Azure OpenAI Assistants API as a pass through endpoint to Dheera AI Proxy.
 
 <iframe width="840" height="500" src="https://www.loom.com/embed/12965cb299d24fc0bd7b6b413ab6d0ad" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
@@ -272,26 +272,26 @@ In this video, we'll add the Azure OpenAI Assistants API as a pass through endpo
 
 **Response Errors:**
 - Enable detailed debugging with `--detailed_debug`
-- Check LiteLLM proxy logs for error details
+- Check Dheera AI proxy logs for error details
 - Verify the target API's expected request format
 
 ### Allowing Team JWTs to use pass-through routes
 
-If you are using pass-through provider routes (e.g., `/anthropic/*`) and want your JWT team tokens to access these routes, add `mapped_pass_through_routes` to the `team_allowed_routes` in `litellm_jwtauth` or explicitly add the relevant route(s).
+If you are using pass-through provider routes (e.g., `/anthropic/*`) and want your JWT team tokens to access these routes, add `mapped_pass_through_routes` to the `team_allowed_routes` in `dheera_ai_jwtauth` or explicitly add the relevant route(s).
 
 Example (`proxy_server_config.yaml`):
 
 ```yaml
 general_settings:
   enable_jwt_auth: True
-  litellm_jwtauth:
+  dheera_ai_jwtauth:
     team_ids_jwt_field: "team_ids"
     team_allowed_routes: ["openai_routes","info_routes","mapped_pass_through_routes"]
 ```
 
 ### Getting Help
 
-[Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-litellm-hosted-version)
+[Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-dheera_ai-hosted-version)
 
 [Community Discord 💭](https://discord.gg/wuPM9dRgDw)
 

@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # OpenAI Video Generation
 
-LiteLLM supports OpenAI's video generation models including Sora.
+Dheera AI supports OpenAI's video generation models including Sora.
 
 ## Quick Start
 
@@ -17,7 +17,7 @@ os.environ["OPENAI_API_KEY"] = "your-api-key"
 ### Basic Usage
 
 ```python
-from litellm import video_generation, video_content
+from dheera_ai import video_generation, video_content
 import os
 
 os.environ["OPENAI_API_KEY"] = "your-api-key"
@@ -43,9 +43,9 @@ with open("generated_video.mp4", "wb") as f:
     f.write(video_bytes)
 ```
 
-## **LiteLLM Proxy Usage**
+## **Dheera AI Proxy Usage**
 
-LiteLLM provides OpenAI API compatible video endpoints for complete video generation workflow:
+Dheera AI provides OpenAI API compatible video endpoints for complete video generation workflow:
 
 - `/videos/generations` - Generate new videos
 - `/videos/remix` - Edit existing videos with reference images  
@@ -54,20 +54,20 @@ LiteLLM provides OpenAI API compatible video endpoints for complete video genera
 
 **Setup**
 
-Add this to your litellm proxy config.yaml
+Add this to your dheera_ai proxy config.yaml
 
 ```yaml
 model_list:
   - model_name: sora-2
-    litellm_params:
+    dheera_ai_params:
       model: openai/sora-2
       api_key: os.environ/OPENAI_API_KEY
 ```
 
-Start litellm
+Start dheera_ai
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -77,7 +77,7 @@ Test video generation request
 ```bash
 curl --location 'http://localhost:4000/v1/videos' \
 --header 'Content-Type: application/json' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --data '{
     "model": "sora-2",
     "prompt": "A beautiful sunset over the ocean"
@@ -90,7 +90,7 @@ Test video status request
 # Using custom-llm-provider header
 curl --location 'http://localhost:4000/v1/videos/video_id' \
 --header 'Accept: application/json' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --header 'custom-llm-provider: openai'
 ```
 
@@ -100,14 +100,14 @@ Test video retrieval request
 # Using custom-llm-provider header
 curl --location 'http://localhost:4000/v1/videos/video_id/content' \
 --header 'Accept: application/json' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --header 'custom-llm-provider: openai' \
 --output video.mp4
 
 # Or using query parameter
 curl --location 'http://localhost:4000/v1/videos/video_id/content?custom_llm_provider=openai' \
 --header 'Accept: application/json' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --output video.mp4
 ```
 
@@ -118,7 +118,7 @@ Test video remix request
 curl --location --request POST 'http://localhost:4000/v1/videos/video_id/remix' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --data '{
     "prompt": "New remix instructions",
     "custom_llm_provider": "openai"
@@ -128,7 +128,7 @@ curl --location --request POST 'http://localhost:4000/v1/videos/video_id/remix' 
 curl --location --request POST 'http://localhost:4000/v1/videos/video_id/remix' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --header 'custom-llm-provider: openai' \
 --data '{
     "prompt": "New remix instructions"
@@ -181,12 +181,12 @@ with open("video.mp4", "wb") as f:
 ## Complete Workflow
 
 ```python
-import litellm
+import dheera_ai
 import time
 
 def generate_and_download_video(prompt):
     # Step 1: Generate video
-    response = litellm.video_generation(
+    response = dheera_ai.video_generation(
         prompt=prompt,
         model="sora-2",
         seconds="8",
@@ -200,7 +200,7 @@ def generate_and_download_video(prompt):
     time.sleep(30)
     
     # Step 3: Download video
-    video_bytes = litellm.video_content(
+    video_bytes = dheera_ai.video_content(
         video_id=video_id
     )
     
@@ -221,7 +221,7 @@ video_file = generate_and_download_video(
 
 ```python
 # Video editing with reference image
-response = litellm.video_generation(
+response = dheera_ai.video_generation(
     prompt="Make the cat jump higher",
     input_reference=open("path/to/image.jpg", "rb"),  # Reference image
     model="sora-2",
@@ -234,7 +234,7 @@ print(f"Video ID: {response.id}")
 ## Error Handling
 
 ```python
-from litellm.exceptions import BadRequestError, AuthenticationError
+from dheera_ai.exceptions import BadRequestError, AuthenticationError
 
 try:
     response = video_generation(

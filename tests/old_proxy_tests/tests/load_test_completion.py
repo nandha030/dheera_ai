@@ -2,19 +2,19 @@ import time
 import asyncio
 import os
 from openai import AsyncOpenAI, AsyncAzureOpenAI
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import traceback
 from large_text import text
 from dotenv import load_dotenv
 from statistics import mean, median
 
-litellm_client = AsyncOpenAI(base_url="http://0.0.0.0:4000/", api_key="sk-1234")
+dheera_ai_client = AsyncOpenAI(base_url="http://0.0.0.0:4000/", api_key="sk-1234")
 
 
-async def litellm_completion():
+async def dheera_ai_completion():
     try:
         start_time = time.time()
-        response = await litellm_client.chat.completions.create(
+        response = await dheera_ai_client.chat.completions.create(
             model="fake-openai-endpoint",
             messages=[
                 {
@@ -40,7 +40,7 @@ async def main():
     for i in range(5):
         start = time.time()
         n = 100  # Number of concurrent tasks
-        tasks = [litellm_completion() for _ in range(n)]
+        tasks = [dheera_ai_completion() for _ in range(n)]
 
         chat_completions = await asyncio.gather(*tasks)
 

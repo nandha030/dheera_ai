@@ -1,6 +1,6 @@
 ## Budget Reset Times and Timezones
 
-LiteLLM now supports predictable budget reset times that align with natural calendar boundaries:
+Dheera AI now supports predictable budget reset times that align with natural calendar boundaries:
 
 - All budgets reset at midnight (00:00:00) in the configured timezone
 - Special handling for common durations:
@@ -13,7 +13,7 @@ LiteLLM now supports predictable budget reset times that align with natural cale
 You can specify the timezone for all budget resets in your configuration file:
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   max_budget: 100 # (float) sets max budget as $100 USD
   budget_duration: 30d # (number)(s/m/h/d)
   timezone: "US/Eastern" # Any valid timezone string

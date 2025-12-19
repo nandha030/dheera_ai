@@ -21,18 +21,18 @@ This is useful for
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
       tags: ["free"] # 👈 Key Change
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
       tags: ["paid"] # 👈 Key Change
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
@@ -65,7 +65,7 @@ curl -i http://localhost:4000/v1/chat/completions \
 
 Expect to see the following response header when this works
 ```shell
-x-litellm-model-api-base: https://exampleopenaiendpoint-production.up.railway.app/
+x-dheera_ai-model-api-base: https://exampleopenaiendpoint-production.up.railway.app/
 ```
 
 Response
@@ -118,7 +118,7 @@ curl -i http://localhost:4000/v1/chat/completions \
 
 Expect to see the following response header when this works
 ```shell
-x-litellm-model-api-base: https://api.openai.com
+x-dheera_ai-model-api-base: https://api.openai.com
 ```
 
 Response
@@ -151,13 +151,13 @@ Response
 
 ## Calling via Request Header
 
-You can also call via request header `x-litellm-tags`
+You can also call via request header `x-dheera_ai-tags`
 
 ```shell
 curl -L -X POST 'http://0.0.0.0:4000/v1/chat/completions' \
 -H 'Content-Type: application/json' \
 -H 'Authorization: Bearer sk-1234' \
--H 'x-litellm-tags: free,my-custom-tag' \
+-H 'x-dheera_ai-tags: free,my-custom-tag' \
 -d '{
   "model": "gpt-4",
   "messages": [
@@ -177,7 +177,7 @@ Use this if you want all untagged requests to be routed to specific deployments
 ```yaml
   model_list:
     - model_name: fake-openai-endpoint
-      litellm_params:
+      dheera_ai_params:
         model: openai/fake
         api_key: fake-key
         api_base: https://exampleopenaiendpoint-production.up.railway.app/
@@ -188,7 +188,7 @@ Use this if you want all untagged requests to be routed to specific deployments
 
 2. Start proxy
 ```shell
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make request with no tags
@@ -206,16 +206,16 @@ curl -i http://localhost:4000/v1/chat/completions \
 
 Expect to see the following response header when this works
 ```shell
-x-litellm-model-id: default-model
+x-dheera_ai-model-id: default-model
 ```
 
 ## ✨ Team based tag routing (Enterprise)
 
-LiteLLM Proxy supports team-based tag routing, allowing you to associate specific tags with teams and route requests accordingly. Example **Team A can access gpt-4 deployment A, Team B can access gpt-4 deployment B** (LLM Access Control For Teams)
+Dheera AI Proxy supports team-based tag routing, allowing you to associate specific tags with teams and route requests accordingly. Example **Team A can access gpt-4 deployment A, Team B can access gpt-4 deployment B** (LLM Access Control For Teams)
 
 :::info
 
-This is an enterprise feature, [Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+This is an enterprise feature, [Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
@@ -228,7 +228,7 @@ Here's how to set up and use team-based tag routing using curl commands:
    ```yaml
    model_list:
     - model_name: fake-openai-endpoint
-      litellm_params:
+      dheera_ai_params:
         model: openai/fake
         api_key: fake-key
         api_base: https://exampleopenaiendpoint-production.up.railway.app/
@@ -236,7 +236,7 @@ Here's how to set up and use team-based tag routing using curl commands:
       model_info:
         id: "team-a-model" # used for identifying model in response headers
     - model_name: fake-openai-endpoint
-      litellm_params:
+      dheera_ai_params:
         model: openai/fake
         api_key: fake-key
         api_base: https://exampleopenaiendpoint-production.up.railway.app/
@@ -244,7 +244,7 @@ Here's how to set up and use team-based tag routing using curl commands:
       model_info:
         id: "team-b-model" # used for identifying model in response headers
     - model_name: fake-openai-endpoint
-      litellm_params:
+      dheera_ai_params:
         model: openai/fake
         api_key: fake-key
         api_base: https://exampleopenaiendpoint-production.up.railway.app/
@@ -303,7 +303,7 @@ Here's how to set up and use team-based tag routing using curl commands:
 
 4. **Verify routing:**
 
-   Check the `x-litellm-model-id` header in the response to confirm that the request was routed to the correct model based on the team's tags. You can use the `-i` flag with curl to include the response headers:
+   Check the `x-dheera_ai-model-id` header in the response to confirm that the request was routed to the correct model based on the team's tags. You can use the `-i` flag with curl to include the response headers:
   
    Request with Team A's key (including headers)
    ```shell
@@ -320,14 +320,14 @@ Here's how to set up and use team-based tag routing using curl commands:
 
    In the response headers, you should see:
    ```
-   x-litellm-model-id: team-a-model
+   x-dheera_ai-model-id: team-a-model
    ```
 
    Similarly, when using Team B's key, you should see:
    ```
-   x-litellm-model-id: team-b-model
+   x-dheera_ai-model-id: team-b-model
    ```
 
-By following these steps and using these curl commands, you can implement and test team-based tag routing in your LiteLLM Proxy setup, ensuring that different teams are routed to the appropriate models or deployments based on their assigned tags.
+By following these steps and using these curl commands, you can implement and test team-based tag routing in your Dheera AI Proxy setup, ensuring that different teams are routed to the appropriate models or deployments based on their assigned tags.
 
 

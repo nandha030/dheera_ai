@@ -1,18 +1,18 @@
 [tool.poetry]
-name = "litellm-enterprise"
+name = "dheera-ai-enterprise"
 version = "0.1.25"
-description = "Package for LiteLLM Enterprise features"
+description = "Package for Dheera AI Enterprise features"
 authors = ["BerriAI"]
 readme = "README.md"
 
 
 [tool.poetry.urls]
-homepage = "https://litellm.ai"
-Homepage = "https://litellm.ai"
-repository = "https://github.com/BerriAI/litellm"
-Repository = "https://github.com/BerriAI/litellm"
-documentation = "https://docs.litellm.ai"
-Documentation = "https://docs.litellm.ai"
+homepage = "https://dheeraai.com"
+Homepage = "https://dheeraai.com"
+repository = "https://github.com/dheera-ai/dheera_ai"
+Repository = "https://github.com/dheera-ai/dheera_ai"
+documentation = "https://docs.dheeraai.com"
+Documentation = "https://docs.dheeraai.com"
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0, !=3.9.7"
@@ -25,6 +25,6 @@ build-backend = "poetry.core.masonry.api"
 version = "0.1.25"
 version_files = [
     "pyproject.toml:version",
-    "../requirements.txt:litellm-enterprise==",
-    "../pyproject.toml:litellm-enterprise = {version = \""
+    "../requirements.txt:dheera-ai-enterprise==",
+    "../pyproject.toml:dheera-ai-enterprise = {version = \""
 ]

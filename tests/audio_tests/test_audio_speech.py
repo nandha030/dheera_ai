@@ -7,7 +7,7 @@ import random
 import sys
 import time
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 
 from dotenv import load_dotenv
 
@@ -23,7 +23,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import openai
 import pytest
 
-import litellm
+import dheera_ai
 
 
 @pytest.mark.parametrize(
@@ -43,12 +43,12 @@ import litellm
 )  # ,
 @pytest.mark.asyncio
 @pytest.mark.flaky(retries=3, delay=1)
-async def test_audio_speech_litellm(sync_mode, model, api_base, api_key):
-    litellm._turn_on_debug()
+async def test_audio_speech_dheera_ai(sync_mode, model, api_base, api_key):
+    dheera_ai._turn_on_debug()
     speech_file_path = Path(__file__).parent / "speech.mp3"
 
     if sync_mode:
-        response = litellm.speech(
+        response = dheera_ai.speech(
             model=model,
             voice="alloy",
             input="the quick brown fox jumped over the lazy dogs",
@@ -62,11 +62,11 @@ async def test_audio_speech_litellm(sync_mode, model, api_base, api_key):
             optional_params={},
         )
 
-        from litellm.types.llms.openai import HttpxBinaryResponseContent
+        from dheera_ai.types.llms.openai import HttpxBinaryResponseContent
 
         assert isinstance(response, HttpxBinaryResponseContent)
     else:
-        response = await litellm.aspeech(
+        response = await dheera_ai.aspeech(
             model=model,
             voice="alloy",
             input="the quick brown fox jumped over the lazy dogs",
@@ -80,7 +80,7 @@ async def test_audio_speech_litellm(sync_mode, model, api_base, api_key):
             optional_params={},
         )
 
-        from litellm.llms.openai.openai import HttpxBinaryResponseContent
+        from dheera_ai.llms.openai.openai import HttpxBinaryResponseContent
 
         assert isinstance(response, HttpxBinaryResponseContent)
 
@@ -92,12 +92,12 @@ async def test_audio_speech_litellm(sync_mode, model, api_base, api_key):
 @pytest.mark.skip(reason="local only test - we run testing using MockRequests below")
 @pytest.mark.asyncio
 @pytest.mark.flaky(retries=3, delay=1)
-async def test_audio_speech_litellm_vertex(sync_mode):
-    litellm.set_verbose = True
+async def test_audio_speech_dheera_ai_vertex(sync_mode):
+    dheera_ai.set_verbose = True
     speech_file_path = Path(__file__).parent / "speech_vertex.mp3"
     model = "vertex_ai/test"
     if sync_mode:
-        response = litellm.speech(
+        response = dheera_ai.speech(
             model="vertex_ai/test",
             input="hello what llm guardrail do you have",
         )
@@ -105,21 +105,21 @@ async def test_audio_speech_litellm_vertex(sync_mode):
         response.stream_to_file(speech_file_path)
 
     else:
-        response = await litellm.aspeech(
+        response = await dheera_ai.aspeech(
             model="vertex_ai/",
             input="async hello what llm guardrail do you have",
         )
 
         from types import SimpleNamespace
 
-        from litellm.llms.openai.openai import HttpxBinaryResponseContent
+        from dheera_ai.llms.openai.openai import HttpxBinaryResponseContent
 
         response.stream_to_file(speech_file_path)
 
 
 @pytest.mark.flaky(retries=6, delay=2)
 @pytest.mark.asyncio
-async def test_speech_litellm_vertex_async():
+async def test_speech_dheera_ai_vertex_async():
     # Mock the response
     mock_response = AsyncMock()
 
@@ -133,18 +133,18 @@ async def test_speech_litellm_vertex_async():
 
     # Set up the mock for asynchronous calls
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_async_post:
         mock_async_post.return_value = mock_response
         model = "vertex_ai/test"
 
         try:
-            response = await litellm.aspeech(
+            response = await dheera_ai.aspeech(
                 model=model,
                 input="async hello what llm guardrail do you have",
             )
-        except litellm.APIConnectionError as e:
+        except dheera_ai.APIConnectionError as e:
             if "Your default credentials were not found" in str(e):
                 pytest.skip("skipping test, credentials not found")
 
@@ -166,7 +166,7 @@ async def test_speech_litellm_vertex_async():
 
 
 @pytest.mark.asyncio
-async def test_speech_litellm_vertex_async_with_voice():
+async def test_speech_dheera_ai_vertex_async_with_voice():
     # Mock the response
     mock_response = AsyncMock()
 
@@ -180,14 +180,14 @@ async def test_speech_litellm_vertex_async_with_voice():
 
     # Set up the mock for asynchronous calls
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_async_post:
         mock_async_post.return_value = mock_response
         model = "vertex_ai/test"
 
         try:
-            response = await litellm.aspeech(
+            response = await dheera_ai.aspeech(
                 model=model,
                 input="async hello what llm guardrail do you have",
                 voice={
@@ -199,7 +199,7 @@ async def test_speech_litellm_vertex_async_with_voice():
                     "speakingRate": "10",
                 },
             )
-        except litellm.APIConnectionError as e:
+        except dheera_ai.APIConnectionError as e:
             if "Your default credentials were not found" in str(e):
                 pytest.skip("skipping test, credentials not found")
 
@@ -221,7 +221,7 @@ async def test_speech_litellm_vertex_async_with_voice():
 
 
 @pytest.mark.asyncio
-async def test_speech_litellm_vertex_async_with_voice_ssml():
+async def test_speech_dheera_ai_vertex_async_with_voice_ssml():
     # Mock the response
     mock_response = AsyncMock()
 
@@ -242,14 +242,14 @@ async def test_speech_litellm_vertex_async_with_voice_ssml():
 
     # Set up the mock for asynchronous calls
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_async_post:
         mock_async_post.return_value = mock_response
         model = "vertex_ai/test"
 
         try:
-            response = await litellm.aspeech(
+            response = await dheera_ai.aspeech(
                 input=ssml,
                 model=model,
                 voice={
@@ -261,7 +261,7 @@ async def test_speech_litellm_vertex_async_with_voice_ssml():
                     "speakingRate": "10",
                 },
             )
-        except litellm.APIConnectionError as e:
+        except dheera_ai.APIConnectionError as e:
             if "Your default credentials were not found" in str(e):
                 pytest.skip("skipping test, credentials not found")
 
@@ -284,18 +284,18 @@ async def test_speech_litellm_vertex_async_with_voice_ssml():
 
 @pytest.mark.skip(reason="causes openai rate limit errors")
 def test_audio_speech_cost_calc():
-    from litellm.integrations.custom_logger import CustomLogger
+    from dheera_ai.integrations.custom_logger import CustomLogger
 
     model = "azure/azure-tts"
     api_base = os.getenv("AZURE_SWEDEN_API_BASE")
     api_key = os.getenv("AZURE_SWEDEN_API_KEY")
 
     custom_logger = CustomLogger()
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     with patch.object(custom_logger, "log_success_event") as mock_cost_calc:
-        litellm.callbacks = [custom_logger]
-        litellm.speech(
+        dheera_ai.callbacks = [custom_logger]
+        dheera_ai.speech(
             model=model,
             voice="alloy",
             input="the quick brown fox jumped over the lazy dogs",
@@ -319,7 +319,7 @@ def test_audio_speech_cost_calc():
 
 
 def test_audio_speech_gemini():
-    result = litellm.speech(
+    result = dheera_ai.speech(
         model="gemini/gemini-2.5-flash-preview-tts",
         input="the quick brown fox jumped over the lazy dogs",
         api_key=os.getenv("GEMINI_API_KEY"),
@@ -334,7 +334,7 @@ async def test_azure_ava_tts_async():
     """
     Test Azure AVA (Cognitive Services) Text-to-Speech with real API request.
     """
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     api_key = os.getenv("AZURE_TTS_API_KEY")
     api_base = os.getenv("AZURE_TTS_API_BASE")
     
@@ -342,7 +342,7 @@ async def test_azure_ava_tts_async():
     speech_file_path = Path(__file__).parent / "azure_speech.mp3"
     
     try:
-        response = await litellm.aspeech(
+        response = await dheera_ai.aspeech(
             model="azure/speech/azure-tts",
             voice="alloy",
             input="Hello, this is a test of Azure text to speech",
@@ -353,7 +353,7 @@ async def test_azure_ava_tts_async():
         )
 
         # Assert the response is HttpxBinaryResponseContent
-        from litellm.types.llms.openai import HttpxBinaryResponseContent
+        from dheera_ai.types.llms.openai import HttpxBinaryResponseContent
         
         assert isinstance(response, HttpxBinaryResponseContent)
         
@@ -389,7 +389,7 @@ async def test_runwayml_tts_async():
     """
     Test RunwayML Text-to-Speech with real API request.
     """
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     api_key = os.getenv("RUNWAYML_API_KEY")
     api_base = os.getenv("RUNWAYML_API_BASE")
     
@@ -397,7 +397,7 @@ async def test_runwayml_tts_async():
     speech_file_path = Path(__file__).parent / "runwayml_speech.mp3"
     
     try:
-        response = await litellm.aspeech(
+        response = await dheera_ai.aspeech(
             model="runwayml/eleven_multilingual_v2",
             voice="Rachel",
             input="Yuneng is gone, we miss him so much I hope he has a good coffee",
@@ -408,7 +408,7 @@ async def test_runwayml_tts_async():
         )
 
         # Assert the response is HttpxBinaryResponseContent
-        from litellm.types.llms.openai import HttpxBinaryResponseContent
+        from dheera_ai.types.llms.openai import HttpxBinaryResponseContent
         
         assert isinstance(response, HttpxBinaryResponseContent)
         
@@ -453,10 +453,10 @@ async def test_azure_ava_tts_with_custom_voice():
     mock_httpx_response.status_code = 200
     mock_httpx_response.headers = {"content-type": "audio/mpeg"}
     
-    with patch("litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post") as mock_post:
+    with patch("dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post") as mock_post:
         mock_post.return_value = mock_httpx_response
         
-        response = await litellm.aspeech(
+        response = await dheera_ai.aspeech(
             model="azure/speech/azure-tts",
             voice="en-US-AndrewNeural",
             input="Hello, this is a test",
@@ -496,10 +496,10 @@ async def test_azure_ava_tts_fable_voice_mapping():
     mock_httpx_response.status_code = 200
     mock_httpx_response.headers = {"content-type": "audio/mpeg"}
     
-    with patch("litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post") as mock_post:
+    with patch("dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post") as mock_post:
         mock_post.return_value = mock_httpx_response
         
-        response = await litellm.aspeech(
+        response = await dheera_ai.aspeech(
             model="azure/speech/azure-tts",
             voice="fable",
             input="Testing voice mapping",

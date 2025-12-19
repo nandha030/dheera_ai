@@ -6,11 +6,11 @@ https://stability.ai/
 | Property | Details |
 |-------|-------|
 | Description | Stability AI creates open AI models for image, video, audio, and 3D generation. Known for Stable Diffusion. |
-| Provider Route on LiteLLM | `stability/` |
+| Provider Route on Dheera AI | `stability/` |
 | Link to Provider Doc | [Stability AI API ↗](https://platform.stability.ai/docs/api-reference) |
 | Supported Operations | [`/images/generations`](#image-generation) |
 
-LiteLLM supports Stability AI Image Generation calls via the Stability AI REST API (not via Bedrock).
+Dheera AI supports Stability AI Image Generation calls via the Stability AI REST API (not via Bedrock).
 
 ## API Key
 
@@ -23,10 +23,10 @@ Get your API key from the [Stability AI Platform](https://platform.stability.ai/
 
 ## Image Generation
 
-### Usage - LiteLLM Python SDK
+### Usage - Dheera AI Python SDK
 
 ```python showLineNumbers
-from litellm import image_generation
+from dheera_ai import image_generation
 import os
 
 os.environ['STABILITY_API_KEY'] = "your-api-key"
@@ -39,14 +39,14 @@ response = image_generation(
 print(response)
 ```
 
-### Usage - LiteLLM Proxy Server
+### Usage - Dheera AI Proxy Server
 
 #### 1. Setup config.yaml
 
 ```yaml showLineNumbers
 model_list:
   - model_name: sd3
-    litellm_params:
+    dheera_ai_params:
       model: stability/sd3.5-large
       api_key: os.environ/STABILITY_API_KEY
     model_info:
@@ -59,7 +59,7 @@ general_settings:
 #### 2. Start the proxy
 
 ```bash showLineNumbers
-litellm --config config.yaml
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -79,7 +79,7 @@ curl --location 'http://0.0.0.0:4000/v1/images/generations' \
 ### Advanced Usage - With Additional Parameters
 
 ```python showLineNumbers
-from litellm import image_generation
+from dheera_ai import image_generation
 import os
 
 os.environ['STABILITY_API_KEY'] = "your-api-key"
@@ -121,7 +121,7 @@ The `size` parameter is automatically mapped to Stability's `aspect_ratio`:
 You can pass parameters that are specific to Stability AI directly in your request:
 
 ```python showLineNumbers
-from litellm import image_generation
+from dheera_ai import image_generation
 import os
 
 os.environ['STABILITY_API_KEY'] = "your-api-key"
@@ -171,7 +171,7 @@ Stability AI returns images in base64 format. The response is OpenAI-compatible:
 
 ## Comparing with Bedrock
 
-LiteLLM supports Stability AI models via two routes:
+Dheera AI supports Stability AI models via two routes:
 
 | Route | Provider | Use Case |
 |-------|----------|----------|

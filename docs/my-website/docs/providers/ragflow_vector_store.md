@@ -9,25 +9,25 @@ Litellm support creation and management of datasets for document processing and 
 | Property | Details |
 |----------|---------|
 | Description | RAGFlow datasets enable document processing, chunking, and knowledge base management for RAG applications. |
-| Provider Route on LiteLLM | `ragflow` in the litellm vector_store_registry |
+| Provider Route on Dheera AI | `ragflow` in the dheera_ai vector_store_registry |
 | Provider Doc | [RAGFlow API Documentation ↗](https://ragflow.io/docs) |
 | Supported Operations | Dataset Management (Create, List, Update, Delete) |
 | Search/Retrieval | ❌ Not supported (management only) |
 
 ## Quick Start
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
-```python showLineNumbers title="Example using LiteLLM Python SDK"
+```python showLineNumbers title="Example using Dheera AI Python SDK"
 import os
-import litellm
+import dheera_ai
 
 # Set RAGFlow credentials
 os.environ["RAGFLOW_API_KEY"] = "your-ragflow-api-key"
 os.environ["RAGFLOW_API_BASE"] = "http://localhost:9380"  # Optional, defaults to localhost:9380
 
 # Create a RAGFlow dataset
-response = litellm.vector_stores.create(
+response = dheera_ai.vector_stores.create(
     name="my-dataset",
     custom_llm_provider="ragflow",
     metadata={
@@ -41,7 +41,7 @@ print(f"Created dataset ID: {response.id}")
 print(f"Dataset name: {response.name}")
 ```
 
-### LiteLLM Proxy
+### Dheera AI Proxy
 
 #### 1. Configure your vector_store_registry
 
@@ -51,13 +51,13 @@ print(f"Dataset name: {response.name}")
 ```yaml
 model_list:
   - model_name: gpt-4o-mini
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4o-mini
       api_key: os.environ/OPENAI_API_KEY
 
 vector_store_registry:
   - vector_store_name: "ragflow-knowledge-base"
-    litellm_params:
+    dheera_ai_params:
       vector_store_id: "your-dataset-id"
       custom_llm_provider: "ragflow"
       api_key: os.environ/RAGFLOW_API_KEY
@@ -69,9 +69,9 @@ vector_store_registry:
 
 </TabItem>
 
-<TabItem value="litellm-ui" label="LiteLLM UI">
+<TabItem value="dheera_ai-ui" label="Dheera AI UI">
 
-On the LiteLLM UI, Navigate to Experimental > Vector Stores > Create Vector Store. On this page you can create a vector store with a name, vector store id and credentials.
+On the Dheera AI UI, Navigate to Experimental > Vector Stores > Create Vector Store. On this page you can create a vector store with a name, vector store id and credentials.
 
 <Image 
   img={require('../../img/kb_2.png')}
@@ -89,7 +89,7 @@ On the LiteLLM UI, Navigate to Experimental > Vector Stores > Create Vector Stor
 ```bash
 curl http://localhost:4000/v1/vector_stores \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "name": "my-ragflow-dataset",
     "custom_llm_provider": "ragflow",
@@ -107,10 +107,10 @@ curl http://localhost:4000/v1/vector_stores \
 ```python
 from openai import OpenAI
 
-# Initialize client with your LiteLLM proxy URL
+# Initialize client with your Dheera AI proxy URL
 client = OpenAI(
     base_url="http://localhost:4000",
-    api_key="your-litellm-api-key"
+    api_key="your-dheera_ai-api-key"
 )
 
 # Create a RAGFlow dataset
@@ -140,7 +140,7 @@ RAGFlow vector stores support configuration via environment variables:
 
 ### Parameters
 
-You can also pass these via `litellm_params`:
+You can also pass these via `dheera_ai_params`:
 
 - `api_key` - RAGFlow API key (overrides `RAGFLOW_API_KEY` env var)
 - `api_base` - RAGFlow API base URL (overrides `RAGFLOW_API_BASE` env var)
@@ -150,7 +150,7 @@ You can also pass these via `litellm_params`:
 ### Basic Dataset Creation
 
 ```python
-response = litellm.vector_stores.create(
+response = dheera_ai.vector_stores.create(
     name="basic-dataset",
     custom_llm_provider="ragflow"
 )
@@ -164,7 +164,7 @@ RAGFlow supports various chunk methods for different document types:
 <TabItem value="naive" label="Naive (General)">
 
 ```python
-response = litellm.vector_stores.create(
+response = dheera_ai.vector_stores.create(
     name="general-dataset",
     custom_llm_provider="ragflow",
     metadata={
@@ -184,7 +184,7 @@ response = litellm.vector_stores.create(
 <TabItem value="book" label="Book">
 
 ```python
-response = litellm.vector_stores.create(
+response = dheera_ai.vector_stores.create(
     name="book-dataset",
     custom_llm_provider="ragflow",
     metadata={
@@ -203,7 +203,7 @@ response = litellm.vector_stores.create(
 <TabItem value="qa" label="Q&A">
 
 ```python
-response = litellm.vector_stores.create(
+response = dheera_ai.vector_stores.create(
     name="qa-dataset",
     custom_llm_provider="ragflow",
     metadata={
@@ -222,7 +222,7 @@ response = litellm.vector_stores.create(
 <TabItem value="paper" label="Paper">
 
 ```python
-response = litellm.vector_stores.create(
+response = dheera_ai.vector_stores.create(
     name="paper-dataset",
     custom_llm_provider="ragflow",
     metadata={
@@ -244,7 +244,7 @@ response = litellm.vector_stores.create(
 Instead of using a chunk method, you can use an ingestion pipeline:
 
 ```python
-response = litellm.vector_stores.create(
+response = dheera_ai.vector_stores.create(
     name="pipeline-dataset",
     custom_llm_provider="ragflow",
     metadata={
@@ -259,7 +259,7 @@ response = litellm.vector_stores.create(
 ### Advanced Parser Configuration
 
 ```python
-response = litellm.vector_stores.create(
+response = dheera_ai.vector_stores.create(
     name="advanced-dataset",
     custom_llm_provider="ragflow",
     metadata={
@@ -329,7 +329,7 @@ RAGFlow returns error responses in the following format:
 }
 ```
 
-LiteLLM automatically maps these to appropriate exceptions:
+Dheera AI automatically maps these to appropriate exceptions:
 
 - `code != 0` → Raises exception with the error message
 - Missing required fields → Raises `ValueError`

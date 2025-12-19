@@ -6,9 +6,9 @@ import pytest
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm import transcription
-from litellm.llms.fireworks_ai.chat.transformation import FireworksAIConfig
+import dheera_ai
+from dheera_ai import transcription
+from dheera_ai.llms.fireworks_ai.chat.transformation import FireworksAIConfig
 from base_llm_unit_tests import BaseLLMChatTest
 from base_audio_transcription_unit_tests import BaseLLMAudioTranscriptionTest
 
@@ -47,7 +47,7 @@ def test_map_response_format():
 
     h/t to https://github.com/DaveDeCaprio (@DaveDeCaprio) for the test case
 
-    Relevant Issue: https://github.com/BerriAI/litellm/issues/6797
+    Relevant Issue: https://github.com/BerriAI/dheera_ai/issues/6797
     Fireworks AI Ref: https://docs.fireworks.ai/structured-responses/structured-response-formatting#step-1-import-libraries
     """
     response_format = {
@@ -85,7 +85,7 @@ class TestFireworksAIChatCompletion(BaseLLMChatTest):
         }
 
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
         pass
 
 
@@ -96,8 +96,8 @@ class TestFireworksAIAudioTranscription(BaseLLMAudioTranscriptionTest):
             "api_base": "https://audio-prod.api.fireworks.ai/v1",
         }
 
-    def get_custom_llm_provider(self) -> litellm.LlmProviders:
-        return litellm.LlmProviders.FIREWORKS_AI
+    def get_custom_llm_provider(self) -> dheera_ai.LlmProviders:
+        return dheera_ai.LlmProviders.FIREWORKS_AI
 
 
 @pytest.mark.parametrize(
@@ -105,10 +105,10 @@ class TestFireworksAIAudioTranscription(BaseLLMAudioTranscriptionTest):
     [True, False],
 )
 def test_document_inlining_example(disable_add_transform_inline_image_block):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     if disable_add_transform_inline_image_block is True:
         with pytest.raises(Exception):
-            completion = litellm.completion(
+            completion = dheera_ai.completion(
                 model="fireworks_ai/accounts/fireworks/models/llama-v3p3-70b-instruct",
                 messages=[
                     {
@@ -130,7 +130,7 @@ def test_document_inlining_example(disable_add_transform_inline_image_block):
                 disable_add_transform_inline_image_block=disable_add_transform_inline_image_block,
             )
     else:
-        completion = litellm.completion(
+        completion = dheera_ai.completion(
             model="fireworks_ai/accounts/fireworks/models/llama-v3p3-70b-instruct",
             messages=[
                 {
@@ -165,7 +165,7 @@ def test_document_inlining_example(disable_add_transform_inline_image_block):
 )
 def test_transform_inline(content, model, expected_url):
 
-    result = litellm.FireworksAIConfig()._add_transform_inline_image_block(
+    result = dheera_ai.FireworksAIConfig()._add_transform_inline_image_block(
         content=content, model=model, disable_add_transform_inline_image_block=False
     )
     if isinstance(expected_url, str):
@@ -184,24 +184,24 @@ def test_transform_inline(content, model, expected_url):
 )
 def test_global_disable_flag(model, is_disabled, expected_url):
     content = {"image_url": "http://example.com/image.png"}
-    result = litellm.FireworksAIConfig()._add_transform_inline_image_block(
+    result = dheera_ai.FireworksAIConfig()._add_transform_inline_image_block(
         content=content,
         model=model,
         disable_add_transform_inline_image_block=is_disabled,
     )
     assert result["image_url"] == expected_url
-    litellm.disable_add_transform_inline_image_block = False  # Reset for other tests
+    dheera_ai.disable_add_transform_inline_image_block = False  # Reset for other tests
 
 
 def test_global_disable_flag_with_transform_messages_helper(monkeypatch):
     from openai import OpenAI
     from unittest.mock import patch
-    from litellm import completion
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai import completion
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
-    monkeypatch.setattr(litellm, "disable_add_transform_inline_image_block", True)
+    monkeypatch.setattr(dheera_ai, "disable_add_transform_inline_image_block", True)
 
     with patch.object(
         client,

@@ -4,21 +4,21 @@ import TabItem from '@theme/TabItem';
 
 # Guardrails - Quick Start
 
-Setup Prompt Injection Detection, PII Masking on LiteLLM Proxy (AI Gateway)
+Setup Prompt Injection Detection, PII Masking on Dheera AI Proxy (AI Gateway)
 
-## 1. Define guardrails on your LiteLLM config.yaml
+## 1. Define guardrails on your Dheera AI config.yaml
 
 Set your guardrails under the `guardrails` section
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: general-guard
-    litellm_params:
+    dheera_ai_params:
       guardrail: aim
       mode: [pre_call, post_call]
       api_key: os.environ/AIM_API_KEY
@@ -26,13 +26,13 @@ guardrails:
       default_on: true # Optional
   
   - guardrail_name: "aporia-pre-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: aporia  # supported values: "aporia", "lakera"
       mode: "during_call"
       api_key: os.environ/APORIA_API_KEY_1
       api_base: os.environ/APORIA_API_BASE_1
   - guardrail_name: "aporia-post-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: aporia  # supported values: "aporia", "lakera"
       mode: "post_call"
       api_key: os.environ/APORIA_API_KEY_2
@@ -48,7 +48,7 @@ guardrails:
 
 # Example Presidio guardrail config with entity actions + confidence score thresholds
   - guardrail_name: "presidio-pii"
-    litellm_params:
+    dheera_ai_params:
       guardrail: presidio
       mode: "pre_call"
       presidio_language: "en"
@@ -70,11 +70,11 @@ guardrails:
 - A list of the above values to run multiple modes, e.g. `mode: [pre_call, post_call]`
 
 
-## 2. Start LiteLLM Gateway 
+## 2. Start Dheera AI Gateway 
 
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 ## 3. Test request 
@@ -153,7 +153,7 @@ Set `default_on: true` in your guardrail config to run the guardrail on every re
 ```yaml
 guardrails:
   - guardrail_name: "aporia-pre-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: aporia
       mode: "pre_call"
       default_on: true
@@ -178,10 +178,10 @@ curl -i http://localhost:4000/v1/chat/completions \
 
 **Expected response**
 
-Your response headers will include `x-litellm-applied-guardrails` with the guardrail applied 
+Your response headers will include `x-dheera_ai-applied-guardrails` with the guardrail applied 
 
 ```
-x-litellm-applied-guardrails: aporia-pre-guard
+x-dheera_ai-applied-guardrails: aporia-pre-guard
 ```
 
 
@@ -252,7 +252,7 @@ This config will return the `/guardrails/list` response above. The `guardrail_in
 >
 ```yaml
 - guardrail_name: "aporia-post-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: aporia  # supported values: "aporia", "lakera"
       mode: "post_call"
       api_key: os.environ/APORIA_API_KEY_2
@@ -303,7 +303,7 @@ curl -i http://localhost:4000/v1/chat/completions \
 
 :::info
 
-✨ This is an Enterprise only feature [Get a free trial](https://www.litellm.ai/enterprise#trial)
+✨ This is an Enterprise only feature [Get a free trial](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
@@ -388,13 +388,13 @@ Monitor which guardrails were executed and whether they passed or failed. e.g. g
 
 :::info
 
-✨ This is an Enterprise only feature [Get a free trial](https://www.litellm.ai/enterprise#trial)
+✨ This is an Enterprise only feature [Get a free trial](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
 #### Setup
 
-1. Connect LiteLLM to a [supported logging provider](../logging)
+1. Connect Dheera AI to a [supported logging provider](../logging)
 2. Make a request with a `guardrails` parameter
 3. Check your logging provider for the guardrail trace
 
@@ -413,7 +413,7 @@ Monitor which guardrails were executed and whether they passed or failed. e.g. g
 
 :::info
 
-✨ This is an Enterprise only feature [Get a free trial](https://www.litellm.ai/enterprise#trial)
+✨ This is an Enterprise only feature [Get a free trial](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
@@ -473,7 +473,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 
 :::info
 
-✨ This is an Enterprise only feature [Get a free trial](https://www.litellm.ai/enterprise#trial)
+✨ This is an Enterprise only feature [Get a free trial](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
@@ -482,13 +482,13 @@ Run guardrails based on the user-agent header. This is useful for running pre-ca
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "guardrails_ai-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: guardrails_ai
       guard_name: "pii_detect" # 👈 Guardrail AI guard name
       mode:
@@ -504,7 +504,7 @@ guardrails:
 
 :::info
 
-✨ This is an Enterprise only feature [Get a free trial](https://www.litellm.ai/enterprise#trial)
+✨ This is an Enterprise only feature [Get a free trial](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
@@ -515,25 +515,25 @@ This is great for cases when you have an on-prem and hosted model, and just want
 ```yaml
 model_list:
   - model_name: claude-sonnet-4
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-sonnet-4-20250514
       api_key: os.environ/ANTHROPIC_API_KEY
       api_base: https://api.anthropic.com/v1
       guardrails: ["azure-text-moderation"]
   - model_name: openai-gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
 
 guardrails:
   - guardrail_name: "presidio-pii"
-    litellm_params:
+    dheera_ai_params:
       guardrail: presidio  # supported values: "aporia", "bedrock", "lakera", "presidio"
       mode: "pre_call"
       presidio_language: "en"  # optional: set default language for PII analysis
       pii_entities_config:
         PERSON: "BLOCK"  # Will mask credit card numbers
   - guardrail_name: azure-text-moderation
-    litellm_params:
+    dheera_ai_params:
       guardrail: azure/text_moderations
       mode: "post_call" 
       api_key: os.environ/AZURE_GUARDRAIL_API_KEY
@@ -544,7 +544,7 @@ guardrails:
 
 :::info
 
-✨ This is an Enterprise only feature [Get a free trial](https://www.litellm.ai/enterprise#trial)
+✨ This is an Enterprise only feature [Get a free trial](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
@@ -566,7 +566,7 @@ curl -X POST 'http://0.0.0.0:4000/team/update' \
 ```bash
 curl --location 'http://0.0.0.0:4000/chat/completions' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_VIRTUAL_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_VIRTUAL_KEY' \
 --data '{
 "model": "gpt-3.5-turbo",
     "messages": [
@@ -608,7 +608,7 @@ The `pii_masking` guardrail ran on this request because api key=sk-jNm1Zar7XfNdZ
 ```yaml
 guardrails:
   - guardrail_name: string     # Required: Name of the guardrail
-    litellm_params:            # Required: Configuration parameters
+    dheera_ai_params:            # Required: Configuration parameters
       guardrail: string        # Required: One of "aporia", "bedrock", "guardrails_ai", "lakera", "presidio", "hide-secrets"
       mode: Union[string, List[string], Mode]             # Required: One or more of "pre_call", "post_call", "during_call", "logging_only"
       api_key: string          # Required: API key for the guardrail service
@@ -621,7 +621,7 @@ guardrails:
 Mode Specification
 
 ```python
-from litellm.types.guardrails import Mode
+from dheera_ai.types.guardrails import Mode
 
 mode = Mode(
     tags={"User-Agent: claude-cli": "logging_only"},
@@ -631,7 +631,7 @@ mode = Mode(
 
 ### `guardrails` Request Parameter
 
-The `guardrails` parameter can be passed to any LiteLLM Proxy endpoint (`/chat/completions`, `/completions`, `/embeddings`).
+The `guardrails` parameter can be passed to any Dheera AI Proxy endpoint (`/chat/completions`, `/completions`, `/embeddings`).
 
 #### Format Options
 

@@ -1,6 +1,6 @@
 # Setting API Keys, Base, Version
 
-LiteLLM allows you to specify the following:
+Dheera AI allows you to specify the following:
 * API Key
 * API Base
 * API Version
@@ -15,7 +15,7 @@ Useful Helper functions:
 
 You can set the API configs using:
 * Environment Variables
-* litellm variables `litellm.api_key`
+* dheera_ai variables `dheera_ai.api_key`
 * Passing args to `completion()`
 
 ## Environment Variables
@@ -55,9 +55,9 @@ For cloud providers:
 - GCP
 - Watson AI 
 
-you might need to set additional parameters. LiteLLM provides a common set of params, that we map across all providers. 
+you might need to set additional parameters. Dheera AI provides a common set of params, that we map across all providers. 
 
-|      | LiteLLM param | Watson       | Vertex AI    | Azure        | Bedrock      |
+|      | Dheera AI param | Watson       | Vertex AI    | Azure        | Bedrock      |
 |------|--------------|--------------|--------------|--------------|--------------|
 | Project | project | watsonx_project | vertex_project | n/a | n/a |
 | Region | region_name | watsonx_region_name | vertex_location | n/a | aws_region_name |
@@ -65,63 +65,63 @@ you might need to set additional parameters. LiteLLM provides a common set of pa
 
 If you want, you can call them by their provider-specific params as well. 
 
-## litellm variables
+## dheera_ai variables
 
-### litellm.api_key
+### dheera_ai.api_key
 This variable is checked for all providers
 
 ```python
-import litellm
+import dheera_ai
 # openai call
-litellm.api_key = "sk-OpenAIKey"
-response = litellm.completion(messages=messages, model="gpt-3.5-turbo")
+dheera_ai.api_key = "sk-OpenAIKey"
+response = dheera_ai.completion(messages=messages, model="gpt-3.5-turbo")
 
 # anthropic call
-litellm.api_key = "sk-AnthropicKey"
-response = litellm.completion(messages=messages, model="claude-2")
+dheera_ai.api_key = "sk-AnthropicKey"
+response = dheera_ai.completion(messages=messages, model="claude-2")
 ```
 
-### litellm.provider_key (example litellm.openai_key)
+### dheera_ai.provider_key (example dheera_ai.openai_key)
 
 ```python
-litellm.openai_key = "sk-OpenAIKey"
-response = litellm.completion(messages=messages, model="gpt-3.5-turbo")
+dheera_ai.openai_key = "sk-OpenAIKey"
+response = dheera_ai.completion(messages=messages, model="gpt-3.5-turbo")
 
 # anthropic call
-litellm.anthropic_key = "sk-AnthropicKey"
-response = litellm.completion(messages=messages, model="claude-2")
+dheera_ai.anthropic_key = "sk-AnthropicKey"
+response = dheera_ai.completion(messages=messages, model="claude-2")
 ```
 
-### litellm.api_base
+### dheera_ai.api_base
 
 ```python
-import litellm
-litellm.api_base = "https://hosted-llm-api.co"
-response = litellm.completion(messages=messages, model="gpt-3.5-turbo")
+import dheera_ai
+dheera_ai.api_base = "https://hosted-llm-api.co"
+response = dheera_ai.completion(messages=messages, model="gpt-3.5-turbo")
 ```
 
-### litellm.api_version
+### dheera_ai.api_version
 
 ```python
-import litellm
-litellm.api_version = "2023-05-15"
-response = litellm.completion(messages=messages, model="gpt-3.5-turbo")
+import dheera_ai
+dheera_ai.api_version = "2023-05-15"
+response = dheera_ai.completion(messages=messages, model="gpt-3.5-turbo")
 ```
 
-### litellm.organization
+### dheera_ai.organization
 ```python
-import litellm
-litellm.organization = "LiteLlmOrg"
-response = litellm.completion(messages=messages, model="gpt-3.5-turbo")
+import dheera_ai
+dheera_ai.organization = "LiteLlmOrg"
+response = dheera_ai.completion(messages=messages, model="gpt-3.5-turbo")
 ```
 
-## Passing Args to completion() (or any litellm endpoint - `transcription`, `embedding`, `text_completion`, etc)
+## Passing Args to completion() (or any dheera_ai endpoint - `transcription`, `embedding`, `text_completion`, etc)
 
 You can pass the API key within `completion()` call:
 
 ### api_key
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 messages = [{ "content": "Hello, how are you?","role": "user"}]
 
@@ -131,7 +131,7 @@ response = completion("command-nightly", messages, api_key="Your-Api-Key")
 ### api_base
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 messages = [{ "content": "Hello, how are you?","role": "user"}]
 
@@ -141,7 +141,7 @@ response = completion("command-nightly", messages, api_base="https://hosted-llm-
 ### api_version
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 messages = [{ "content": "Hello, how are you?","role": "user"}]
 
@@ -171,8 +171,8 @@ os.environ = {'OPENAI_API_KEY': 'temp'} # mock set only openai key in environ
 valid_models = get_valid_models()
 print(valid_models)
 
-# list of openai supported llms on litellm
-expected_models = litellm.open_ai_chat_completion_models + litellm.open_ai_text_completion_models
+# list of openai supported llms on dheera_ai
+expected_models = dheera_ai.open_ai_chat_completion_models + dheera_ai.open_ai_text_completion_models
 
 assert(valid_models == expected_models)
 
@@ -187,7 +187,7 @@ This helper will check the provider's endpoint for valid models.
 Currently implemented for:
 - OpenAI (if OPENAI_API_KEY is set)
 - Fireworks AI (if FIREWORKS_AI_API_KEY is set)
-- LiteLLM Proxy (if LITELLM_PROXY_API_KEY is set)
+- Dheera AI Proxy (if DHEERA_AI_PROXY_API_KEY is set)
 - Gemini (if GEMINI_API_KEY is set)
 - XAI (if XAI_API_KEY is set)   
 - Anthropic (if ANTHROPIC_API_KEY is set)
@@ -196,7 +196,7 @@ You can also specify a custom provider to check:
 
 **All providers**:
 ```python
-from litellm import get_valid_models
+from dheera_ai import get_valid_models
 
 valid_models = get_valid_models(check_provider_endpoint=True)
 print(valid_models)
@@ -204,7 +204,7 @@ print(valid_models)
 
 **Specific provider**:
 ```python
-from litellm import get_valid_models
+from dheera_ai import get_valid_models
 
 valid_models = get_valid_models(check_provider_endpoint=True, custom_llm_provider="openai")
 print(valid_models)
@@ -215,7 +215,7 @@ print(valid_models)
 This helper tells you if you have all the required environment variables for a model, and if not - what's missing. 
 
 ```python
-from litellm import validate_environment
+from dheera_ai import validate_environment
 
 print(validate_environment("openai/gpt-3.5-turbo"))
 ```

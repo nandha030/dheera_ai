@@ -8,9 +8,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-import litellm
-from litellm.vector_stores import asearch as vector_store_asearch
-from litellm.vector_stores import search as vector_store_search
+import dheera_ai
+from dheera_ai.vector_stores import asearch as vector_store_asearch
+from dheera_ai.vector_stores import search as vector_store_search
 
 
 # Mock response from actual Milvus API
@@ -98,11 +98,11 @@ class TestMilvusVectorStore:
         mock_response.json.return_value = MOCK_MILVUS_SEARCH_RESPONSE
         mock_response.text = json.dumps(MOCK_MILVUS_SEARCH_RESPONSE)
 
-        with patch("litellm.embedding") as mock_embedding:
+        with patch("dheera_ai.embedding") as mock_embedding:
             mock_embedding.return_value = MOCK_EMBEDDING_RESPONSE
 
             with patch(
-                "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+                "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
                 new_callable=AsyncMock,
             ) as mock_post:
                 mock_post.return_value = mock_response
@@ -114,8 +114,8 @@ class TestMilvusVectorStore:
                     custom_llm_provider="milvus",
                     api_base="https://in03-test.serverless.aws-eu-central-1.cloud.zilliz.com",
                     api_key="mock_milvus_api_key",
-                    litellm_embedding_model="text-embedding-3-large",
-                    litellm_embedding_config={
+                    dheera_ai_embedding_model="text-embedding-3-large",
+                    dheera_ai_embedding_config={
                         "api_key": "mock_openai_api_key",
                     },
                     outputFields=["book_intro_text"],
@@ -174,7 +174,7 @@ class TestMilvusVectorStore:
                 url = call_args.kwargs.get("url", "")
                 assert "v2/vectordb/entities/search" in url
 
-                # Validate the response structure (LiteLLM standard format)
+                # Validate the response structure (DheeraAI standard format)
                 assert response is not None
                 assert response["object"] == "vector_store.search_results.page"  # type: ignore
                 assert "data" in response
@@ -210,11 +210,11 @@ class TestMilvusVectorStore:
         mock_response.json.return_value = MOCK_MILVUS_SEARCH_RESPONSE
         mock_response.text = json.dumps(MOCK_MILVUS_SEARCH_RESPONSE)
 
-        with patch("litellm.embedding") as mock_embedding:
+        with patch("dheera_ai.embedding") as mock_embedding:
             mock_embedding.return_value = MOCK_EMBEDDING_RESPONSE
 
             with patch(
-                "litellm.llms.custom_httpx.http_handler.HTTPHandler.post"
+                "dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post"
             ) as mock_post:
                 mock_post.return_value = mock_response
 
@@ -225,8 +225,8 @@ class TestMilvusVectorStore:
                     custom_llm_provider="milvus",
                     api_base="https://in03-test.serverless.aws-eu-central-1.cloud.zilliz.com",
                     api_key="mock_milvus_api_key",
-                    litellm_embedding_model="text-embedding-3-large",
-                    litellm_embedding_config={
+                    dheera_ai_embedding_model="text-embedding-3-large",
+                    dheera_ai_embedding_config={
                         "api_key": "mock_openai_api_key",
                     },
                     outputFields=["book_intro_text"],
@@ -315,14 +315,14 @@ class TestMilvusVectorStore:
 # @pytest.mark.asyncio
 # async def test_basic_search_vector_store(sync_mode):
 #     """Integration test with real Milvus API (requires credentials)"""
-#     litellm._turn_on_debug()
-#     litellm.set_verbose = True
+#     dheera_ai._turn_on_debug()
+#     dheera_ai.set_verbose = True
 #     base_request_args = {
 #         "vector_store_id": "book_2",
 #         "custom_llm_provider": "milvus",
 #         "api_base": "https://in03-18505f064ffbc6f.serverless.aws-eu-central-1.cloud.zilliz.com",
-#         "litellm_embedding_model": "text-embedding-3-large",
-#         "litellm_embedding_config": {
+#         "dheera_ai_embedding_model": "text-embedding-3-large",
+#         "dheera_ai_embedding_config": {
 #             "api_key": os.getenv("OPENAI_API_KEY"),
 #         },
 #         "default_output_fields": [
@@ -339,10 +339,10 @@ class TestMilvusVectorStore:
 #             response = await vector_store_asearch(
 #                 query=default_query, **base_request_args
 #             )
-#     except litellm.InternalServerError:
-#         pytest.skip("Skipping test due to litellm.InternalServerError")
+#     except dheera_ai.InternalServerError:
+#         pytest.skip("Skipping test due to dheera_ai.InternalServerError")
 
-#     print("litellm response=", json.dumps(response, indent=4, default=str))
+#     print("dheera_ai response=", json.dumps(response, indent=4, default=str))
 #     assert len(response["data"]) > 0  # type: ignore
 
 

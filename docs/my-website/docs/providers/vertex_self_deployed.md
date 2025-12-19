@@ -24,14 +24,14 @@ All OpenAI compatible models from Vertex Model Garden are supported.
 | Property | Details |
 |----------|---------|
 | Provider Route | `vertex_ai/openai/{MODEL_ID}` |
-| Vertex Documentation | [Model Garden LiteLLM Inference](https://github.com/GoogleCloudPlatform/generative-ai/blob/main/open-models/use-cases/model_garden_litellm_inference.ipynb), [Vertex Model Garden](https://cloud.google.com/model-garden?hl=en) |
+| Vertex Documentation | [Model Garden Dheera AI Inference](https://github.com/GoogleCloudPlatform/generative-ai/blob/main/open-models/use-cases/model_garden_dheera_ai_inference.ipynb), [Vertex Model Garden](https://cloud.google.com/model-garden?hl=en) |
 | Supported Operations | `/chat/completions`, `/embeddings` |
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 ## set ENV variables
@@ -54,7 +54,7 @@ response = completion(
 ```yaml
 model_list:
     - model_name: llama3-1-8b-instruct
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/openai/5464397967697903616
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-east-1"
@@ -63,7 +63,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -97,7 +97,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="non-openai" label="Non-OpenAI Compatible Models">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 ## set ENV variables
@@ -131,7 +131,7 @@ Deploy Gemma models on custom Vertex AI prediction endpoints with OpenAI-compati
 ```yaml
 model_list:
   - model_name: gemma-model
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/gemma/gemma-3-12b-it-1222199011122
       api_base: https://ENDPOINT.us-central1-PROJECT.prediction.vertexai.goog/v1/projects/PROJECT_ID/locations/us-central1/endpoints/ENDPOINT_ID:predict
       vertex_project: "my-project-id"
@@ -141,7 +141,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 **3. Test it**
@@ -160,7 +160,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 **SDK Usage:**
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="vertex_ai/gemma/gemma-3-12b-it-1222199011122",
@@ -188,7 +188,7 @@ Deploy MedGemma models on custom Vertex AI prediction endpoints with OpenAI-comp
 ```yaml
 model_list:
   - model_name: medgemma-model
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/gemma/medgemma-2b-v1
       api_base: https://ENDPOINT.us-central1-PROJECT.prediction.vertexai.goog/v1/projects/PROJECT_ID/locations/us-central1/endpoints/ENDPOINT_ID:predict
       vertex_project: "my-project-id"
@@ -198,7 +198,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 **3. Test it**
@@ -217,7 +217,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 **SDK Usage:**
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="vertex_ai/gemma/medgemma-2b-v1",

@@ -1,12 +1,12 @@
 # Vertex AI Search Datastores
 
-Call Vertex AI Discovery Engine Search API through LiteLLM.
+Call Vertex AI Discovery Engine Search API through Dheera AI.
 
 Provider Doc: https://cloud.google.com/generative-ai-app-builder/docs/reference/rest/v1/projects.locations.dataStores.servingConfigs/search
 
 ## What you get
 
-- Reference datastores by ID. LiteLLM finds the credentials.
+- Reference datastores by ID. Dheera AI finds the credentials.
 - No project/location in every request.
 - Configure credentials once, use everywhere.
 - Cost tracking works automatically.
@@ -24,7 +24,7 @@ export DEFAULT_GOOGLE_APPLICATION_CREDENTIALS="/path/to/credentials.json"
 **Step 2. Start proxy**
 
 ```bash
-litellm
+dheera_ai
 ```
 
 **Step 3. Search your datastore**
@@ -33,7 +33,7 @@ litellm
 curl -X POST \
   "http://localhost:4000/vertex_ai/discovery/v1/projects/my-project/locations/global/collections/default_collection/dataStores/my-datastore/servingConfigs/default_config:search" \
   -H "Content-Type: application/json" \
-  -H "x-litellm-api-key: Bearer sk-1234" \
+  -H "x-dheera_ai-api-key: Bearer sk-1234" \
   -d '{
     "query": "How do I authenticate?",
     "pageSize": 10
@@ -48,21 +48,21 @@ Register your datastore once. Reference it by ID.
 
 ```yaml
 vector_store_registry:
-  - vector_store_name: "vertex-ai-litellm-website-knowledgebase"
-    litellm_params:
+  - vector_store_name: "vertex-ai-dheera_ai-website-knowledgebase"
+    dheera_ai_params:
       vector_store_id: "my-datastore"
       custom_llm_provider: "vertex_ai/search_api"
-      vertex_app_id: "test-litellm-app_1761094730750"
+      vertex_app_id: "test-dheera_ai-app_1761094730750"
       vertex_project: "test-vector-store-db"
       vertex_location: "global"
       vector_store_description: "Vertex AI vector store for the Litellm website knowledgebase"
       vector_store_metadata:
-        source: "https://www.litellm.com/docs"
+        source: "https://www.dheera_ai.com/docs"
 ```
 
 **How it works:**
 
-LiteLLM sees `dataStores/my-datastore` in your URL. It looks up the vector store. Uses the right project and credentials automatically.
+Dheera AI sees `dataStores/my-datastore` in your URL. It looks up the vector store. Uses the right project and credentials automatically.
 
 ## Endpoint
 
@@ -78,7 +78,7 @@ Routes to `https://discoveryengine.googleapis.com`
 curl -X POST \
   "http://localhost:4000/vertex_ai/discovery/v1/projects/my-project/locations/global/collections/default_collection/dataStores/my-datastore/servingConfigs/default_config:search" \
   -H "Content-Type: application/json" \
-  -H "x-litellm-api-key: Bearer sk-1234" \
+  -H "x-dheera_ai-api-key: Bearer sk-1234" \
   -d '{
     "query": "pricing",
     "pageSize": 10
@@ -91,7 +91,7 @@ curl -X POST \
 curl -X POST \
   "http://localhost:4000/vertex_ai/discovery/v1/projects/my-project/locations/global/collections/default_collection/dataStores/my-datastore/servingConfigs/default_config:search" \
   -H "Content-Type: application/json" \
-  -H "x-litellm-api-key: Bearer sk-1234" \
+  -H "x-dheera_ai-api-key: Bearer sk-1234" \
   -d '{
     "query": "tutorials",
     "pageSize": 20,
@@ -110,7 +110,7 @@ url = "http://localhost:4000/vertex_ai/discovery/v1/projects/my-project/location
 response = requests.post(url, 
     headers={
         "Content-Type": "application/json",
-        "x-litellm-api-key": "Bearer sk-1234"
+        "x-dheera_ai-api-key": "Bearer sk-1234"
     },
     json={"query": "pricing", "pageSize": 10}
 )
@@ -125,10 +125,10 @@ for result in response.json().get("results", []):
 ```bash
 curl http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "model": "claude-3-5-sonnet",
-    "messages": [{"role": "user", "content": "What is litellm?"}],
+    "messages": [{"role": "user", "content": "What is dheera_ai?"}],
     "tools": [
         {
             "type": "file_search",

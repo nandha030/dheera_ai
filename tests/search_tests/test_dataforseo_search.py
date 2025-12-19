@@ -9,8 +9,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-import litellm
-from litellm.llms.base_llm.search.transformation import SearchResponse, SearchResult
+import dheera_ai
+from dheera_ai.llms.base_llm.search.transformation import SearchResponse, SearchResult
 
 
 @pytest.mark.asyncio
@@ -37,10 +37,10 @@ async def test_dataforseo_search_basic():
         ]
     )
     
-    with patch("litellm.llms.custom_httpx.llm_http_handler.BaseLLMHTTPHandler.async_search", new_callable=AsyncMock) as mock_search:
+    with patch("dheera_ai.llms.custom_httpx.llm_http_handler.BaseLLMHTTPHandler.async_search", new_callable=AsyncMock) as mock_search:
         mock_search.return_value = mock_response
         
-        response = await litellm.asearch(
+        response = await dheera_ai.asearch(
             query="latest developments in AI",
             search_provider="dataforseo",
         )

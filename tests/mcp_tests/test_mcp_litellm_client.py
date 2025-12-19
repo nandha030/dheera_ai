@@ -11,8 +11,8 @@ sys.path.insert(
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 import os
-from litellm import experimental_mcp_client
-import litellm
+from dheera_ai import experimental_mcp_client
+import dheera_ai
 import pytest
 import json
 
@@ -51,7 +51,7 @@ async def test_mcp_agent():
 
                     # Create and run the agent
                     messages = [{"role": "user", "content": "what's (3 + 5)"}]
-                    llm_response = await litellm.acompletion(
+                    llm_response = await dheera_ai.acompletion(
                         model="gpt-4o",
                         api_key=os.getenv("OPENAI_API_KEY"),
                         messages=messages,
@@ -87,7 +87,7 @@ async def test_mcp_agent():
                         }
                     )
                     print("final messages: ", messages)
-                    llm_response = await litellm.acompletion(
+                    llm_response = await dheera_ai.acompletion(
                         model="gpt-4o",
                         api_key=os.getenv("OPENAI_API_KEY"),
                         messages=messages,

@@ -17,7 +17,7 @@ class TestPromptTestEndpoint:
         """
         Test that dotprompt content is parsed and variables are rendered correctly
         """
-        from litellm.integrations.dotprompt.prompt_manager import PromptManager
+        from dheera_ai.integrations.dotprompt.prompt_manager import PromptManager
 
         dotprompt_content = """---
 model: gpt-4o
@@ -119,7 +119,7 @@ User: Hello World, how are you?"""
         """
         Test that missing model in frontmatter raises an error
         """
-        from litellm.integrations.dotprompt.prompt_manager import PromptManager
+        from dheera_ai.integrations.dotprompt.prompt_manager import PromptManager
 
         dotprompt_content = """---
 temperature: 0.7

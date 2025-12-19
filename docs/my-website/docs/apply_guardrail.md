@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # /guardrails/apply_guardrail
 
-Use this endpoint to directly call a guardrail configured on your LiteLLM instance. This is useful when you have services that need to directly call a guardrail.
+Use this endpoint to directly call a guardrail configured on your Dheera AI instance. This is useful when you have services that need to directly call a guardrail.
 
 ## Supported Guardrail Types
 
@@ -17,12 +17,12 @@ This endpoint supports various guardrail types including:
 
 ### Bedrock Guardrail Configuration
 
-To use Bedrock guardrails with the apply_guardrail endpoint, configure your guardrail in your LiteLLM config.yaml:
+To use Bedrock guardrails with the apply_guardrail endpoint, configure your guardrail in your Dheera AI config.yaml:
 
 ```yaml
 guardrails:
   - guardrail_name: "bedrock-content-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: bedrock
       mode: "pre_call"
       guardrailIdentifier: "your-guardrail-id"  # Your actual Bedrock guardrail ID
@@ -36,7 +36,7 @@ guardrails:
 1. Create a Bedrock guardrail in AWS Console
 2. Get the guardrail ID and version
 3. Ensure your AWS credentials have Bedrock permissions
-4. Configure the guardrail in your LiteLLM config 
+4. Configure the guardrail in your Dheera AI config 
 
 
 ## Usage
@@ -45,7 +45,7 @@ guardrails:
 <Tabs>
 <TabItem value="presidio" label="Presidio PII Guardrail" default>
 
-In this example `mask_pii` is a Presidio guardrail configured on LiteLLM.
+In this example `mask_pii` is a Presidio guardrail configured on Dheera AI.
 
 ```bash showLineNumbers title="Example calling the endpoint"
 curl -X POST 'http://localhost:4000/guardrails/apply_guardrail' \
@@ -62,7 +62,7 @@ curl -X POST 'http://localhost:4000/guardrails/apply_guardrail' \
 </TabItem>
 <TabItem value="bedrock" label="Bedrock Guardrail">
 
-In this example `bedrock-content-guard` is a Bedrock guardrail configured on LiteLLM.
+In this example `bedrock-content-guard` is a Bedrock guardrail configured on Dheera AI.
 
 ```bash showLineNumbers title="Example calling the endpoint"
 curl -X POST 'http://localhost:4000/guardrails/apply_guardrail' \

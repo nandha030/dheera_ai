@@ -1,10 +1,10 @@
 import Image from '@theme/IdealImage';
 
-# Multi-Tenant Architecture with LiteLLM
+# Multi-Tenant Architecture with Dheera AI
 
 ## Overview
 
-LiteLLM provides a centralized solution that scales across multiple tenants, enabling organizations to:
+Dheera AI provides a centralized solution that scales across multiple tenants, enabling organizations to:
 
 - **Centrally manage** LLM access for multiple tenants (organizations, teams, departments)
 - **Isolate spend and usage** across different organizational units
@@ -14,7 +14,7 @@ LiteLLM provides a centralized solution that scales across multiple tenants, ena
 
 :::info Open Source vs. Enterprise
 - **Teams + Virtual Keys**: ✅ Available in open source
-- **Organizations + Org Admins**: ✨ Enterprise feature ([Get a 7 day trial](https://www.litellm.ai/#trial))
+- **Organizations + Org Admins**: ✨ Enterprise feature ([Get a 7 day trial](https://www.dheera_ai.ai/#trial))
 
 You can implement multi-tenancy using **Teams** alone in the open source version, or add **Organizations** on top for additional hierarchy in the enterprise version.
 :::
@@ -29,11 +29,11 @@ Organizations with multi-tenant architectures face several challenges when deplo
 4. **Delegation**: Team leads should manage their teams without platform-wide admin access
 5. **Scalability**: Solution must scale from 10 to 10,000+ users without architectural changes
 
-## How LiteLLM Solves Multi-Tenancy
+## How Dheera AI Solves Multi-Tenancy
 
-<Image img={require('../../img/litellm_user_heirarchy.png')} style={{ width: '100%', maxWidth: '4000px' }} />
+<Image img={require('../../img/dheera_ai_user_heirarchy.png')} style={{ width: '100%', maxWidth: '4000px' }} />
 
-LiteLLM implements a hierarchical multi-tenant architecture with four levels:
+Dheera AI implements a hierarchical multi-tenant architecture with four levels:
 
 ### 1. Organizations (Top-Level Tenants) ✨ Enterprise Feature
 
@@ -57,7 +57,7 @@ LiteLLM implements a hierarchical multi-tenant architecture with four levels:
 - Organization admins manage teams within their organization only
 - Spend and usage tracked at organization level
 
-[API Reference for Organizations](https://litellm-api.up.railway.app/#/organization%20management)
+[API Reference for Organizations](https://dheera_ai-api.up.railway.app/#/organization%20management)
 
 ---
 
@@ -87,7 +87,7 @@ Teams are available in **open source** and can be used as your primary multi-ten
 - Service account keys survive team member changes
 - Per-team spend tracking and billing
 
-[API Reference for Teams](https://litellm-api.up.railway.app/#/team%20management)
+[API Reference for Teams](https://dheera_ai-api.up.railway.app/#/team%20management)
 
 ---
 
@@ -113,7 +113,7 @@ Teams are available in **open source** and can be used as your primary multi-ten
 - Role-based permissions control what users can do
 - User keys deleted when user is removed
 
-[API Reference for Users](https://litellm-api.up.railway.app/#/user%20management)
+[API Reference for Users](https://dheera_ai-api.up.railway.app/#/user%20management)
 
 ---
 
@@ -134,13 +134,13 @@ Each key can be one of three types:
 - Use **team service account keys** for your production application that shouldn't break when employees leave
 - Use **user + team keys** when you want individual accountability within a team budget
 
-[API Reference for Keys](https://litellm-api.up.railway.app/#/key%20management)
+[API Reference for Keys](https://dheera_ai-api.up.railway.app/#/key%20management)
 
 ---
 
 ## Role-Based Access Control (RBAC)
 
-LiteLLM provides granular RBAC across the hierarchy:
+Dheera AI provides granular RBAC across the hierarchy:
 
 ### Global Proxy Roles (Platform-Wide)
 
@@ -184,7 +184,7 @@ Team admins can configure granular permissions for regular team members:
 
 ## Spend Tracking & Cost Attribution
 
-LiteLLM provides multi-level spend tracking that flows through the hierarchy:
+Dheera AI provides multi-level spend tracking that flows through the hierarchy:
 
 ### Hierarchical Spend Flow
 
@@ -229,7 +229,7 @@ Budgets can be set at every level with inheritance:
 
 **Enterprise Setup** (with Organizations):
 ```
-Platform (LiteLLM Instance)
+Platform (Dheera AI Instance)
 ├── Engineering Organization ✨
 │   ├── Backend Team
 │   ├── Frontend Team
@@ -244,7 +244,7 @@ Platform (LiteLLM Instance)
 
 **Open Source Alternative** (Teams only):
 ```
-Platform (LiteLLM Instance)
+Platform (Dheera AI Instance)
 ├── Engineering Backend Team
 ├── Engineering Frontend Team
 ├── Engineering ML Team
@@ -268,7 +268,7 @@ Platform (LiteLLM Instance)
 
 **Enterprise Setup** (with Organizations):
 ```
-Platform (LiteLLM Instance)
+Platform (Dheera AI Instance)
 ├── Customer A Organization ✨
 │   ├── Production Team (Service Accounts)
 │   ├── Development Team
@@ -282,7 +282,7 @@ Platform (LiteLLM Instance)
 
 **Open Source Alternative** (Teams only):
 ```
-Platform (LiteLLM Instance)
+Platform (Dheera AI Instance)
 ├── Customer A Production Team (Service Accounts)
 ├── Customer A Development Team
 ├── Customer A QA Team
@@ -304,7 +304,7 @@ Platform (LiteLLM Instance)
 **Scenario**: Single organization with multiple environments
 
 ```
-Platform (LiteLLM Instance)
+Platform (Dheera AI Instance)
 └── Company Organization
     ├── Production Team
     │   └── Service Account Keys (strict rate limits)
@@ -324,9 +324,9 @@ Platform (LiteLLM Instance)
 
 ## Delegation & Self-Service
 
-One of LiteLLM's key advantages is delegated administration:
+One of Dheera AI's key advantages is delegated administration:
 
-### Without LiteLLM
+### Without Dheera AI
 ```
 Every team → Requests platform admin → Admin makes changes
 ```
@@ -334,7 +334,7 @@ Every team → Requests platform admin → Admin makes changes
 ❌ Slow onboarding  
 ❌ Poor scalability  
 
-### With LiteLLM
+### With Dheera AI
 ```
 Proxy Admin → Creates org + org admin
 Org Admin → Creates teams + team admins  
@@ -369,7 +369,7 @@ Team Admin → Manages their team independently
 
 ## Scalability
 
-LiteLLM's architecture scales from small teams to enterprise deployments:
+Dheera AI's architecture scales from small teams to enterprise deployments:
 
 ### Small Team (10-100 users)
 - Single organization
@@ -616,7 +616,7 @@ curl --location 'http://0.0.0.0:4000/key/generate' \
 
 ## Monitoring & Observability
 
-LiteLLM provides comprehensive monitoring:
+Dheera AI provides comprehensive monitoring:
 
 - **Spend Tracking**: Real-time spend by org/team/user/key
 - **Usage Analytics**: Request counts, token usage, model usage
@@ -630,7 +630,7 @@ LiteLLM provides comprehensive monitoring:
 
 ## Comparison with Other Approaches
 
-| Approach | Pros | Cons | LiteLLM Advantage |
+| Approach | Pros | Cons | Dheera AI Advantage |
 |----------|------|------|-------------------|
 | **Separate instances per tenant** | Strong isolation | High operational overhead, cost inefficient | Single instance, same isolation, 90% cost reduction |
 | **Single shared pool** | Simple setup | No cost attribution, no access control | Full attribution, granular access control |
@@ -676,7 +676,7 @@ A: You can gradually create organizations and teams, then move existing users/ke
 
 ## Summary
 
-LiteLLM solves multi-tenant architecture challenges through:
+Dheera AI solves multi-tenant architecture challenges through:
 
 1. **Hierarchical Structure**: Organizations → Teams → Users → Keys
 2. **Granular RBAC**: Platform-wide and tenant-scoped roles
@@ -700,11 +700,11 @@ LiteLLM solves multi-tenant architecture challenges through:
 - ✨ Organization-level budgets and model access
 - ✨ Hierarchical delegation and reporting
 
-This makes LiteLLM ideal for:
+This makes Dheera AI ideal for:
 - ✅ Enterprises with multiple departments
 - ✅ SaaS providers with multiple customers
 - ✅ Organizations needing cost chargeback/showback
 - ✅ Teams requiring self-service LLM access
 - ✅ Any multi-tenant LLM deployment
 
-[Start with LiteLLM Proxy →](./quick_start)
+[Start with Dheera AI Proxy →](./quick_start)

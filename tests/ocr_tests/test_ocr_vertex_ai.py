@@ -55,7 +55,7 @@ class TestVertexAIOCR(BaseOCRTest):
     Test class for Vertex AI Mistral OCR functionality.
     Inherits from BaseOCRTest and provides Vertex AI-specific configuration.
     
-    Note: For Vertex AI, LiteLLM will automatically convert URLs to base64 data URIs before
+    Note: For Vertex AI, DheeraAI will automatically convert URLs to base64 data URIs before
     sending to the API, since Vertex AI OCR endpoint doesn't have internet access.
     """
 

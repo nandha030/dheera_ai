@@ -5,18 +5,18 @@ import sys
 from typing import Any, Dict, List
 from unittest.mock import MagicMock, Mock, patch
 import os
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import time
 import base64
 
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
+import dheera_ai
 from abc import ABC, abstractmethod
-from litellm.integrations.custom_logger import CustomLogger
+from dheera_ai.integrations.custom_logger import CustomLogger
 import json
-from litellm.types.utils import StandardLoggingPayload
+from dheera_ai.types.utils import StandardLoggingPayload
 
 class BaseVectorStoreTest(ABC):
     """
@@ -35,25 +35,25 @@ class BaseVectorStoreTest(ABC):
     @pytest.mark.parametrize("sync_mode", [True, False])
     @pytest.mark.asyncio
     async def test_basic_search_vector_store(self, sync_mode):
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
         base_request_args = self.get_base_request_args()
         default_query = base_request_args.pop("query", "Basic ping")
         try: 
             if sync_mode:
-                response = litellm.vector_stores.search(
+                response = dheera_ai.vector_stores.search(
                     query=default_query, 
                     **base_request_args
                 )
             else:
-                response = await litellm.vector_stores.asearch(
+                response = await dheera_ai.vector_stores.asearch(
                     query=default_query, 
                     **base_request_args
                 )
-        except litellm.InternalServerError: 
-            pytest.skip("Skipping test due to litellm.InternalServerError")
+        except dheera_ai.InternalServerError: 
+            pytest.skip("Skipping test due to dheera_ai.InternalServerError")
         
-        print("litellm response=", json.dumps(response, indent=4, default=str))
+        print("dheera_ai response=", json.dumps(response, indent=4, default=str))
         
         # Validate response structure
         self._validate_vector_store_response(response)
@@ -61,32 +61,32 @@ class BaseVectorStoreTest(ABC):
     @pytest.mark.parametrize("sync_mode", [True, False])
     @pytest.mark.asyncio
     async def test_basic_create_vector_store(self, sync_mode):
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
         base_request_args = self.get_base_create_vector_store_args()
         
         # Extract custom_llm_provider from base args if present
         create_args = base_request_args
         try: 
             if sync_mode:
-                response = litellm.vector_stores.create(
+                response = dheera_ai.vector_stores.create(
                     name="Test Vector Store",
                     **create_args
                 )
             else:
-                response = await litellm.vector_stores.acreate(
+                response = await dheera_ai.vector_stores.acreate(
                     name="Test Vector Store",
                     **create_args
                 )
-        except litellm.InternalServerError: 
-            pytest.skip("Skipping test due to litellm.InternalServerError")
+        except dheera_ai.InternalServerError: 
+            pytest.skip("Skipping test due to dheera_ai.InternalServerError")
         except Exception as e:
             # If this is an authentication or permission error, skip the test
             if "authentication" in str(e).lower() or "permission" in str(e).lower() or "unauthorized" in str(e).lower():
                 pytest.skip(f"Skipping test due to authentication/permission error: {e}")
             raise
         
-        print("litellm create response=", json.dumps(response, indent=4, default=str))
+        print("dheera_ai create response=", json.dumps(response, indent=4, default=str))
         
         # Validate response structure
         self._validate_vector_store_create_response(response)

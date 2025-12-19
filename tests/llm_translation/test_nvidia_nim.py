@@ -14,17 +14,17 @@ import pytest
 from respx import MockRouter
 from unittest.mock import patch, MagicMock, AsyncMock
 
-import litellm
-from litellm import Choices, Message, ModelResponse, EmbeddingResponse, Usage
-from litellm import completion
+import dheera_ai
+from dheera_ai import Choices, Message, ModelResponse, EmbeddingResponse, Usage
+from dheera_ai import completion
 from base_rerank_unit_tests import BaseLLMRerankTest
-import litellm
+import dheera_ai
 
 
 def test_completion_nvidia_nim():
     from openai import OpenAI
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "nvidia_nim/databricks/dbrx-instruct"
     client = OpenAI(
         api_key="fake-api-key",
@@ -67,7 +67,7 @@ def test_completion_nvidia_nim():
 
 
 def test_embedding_nvidia_nim():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     from openai import OpenAI
 
     client = OpenAI(
@@ -75,7 +75,7 @@ def test_embedding_nvidia_nim():
     )
     with patch.object(client.embeddings.with_raw_response, "create") as mock_client:
         try:
-            litellm.embedding(
+            dheera_ai.embedding(
                 model="nvidia_nim/nvidia/nv-embedqa-e5-v5",
                 input="What is the meaning of life?",
                 input_type="passage",
@@ -96,7 +96,7 @@ def test_embedding_nvidia_nim():
 def test_chat_completion_nvidia_nim_with_tools():
     from openai import OpenAI
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "nvidia_nim/meta/llama3-70b-instruct"
     client = OpenAI(
         api_key="fake-api-key",
@@ -209,11 +209,11 @@ async def test_nvidia_nim_rerank_ranking_endpoint():
     mock_response.status_code = 200
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
         # Use "ranking/" prefix to force /v1/ranking endpoint
-        response = await litellm.arerank(
+        response = await dheera_ai.arerank(
             model="nvidia_nim/ranking/nvidia/llama-3.2-nv-rerankqa-1b-v2",
             query="What is the GPU memory bandwidth?",
             documents=["H100 delivers 3TB/s memory bandwidth", "A100 has 2TB/s memory bandwidth"],
@@ -248,8 +248,8 @@ async def test_nvidia_nim_rerank_ranking_endpoint():
 
 
 class TestNvidiaNim(BaseLLMRerankTest):
-    def get_custom_llm_provider(self) -> litellm.LlmProviders:
-        return litellm.LlmProviders.NVIDIA_NIM
+    def get_custom_llm_provider(self) -> dheera_ai.LlmProviders:
+        return dheera_ai.LlmProviders.NVIDIA_NIM
 
     def get_base_rerank_call_args(self) -> dict:
         return {

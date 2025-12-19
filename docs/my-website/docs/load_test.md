@@ -1,16 +1,16 @@
 import Image from '@theme/IdealImage';
 
-# LiteLLM Proxy - Locust Load Test
+# Dheera AI Proxy - Locust Load Test
 
-## Locust Load Test LiteLLM Proxy 
+## Locust Load Test Dheera AI Proxy 
 
-1. Add `fake-openai-endpoint` to your proxy config.yaml and start your litellm proxy
-litellm provides a free hosted `fake-openai-endpoint` you can load test against
+1. Add `fake-openai-endpoint` to your proxy config.yaml and start your dheera_ai proxy
+dheera_ai provides a free hosted `fake-openai-endpoint` you can load test against
 
 ```yaml
 model_list:
   - model_name: fake-openai-endpoint
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
@@ -18,7 +18,7 @@ model_list:
 
 2. `pip install locust`
 
-3. Create a file called `locustfile.py` on your local machine. Copy the contents from the litellm load test located [here](https://github.com/BerriAI/litellm/blob/main/.github/workflows/locustfile.py)
+3. Create a file called `locustfile.py` on your local machine. Copy the contents from the dheera_ai load test located [here](https://github.com/BerriAI/dheera_ai/blob/main/.github/workflows/locustfile.py)
 
 4. Start locust
   Run `locust` in the same directory as your `locustfile.py` from step 2
@@ -37,7 +37,7 @@ model_list:
 
   Head to the locust UI on http://0.0.0.0:8089
 
-  Set Users=100, Ramp Up Users=10, Host=Base URL of your LiteLLM Proxy
+  Set Users=100, Ramp Up Users=10, Host=Base URL of your Dheera AI Proxy
 
   <Image img={require('../img/locust_load_test.png')} />
 
@@ -48,5 +48,5 @@ model_list:
 
   Avg →  /health/readiness is `219ms`
 
-  <Image img={require('../img/litellm_load_test.png')} />
+  <Image img={require('../img/dheera_ai_load_test.png')} />
 

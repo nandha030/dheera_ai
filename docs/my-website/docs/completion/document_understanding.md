@@ -20,7 +20,7 @@ Works for:
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm.utils import supports_pdf_input, completion
+from dheera_ai.utils import supports_pdf_input, completion
 
 # set aws credentials
 os.environ["AWS_ACCESS_KEY_ID"] = ""
@@ -62,7 +62,7 @@ assert response is not None
 ```yaml
 model_list:
   - model_name: bedrock-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -72,7 +72,7 @@ model_list:
 2. Start the proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -105,7 +105,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm.utils import supports_pdf_input, completion
+from dheera_ai.utils import supports_pdf_input, completion
 
 # set aws credentials
 os.environ["AWS_ACCESS_KEY_ID"] = ""
@@ -152,7 +152,7 @@ assert response is not None
 ```yaml
 model_list:
   - model_name: bedrock-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -162,7 +162,7 @@ model_list:
 2. Start the proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -198,7 +198,7 @@ To specify the format of the document, you can use the `format` parameter.
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm.utils import supports_pdf_input, completion
+from dheera_ai.utils import supports_pdf_input, completion
 
 # set aws credentials
 os.environ["AWS_ACCESS_KEY_ID"] = ""
@@ -241,7 +241,7 @@ assert response is not None
 ```yaml
 model_list:
   - model_name: bedrock-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -251,7 +251,7 @@ model_list:
 2. Start the proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -289,7 +289,7 @@ Here is a sample payload for using the Mistral model for document understanding:
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm.utils import completion
+from dheera_ai.utils import completion
 
 # pdf file_id received from files endpoint
 file_id = "fa778e5e-46ec-4562-8418-36623fe25a71"
@@ -350,10 +350,10 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 <Tabs>
 <TabItem label="SDK" value="sdk">
 
-Use `litellm.supports_pdf_input(model="bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0")` -> returns `True` if model can accept pdf input
+Use `dheera_ai.supports_pdf_input(model="bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0")` -> returns `True` if model can accept pdf input
 
 ```python
-assert litellm.supports_pdf_input(model="bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0") == True
+assert dheera_ai.supports_pdf_input(model="bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0") == True
 ```
 </TabItem>
 
@@ -364,7 +364,7 @@ assert litellm.supports_pdf_input(model="bedrock/anthropic.claude-3-5-sonnet-202
 ```yaml
 model_list:
   - model_name: bedrock-model # model group name
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -376,7 +376,7 @@ model_list:
 2. Run proxy server
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 3. Call `/model_group/info` to check if a model supports `pdf` input

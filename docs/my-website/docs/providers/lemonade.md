@@ -3,12 +3,12 @@ import TabItem from '@theme/TabItem';
 
 # Lemonade
 
-[Lemonade Server](https://lemonade-server.ai/) is an OpenAI-compatible local language model inference provider optimized for AMD GPUs and NPUs. The `lemonade` litellm provider supports standard chat completions with full OpenAI API compatibility.
+[Lemonade Server](https://lemonade-server.ai/) is an OpenAI-compatible local language model inference provider optimized for AMD GPUs and NPUs. The `lemonade` dheera_ai provider supports standard chat completions with full OpenAI API compatibility.
 
 | Property | Details |
 |-------|-------|
 | Description | OpenAI-compatible AI provider for local and cloud-based language model inference |
-| Provider Route on LiteLLM | `lemonade/` (add this prefix to the model name - e.g. `lemonade/your-model-name`) |
+| Provider Route on Dheera AI | `lemonade/` (add this prefix to the model name - e.g. `lemonade/your-model-name`) |
 | API Endpoint for Provider | http://localhost:8000/api/v1 (default) |
 | Supported Endpoints | `/chat/completions` |
 
@@ -42,7 +42,7 @@ Lemonade can be configured with custom API URLs and doesn't require strict API k
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 # Optional: Set custom API base. Useful if your lemonade server is on
@@ -52,7 +52,7 @@ os.environ['LEMONADE_API_BASE'] = "http://localhost:8000/api/v1"
 response = completion(
     model="lemonade/your-model-name",
     messages=[
-       {"role": "user", "content": "Hello from LiteLLM!"}
+       {"role": "user", "content": "Hello from Dheera AI!"}
    ],
 )
 print(response)
@@ -61,7 +61,7 @@ print(response)
 ## Streaming
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 # Optional: Set custom API base. Useful if your lemonade server is on
@@ -87,7 +87,7 @@ for chunk in response:
 Lemonade supports additional parameters beyond the standard OpenAI set:
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="lemonade/your-model-name",
@@ -107,7 +107,7 @@ print(response)
 Lemonade supports OpenAI-compatible function calling:
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 functions = [
     {
@@ -140,7 +140,7 @@ print(response)
 Lemonade supports structured output with response format:
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import json
 
 # Define schema in response_format

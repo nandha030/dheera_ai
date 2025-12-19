@@ -12,7 +12,7 @@ jobs:
       issues: write
     steps:
       - name: Add SDK label
-        if: contains(github.event.issue.body, 'SDK (litellm Python package)')
+        if: contains(github.event.issue.body, 'SDK (dheera_ai Python package)')
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -31,7 +31,7 @@ jobs:
                   repo: context.repo.repo,
                   name: labelName,
                   color: '0E7C86',
-                  description: 'Issues related to the litellm Python SDK'
+                  description: 'Issues related to the dheera_ai Python SDK'
                 });
               } else {
                 throw error;
@@ -64,7 +64,7 @@ jobs:
                   repo: context.repo.repo,
                   name: labelName,
                   color: '5319E7',
-                  description: 'Issues related to the LiteLLM Proxy'
+                  description: 'Issues related to the Dheera AI Proxy'
                 });
               } else {
                 throw error;
@@ -97,7 +97,7 @@ jobs:
                   repo: context.repo.repo,
                   name: labelName,
                   color: 'D876E3',
-                  description: 'Issues related to the LiteLLM UI Dashboard'
+                  description: 'Issues related to the Dheera AI UI Dashboard'
                 });
               } else {
                 throw error;
@@ -130,7 +130,7 @@ jobs:
                   repo: context.repo.repo,
                   name: labelName,
                   color: 'FBCA04',
-                  description: 'Issues related to LiteLLM documentation'
+                  description: 'Issues related to Dheera AI documentation'
                 });
               } else {
                 throw error;

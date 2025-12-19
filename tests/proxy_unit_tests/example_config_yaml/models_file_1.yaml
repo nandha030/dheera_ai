@@ -1,4 +1,4 @@
 model_list:
   - model_name: included-model-1
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4

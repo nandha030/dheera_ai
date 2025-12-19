@@ -6,9 +6,9 @@ from httpx import Response, Request
 
 import pytest
 
-from litellm import DualCache
-from litellm.proxy.proxy_server import UserAPIKeyAuth
-from litellm.proxy.guardrails.guardrail_hooks.lasso.lasso import (
+from dheera_ai import DualCache
+from dheera_ai.proxy.proxy_server import UserAPIKeyAuth
+from dheera_ai.proxy.guardrails.guardrail_hooks.lasso.lasso import (
     LassoGuardrailMissingSecrets,
     LassoGuardrail,
     LassoGuardrailAPIError,
@@ -17,13 +17,13 @@ from litellm.proxy.guardrails.guardrail_hooks.lasso.lasso import (
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm.proxy.guardrails.init_guardrails import init_guardrails_v2
+import dheera_ai
+from dheera_ai.proxy.guardrails.init_guardrails import init_guardrails_v2
 
 
 def test_lasso_guard_config():
-    litellm.set_verbose = True
-    litellm.guardrail_name_config_map = {}
+    dheera_ai.set_verbose = True
+    dheera_ai.guardrail_name_config_map = {}
 
     # Set environment variable for testing
     os.environ["LASSO_API_KEY"] = "test-key"
@@ -32,7 +32,7 @@ def test_lasso_guard_config():
         all_guardrails=[
             {
                 "guardrail_name": "violence-guard",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "guardrail": "lasso",
                     "mode": "pre_call",
                     "default_on": True,
@@ -47,8 +47,8 @@ def test_lasso_guard_config():
 
 
 def test_lasso_guard_config_no_api_key():
-    litellm.set_verbose = True
-    litellm.guardrail_name_config_map = {}
+    dheera_ai.set_verbose = True
+    dheera_ai.guardrail_name_config_map = {}
 
     # Ensure LASSO_API_KEY is not in environment
     if "LASSO_API_KEY" in os.environ:
@@ -61,7 +61,7 @@ def test_lasso_guard_config_no_api_key():
             all_guardrails=[
                 {
                     "guardrail_name": "violence-guard",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "guardrail": "lasso",
                         "mode": "pre_call",
                         "default_on": True,
@@ -82,7 +82,7 @@ async def test_callback():
         all_guardrails=[
             {
                 "guardrail_name": "all-guard",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "guardrail": "lasso",
                     "mode": "pre_call",
                     "default_on": True,
@@ -90,7 +90,7 @@ async def test_callback():
             }
         ],
     )
-    lasso_guardrails = litellm.logging_callback_manager.get_custom_loggers_for_type(
+    lasso_guardrails = dheera_ai.logging_callback_manager.get_custom_loggers_for_type(
         LassoGuardrail
     )
     print("found lasso guardrails", lasso_guardrails)

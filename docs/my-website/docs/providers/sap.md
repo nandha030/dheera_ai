@@ -3,12 +3,12 @@ import TabItem from '@theme/TabItem';
 
 # SAP Generative AI Hub
 
-LiteLLM supports SAP Generative AI Hub's Orchestration Service.
+Dheera AI supports SAP Generative AI Hub's Orchestration Service.
 
 | Property | Details                                                                                                                                                |
 |-------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Description | SAP's Generative AI Hub provides access to OpenAI, Anthropic, Gemini, Mistral, NVIDIA, Amazon, and SAP LLMs through the AI Core orchestration service. |
-| Provider Route on LiteLLM | `sap/`                                                                                                                                                 |
+| Provider Route on Dheera AI | `sap/`                                                                                                                                                 |
 | Supported Endpoints | `/chat/completions`, `/embeddings`                                                                                                                                  |
 | API Reference | [SAP AI Core Documentation](https://help.sap.com/docs/sap-ai-core)                                                                                     |
 
@@ -31,30 +31,30 @@ AICORE_CLIENT_SECRET = " *** ",
 AICORE_RESOURCE_GROUP = " *** ",
 AICORE_BASE_URL = "https://api.ai.***.cfapps.sap.hana.ondemand.com/v2"
 </pre>
-## Usage - LiteLLM Python SDK
+## Usage - Dheera AI Python SDK
 
 ```python showLineNumbers title="SAP Chat Completion"
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["AICORE_SERVICE_KEY"] = '{"clientid": "...", "clientsecret": "...", ...}'
 
 response = completion(
     model="sap/gpt-4",
-    messages=[{"role": "user", "content": "Hello from LiteLLM"}]
+    messages=[{"role": "user", "content": "Hello from Dheera AI"}]
 )
 print(response)
 ```
 
 ```python showLineNumbers title="SAP Chat Completion - Streaming"
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["AICORE_SERVICE_KEY"] = '{"clientid": "...", "clientsecret": "...", ...}'
 
 response = completion(
     model="sap/gpt-4",
-    messages=[{"role": "user", "content": "Hello from LiteLLM"}],
+    messages=[{"role": "user", "content": "Hello from Dheera AI"}],
     stream=True
 )
 
@@ -63,7 +63,7 @@ for chunk in response:
 ```
 
 ```python showLineNumbers title="SAP Embedding"
-from litellm import embedding
+from dheera_ai import embedding
 import os
 
 os.environ["AICORE_SERVICE_KEY"] = '{"clientid": "...", "clientsecret": "...", ...}'
@@ -74,14 +74,14 @@ result = embedding(
 print(result.data[0])
 ```
 
-## Usage - LiteLLM Proxy
+## Usage - Dheera AI Proxy
 
-Add to your LiteLLM Proxy config:
+Add to your Dheera AI Proxy config:
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: "sap/*"
-    litellm_params:
+    dheera_ai_params:
       model: "sap/*"
 
 general_settings: 
@@ -94,7 +94,7 @@ environment_variables:
 Start the proxy:
 
 ```bash showLineNumbers title="Start Proxy"
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 <Tabs>
@@ -129,14 +129,14 @@ print(response.choices[0].message.content)
 ```
 
 </TabItem>
-<TabItem value="litellm-sdk" label="LiteLLM SDK">
+<TabItem value="dheera_ai-sdk" label="Dheera AI SDK">
 
-```python showLineNumbers title="LiteLLM SDK"
+```python showLineNumbers title="Dheera AI SDK"
 import os
-import litellm
-os.environ["LITELLM_PROXY_API_KEY"] = "your-proxy-api-key"
-litellm.use_litellm_proxy = True  # it is important to set this parameter
-response = litellm.completion(
+import dheera_ai
+os.environ["DHEERA_AI_PROXY_API_KEY"] = "your-proxy-api-key"
+dheera_ai.use_dheera_ai_proxy = True  # it is important to set this parameter
+response = dheera_ai.completion(
     model="sap/gpt-4o",
     messages=[{ "content": "Hello, how are you?","role": "user"}],
     api_base="http://your-proxy-api-base"

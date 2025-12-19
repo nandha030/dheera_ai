@@ -10,7 +10,7 @@ import TabItem from '@theme/TabItem';
 
 ```python
 # pip install braintrust
-import litellm
+import dheera_ai
 import os
 
 # set env
@@ -18,11 +18,11 @@ os.environ["BRAINTRUST_API_KEY"] = ""
 os.environ["BRAINTRUST_API_BASE"] = "https://api.braintrustdata.com/v1"
 os.environ['OPENAI_API_KEY']=""
 
-# set braintrust as a callback, litellm will send the data to braintrust
-litellm.callbacks = ["braintrust"]
+# set braintrust as a callback, dheera_ai will send the data to braintrust
+dheera_ai.callbacks = ["braintrust"]
 
 # openai call
-response = litellm.completion(
+response = dheera_ai.completion(
   model="gpt-3.5-turbo",
   messages=[
     {"role": "user", "content": "Hi 👋 - i'm openai"}
@@ -44,11 +44,11 @@ BRAINTRUST_API_BASE="https://api.braintrustdata.com/v1"
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["braintrust"]
 ```
 
@@ -85,7 +85,7 @@ You can customize the span id, root span name and span parents in Braintrust log
 <TabItem value="sdk" label="SDK">
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
   model="gpt-3.5-turbo",
   messages=[
     {"role": "user", "content": "Hi 👋 - i'm openai"}
@@ -104,7 +104,7 @@ response = litellm.completion(
 Note: Other `metadata` can be included here as well when using the SDK.
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
   model="gpt-3.5-turbo",
   messages=[
     {"role": "user", "content": "Hi 👋 - i'm openai"}
@@ -149,7 +149,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages = [
@@ -158,7 +158,7 @@ response = client.chat.completions.create(
             "content": "this is a test request, write a short poem"
         }
     ],
-    extra_body={ # pass in any provider-specific param, if not supported by openai, https://docs.litellm.ai/docs/completion/input#provider-specific-params
+    extra_body={ # pass in any provider-specific param, if not supported by openai, https://docs.dheera_ai.ai/docs/completion/input#provider-specific-params
         "metadata": { # 👈 use for logging additional params (e.g. to braintrust)
             "project_id": "my-special-project",
             "span_name": "Poetry Generation"
@@ -182,7 +182,7 @@ Here's everything you can pass in metadata for a braintrust request
 
 `braintrust_*` - If you are adding metadata from _proxy request headers_, any metadata field starting with `braintrust_` will be passed as metadata to the logging request. If you are using the SDK, just pass your metadata like normal (e.g., `metadata={"project_name": "my-test-project", "item1": "an item", "item2": "another item"}`)
 
-`project_id` - Set the project id for a braintrust call. Default is `litellm`.
+`project_id` - Set the project id for a braintrust call. Default is `dheera_ai`.
 
 `project_name` - Set the project name for a braintrust call. Will try to find a project with that name, or create one if it doesn't exist. If both `project_id` and `project_name` are passed, `project_id` will be used.
 

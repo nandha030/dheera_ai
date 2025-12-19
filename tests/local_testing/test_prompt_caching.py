@@ -6,11 +6,11 @@ import sys
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-import litellm
+import dheera_ai
 import pytest
 
 
-def _usage_format_tests(usage: litellm.Usage):
+def _usage_format_tests(usage: dheera_ai.Usage):
     """
     OpenAI prompt caching
     - prompt_tokens = sum of non-cache hit tokens + cache-hit tokens
@@ -39,7 +39,7 @@ def _usage_format_tests(usage: litellm.Usage):
 
 
 def test_supports_prompt_caching():
-    from litellm.utils import supports_prompt_caching
+    from dheera_ai.utils import supports_prompt_caching
 
     supports_pc = supports_prompt_caching(model="anthropic/claude-sonnet-4-5-20250929")
 

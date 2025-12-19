@@ -5,12 +5,12 @@ import pytest
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system paths
-import litellm
+import dheera_ai
 
 
 def test_completion_openrouter_reasoning_content():
-    litellm._turn_on_debug()
-    resp = litellm.completion(
+    dheera_ai._turn_on_debug()
+    resp = dheera_ai.completion(
         model="openrouter/anthropic/claude-3.7-sonnet",
         messages=[{"role": "user", "content": "Hello world"}],
         reasoning={"effort": "high"},
@@ -20,8 +20,8 @@ def test_completion_openrouter_reasoning_content():
 
 
 def test_completion_openrouter_image_generation():
-    litellm._turn_on_debug()
-    resp = litellm.completion(
+    dheera_ai._turn_on_debug()
+    resp = dheera_ai.completion(
         model="openrouter/google/gemini-2.5-flash-image-preview",
         messages=[{"role": "user", "content": "Generate an image of a cat"}],
         modalities=["image", "text"],

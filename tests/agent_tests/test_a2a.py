@@ -1,5 +1,5 @@
 """
-Test for LiteLLM A2A module.
+Test for DheeraAI A2A module.
 
 Run with:
     pytest tests/agent_tests/test_a2a.py -v -s
@@ -14,9 +14,9 @@ from uuid import uuid4
 
 import pytest
 
-import litellm
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.utils import StandardLoggingPayload
+import dheera_ai
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.utils import StandardLoggingPayload
 
 sys.path.insert(
     0, os.path.abspath("../..")
@@ -26,10 +26,10 @@ from a2a.types import MessageSendParams, SendMessageRequest
 async def test_asend_message_with_client_decorator():
     """
     Test asend_message standalone function with @client decorator.
-    This tests the LiteLLM logging integration.
+    This tests the DheeraAI logging integration.
     """
-    litellm._turn_on_debug()
-    from litellm.a2a_protocol import asend_message, create_a2a_client
+    dheera_ai._turn_on_debug()
+    from dheera_ai.a2a_protocol import asend_message, create_a2a_client
 
     # Create the A2A client first
     a2a_client = await create_a2a_client(base_url="http://localhost:10001")
@@ -87,14 +87,14 @@ class TestA2ALogger(CustomLogger):
 async def test_a2a_logging_payload():
     """
     Test that A2A calls create a standard logging payload.
-    Validates the @client decorator integration with LiteLLM logging.
+    Validates the @client decorator integration with DheeraAI logging.
     """
     # Reset callbacks and set up custom logger
-    litellm.logging_callback_manager._reset_all_callbacks()
+    dheera_ai.logging_callback_manager._reset_all_callbacks()
     test_logger = TestA2ALogger()
-    litellm.callbacks = [test_logger]
+    dheera_ai.callbacks = [test_logger]
 
-    from litellm.a2a_protocol import asend_message, create_a2a_client
+    from dheera_ai.a2a_protocol import asend_message, create_a2a_client
 
     # Create the A2A client first
     a2a_client = await create_a2a_client(base_url="http://localhost:10001")
@@ -172,8 +172,8 @@ async def test_pydantic_ai_non_streaming():
     Pydantic AI agents follow A2A protocol but don't support streaming.
     This test validates non-streaming requests work correctly.
     """
-    litellm._turn_on_debug()
-    from litellm.a2a_protocol import asend_message
+    dheera_ai._turn_on_debug()
+    from dheera_ai.a2a_protocol import asend_message
 
     # Build the request
     send_message_payload = {
@@ -198,7 +198,7 @@ async def test_pydantic_ai_non_streaming():
     response = await asend_message(
         request=request,
         api_base="http://localhost:9999",
-        litellm_params={"custom_llm_provider": "pydantic_ai_agents"},
+        dheera_ai_params={"custom_llm_provider": "pydantic_ai_agents"},
     )
 
     # Print response for debugging
@@ -247,8 +247,8 @@ async def test_pydantic_ai_fake_streaming():
     This test validates that fake streaming works by converting
     non-streaming responses into streaming chunks.
     """
-    litellm._turn_on_debug()
-    from litellm.a2a_protocol import asend_message_streaming
+    dheera_ai._turn_on_debug()
+    from dheera_ai.a2a_protocol import asend_message_streaming
 
     # Build the request
     from a2a.types import SendStreamingMessageRequest
@@ -282,7 +282,7 @@ async def test_pydantic_ai_fake_streaming():
     async for chunk in asend_message_streaming(
         request=request,
         api_base="http://localhost:9999",
-        litellm_params={"custom_llm_provider": "pydantic_ai_agents"},
+        dheera_ai_params={"custom_llm_provider": "pydantic_ai_agents"},
     ):
         chunks_received += 1
         print(f"\nChunk {chunks_received}:")

@@ -16,12 +16,12 @@ import TabItem from '@theme/TabItem';
 | Guardrails | ✅ | Applies to input text (non-streaming only) |
 | Supported Providers | OpenAI, Azure OpenAI, Vertex AI | |
 
-## **LiteLLM Python SDK Usage**
+## **Dheera AI Python SDK Usage**
 ### Quick Start 
 
 ```python
 from pathlib import Path
-from litellm import speech
+from dheera_ai import speech
 import os 
 
 os.environ["OPENAI_API_KEY"] = "sk-.."
@@ -38,7 +38,7 @@ response.stream_to_file(speech_file_path)
 ### Async Usage 
 
 ```python
-from litellm import aspeech
+from dheera_ai import aspeech
 from pathlib import Path
 import os, asyncio
 
@@ -46,7 +46,7 @@ os.environ["OPENAI_API_KEY"] = "sk-.."
 
 async def test_async_speech(): 
     speech_file_path = Path(__file__).parent / "speech.mp3"
-    response = await litellm.aspeech(
+    response = await dheera_ai.aspeech(
             model="openai/tts-1",
             voice="alloy",
             input="the quick brown fox jumped over the lazy dogs",
@@ -64,9 +64,9 @@ async def test_async_speech():
 asyncio.run(test_async_speech())
 ```
 
-## **LiteLLM Proxy Usage**
+## **Dheera AI Proxy Usage**
 
-LiteLLM provides an openai-compatible `/audio/speech` endpoint for Text-to-speech calls.
+Dheera AI provides an openai-compatible `/audio/speech` endpoint for Text-to-speech calls.
 
 ```bash
 curl http://0.0.0.0:4000/v1/audio/speech \
@@ -84,13 +84,13 @@ curl http://0.0.0.0:4000/v1/audio/speech \
 
 ```bash
 - model_name: tts
-  litellm_params:
+  dheera_ai_params:
     model: openai/tts-1
     api_key: os.environ/OPENAI_API_KEY
 ```
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -107,21 +107,21 @@ litellm --config /path/to/config.yaml
 
 ## `/audio/speech` to `/chat/completions` Bridge
 
-LiteLLM allows you to use `/chat/completions` models to generate speech through the `/audio/speech` endpoint. This is useful for models like Gemini's TTS-enabled models that are only accessible via `/chat/completions`.
+Dheera AI allows you to use `/chat/completions` models to generate speech through the `/audio/speech` endpoint. This is useful for models like Gemini's TTS-enabled models that are only accessible via `/chat/completions`.
 
 ### Gemini Text-to-Speech
 
 #### Python SDK Usage
 
 ```python showLineNumbers title="Gemini Text-to-Speech SDK Usage"
-import litellm
+import dheera_ai
 import os
 
 # Set your Gemini API key
 os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"
 
 def test_audio_speech_gemini():
-    result = litellm.speech(
+    result = dheera_ai.speech(
         model="gemini/gemini-2.5-flash-preview-tts",
         input="the quick brown fox jumped over the lazy dogs",
         api_key=os.getenv("GEMINI_API_KEY"),
@@ -139,7 +139,7 @@ test_audio_speech_gemini()
 #### Async Usage
 
 ```python showLineNumbers title="Gemini Text-to-Speech Async Usage"
-import litellm
+import dheera_ai
 import asyncio
 import os
 from pathlib import Path
@@ -148,7 +148,7 @@ os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"
 
 async def test_async_gemini_speech():
     speech_file_path = Path(__file__).parent / "gemini_speech.mp3"
-    response = await litellm.aspeech(
+    response = await dheera_ai.aspeech(
         model="gemini/gemini-2.5-flash-preview-tts",
         input="the quick brown fox jumped over the lazy dogs",
         api_key=os.getenv("GEMINI_API_KEY"),
@@ -159,22 +159,22 @@ async def test_async_gemini_speech():
 asyncio.run(test_async_gemini_speech())
 ```
 
-#### LiteLLM Proxy Usage
+#### Dheera AI Proxy Usage
 
 **Setup Config:**
 
 ```yaml showLineNumbers title="Gemini Proxy Configuration"
 model_list:
 - model_name: gemini-tts
-  litellm_params:
+  dheera_ai_params:
     model: gemini/gemini-2.5-flash-preview-tts
     api_key: os.environ/GEMINI_API_KEY
 ```
 
 **Start Proxy:**
 
-```bash showLineNumbers title="Start LiteLLM Proxy"
-litellm --config /path/to/config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy"
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -198,7 +198,7 @@ curl http://0.0.0.0:4000/v1/audio/speech \
 #### Python SDK Usage
 
 ```python showLineNumbers title="Vertex AI Text-to-Speech SDK Usage"
-import litellm
+import dheera_ai
 import os
 from pathlib import Path
 
@@ -206,7 +206,7 @@ from pathlib import Path
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "path/to/service-account.json"
 
 def test_audio_speech_vertex():
-    result = litellm.speech(
+    result = dheera_ai.speech(
         model="vertex_ai/gemini-2.5-flash-preview-tts",
         input="the quick brown fox jumped over the lazy dogs",
     )
@@ -219,14 +219,14 @@ def test_audio_speech_vertex():
 test_audio_speech_vertex()
 ```
 
-#### LiteLLM Proxy Usage
+#### Dheera AI Proxy Usage
 
 **Setup Config:**
 
 ```yaml showLineNumbers title="Vertex AI Proxy Configuration"
 model_list:
 - model_name: vertex-tts
-  litellm_params:
+  dheera_ai_params:
     model: vertex_ai/gemini-2.5-flash-preview-tts
     vertex_project: your-project-id
     vertex_location: us-central1
@@ -246,13 +246,13 @@ curl http://0.0.0.0:4000/v1/audio/speech \
   --output vertex_speech.mp3
 ```
 
-## ✨ Enterprise LiteLLM Proxy - Set Max Request File Size 
+## ✨ Enterprise Dheera AI Proxy - Set Max Request File Size 
 
 Use this when you want to limit the file size for requests sent to `audio/transcriptions`
 
 ```yaml
 - model_name: whisper
-  litellm_params:
+  dheera_ai_params:
     model: whisper-1
     api_key: sk-*******
     max_file_size_mb: 0.00001 # 👈 max file size in MB  (Set this intentionally very small for testing)
@@ -264,7 +264,7 @@ Make a test Request with a valid file
 ```shell
 curl --location 'http://localhost:4000/v1/audio/transcriptions' \
 --header 'Authorization: Bearer sk-1234' \
---form 'file=@"/Users/ishaanjaffer/Github/litellm/tests/gettysburg.wav"' \
+--form 'file=@"/Users/ishaanjaffer/Github/dheera_ai/tests/gettysburg.wav"' \
 --form 'model="whisper"'
 ```
 

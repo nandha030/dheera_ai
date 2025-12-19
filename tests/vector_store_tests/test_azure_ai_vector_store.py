@@ -1,8 +1,8 @@
 import pytest
-import litellm
+import dheera_ai
 import json
 import os
-from litellm.vector_stores import (
+from dheera_ai.vector_stores import (
     search as vector_store_search,
     asearch as vector_store_asearch,
 )
@@ -11,14 +11,14 @@ from litellm.vector_stores import (
 @pytest.mark.parametrize("sync_mode", [True, False])
 @pytest.mark.asyncio
 async def test_basic_search_vector_store(sync_mode):
-    litellm._turn_on_debug()
-    litellm.set_verbose = True
+    dheera_ai._turn_on_debug()
+    dheera_ai.set_verbose = True
     base_request_args = {
         "vector_store_id": "my-vector-index",
         "custom_llm_provider": "azure_ai",
         "azure_search_service_name": "azure-kb-search",
-        "litellm_embedding_model": "azure/text-embedding-3-large",
-        "litellm_embedding_config": {
+        "dheera_ai_embedding_model": "azure/text-embedding-3-large",
+        "dheera_ai_embedding_config": {
             "api_base": os.getenv("AZURE_AI_SEARCH_EMBEDDING_API_BASE"),
             "api_key": os.getenv("AZURE_AI_SEARCH_EMBEDDING_API_KEY"),
         },
@@ -33,7 +33,7 @@ async def test_basic_search_vector_store(sync_mode):
             response = await vector_store_asearch(
                 query=default_query, **base_request_args
             )
-    except litellm.InternalServerError:
-        pytest.skip("Skipping test due to litellm.InternalServerError")
+    except dheera_ai.InternalServerError:
+        pytest.skip("Skipping test due to dheera_ai.InternalServerError")
 
-    print("litellm response=", json.dumps(response, indent=4, default=str))
+    print("dheera_ai response=", json.dumps(response, indent=4, default=str))

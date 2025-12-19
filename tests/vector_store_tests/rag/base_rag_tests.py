@@ -14,8 +14,8 @@ import pytest
 
 sys.path.insert(0, os.path.abspath("../../.."))
 
-import litellm
-from litellm.types.rag import (
+import dheera_ai
+from dheera_ai.types.rag import (
     RAGIngestOptions,
     OpenAIVectorStoreOptions,
     BedrockVectorStoreOptions,
@@ -80,7 +80,7 @@ class BaseRAGTest(ABC):
         """
         Test basic text file ingestion to vector store.
         """
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         filename, unique_id = self.get_unique_filename("basic_ingest")
         text_content = f"Test document {unique_id} for RAG ingestion.".encode("utf-8")
@@ -90,7 +90,7 @@ class BaseRAGTest(ABC):
         ingest_options["name"] = f"test-basic-ingest-{unique_id}"
 
         try:
-            response = await litellm.rag.aingest(
+            response = await dheera_ai.rag.aingest(
                 ingest_options=ingest_options,
                 file_data=file_data,
             )
@@ -107,8 +107,8 @@ class BaseRAGTest(ABC):
                 assert response["vector_store_id"]
                 print(f"Vector store ID: {response['vector_store_id']}")
 
-        except litellm.InternalServerError:
-            pytest.skip("Skipping test due to litellm.InternalServerError")
+        except dheera_ai.InternalServerError:
+            pytest.skip("Skipping test due to dheera_ai.InternalServerError")
 
     @pytest.mark.asyncio
     async def test_ingest_and_query(self):
@@ -117,12 +117,12 @@ class BaseRAGTest(ABC):
         """
         import asyncio
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         filename, unique_id = self.get_unique_filename("ingest_query")
         text_content = f"""
         Test document {unique_id} for RAG ingestion and query.
-        LiteLLM provides a unified interface for 100+ LLMs.
+        DheeraAI provides a unified interface for 100+ LLMs.
         This content should be retrievable via semantic search.
         """.encode("utf-8")
         file_data = (filename, text_content, "text/plain")
@@ -132,7 +132,7 @@ class BaseRAGTest(ABC):
 
         try:
             # Step 1: Ingest
-            ingest_response = await litellm.rag.aingest(
+            ingest_response = await dheera_ai.rag.aingest(
                 ingest_options=ingest_options,
                 file_data=file_data,
             )
@@ -168,6 +168,6 @@ class BaseRAGTest(ABC):
 
             print("Query successful!")
 
-        except litellm.InternalServerError:
-            pytest.skip("Skipping test due to litellm.InternalServerError")
+        except dheera_ai.InternalServerError:
+            pytest.skip("Skipping test due to dheera_ai.InternalServerError")
 

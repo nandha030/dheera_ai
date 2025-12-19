@@ -10,40 +10,40 @@ import TabItem from '@theme/TabItem';
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
-from litellm import embedding
-litellm.vertex_project = "hardy-device-38811" # Your Project ID
-litellm.vertex_location = "us-central1"  # proj location
+import dheera_ai
+from dheera_ai import embedding
+dheera_ai.vertex_project = "hardy-device-38811" # Your Project ID
+dheera_ai.vertex_location = "us-central1"  # proj location
 
 response = embedding(
     model="vertex_ai/textembedding-gecko",
-    input=["good morning from litellm"],
+    input=["good morning from dheera_ai"],
 )
 print(response)
 ```
 </TabItem>
 
-<TabItem value="proxy" label="LiteLLM PROXY">
+<TabItem value="proxy" label="Dheera AI PROXY">
 
 
 1. Add model to config.yaml
 ```yaml
 model_list:
   - model_name: snowflake-arctic-embed-m-long-1731622468876
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/<your-model-id>
       vertex_project: "adroit-crow-413218"
       vertex_location: "us-central1"
       vertex_credentials: adroit-crow-413218-a956eef1a2a8.json 
 
-litellm_settings:
+dheera_ai_settings:
   drop_params: True
 ```
 
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request using OpenAI Python SDK, Langchain Python SDK
@@ -55,7 +55,7 @@ client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
 response = client.embeddings.create(
     model="snowflake-arctic-embed-m-long-1731622468876", 
-    input = ["good morning from litellm", "this is another item"],
+    input = ["good morning from dheera_ai", "this is another item"],
 )
 
 print(response)
@@ -66,7 +66,7 @@ print(response)
 </Tabs>
 
 #### Supported Embedding Models
-All models listed [here](https://github.com/BerriAI/litellm/blob/57f37f743886a0249f630a6792d49dffc2c5d9b7/model_prices_and_context_window.json#L835) are supported
+All models listed [here](https://github.com/BerriAI/dheera_ai/blob/57f37f743886a0249f630a6792d49dffc2c5d9b7/model_prices_and_context_window.json#L835) are supported
 
 | Model Name               | Function Call                                                                                                                                                      |
 |--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -83,7 +83,7 @@ All models listed [here](https://github.com/BerriAI/litellm/blob/57f37f743886a02
 
 ### Supported OpenAI (Unified) Params
 
-| [param](../embedding/supported_embedding.md#input-params-for-litellmembedding) | type | [vertex equivalent](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text-embeddings-api) |
+| [param](../embedding/supported_embedding.md#input-params-for-dheera_aiembedding) | type | [vertex equivalent](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text-embeddings-api) |
 |-------|-------------|--------------------|
 | `input` | **string or List[string]** | `instances` |
 | `dimensions` | **int** | `output_dimensionality` |
@@ -96,15 +96,15 @@ All models listed [here](https://github.com/BerriAI/litellm/blob/57f37f743886a02
 <TabItem value="sdk" label="SDK">
 
 ```python
-response = litellm.embedding(
+response = dheera_ai.embedding(
     model="vertex_ai/text-embedding-004",
-    input=["good morning from litellm", "gm"]
+    input=["good morning from dheera_ai", "gm"]
     input_type = "RETRIEVAL_DOCUMENT",
     dimensions=1,
 )
 ```
 </TabItem>
-<TabItem value="proxy" label="LiteLLM PROXY">
+<TabItem value="proxy" label="Dheera AI PROXY">
 
 
 ```python
@@ -114,7 +114,7 @@ client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
 response = client.embeddings.create(
     model="text-embedding-004", 
-    input = ["good morning from litellm", "gm"],
+    input = ["good morning from dheera_ai", "gm"],
     dimensions=1,
     extra_body = {
         "input_type": "RETRIEVAL_QUERY",
@@ -145,9 +145,9 @@ You can pass any vertex specific params to the embedding model. Just pass them t
 <TabItem value="sdk" label="SDK">
 
 ```python
-response = litellm.embedding(
+response = dheera_ai.embedding(
     model="vertex_ai/text-embedding-004",
-    input=["good morning from litellm", "gm"]
+    input=["good morning from dheera_ai", "gm"]
     task_type = "RETRIEVAL_DOCUMENT",
     title = "test",
     dimensions=1,
@@ -155,7 +155,7 @@ response = litellm.embedding(
 )
 ```
 </TabItem>
-<TabItem value="proxy" label="LiteLLM PROXY">
+<TabItem value="proxy" label="Dheera AI PROXY">
 
 
 ```python
@@ -165,7 +165,7 @@ client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
 response = client.embeddings.create(
     model="text-embedding-004", 
-    input = ["good morning from litellm", "gm"],
+    input = ["good morning from dheera_ai", "gm"],
     dimensions=1,
     extra_body = {
         "task_type": "RETRIEVAL_QUERY",
@@ -189,9 +189,9 @@ Use BGE (Baidu General Embedding) models deployed on Vertex AI.
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers title="Using BGE on Vertex AI"
-import litellm
+import dheera_ai
 
-response = litellm.embedding(
+response = dheera_ai.embedding(
     model="vertex_ai/bge/<your-endpoint-id>",
     input=["Hello", "World"],
     vertex_project="your-project-id",
@@ -203,26 +203,26 @@ print(response)
 
 </TabItem>
 
-<TabItem value="proxy" label="LiteLLM PROXY">
+<TabItem value="proxy" label="Dheera AI PROXY">
 
 1. Add model to config.yaml
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: bge-embedding
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/bge/<your-endpoint-id>
       vertex_project: "your-project-id"
       vertex_location: "us-central1"
       vertex_credentials: your-credentials.json
 
-litellm_settings:
+dheera_ai_settings:
   drop_params: True
 ```
 
 2. Start Proxy 
 
 ```bash
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request using OpenAI Python SDK
@@ -234,7 +234,7 @@ client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
 response = client.embeddings.create(
     model="bge-embedding",
-    input=["good morning from litellm", "this is another item"]
+    input=["good morning from dheera_ai", "this is another item"]
 )
 
 print(response)
@@ -245,7 +245,7 @@ Using a Private Service Connect (PSC) endpoint
 ```yaml showLineNumbers title="config.yaml (PSC)"
 model_list:
   - model_name: bge-small-en-v1.5
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/bge/1234567890 
       api_base: http://10.96.32.8  # Your PSC IP
       vertex_project: my-project-id  #optional
@@ -270,7 +270,7 @@ Known Limitations:
 Using GCS Images
 
 ```python
-response = await litellm.aembedding(
+response = await dheera_ai.aembedding(
     model="vertex_ai/multimodalembedding@001",
     input="gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png" # will be sent as a gcs image
 )
@@ -279,33 +279,33 @@ response = await litellm.aembedding(
 Using base 64 encoded images
 
 ```python
-response = await litellm.aembedding(
+response = await dheera_ai.aembedding(
     model="vertex_ai/multimodalembedding@001",
     input="data:image/jpeg;base64,..." # will be sent as a base64 encoded image
 )
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM PROXY (Unified Endpoint)">
+<TabItem value="proxy" label="Dheera AI PROXY (Unified Endpoint)">
 
 1. Add model to config.yaml
 ```yaml
 model_list:
   - model_name: multimodalembedding@001
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/multimodalembedding@001
       vertex_project: "adroit-crow-413218"
       vertex_location: "us-central1"
       vertex_credentials: adroit-crow-413218-a956eef1a2a8.json 
 
-litellm_settings:
+dheera_ai_settings:
   drop_params: True
 ```
 
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request use OpenAI Python SDK, Langchain Python SDK
@@ -322,7 +322,7 @@ import openai
 
 client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
-# # request sent to model set on litellm proxy, `litellm --model`
+# # request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.embeddings.create(
     model="multimodalembedding@001", 
     input = "gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png",
@@ -338,7 +338,7 @@ import openai
 
 client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
-# # request sent to model set on litellm proxy, `litellm --model`
+# # request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.embeddings.create(
     model="multimodalembedding@001", 
     input = "data:image/jpeg;base64,...",
@@ -398,7 +398,7 @@ print(query_result)
 </TabItem>
 
 
-<TabItem value="proxy-vtx" label="LiteLLM PROXY (Vertex SDK)">
+<TabItem value="proxy-vtx" label="Dheera AI PROXY (Vertex SDK)">
 
 1. Add model to config.yaml
 ```yaml
@@ -411,7 +411,7 @@ default_vertex_config:
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request use OpenAI Python SDK
@@ -424,8 +424,8 @@ from vertexai.vision_models import VideoSegmentConfig
 from google.auth.credentials import Credentials
 
 
-LITELLM_PROXY_API_KEY = "sk-1234"
-LITELLM_PROXY_BASE = "http://0.0.0.0:4000/vertex-ai"
+DHEERA_AI_PROXY_API_KEY = "sk-1234"
+DHEERA_AI_PROXY_BASE = "http://0.0.0.0:4000/vertex-ai"
 
 import datetime
 
@@ -449,12 +449,12 @@ class CredentialsWrapper(Credentials):
     def valid(self):
         return True  # Always consider the credentials as valid
 
-credentials = CredentialsWrapper(token=LITELLM_PROXY_API_KEY)
+credentials = CredentialsWrapper(token=DHEERA_AI_PROXY_API_KEY)
 
 vertexai.init(
     project="adroit-crow-413218",
     location="us-central1",
-    api_endpoint=LITELLM_PROXY_BASE,
+    api_endpoint=DHEERA_AI_PROXY_BASE,
     credentials = credentials,
     api_transport="rest",
    
@@ -486,7 +486,7 @@ print(f"Text Embedding: {embeddings.text_embedding}")
 Text + Image 
 
 ```python
-response = await litellm.aembedding(
+response = await dheera_ai.aembedding(
     model="vertex_ai/multimodalembedding@001",
     input=["hey", "gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png"] # will be sent as a gcs image
 )
@@ -495,7 +495,7 @@ response = await litellm.aembedding(
 Text + Video 
 
 ```python
-response = await litellm.aembedding(
+response = await dheera_ai.aembedding(
     model="vertex_ai/multimodalembedding@001",
     input=["hey", "gs://my-bucket/embeddings/supermarket-video.mp4"] # will be sent as a gcs image
 )
@@ -504,7 +504,7 @@ response = await litellm.aembedding(
 Image + Video 
 
 ```python
-response = await litellm.aembedding(
+response = await dheera_ai.aembedding(
     model="vertex_ai/multimodalembedding@001",
     input=["gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png", "gs://my-bucket/embeddings/supermarket-video.mp4"] # will be sent as a gcs image
 )
@@ -512,26 +512,26 @@ response = await litellm.aembedding(
 
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM PROXY (Unified Endpoint)">
+<TabItem value="proxy" label="Dheera AI PROXY (Unified Endpoint)">
 
 1. Add model to config.yaml
 ```yaml
 model_list:
   - model_name: multimodalembedding@001
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/multimodalembedding@001
       vertex_project: "adroit-crow-413218"
       vertex_location: "us-central1"
       vertex_credentials: adroit-crow-413218-a956eef1a2a8.json 
 
-litellm_settings:
+dheera_ai_settings:
   drop_params: True
 ```
 
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request use OpenAI Python SDK, Langchain Python SDK
@@ -544,7 +544,7 @@ import openai
 
 client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
-# # request sent to model set on litellm proxy, `litellm --model`
+# # request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.embeddings.create(
     model="multimodalembedding@001", 
     input = ["hey", "gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png"],
@@ -559,7 +559,7 @@ import openai
 
 client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
-# # request sent to model set on litellm proxy, `litellm --model`
+# # request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.embeddings.create(
     model="multimodalembedding@001", 
     input = ["hey", "gs://my-bucket/embeddings/supermarket-video.mp4"],
@@ -574,7 +574,7 @@ import openai
 
 client = openai.OpenAI(api_key="sk-1234", base_url="http://0.0.0.0:4000")
 
-# # request sent to model set on litellm proxy, `litellm --model`
+# # request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.embeddings.create(
     model="multimodalembedding@001", 
     input = ["gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png", "gs://my-bucket/embeddings/supermarket-video.mp4"],

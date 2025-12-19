@@ -21,7 +21,7 @@ class BaseAnthropicMessagesTest(ABC):
             max_tokens=1024,
             messages=[{"role": "user", "content": "Say 'hello test' and nothing else"}],
             extra_body={
-                "litellm_metadata": {
+                "dheera_ai_metadata": {
                     "tags": ["test-tag-1", "test-tag-2"],
                 }
             },
@@ -39,7 +39,7 @@ class BaseAnthropicMessagesTest(ABC):
             ],
             model="claude-sonnet-4-5-20250929",
             extra_body={
-                "litellm_metadata": {
+                "dheera_ai_metadata": {
                     "tags": ["test-tag-stream-1", "test-tag-stream-2"],
                 }
             },

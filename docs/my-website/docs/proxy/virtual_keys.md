@@ -7,9 +7,9 @@ Track Spend, and control model access via virtual keys for the proxy
 
 :::info
 
-- 🔑 [UI to Generate, Edit, Delete Keys (with SSO)](https://docs.litellm.ai/docs/proxy/ui)
-- [Deploy LiteLLM Proxy with Key Management](https://docs.litellm.ai/docs/proxy/deploy#deploy-with-database)
-- [Dockerfile.database for LiteLLM Proxy + Key Management](https://github.com/BerriAI/litellm/blob/main/docker/Dockerfile.database)
+- 🔑 [UI to Generate, Edit, Delete Keys (with SSO)](https://docs.dheera_ai.ai/docs/proxy/ui)
+- [Deploy Dheera AI Proxy with Key Management](https://docs.dheera_ai.ai/docs/proxy/deploy#deploy-with-database)
+- [Dockerfile.database for Dheera AI Proxy + Key Management](https://github.com/BerriAI/dheera_ai/blob/main/docker/Dockerfile.database)
 
 
 :::
@@ -22,7 +22,7 @@ Requirements:
 - Set `DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<dbname>` in your env 
 - Set a `master key`, this is your Proxy Admin key - you can use this to create other keys (🚨 must start with `sk-`).
   - ** Set on config.yaml** set your master key under `general_settings:master_key`, example below
-  - ** Set env variable** set `LITELLM_MASTER_KEY`
+  - ** Set env variable** set `DHEERA_AI_MASTER_KEY`
 
 (the proxy Dockerfile checks if the `DATABASE_URL` is set and then initializes the DB connection)
 
@@ -33,7 +33,7 @@ export DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<dbname>
 
 You can then generate keys by hitting the `/key/generate` endpoint.
 
-[**See code**](https://github.com/BerriAI/litellm/blob/7a669a36d2689c7f7890bc9c93e04ff3c2641299/litellm/proxy/proxy_server.py#L672)
+[**See code**](https://github.com/BerriAI/dheera_ai/blob/7a669a36d2689c7f7890bc9c93e04ff3c2641299/dheera_ai/proxy/proxy_server.py#L672)
 
 ## **Quick Start - Generate a Key**
 **Step 1: Save postgres db url**
@@ -41,10 +41,10 @@ You can then generate keys by hitting the `/key/generate` endpoint.
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
         model: ollama/llama2
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
         model: ollama/llama2
 
 general_settings: 
@@ -52,10 +52,10 @@ general_settings:
   database_url: "postgresql://<user>:<password>@<host>:<port>/<dbname>" # 👈 KEY CHANGE
 ```
 
-**Step 2: Start litellm**
+**Step 2: Start dheera_ai**
 
 ```shell
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 **Step 3: Generate keys**
@@ -70,18 +70,18 @@ curl 'http://0.0.0.0:4000/key/generate' \
 ## Spend Tracking 
 
 Get spend per:
-- key - via `/key/info` [Swagger](https://litellm-api.up.railway.app/#/key%20management/info_key_fn_key_info_get)
-- user - via `/user/info` [Swagger](https://litellm-api.up.railway.app/#/user%20management/user_info_user_info_get)
-- team - via `/team/info` [Swagger](https://litellm-api.up.railway.app/#/team%20management/team_info_team_info_get)  
-- ⏳ end-users - via `/end_user/info` - [Comment on this issue for end-user cost tracking](https://github.com/BerriAI/litellm/issues/2633)
+- key - via `/key/info` [Swagger](https://dheera_ai-api.up.railway.app/#/key%20management/info_key_fn_key_info_get)
+- user - via `/user/info` [Swagger](https://dheera_ai-api.up.railway.app/#/user%20management/user_info_user_info_get)
+- team - via `/team/info` [Swagger](https://dheera_ai-api.up.railway.app/#/team%20management/team_info_team_info_get)  
+- ⏳ end-users - via `/end_user/info` - [Comment on this issue for end-user cost tracking](https://github.com/BerriAI/dheera_ai/issues/2633)
 
 **How is it calculated?**
 
-The cost per model is stored [here](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) and calculated by the [`completion_cost`](https://github.com/BerriAI/litellm/blob/db7974f9f216ee50b53c53120d1e3fc064173b60/litellm/utils.py#L3771) function.
+The cost per model is stored [here](https://github.com/BerriAI/dheera_ai/blob/main/model_prices_and_context_window.json) and calculated by the [`completion_cost`](https://github.com/BerriAI/dheera_ai/blob/db7974f9f216ee50b53c53120d1e3fc064173b60/dheera_ai/utils.py#L3771) function.
 
 **How is it tracking?**
 
-Spend is automatically tracked for the key in the "LiteLLM_VerificationTokenTable". If the key has an attached 'user_id' or 'team_id', the spend for that user is tracked in the "LiteLLM_UserTable", and team in the "LiteLLM_TeamTable".
+Spend is automatically tracked for the key in the "Dheera AI_VerificationTokenTable". If the key has an attached 'user_id' or 'team_id', the spend for that user is tracked in the "Dheera AI_UserTable", and team in the "Dheera AI_TeamTable".
 
 <Tabs>
 <TabItem value="key-info" label="Key Spend">
@@ -94,7 +94,7 @@ curl 'http://0.0.0.0:4000/key/info?key=<user-key>' \
      -H 'Authorization: Bearer <your-master-key>'
 ```
 
-This is automatically updated (in USD) when calls are made to /completions, /chat/completions, /embeddings using litellm's completion_cost() function. [**See Code**](https://github.com/BerriAI/litellm/blob/1a6ea20a0bb66491968907c2bfaabb7fe45fc064/litellm/utils.py#L1654). 
+This is automatically updated (in USD) when calls are made to /completions, /chat/completions, /embeddings using dheera_ai's completion_cost() function. [**See Code**](https://github.com/BerriAI/dheera_ai/blob/1a6ea20a0bb66491968907c2bfaabb7fe45fc064/dheera_ai/utils.py#L1654). 
 
 **Sample response**
 
@@ -240,19 +240,19 @@ Here's how you can do that:
 ```yaml
 model_list:
   - model_name: my-free-tier
-    litellm_params:
+    dheera_ai_params:
         model: huggingface/HuggingFaceH4/zephyr-7b-beta
         api_base: http://0.0.0.0:8001
   - model_name: my-free-tier
-    litellm_params:
+    dheera_ai_params:
         model: huggingface/HuggingFaceH4/zephyr-7b-beta
         api_base: http://0.0.0.0:8002
   - model_name: my-free-tier
-    litellm_params:
+    dheera_ai_params:
         model: huggingface/HuggingFaceH4/zephyr-7b-beta
         api_base: http://0.0.0.0:8003
   - model_name: my-paid-tier
-    litellm_params:
+    dheera_ai_params:
         model: gpt-4
         api_key: my-api-key
 ```
@@ -292,29 +292,29 @@ curl -X POST "https://0.0.0.0:4000/key/generate" \
 
 ## Advanced
 
-### Pass LiteLLM Key in custom header
+### Pass Dheera AI Key in custom header
 
-Use this to make LiteLLM proxy look for the virtual key in a custom header instead of the default `"Authorization"` header
+Use this to make Dheera AI proxy look for the virtual key in a custom header instead of the default `"Authorization"` header
 
-**Step 1** Define `litellm_key_header_name` name on litellm config.yaml
+**Step 1** Define `dheera_ai_key_header_name` name on dheera_ai config.yaml
 
 ```yaml
 model_list:
   - model_name: fake-openai-endpoint
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
 
 general_settings: 
   master_key: sk-1234 
-  litellm_key_header_name: "X-Litellm-Key" # 👈 Key Change
+  dheera_ai_key_header_name: "X-Litellm-Key" # 👈 Key Change
 
 ```
 
 **Step 2** Test it
 
-In this request, litellm will use the Virtual key in the `X-Litellm-Key` header
+In this request, dheera_ai will use the Virtual key in the `X-Litellm-Key` header
 
 <Tabs>
 <TabItem value="curl" label="curl">
@@ -334,7 +334,7 @@ curl http://localhost:4000/v1/chat/completions \
 
 **Expected Response**
 
-Expect to see a successful response from the litellm proxy since the key passed in `X-Litellm-Key` is valid
+Expect to see a successful response from the dheera_ai proxy since the key passed in `X-Litellm-Key` is valid
 ```shell
 {"id":"chatcmpl-f9b2b79a7c30477ab93cd0e717d1773e","choices":[{"finish_reason":"stop","index":0,"message":{"content":"\n\nHello there, how may I assist you today?","role":"assistant","tool_calls":null,"function_call":null}}],"created":1677652288,"model":"gpt-3.5-turbo-0125","object":"chat.completion","system_fingerprint":"fp_44709d6fcb","usage":{"completion_tokens":12,"prompt_tokens":9,"total_tokens":21}
 ```
@@ -346,10 +346,10 @@ Expect to see a successful response from the litellm proxy since the key passed 
 ```python
 client = openai.OpenAI(
     api_key="not-used",
-    base_url="https://api-gateway-url.com/llmservc/api/litellmp",
+    base_url="https://api-gateway-url.com/llmservc/api/dheera_aip",
     default_headers={
         "Authorization": f"Bearer {API_GATEWAY_TOKEN}", # (optional) For your API Gateway
-        "X-Litellm-Key": f"Bearer sk-1234"              # For LiteLLM Proxy
+        "X-Litellm-Key": f"Bearer sk-1234"              # For Dheera AI Proxy
     }
 )
 ```
@@ -362,7 +362,7 @@ client = openai.OpenAI(
 
 ```bash
 curl -L -X POST 'http://0.0.0.0:4000/key/block' \
--H 'Authorization: Bearer LITELLM_MASTER_KEY' \
+-H 'Authorization: Bearer DHEERA_AI_MASTER_KEY' \
 -H 'Content-Type: application/json' \
 -d '{"key": "KEY-TO-BLOCK"}'
 ```
@@ -380,7 +380,7 @@ Expected Response:
 
 ```bash
 curl -L -X POST 'http://0.0.0.0:4000/key/unblock' \
--H 'Authorization: Bearer LITELLM_MASTER_KEY' \
+-H 'Authorization: Bearer DHEERA_AI_MASTER_KEY' \
 -H 'Content-Type: application/json' \
 -d '{"key": "KEY-TO-UNBLOCK"}'
 ```
@@ -401,13 +401,13 @@ If you need to add custom logic before generating a Proxy API Key (Example Valid
 #### 1. Write a custom `custom_generate_key_fn`
 
 
-The input to the custom_generate_key_fn function is a single parameter: `data` [(Type: GenerateKeyRequest)](https://github.com/BerriAI/litellm/blob/main/litellm/proxy/_types.py#L125)
+The input to the custom_generate_key_fn function is a single parameter: `data` [(Type: GenerateKeyRequest)](https://github.com/BerriAI/dheera_ai/blob/main/dheera_ai/proxy/_types.py#L125)
 
 The output of your `custom_generate_key_fn` should be a dictionary with the following structure
 ```python
 {
     "decision": False,
-    "message": "This violates LiteLLM Proxy Rules. No team id provided.",
+    "message": "This violates Dheera AI Proxy Rules. No team id provided.",
 }
 
 ```
@@ -429,7 +429,7 @@ async def custom_generate_key_fn(data: GenerateKeyRequest)-> dict:
             dict: A dictionary containing the decision and an optional message.
             {
                 "decision": False,
-                "message": "This violates LiteLLM Proxy Rules. No team id provided.",
+                "message": "This violates Dheera AI Proxy Rules. No team id provided.",
             }
         """
         
@@ -450,8 +450,8 @@ async def custom_generate_key_fn(data: GenerateKeyRequest)-> dict:
         tpm_limit = data_json.get("tpm_limit")
         rpm_limit = data_json.get("rpm_limit")
 
-        if team_id is not None and team_id == "litellm-core-infra@gmail.com":
-            # only team_id="litellm-core-infra@gmail.com" can make keys
+        if team_id is not None and team_id == "dheera_ai-core-infra@gmail.com":
+            # only team_id="dheera_ai-core-infra@gmail.com" can make keys
             return {
                 "decision": True,
             }
@@ -459,7 +459,7 @@ async def custom_generate_key_fn(data: GenerateKeyRequest)-> dict:
             print("Failed custom auth")
             return {
                 "decision": False,
-                "message": "This violates LiteLLM Proxy Rules. No team id provided.",
+                "message": "This violates Dheera AI Proxy Rules. No team id provided.",
             }
 ```
 
@@ -472,10 +472,10 @@ e.g. if they're both in the same dir - `./config.yaml` and `./custom_auth.py`, t
 ```yaml 
 model_list: 
   - model_name: "openai-model"
-    litellm_params: 
+    dheera_ai_params: 
       model: "gpt-3.5-turbo"
 
-litellm_settings:
+dheera_ai_settings:
   drop_params: True
   set_verbose: True
 
@@ -487,9 +487,9 @@ general_settings:
 ### Upperbound /key/generate params
 Use this, if you need to set default upperbounds for `max_budget`, `budget_duration` or any `key/generate` param per key. 
 
-Set `litellm_settings:upperbound_key_generate_params`:
+Set `dheera_ai_settings:upperbound_key_generate_params`:
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   upperbound_key_generate_params:
     max_budget: 100 # Optional[float], optional): upperbound of $100, for all /key/generate requests
     budget_duration: "10d" # Optional[str], optional): upperbound of 10 days for budget_duration values
@@ -509,9 +509,9 @@ Use this, if you need to control the default `max_budget` or any `key/generate` 
 
 When a `/key/generate` request does not specify `max_budget`, it will use the `max_budget` specified in `default_key_generate_params`
 
-Set `litellm_settings:default_key_generate_params`:
+Set `dheera_ai_settings:default_key_generate_params`:
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   default_key_generate_params:
     max_budget: 1.5000
     models: ["azure-gpt-3.5"]
@@ -526,9 +526,9 @@ litellm_settings:
 
 This is an Enterprise feature.
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Get free 7-day trial key](https://www.litellm.ai/enterprise#trial)
+[Get free 7-day trial key](https://www.dheera_ai.ai/enterprise#trial)
 
 
 :::
@@ -556,27 +556,27 @@ curl 'http://localhost:4000/key/sk-1234/regenerate' \
 
 **Read More**
 
-- [Write rotated keys to secrets manager](https://docs.litellm.ai/docs/secret#aws-secret-manager)
+- [Write rotated keys to secrets manager](https://docs.dheera_ai.ai/docs/secret#aws-secret-manager)
 
-[**👉 API REFERENCE DOCS**](https://litellm-api.up.railway.app/#/key%20management/regenerate_key_fn_key__key__regenerate_post)
+[**👉 API REFERENCE DOCS**](https://dheera_ai-api.up.railway.app/#/key%20management/regenerate_key_fn_key__key__regenerate_post)
 
 
 ### Scheduled Key Rotations
 
-LiteLLM can rotate **virtual keys automatically** based on time intervals you define.
+Dheera AI can rotate **virtual keys automatically** based on time intervals you define.
 
 #### Prerequisites
 
 1. **Database connection required** - Key rotation requires a connected database to track rotation schedules
-2. **Enable the rotation worker** - Set environment variable `LITELLM_KEY_ROTATION_ENABLED=true`
-3. **Configure check interval** - Optionally set `LITELLM_KEY_ROTATION_CHECK_INTERVAL_SECONDS` (default: 86400 seconds / 24 hours)
+2. **Enable the rotation worker** - Set environment variable `DHEERA_AI_KEY_ROTATION_ENABLED=true`
+3. **Configure check interval** - Optionally set `DHEERA_AI_KEY_ROTATION_CHECK_INTERVAL_SECONDS` (default: 86400 seconds / 24 hours)
 
 #### How it works
 
 1. When creating a virtual key, set `auto_rotate: true` and `rotation_interval` (duration string)
-2. LiteLLM calculates the next rotation time as `now + rotation_interval` and stores it in the database
+2. Dheera AI calculates the next rotation time as `now + rotation_interval` and stores it in the database
 3. A background job periodically checks for keys where the rotation time has passed
-4. When a key is due for rotation, LiteLLM automatically regenerates it and invalidates the old key string
+4. When a key is due for rotation, Dheera AI automatically regenerates it and invalidates the old key string
 5. The new rotation time is calculated and the cycle continues
 
 #### Create a key with auto rotation
@@ -593,9 +593,9 @@ curl 'http://0.0.0.0:4000/key/generate' \
       }'
 ```
 
-**LiteLLM UI**
+**Dheera AI UI**
 
-On the LiteLLM UI, Navigate to the Keys page and click on `Generate Key` > `Key Lifecycle` > `Enable Auto Rotation`
+On the Dheera AI UI, Navigate to the Keys page and click on `Generate Key` > `Key Lifecycle` > `Enable Auto Rotation`
 <Image 
   img={require('../../img/key_r.png')}
   style={{width: '30%', display: 'block', margin: '0'}}
@@ -623,9 +623,9 @@ curl 'http://0.0.0.0:4000/key/update' \
       }'
 ```
 
-**LiteLLM UI**
+**Dheera AI UI**
 
-On the LiteLLM UI, Navigate to the Keys page. Select the key you want to update and click on `Edit Settings` > `Auto-Rotation Settings`
+On the Dheera AI UI, Navigate to the Keys page. Select the key you want to update and click on `Edit Settings` > `Auto-Rotation Settings`
 
 <Image 
   img={require('../../img/key_u.png')}
@@ -638,15 +638,15 @@ Set these environment variables when starting the proxy:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `LITELLM_KEY_ROTATION_ENABLED` | Enable the rotation worker | `false` |
-| `LITELLM_KEY_ROTATION_CHECK_INTERVAL_SECONDS` | How often to scan for keys to rotate (in seconds) | `86400` (24 hours) |
+| `DHEERA_AI_KEY_ROTATION_ENABLED` | Enable the rotation worker | `false` |
+| `DHEERA_AI_KEY_ROTATION_CHECK_INTERVAL_SECONDS` | How often to scan for keys to rotate (in seconds) | `86400` (24 hours) |
 
 **Example:**
 ```bash
-export LITELLM_KEY_ROTATION_ENABLED=true
-export LITELLM_KEY_ROTATION_CHECK_INTERVAL_SECONDS=3600  # Check every hour
+export DHEERA_AI_KEY_ROTATION_ENABLED=true
+export DHEERA_AI_KEY_ROTATION_CHECK_INTERVAL_SECONDS=3600  # Check every hour
 
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 ### Temporary Budget Increase
@@ -660,7 +660,7 @@ curl -L -X POST 'http://localhost:4000/key/update' \
 -d '{"key": "sk-b3Z3Lqdb_detHXSUp4ol4Q", "temp_budget_increase": 100, "temp_budget_expiry": "10d"}'
 ```
 
-[API Reference](https://litellm-api.up.railway.app/#/key%20management/update_key_fn_key_update_post)
+[API Reference](https://dheera_ai-api.up.railway.app/#/key%20management/update_key_fn_key_update_post)
 
 
 ### Restricting Key Generation
@@ -668,7 +668,7 @@ curl -L -X POST 'http://localhost:4000/key/update' \
 Use this to control who can generate keys. Useful when letting others create keys on the UI. 
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   key_generation_settings:
     team_key_generation:
       allowed_team_member_roles: ["admin"]
@@ -742,22 +742,22 @@ class LitellmUserRoles(str, enum.Enum):
 
 ## **Next Steps - Set Budgets, Rate Limits per Virtual Key**
 
-[Follow this doc to set budgets, rate limiters per virtual key with LiteLLM](users)
+[Follow this doc to set budgets, rate limiters per virtual key with Dheera AI](users)
 
 ## Endpoint Reference (Spec)
 
 ### Keys 
 
-#### [**👉 API REFERENCE DOCS**](https://litellm-api.up.railway.app/#/key%20management/)
+#### [**👉 API REFERENCE DOCS**](https://dheera_ai-api.up.railway.app/#/key%20management/)
 
 ### Users
 
-#### [**👉 API REFERENCE DOCS**](https://litellm-api.up.railway.app/#/user%20management/)
+#### [**👉 API REFERENCE DOCS**](https://dheera_ai-api.up.railway.app/#/user%20management/)
 
 
 ### Teams
 
-#### [**👉 API REFERENCE DOCS**](https://litellm-api.up.railway.app/#/team%20management)
+#### [**👉 API REFERENCE DOCS**](https://dheera_ai-api.up.railway.app/#/team%20management)
 
 
 

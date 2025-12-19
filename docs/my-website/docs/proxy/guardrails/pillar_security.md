@@ -25,7 +25,7 @@ Use Pillar Security for comprehensive LLM security including:
    export PILLAR_API_BASE="https://api.pillar.security" # Optional, default
    ```
 
-### 2. Configure LiteLLM Proxy
+### 2. Configure Dheera AI Proxy
 
 Add Pillar Security to your `config.yaml`:
 
@@ -33,13 +33,13 @@ Add Pillar Security to your `config.yaml`:
 ```yaml
 model_list:
   - model_name: gpt-4.1-mini
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1-mini
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "pillar-monitor-everything"     # you can change my name
-    litellm_params:
+    dheera_ai_params:
       guardrail: pillar
       mode: [pre_call, post_call]                   # Monitor both input and output
       api_key: os.environ/PILLAR_API_KEY            # Your Pillar API key
@@ -56,7 +56,7 @@ guardrails:
 general_settings:
   master_key: "your-secure-master-key-here"
 
-litellm_settings:
+dheera_ai_settings:
   set_verbose: true                          # Enable detailed logging
 ```
 
@@ -65,7 +65,7 @@ litellm_settings:
 ### 3. Start the Proxy
 
 ```bash
-litellm --config config.yaml --port 4000
+dheera_ai --config config.yaml --port 4000
 ```
 
 ## Guardrail Modes
@@ -102,13 +102,13 @@ Pillar Security supports five execution modes for comprehensive protection:
 ```yaml
 model_list:
   - model_name: gpt-4.1-mini
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1-mini
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "pillar-input-only"
-    litellm_params:
+    dheera_ai_params:
       guardrail: pillar
       mode: "pre_call"                       # Input scanning only
       api_key: os.environ/PILLAR_API_KEY     # Your Pillar API key
@@ -121,9 +121,9 @@ guardrails:
       default_on: true                       # Enable for all requests
 
 general_settings:
-  master_key: "YOUR_LITELLM_PROXY_MASTER_KEY"
+  master_key: "YOUR_DHEERA_AI_PROXY_MASTER_KEY"
 
-litellm_settings:
+dheera_ai_settings:
   set_verbose: true
 ```
 
@@ -138,13 +138,13 @@ litellm_settings:
 ```yaml
 model_list:
   - model_name: gpt-4.1-mini
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1-mini
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "pillar-monitor"
-    litellm_params:
+    dheera_ai_params:
       guardrail: pillar
       mode: "during_call"                    # Parallel processing for speed
       api_key: os.environ/PILLAR_API_KEY     # Your Pillar API key
@@ -157,9 +157,9 @@ guardrails:
       default_on: true                       # Enable for all requests
 
 general_settings:
-  master_key: "YOUR_LITELLM_PROXY_MASTER_KEY"
+  master_key: "YOUR_DHEERA_AI_PROXY_MASTER_KEY"
 
-litellm_settings:
+dheera_ai_settings:
   set_verbose: true                          # Enable detailed logging
 ```
 
@@ -175,13 +175,13 @@ litellm_settings:
 ```yaml
 model_list:
   - model_name: gpt-4.1-mini
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1-mini
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "pillar-full-monitoring"
-    litellm_params:
+    dheera_ai_params:
       guardrail: pillar
       mode: [pre_call, post_call]            # Threats on input and output
       api_key: os.environ/PILLAR_API_KEY     # Your Pillar API key
@@ -194,9 +194,9 @@ guardrails:
       default_on: true                       # Enable for all requests
 
 general_settings:
-  master_key: "YOUR_LITELLM_PROXY_MASTER_KEY"
+  master_key: "YOUR_DHEERA_AI_PROXY_MASTER_KEY"
 
-litellm_settings:
+dheera_ai_settings:
   set_verbose: true                          # Enable detailed logging
 ```
 
@@ -212,13 +212,13 @@ litellm_settings:
 ```yaml
 model_list:
   - model_name: gpt-4.1-mini
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1-mini
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "pillar-masking"
-    litellm_params:
+    dheera_ai_params:
       guardrail: pillar
       mode: "pre_call"                       # Scan input before LLM call
       api_key: os.environ/PILLAR_API_KEY     # Your Pillar API key
@@ -230,16 +230,16 @@ guardrails:
       default_on: true                       # Enable for all requests
 
 general_settings:
-  master_key: "YOUR_LITELLM_PROXY_MASTER_KEY"
+  master_key: "YOUR_DHEERA_AI_PROXY_MASTER_KEY"
 
-litellm_settings:
+dheera_ai_settings:
   set_verbose: true
 ```
 
 **How it works:**
 1. User sends request with sensitive data: `"My email is john@example.com"`
 2. Pillar detects PII and returns masked version: `"My email is [MASKED_EMAIL]"`
-3. LiteLLM replaces original messages with masked messages
+3. Dheera AI replaces original messages with masked messages
 4. Request proceeds to LLM with sanitized content
 5. User receives response without exposing sensitive data
 
@@ -254,13 +254,13 @@ litellm_settings:
 ```yaml
 model_list:
   - model_name: gpt-4.1-mini
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1-mini
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "pillar-mcp-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: pillar
       mode: "pre_mcp_call"                   # Scan MCP tool call inputs
       api_key: os.environ/PILLAR_API_KEY     # Your Pillar API key
@@ -269,9 +269,9 @@ guardrails:
       default_on: true                       # Enable for all MCP calls
 
 general_settings:
-  master_key: "YOUR_LITELLM_PROXY_MASTER_KEY"
+  master_key: "YOUR_DHEERA_AI_PROXY_MASTER_KEY"
 
-litellm_settings:
+dheera_ai_settings:
   set_verbose: true
 ```
 
@@ -298,7 +298,7 @@ export PILLAR_TIMEOUT="5.0"
 
 ### Session Tracking
 
-Pillar supports comprehensive session tracking using LiteLLM's metadata system:
+Pillar supports comprehensive session tracking using Dheera AI's metadata system:
 
 ```bash
 curl -X POST "http://localhost:4000/v1/chat/completions" \
@@ -314,7 +314,7 @@ curl -X POST "http://localhost:4000/v1/chat/completions" \
   }'
 ```
 
-This provides clear, explicit conversation tracking that works seamlessly with LiteLLM's session management. When using monitor mode, the session ID is returned in the `x-pillar-session-id` response header for easy correlation and tracking.
+This provides clear, explicit conversation tracking that works seamlessly with Dheera AI's session management. When using monitor mode, the session ID is returned in the `x-pillar-session-id` response header for easy correlation and tracking.
 
 ### Actions on Flagged Content
 
@@ -364,7 +364,7 @@ For example, the `toxic_language` scanner might detect profanity (`scanners.toxi
 
 The `x-pillar-scanners`, `x-pillar-evidence`, and `x-pillar-session-id` headers use URL encoding (percent-encoding) to convert JSON data into an ASCII-safe format. This is necessary because HTTP headers only support ISO-8859-1 characters and cannot contain raw JSON special characters (`{`, `"`, `:`) or Unicode text. To read these headers, first URL-decode the value, then parse it as JSON.
 
-LiteLLM truncates the `x-pillar-evidence` header to a maximum of 8 KB per header to avoid proxy limits. Note that most proxies and servers also enforce a total header size limit of approximately 32 KB across all headers combined. When truncation occurs, each affected evidence item includes an `"evidence_truncated": true` flag and the metadata contains `pillar_evidence_truncated: true`.
+Dheera AI truncates the `x-pillar-evidence` header to a maximum of 8 KB per header to avoid proxy limits. Note that most proxies and servers also enforce a total header size limit of approximately 32 KB across all headers combined. When truncation occurs, each affected evidence item includes an `"evidence_truncated": true` flag and the metadata contains `pillar_evidence_truncated: true`.
 
 **Example Response Headers (URL-encoded):**
 ```http
@@ -399,7 +399,7 @@ session_id = unquote(response.headers["x-pillar-session-id"])
 ```
 
 :::tip
-LiteLLM mirrors the encoded values onto `metadata["pillar_response_headers"]` so you can inspect exactly what was returned. When truncation occurs, it sets `metadata["pillar_evidence_truncated"]` to `true` and marks affected evidence items with `"evidence_truncated": true`. Evidence text is shortened with a `...[truncated]` suffix, and entire evidence entries may be removed if necessary to stay under the 8 KB header limit. Check these flags to determine if full evidence details are available in your logs.
+Dheera AI mirrors the encoded values onto `metadata["pillar_response_headers"]` so you can inspect exactly what was returned. When truncation occurs, it sets `metadata["pillar_evidence_truncated"]` to `true` and marks affected evidence items with `"evidence_truncated": true`. Evidence text is shortened with a `...[truncated]` suffix, and entire evidence entries may be removed if necessary to stay under the 8 KB header limit. Check these flags to determine if full evidence details are available in your logs.
 :::
 
 This allows your application to:
@@ -428,7 +428,7 @@ fallback_on_error: "allow"  # Default - recommended for production resilience
   ```yaml
   guardrails:
     - guardrail_name: "pillar-resilient"
-      litellm_params:
+      dheera_ai_params:
         guardrail: pillar
         fallback_on_error: "allow"  # Graceful degradation
   ```
@@ -441,7 +441,7 @@ fallback_on_error: "allow"  # Default - recommended for production resilience
   ```yaml
   guardrails:
     - guardrail_name: "pillar-fail-secure"
-      litellm_params:
+      dheera_ai_params:
         guardrail: pillar
         fallback_on_error: "block"  # Fail secure
   ```
@@ -456,7 +456,7 @@ Configure how long to wait for Pillar API responses:
 # Production: Default - Fast with graceful degradation
 guardrails:
   - guardrail_name: "pillar-production"
-    litellm_params:
+    dheera_ai_params:
       guardrail: pillar
       timeout: 5.0               # Default - fast failure detection
       fallback_on_error: "allow"  # Graceful degradation (required)
@@ -473,10 +473,10 @@ export PILLAR_TIMEOUT="5.0"
 **Quick takeaways**
 - Every request still runs *all* Pillar scanners; these options only change what comes back.
 - Choose richer responses when you need audit trails, lighter responses when latency or cost matters.
-- Actions (block/monitor/mask) are controlled by LiteLLM's `on_flagged_action` configuration—Pillar headers are automatically set based on your config.
+- Actions (block/monitor/mask) are controlled by Dheera AI's `on_flagged_action` configuration—Pillar headers are automatically set based on your config.
 - When blocking (`on_flagged_action: "block"`), the `include_scanners` and `include_evidence` settings control what details are included in the exception response.
 
-Pillar Security executes the full scanner suite on each call. The settings below tune the Protect response headers LiteLLM sends, letting you balance fidelity, retention, and latency.
+Pillar Security executes the full scanner suite on each call. The settings below tune the Protect response headers Dheera AI sends, letting you balance fidelity, retention, and latency.
 
 ### Response Control
 
@@ -493,8 +493,8 @@ persist_session: false  # Default: true
 The following toggles grow the payload size without changing detection behaviour.
 
 ```yaml
-include_scanners: true    # → plr_scanners (default true in LiteLLM)
-include_evidence: true    # → plr_evidence (default true in LiteLLM)
+include_scanners: true    # → plr_scanners (default true in Dheera AI)
+include_evidence: true    # → plr_evidence (default true in Dheera AI)
 ```
 
 - **Minimal response** (`include_scanners=false`, `include_evidence=false`)
@@ -506,10 +506,10 @@ include_evidence: true    # → plr_evidence (default true in LiteLLM)
   ```
   Use when you only care about whether Pillar detected a threat.
 
-  > **📝 Note:** `flagged: true` means Pillar's scanners recommend blocking. Pillar only reports this verdict—LiteLLM enforces your policy via the `on_flagged_action` configuration:
-  > - `on_flagged_action: "block"` → LiteLLM raises a 400 guardrail error (exception includes scanners/evidence based on `include_scanners`/`include_evidence` settings)
-  > - `on_flagged_action: "monitor"` → LiteLLM logs the threat but still returns the LLM response
-  > - `on_flagged_action: "mask"` → LiteLLM replaces messages with masked versions and allows the request to proceed
+  > **📝 Note:** `flagged: true` means Pillar's scanners recommend blocking. Pillar only reports this verdict—Dheera AI enforces your policy via the `on_flagged_action` configuration:
+  > - `on_flagged_action: "block"` → Dheera AI raises a 400 guardrail error (exception includes scanners/evidence based on `include_scanners`/`include_evidence` settings)
+  > - `on_flagged_action: "monitor"` → Dheera AI logs the threat but still returns the LLM response
+  > - `on_flagged_action: "mask"` → Dheera AI replaces messages with masked versions and allows the request to proceed
 
 - **Scanner breakdown** (`include_scanners=true`)
   ```json
@@ -561,7 +561,7 @@ async_mode: true  # Default: false
   ```
 - **Set true for**: Large batch jobs, latency-tolerant pipelines.
 - **Set false for**: Real-time user flows (default).
-- ⚠️ **Note**: Async mode returns only a 202 queue acknowledgment (no flagged verdict). LiteLLM treats that as “no block,” so the pre-call hook always allows the request. Use async mode only for post-call or monitor-only workflows where delayed review is acceptable.
+- ⚠️ **Note**: Async mode returns only a 202 queue acknowledgment (no flagged verdict). Dheera AI treats that as “no block,” so the pre-call hook always allows the request. Use async mode only for post-call or monitor-only workflows where delayed review is acceptable.
 
 ### Complete Examples
 
@@ -569,7 +569,7 @@ async_mode: true  # Default: false
 guardrails:
   # Production: full fidelity & dashboard visibility
   - guardrail_name: "pillar-production"
-    litellm_params:
+    dheera_ai_params:
       guardrail: pillar
       mode: [pre_call, post_call]
       persist_session: true
@@ -579,7 +579,7 @@ guardrails:
 
   # Testing: lightweight, no persistence
   - guardrail_name: "pillar-testing"
-    litellm_params:
+    dheera_ai_params:
       guardrail: pillar
       mode: pre_call
       persist_session: false
@@ -588,7 +588,7 @@ guardrails:
       on_flagged_action: "monitor"
 ```
 
-Keep in mind that LiteLLM forwards these values as the documented `plr_*` headers, so any direct HTTP integrations outside the proxy can reuse the same guidance.
+Keep in mind that Dheera AI forwards these values as the documented `plr_*` headers, so any direct HTTP integrations outside the proxy can reuse the same guidance.
 
 ## Examples
 
@@ -602,7 +602,7 @@ Keep in mind that LiteLLM forwards these values as the documented `plr_*` header
 # Test with safe content
 curl -X POST "http://localhost:4000/v1/chat/completions" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_LITELLM_PROXY_MASTER_KEY" \
+  -H "Authorization: Bearer YOUR_DHEERA_AI_PROXY_MASTER_KEY" \
   -d '{
     "model": "gpt-4.1-mini",
     "messages": [{"role": "user", "content": "Hello! Can you tell me a joke?"}],
@@ -661,7 +661,7 @@ curl -X POST "http://localhost:4000/v1/chat/completions" \
 ```bash
 curl -X POST "http://localhost:4000/v1/chat/completions" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_LITELLM_PROXY_MASTER_KEY" \
+  -H "Authorization: Bearer YOUR_DHEERA_AI_PROXY_MASTER_KEY" \
   -d '{
     "model": "gpt-4.1-mini",
     "messages": [
@@ -712,7 +712,7 @@ curl -X POST "http://localhost:4000/v1/chat/completions" \
 # Test with content that triggers scanner detection
 curl -v -X POST "http://localhost:4000/v1/chat/completions" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_LITELLM_PROXY_MASTER_KEY" \
+  -H "Authorization: Bearer YOUR_DHEERA_AI_PROXY_MASTER_KEY" \
   -d '{
     "model": "gpt-4.1-mini",
     "messages": [{"role": "user", "content": "how do I rob a bank?"}],
@@ -726,7 +726,7 @@ The request succeeds and returns the LLM response. Headers are included for **al
 
 ```http
 HTTP/1.1 200 OK
-x-litellm-applied-guardrails: pillar-monitor-everything,pillar-monitor-everything
+x-dheera_ai-applied-guardrails: pillar-monitor-everything,pillar-monitor-everything
 x-pillar-flagged: false
 x-pillar-scanners: %7B%22jailbreak%22%3Afalse%2C%22safety%22%3Atrue%2C%22prompt_injection%22%3Afalse%2C%22pii%22%3Afalse%2C%22secret%22%3Afalse%2C%22toxic_language%22%3Afalse%7D
 x-pillar-evidence: %5B%7B%22category%22%3A%22safety%22%2C%22type%22%3A%22non_violent_crimes%22%2C%22end_idx%22%3A20%2C%22evidence%22%3A%22how%20do%20I%20rob%20a%20bank%3F%22%2C%22metadata%22%3A%7B%22start_idx%22%3A0%2C%22end_idx%22%3A20%7D%7D%5D
@@ -784,7 +784,7 @@ print(f"Evidence: {evidence}")
 ```bash
 curl -X POST "http://localhost:4000/v1/chat/completions" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_LITELLM_PROXY_MASTER_KEY" \
+  -H "Authorization: Bearer YOUR_DHEERA_AI_PROXY_MASTER_KEY" \
   -d '{
     "model": "gpt-4.1-mini",
     "messages": [
@@ -839,4 +839,4 @@ Feel free to contact us at support@pillar.security
 - [Pillar Security API Docs](https://docs.pillar.security/docs/api/introduction)
 - [Pillar Security Dashboard](https://app.pillar.security)
 - [Pillar Security Website](https://pillar.security)
-- [LiteLLM Docs](https://docs.litellm.ai)
+- [Dheera AI Docs](https://docs.dheera_ai.ai)

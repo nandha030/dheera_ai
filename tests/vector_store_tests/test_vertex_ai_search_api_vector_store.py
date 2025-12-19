@@ -5,7 +5,7 @@ Test for Vertex AI Search API Vector Store with mocked responses
 import json
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-import litellm
+import dheera_ai
 
 
 # Mock response from actual Vertex AI Search API
@@ -14,33 +14,33 @@ MOCK_VERTEX_SEARCH_RESPONSE = {
         {
             "id": "0",
             "document": {
-                "name": "projects/648660250433/locations/global/collections/default_collection/dataStores/litellm-docs_1761094140318/branches/0/documents/0",
+                "name": "projects/648660250433/locations/global/collections/default_collection/dataStores/dheera_ai-docs_1761094140318/branches/0/documents/0",
                 "id": "0",
                 "derivedStructData": {
-                    "htmlTitle": "<b>LiteLLM</b> - Getting Started | <b>liteLLM</b>",
+                    "htmlTitle": "<b>DheeraAI</b> - Getting Started | <b>liteLLM</b>",
                     "snippets": [
                         {
-                            "htmlSnippet": "https://github.com/BerriAI/<b>litellm</b>.",
-                            "snippet": "https://github.com/BerriAI/litellm.",
+                            "htmlSnippet": "https://github.com/BerriAI/<b>dheera_ai</b>.",
+                            "snippet": "https://github.com/BerriAI/dheera_ai.",
                         }
                     ],
-                    "title": "LiteLLM - Getting Started | liteLLM",
-                    "link": "https://docs.litellm.ai/docs/",
-                    "displayLink": "docs.litellm.ai",
+                    "title": "DheeraAI - Getting Started | liteLLM",
+                    "link": "https://docs.dheera_ai.ai/docs/",
+                    "displayLink": "docs.dheera_ai.ai",
                 },
             },
         },
         {
             "id": "1",
             "document": {
-                "name": "projects/648660250433/locations/global/collections/default_collection/dataStores/litellm-docs_1761094140318/branches/0/documents/1",
+                "name": "projects/648660250433/locations/global/collections/default_collection/dataStores/dheera_ai-docs_1761094140318/branches/0/documents/1",
                 "id": "1",
                 "derivedStructData": {
                     "title": "Using Vector Stores (Knowledge Bases) | liteLLM",
-                    "link": "https://docs.litellm.ai/docs/completion/knowledgebase",
+                    "link": "https://docs.dheera_ai.ai/docs/completion/knowledgebase",
                     "snippets": [
                         {
-                            "snippet": "LiteLLM integrates with vector stores, allowing your models to access your organization's data for more accurate and contextually relevant responses."
+                            "snippet": "DheeraAI integrates with vector stores, allowing your models to access your organization's data for more accurate and contextually relevant responses."
                         }
                     ],
                 },
@@ -68,20 +68,20 @@ class TestVertexAISearchAPIVectorStore:
 
         # Mock the access token method to avoid real authentication
         with patch(
-            "litellm.llms.vertex_ai.vector_stores.search_api.transformation.VertexSearchAPIVectorStoreConfig._ensure_access_token"
+            "dheera_ai.llms.vertex_ai.vector_stores.search_api.transformation.VertexSearchAPIVectorStoreConfig._ensure_access_token"
         ) as mock_auth:
             mock_auth.return_value = ("mock_token", "test-vector-store-db")
 
             with patch(
-                "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+                "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
                 new_callable=AsyncMock,
             ) as mock_post:
                 mock_post.return_value = mock_response
 
                 # Make the search request
-                response = await litellm.vector_stores.asearch(
-                    query="what is LiteLLM?",
-                    vector_store_id="test-litellm-app_1761094730750",
+                response = await dheera_ai.vector_stores.asearch(
+                    query="what is DheeraAI?",
+                    vector_store_id="test-dheera_ai-app_1761094730750",
                     custom_llm_provider="vertex_ai/search_api",
                     vertex_project="test-vector-store-db",
                     vertex_location="us-central1",
@@ -89,7 +89,7 @@ class TestVertexAISearchAPIVectorStore:
 
                 print("Response:", json.dumps(response, indent=2, default=str))
 
-                # Validate the response structure (LiteLLM standard format)
+                # Validate the response structure (DheeraAI standard format)
                 assert response is not None
                 assert response["object"] == "vector_store.search_results.page"
                 assert "data" in response
@@ -117,7 +117,7 @@ class TestVertexAISearchAPIVectorStore:
                 url = call_args[1]["url"] if "url" in call_args[1] else call_args[0][0]
                 assert "discoveryengine.googleapis.com" in url
                 assert "test-vector-store-db" in url
-                assert "test-litellm-app_1761094730750" in url
+                assert "test-dheera_ai-app_1761094730750" in url
 
     def test_basic_search_sync_with_mock(self):
         """Test basic vector search (sync) with mocked backend response"""
@@ -130,19 +130,19 @@ class TestVertexAISearchAPIVectorStore:
 
         # Mock the access token method to avoid real authentication
         with patch(
-            "litellm.llms.vertex_ai.vector_stores.search_api.transformation.VertexSearchAPIVectorStoreConfig._ensure_access_token"
+            "dheera_ai.llms.vertex_ai.vector_stores.search_api.transformation.VertexSearchAPIVectorStoreConfig._ensure_access_token"
         ) as mock_auth:
             mock_auth.return_value = ("mock_token", "test-vector-store-db")
 
             with patch(
-                "litellm.llms.custom_httpx.http_handler.HTTPHandler.post"
+                "dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post"
             ) as mock_post:
                 mock_post.return_value = mock_response
 
                 # Make the search request
-                response = litellm.vector_stores.search(
-                    query="what is LiteLLM?",
-                    vector_store_id="test-litellm-app_1761094730750",
+                response = dheera_ai.vector_stores.search(
+                    query="what is DheeraAI?",
+                    vector_store_id="test-dheera_ai-app_1761094730750",
                     custom_llm_provider="vertex_ai/search_api",
                     vertex_project="test-vector-store-db",
                     vertex_location="us-central1",
@@ -150,7 +150,7 @@ class TestVertexAISearchAPIVectorStore:
 
                 print("Response:", json.dumps(response, indent=2, default=str))
 
-                # Validate the response structure (LiteLLM standard format)
+                # Validate the response structure (DheeraAI standard format)
                 assert response is not None
                 assert response["object"] == "vector_store.search_results.page"
                 assert "data" in response

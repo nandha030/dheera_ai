@@ -7,7 +7,7 @@ import random
 import sys
 import time
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 
 from dotenv import load_dotenv
 
@@ -24,17 +24,17 @@ import pytest
 from fastapi import Request, HTTPException
 from fastapi.routing import APIRoute
 from fastapi.responses import Response
-import litellm
-from litellm.caching.caching import DualCache
-from litellm.proxy._types import (
-    LiteLLM_JWTAuth,
-    LiteLLM_UserTable,
-    LiteLLMRoutes,
+import dheera_ai
+from dheera_ai.caching.caching import DualCache
+from dheera_ai.proxy._types import (
+    DheeraAI_JWTAuth,
+    DheeraAI_UserTable,
+    DheeraAIRoutes,
     JWTAuthBuilderResult,
 )
-from litellm.proxy.auth.handle_jwt import JWTHandler, JWTAuthManager
-from litellm.proxy.management_endpoints.team_endpoints import new_team
-from litellm.proxy.proxy_server import chat_completion
+from dheera_ai.proxy.auth.handle_jwt import JWTHandler, JWTAuthManager
+from dheera_ai.proxy.management_endpoints.team_endpoints import new_team
+from dheera_ai.proxy.proxy_server import chat_completion
 from typing import Literal
 
 public_key = {
@@ -48,16 +48,16 @@ public_key = {
 def test_load_config_with_custom_role_names():
     config = {
         "general_settings": {
-            "litellm_proxy_roles": {"admin_jwt_scope": "litellm-proxy-admin"}
+            "dheera_ai_proxy_roles": {"admin_jwt_scope": "dheera_ai-proxy-admin"}
         }
     }
-    proxy_roles = LiteLLM_JWTAuth(
-        **config.get("general_settings", {}).get("litellm_proxy_roles", {})
+    proxy_roles = DheeraAI_JWTAuth(
+        **config.get("general_settings", {}).get("dheera_ai_proxy_roles", {})
     )
 
     print(f"proxy_roles: {proxy_roles}")
 
-    assert proxy_roles.admin_jwt_scope == "litellm-proxy-admin"
+    assert proxy_roles.admin_jwt_scope == "dheera_ai-proxy-admin"
 
 
 # test_load_config_with_custom_role_names()
@@ -86,7 +86,7 @@ async def test_token_single_public_key(monkeypatch):
     cache = DualCache()
 
     await cache.async_set_cache(
-        key="litellm_jwt_auth_keys_https://example.com/public-key",
+        key="dheera_ai_jwt_auth_keys_https://example.com/public-key",
         value=backend_keys["keys"],
     )
 
@@ -102,7 +102,7 @@ async def test_token_single_public_key(monkeypatch):
     )
 
 
-@pytest.mark.parametrize("audience", [None, "litellm-proxy"])
+@pytest.mark.parametrize("audience", [None, "dheera_ai-proxy"])
 @pytest.mark.asyncio
 async def test_valid_invalid_token(audience, monkeypatch):
     """
@@ -153,7 +153,7 @@ async def test_valid_invalid_token(audience, monkeypatch):
     cache = DualCache()
 
     await cache.async_set_cache(
-        key="litellm_jwt_auth_keys_https://example.com/public-key", value=[public_jwk]
+        key="dheera_ai_jwt_auth_keys_https://example.com/public-key", value=[public_jwk]
     )
 
     jwt_handler = JWTHandler()
@@ -168,7 +168,7 @@ async def test_valid_invalid_token(audience, monkeypatch):
     payload = {
         "sub": "user123",
         "exp": expiration_time,  # set the token to expire in 10 minutes
-        "scope": "litellm-proxy-admin",
+        "scope": "dheera_ai-proxy-admin",
         "aud": audience,
     }
 
@@ -196,7 +196,7 @@ async def test_valid_invalid_token(audience, monkeypatch):
     payload = {
         "sub": "user123",
         "exp": expiration_time,  # set the token to expire in 10 minutes
-        "scope": "litellm-NO-SCOPE",
+        "scope": "dheera_ai-NO-SCOPE",
         "aud": audience,
     }
 
@@ -217,9 +217,9 @@ async def test_valid_invalid_token(audience, monkeypatch):
 
 @pytest.fixture
 def prisma_client():
-    import litellm
-    from litellm.proxy.proxy_cli import append_query_params
-    from litellm.proxy.utils import PrismaClient, ProxyLogging
+    import dheera_ai
+    from dheera_ai.proxy.proxy_cli import append_query_params
+    from dheera_ai.proxy.utils import PrismaClient, ProxyLogging
 
     proxy_logging_obj = ProxyLogging(user_api_key_cache=DualCache())
 
@@ -240,7 +240,7 @@ def prisma_client():
 @pytest.fixture
 def team_token_tuple():
     import json
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     import jwt
     from cryptography.hazmat.backends import default_backend
@@ -249,9 +249,9 @@ def team_token_tuple():
     from fastapi import Request
     from starlette.datastructures import URL
 
-    import litellm
-    from litellm.proxy._types import NewTeamRequest, UserAPIKeyAuth
-    from litellm.proxy.proxy_server import user_api_key_auth
+    import dheera_ai
+    from dheera_ai.proxy._types import NewTeamRequest, UserAPIKeyAuth
+    from dheera_ai.proxy.proxy_server import user_api_key_auth
 
     # Generate a private / public key pair using RSA algorithm
     key = rsa.generate_private_key(
@@ -286,7 +286,7 @@ def team_token_tuple():
     payload = {
         "sub": "user123",
         "exp": expiration_time,  # set the token to expire in 10 minutes
-        "scope": "litellm_team",
+        "scope": "dheera_ai_team",
         "client_id": team_id,
         "aud": None,
     }
@@ -301,11 +301,11 @@ def team_token_tuple():
     return team_id, token, public_jwk
 
 
-@pytest.mark.parametrize("audience", [None, "litellm-proxy"])
+@pytest.mark.parametrize("audience", [None, "dheera_ai-proxy"])
 @pytest.mark.asyncio
 async def test_team_token_output(prisma_client, audience, monkeypatch):
     import json
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     import jwt
     from cryptography.hazmat.backends import default_backend
@@ -314,12 +314,12 @@ async def test_team_token_output(prisma_client, audience, monkeypatch):
     from fastapi import Request
     from starlette.datastructures import URL
 
-    import litellm
-    from litellm.proxy._types import NewTeamRequest, UserAPIKeyAuth
-    from litellm.proxy.proxy_server import user_api_key_auth
+    import dheera_ai
+    from dheera_ai.proxy._types import NewTeamRequest, UserAPIKeyAuth
+    from dheera_ai.proxy.proxy_server import user_api_key_auth
 
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
     os.environ.pop("JWT_AUDIENCE", None)
     if audience:
@@ -357,14 +357,14 @@ async def test_team_token_output(prisma_client, audience, monkeypatch):
     cache = DualCache()
 
     await cache.async_set_cache(
-        key="litellm_jwt_auth_keys_https://example.com/public-key", value=[public_jwk]
+        key="dheera_ai_jwt_auth_keys_https://example.com/public-key", value=[public_jwk]
     )
 
     jwt_handler = JWTHandler()
 
     jwt_handler.user_api_key_cache = cache
 
-    jwt_handler.litellm_jwtauth = LiteLLM_JWTAuth(team_id_jwt_field="client_id")
+    jwt_handler.dheera_ai_jwtauth = DheeraAI_JWTAuth(team_id_jwt_field="client_id")
 
     # VALID TOKEN
     ## GENERATE A TOKEN
@@ -375,7 +375,7 @@ async def test_team_token_output(prisma_client, audience, monkeypatch):
     payload = {
         "sub": "user123",
         "exp": expiration_time,  # set the token to expire in 10 minutes
-        "scope": "litellm_team",
+        "scope": "dheera_ai_team",
         "client_id": team_id,
         "aud": audience,
     }
@@ -391,7 +391,7 @@ async def test_team_token_output(prisma_client, audience, monkeypatch):
     payload = {
         "sub": "user123",
         "exp": expiration_time,  # set the token to expire in 10 minutes
-        "scope": "litellm_proxy_admin",
+        "scope": "dheera_ai_proxy_admin",
         "aud": audience,
     }
 
@@ -419,13 +419,13 @@ async def test_team_token_output(prisma_client, audience, monkeypatch):
     ## 1. INITIAL TEAM CALL - should fail
     # use generated key to auth in
     setattr(
-        litellm.proxy.proxy_server,
+        dheera_ai.proxy.proxy_server,
         "general_settings",
         {
             "enable_jwt_auth": True,
         },
     )
-    setattr(litellm.proxy.proxy_server, "jwt_handler", jwt_handler)
+    setattr(dheera_ai.proxy.proxy_server, "jwt_handler", jwt_handler)
     try:
         result = await user_api_key_auth(request=request, api_key=bearer_token)
         pytest.fail("Team doesn't exist. This should fail")
@@ -468,7 +468,7 @@ async def test_team_token_output(prisma_client, audience, monkeypatch):
     assert team_result.team_models == ["gpt-3.5-turbo", "gpt-4"]
 
 
-@pytest.mark.parametrize("audience", [None, "litellm-proxy"])
+@pytest.mark.parametrize("audience", [None, "dheera_ai-proxy"])
 @pytest.mark.parametrize(
     "team_id_set, default_team_id",
     [(True, False), (False, True)],
@@ -478,7 +478,7 @@ async def test_team_token_output(prisma_client, audience, monkeypatch):
 async def aaaatest_user_token_output(
     prisma_client, audience, team_id_set, default_team_id, user_id_upsert, monkeypatch
 ):
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     args = locals()
     print(f"received args - {args}")
@@ -491,7 +491,7 @@ async def aaaatest_user_token_output(
     - retry -> it should pass now
     """
     import json
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     import jwt
     from cryptography.hazmat.backends import default_backend
@@ -500,16 +500,16 @@ async def aaaatest_user_token_output(
     from fastapi import Request
     from starlette.datastructures import URL
 
-    import litellm
-    from litellm.proxy._types import NewTeamRequest, NewUserRequest, UserAPIKeyAuth
-    from litellm.proxy.management_endpoints.internal_user_endpoints import (
+    import dheera_ai
+    from dheera_ai.proxy._types import NewTeamRequest, NewUserRequest, UserAPIKeyAuth
+    from dheera_ai.proxy.management_endpoints.internal_user_endpoints import (
         new_user,
         user_info,
     )
-    from litellm.proxy.proxy_server import user_api_key_auth
+    from dheera_ai.proxy.proxy_server import user_api_key_auth
 
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
     os.environ.pop("JWT_AUDIENCE", None)
     if audience:
@@ -547,21 +547,21 @@ async def aaaatest_user_token_output(
     cache = DualCache()
 
     await cache.async_set_cache(
-        key="litellm_jwt_auth_keys_https://example.com/public-key", value=[public_jwk]
+        key="dheera_ai_jwt_auth_keys_https://example.com/public-key", value=[public_jwk]
     )
 
     jwt_handler = JWTHandler()
 
     jwt_handler.user_api_key_cache = cache
 
-    jwt_handler.litellm_jwtauth = LiteLLM_JWTAuth()
+    jwt_handler.dheera_ai_jwtauth = DheeraAI_JWTAuth()
 
-    jwt_handler.litellm_jwtauth.user_id_jwt_field = "sub"
-    jwt_handler.litellm_jwtauth.team_id_default = default_team_id
-    jwt_handler.litellm_jwtauth.user_id_upsert = user_id_upsert
+    jwt_handler.dheera_ai_jwtauth.user_id_jwt_field = "sub"
+    jwt_handler.dheera_ai_jwtauth.team_id_default = default_team_id
+    jwt_handler.dheera_ai_jwtauth.user_id_upsert = user_id_upsert
 
     if team_id_set:
-        jwt_handler.litellm_jwtauth.team_id_jwt_field = "client_id"
+        jwt_handler.dheera_ai_jwtauth.team_id_jwt_field = "client_id"
 
     # VALID TOKEN
     ## GENERATE A TOKEN
@@ -573,7 +573,7 @@ async def aaaatest_user_token_output(
     payload = {
         "sub": user_id,
         "exp": expiration_time,  # set the token to expire in 10 minutes
-        "scope": "litellm_team",
+        "scope": "dheera_ai_team",
         "client_id": team_id,
         "aud": audience,
     }
@@ -589,7 +589,7 @@ async def aaaatest_user_token_output(
     payload = {
         "sub": user_id,
         "exp": expiration_time,  # set the token to expire in 10 minutes
-        "scope": "litellm_proxy_admin",
+        "scope": "dheera_ai_proxy_admin",
         "aud": audience,
     }
 
@@ -619,8 +619,8 @@ async def aaaatest_user_token_output(
 
     ## 1. INITIAL TEAM CALL - should fail
     # use generated key to auth in
-    setattr(litellm.proxy.proxy_server, "general_settings", {"enable_jwt_auth": True})
-    setattr(litellm.proxy.proxy_server, "jwt_handler", jwt_handler)
+    setattr(dheera_ai.proxy.proxy_server, "general_settings", {"enable_jwt_auth": True})
+    setattr(dheera_ai.proxy.proxy_server, "jwt_handler", jwt_handler)
     try:
         result = await user_api_key_auth(request=request, api_key=bearer_token)
         pytest.fail("Team doesn't exist. This should fail")
@@ -714,7 +714,7 @@ async def aaaatest_user_token_output(
 
 
 @pytest.mark.parametrize("admin_allowed_routes", [None, ["ui_routes"]])
-@pytest.mark.parametrize("audience", [None, "litellm-proxy"])
+@pytest.mark.parametrize("audience", [None, "dheera_ai-proxy"])
 @pytest.mark.asyncio
 async def test_allowed_routes_admin(
     prisma_client, audience, admin_allowed_routes, monkeypatch
@@ -726,7 +726,7 @@ async def test_allowed_routes_admin(
     - check if admin passes user_api_key_auth for them
     """
     import json
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     import jwt
     from cryptography.hazmat.backends import default_backend
@@ -735,12 +735,12 @@ async def test_allowed_routes_admin(
     from fastapi import Request
     from starlette.datastructures import URL
 
-    import litellm
-    from litellm.proxy._types import NewTeamRequest, UserAPIKeyAuth
-    from litellm.proxy.proxy_server import user_api_key_auth
+    import dheera_ai
+    from dheera_ai.proxy._types import NewTeamRequest, UserAPIKeyAuth
+    from dheera_ai.proxy.proxy_server import user_api_key_auth
 
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
     monkeypatch.setenv("JWT_PUBLIC_KEY_URL", "https://example.com/public-key")
 
@@ -778,7 +778,7 @@ async def test_allowed_routes_admin(
     cache = DualCache()
 
     await cache.async_set_cache(
-        key="litellm_jwt_auth_keys_https://example.com/public-key", value=[public_jwk]
+        key="dheera_ai_jwt_auth_keys_https://example.com/public-key", value=[public_jwk]
     )
 
     jwt_handler = JWTHandler()
@@ -786,11 +786,11 @@ async def test_allowed_routes_admin(
     jwt_handler.user_api_key_cache = cache
 
     if admin_allowed_routes:
-        jwt_handler.litellm_jwtauth = LiteLLM_JWTAuth(
+        jwt_handler.dheera_ai_jwtauth = DheeraAI_JWTAuth(
             team_id_jwt_field="client_id", admin_allowed_routes=admin_allowed_routes
         )
     else:
-        jwt_handler.litellm_jwtauth = LiteLLM_JWTAuth(team_id_jwt_field="client_id")
+        jwt_handler.dheera_ai_jwtauth = DheeraAI_JWTAuth(team_id_jwt_field="client_id")
 
     # VALID TOKEN
     ## GENERATE A TOKEN
@@ -805,7 +805,7 @@ async def test_allowed_routes_admin(
     payload = {
         "sub": "user123",
         "exp": expiration_time,  # set the token to expire in 10 minutes
-        "scope": "litellm_proxy_admin",
+        "scope": "dheera_ai_proxy_admin",
         "aud": audience,
     }
 
@@ -826,12 +826,12 @@ async def test_allowed_routes_admin(
 
     bearer_token = "Bearer " + admin_token
 
-    pseudo_routes = jwt_handler.litellm_jwtauth.admin_allowed_routes
+    pseudo_routes = jwt_handler.dheera_ai_jwtauth.admin_allowed_routes
 
     actual_routes = []
     for route in pseudo_routes:
-        if route in LiteLLMRoutes.__members__:
-            actual_routes.extend(LiteLLMRoutes[route].value)
+        if route in DheeraAIRoutes.__members__:
+            actual_routes.extend(DheeraAIRoutes[route].value)
 
     for route in actual_routes:
         request = Request(scope={"type": "http", "headers": []})
@@ -841,13 +841,13 @@ async def test_allowed_routes_admin(
         ## 1. INITIAL TEAM CALL - should fail
         # use generated key to auth in
         setattr(
-            litellm.proxy.proxy_server,
+            dheera_ai.proxy.proxy_server,
             "general_settings",
             {
                 "enable_jwt_auth": True,
             },
         )
-        setattr(litellm.proxy.proxy_server, "jwt_handler", jwt_handler)
+        setattr(dheera_ai.proxy.proxy_server, "jwt_handler", jwt_handler)
         try:
             result = await user_api_key_auth(request=request, api_key=bearer_token)
         except Exception as e:
@@ -859,14 +859,14 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_team_cache_update_called():
-    import litellm
-    from litellm.proxy.proxy_server import user_api_key_cache
+    import dheera_ai
+    from dheera_ai.proxy.proxy_server import user_api_key_cache
 
     # Use setattr to replace the method on the user_api_key_cache object
     cache = DualCache()
 
     setattr(
-        litellm.proxy.proxy_server,
+        dheera_ai.proxy.proxy_server,
         "user_api_key_cache",
         cache,
     )
@@ -874,7 +874,7 @@ async def test_team_cache_update_called():
     with patch.object(cache, "async_get_cache", new=AsyncMock()) as mock_call_cache:
         cache.async_get_cache = mock_call_cache
         # Call the function under test
-        await litellm.proxy.proxy_server.update_cache(
+        await dheera_ai.proxy.proxy_server.update_cache(
             token=None,
             user_id=None,
             end_user_id=None,
@@ -939,13 +939,13 @@ async def test_allow_access_by_email(
     """
     Allow anyone with an `@xyz.com` email make a request to the proxy.
 
-    Relevant issue: https://github.com/BerriAI/litellm/issues/5605
+    Relevant issue: https://github.com/BerriAI/dheera_ai/issues/5605
     """
     import jwt
     from starlette.datastructures import URL
 
-    from litellm.proxy._types import NewTeamRequest, UserAPIKeyAuth
-    from litellm.proxy.proxy_server import user_api_key_auth
+    from dheera_ai.proxy._types import NewTeamRequest, UserAPIKeyAuth
+    from dheera_ai.proxy.proxy_server import user_api_key_auth
 
     public_jwk = public_jwt_key["public_jwk"]
     private_key = public_jwt_key["private_key"]
@@ -956,14 +956,14 @@ async def test_allow_access_by_email(
     cache = DualCache()
 
     await cache.async_set_cache(
-        key="litellm_jwt_auth_keys_https://example.com/public-key", value=[public_jwk]
+        key="dheera_ai_jwt_auth_keys_https://example.com/public-key", value=[public_jwk]
     )
 
     jwt_handler = JWTHandler()
 
     jwt_handler.user_api_key_cache = cache
 
-    jwt_handler.litellm_jwtauth = LiteLLM_JWTAuth(
+    jwt_handler.dheera_ai_jwtauth = DheeraAI_JWTAuth(
         user_email_jwt_field="email",
         user_allowed_email_domain="berri.ai",
         user_id_upsert=True,
@@ -978,9 +978,9 @@ async def test_allow_access_by_email(
     payload = {
         "sub": "user123",
         "exp": expiration_time,  # set the token to expire in 10 minutes
-        "scope": "litellm_team",
+        "scope": "dheera_ai_team",
         "client_id": team_id,
-        "aud": "litellm-proxy",
+        "aud": "dheera_ai-proxy",
         "email": user_email,
     }
 
@@ -1006,22 +1006,22 @@ async def test_allow_access_by_email(
     ## 1. INITIAL TEAM CALL - should fail
     # use generated key to auth in
     setattr(
-        litellm.proxy.proxy_server,
+        dheera_ai.proxy.proxy_server,
         "general_settings",
         {
             "enable_jwt_auth": True,
         },
     )
-    setattr(litellm.proxy.proxy_server, "jwt_handler", jwt_handler)
-    setattr(litellm.proxy.proxy_server, "prisma_client", {})
+    setattr(dheera_ai.proxy.proxy_server, "jwt_handler", jwt_handler)
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", {})
 
     # AsyncMock(
-    #     return_value=LiteLLM_UserTable(
+    #     return_value=DheeraAI_UserTable(
     #         spend=0, user_id=user_email, max_budget=None, user_email=user_email
     #     )
     # ),
     with patch.object(
-        litellm.proxy.auth.handle_jwt,
+        dheera_ai.proxy.auth.handle_jwt,
         "get_user_object",
         side_effect=mock_user_object,
     ) as mock_client:
@@ -1039,8 +1039,8 @@ async def test_allow_access_by_email(
 
 
 def test_get_public_key_from_jwk_url():
-    import litellm
-    from litellm.proxy.auth.handle_jwt import JWTHandler
+    import dheera_ai
+    from dheera_ai.proxy.auth.handle_jwt import JWTHandler
 
     jwt_handler = JWTHandler()
 
@@ -1066,18 +1066,18 @@ def test_get_public_key_from_jwk_url():
 
 @pytest.mark.asyncio
 async def test_end_user_jwt_auth(monkeypatch):
-    import litellm
-    from litellm.proxy.auth.handle_jwt import JWTHandler
-    from litellm.caching import DualCache
-    from litellm.proxy._types import LiteLLM_JWTAuth
-    from litellm.proxy.proxy_server import user_api_key_auth
+    import dheera_ai
+    from dheera_ai.proxy.auth.handle_jwt import JWTHandler
+    from dheera_ai.caching import DualCache
+    from dheera_ai.proxy._types import DheeraAI_JWTAuth
+    from dheera_ai.proxy.proxy_server import user_api_key_auth
     import json
 
     monkeypatch.delenv("JWT_AUDIENCE", None)
     monkeypatch.setenv("JWT_PUBLIC_KEY_URL", "https://example.com/public-key")
     jwt_handler = JWTHandler()
 
-    litellm_jwtauth = LiteLLM_JWTAuth(
+    dheera_ai_jwtauth = DheeraAI_JWTAuth(
         end_user_id_jwt_field="sub",
     )
 
@@ -1103,14 +1103,14 @@ async def test_end_user_jwt_auth(monkeypatch):
     ]
 
     cache.set_cache(
-        key="litellm_jwt_auth_keys_https://example.com/public-key",
+        key="dheera_ai_jwt_auth_keys_https://example.com/public-key",
         value=keys,
     )
 
     jwt_handler.update_environment(
         prisma_client=None,
         user_api_key_cache=cache,
-        litellm_jwtauth=litellm_jwtauth,
+        dheera_ai_jwtauth=dheera_ai_jwtauth,
         leeway=100000000000000,
     )
 
@@ -1155,8 +1155,8 @@ async def test_end_user_jwt_auth(monkeypatch):
 
     ## 1. INITIAL TEAM CALL - should fail
     # use generated key to auth in
-    from litellm import Router
-    from litellm.types.router import RouterGeneralSettings
+    from dheera_ai import Router
+    from dheera_ai.types.router import RouterGeneralSettings
     
     # Create a router with pass_through_all_models enabled
     router = Router(
@@ -1167,18 +1167,18 @@ async def test_end_user_jwt_auth(monkeypatch):
     )
     
     setattr(
-        litellm.proxy.proxy_server,
+        dheera_ai.proxy.proxy_server,
         "general_settings",
         {"enable_jwt_auth": True},
     )
     setattr(
-        litellm.proxy.proxy_server,
+        dheera_ai.proxy.proxy_server,
         "llm_router",
         router,
     )
-    setattr(litellm.proxy.proxy_server, "prisma_client", {})
-    setattr(litellm.proxy.proxy_server, "jwt_handler", jwt_handler)
-    from litellm.proxy.proxy_server import cost_tracking
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", {})
+    setattr(dheera_ai.proxy.proxy_server, "jwt_handler", jwt_handler)
+    from dheera_ai.proxy.proxy_server import cost_tracking
 
     cost_tracking()
     result = await user_api_key_auth(request=request, api_key=bearer_token)
@@ -1187,18 +1187,18 @@ async def test_end_user_jwt_auth(monkeypatch):
     assert result.end_user_id == "81b3e52a-67a6-4efb-9645-70527e101479"
 
     temp_response = Response()
-    from litellm.proxy.hooks.proxy_track_cost_callback import (
+    from dheera_ai.proxy.hooks.proxy_track_cost_callback import (
         _should_track_cost_callback,
     )
 
     # Mock the actual LLM completion call
-    mock_response = litellm.ModelResponse(
+    mock_response = dheera_ai.ModelResponse(
         id="chatcmpl-mock",
         choices=[
-            litellm.Choices(
+            dheera_ai.Choices(
                 finish_reason="stop",
                 index=0,
-                message=litellm.Message(
+                message=dheera_ai.Message(
                     content="Hello! I'm doing well, thank you for asking.",
                     role="assistant",
                 ),
@@ -1207,14 +1207,14 @@ async def test_end_user_jwt_auth(monkeypatch):
         created=1234567890,
         model="gpt-4o",
         object="chat.completion",
-        usage=litellm.Usage(
+        usage=dheera_ai.Usage(
             prompt_tokens=10,
             completion_tokens=15,
             total_tokens=25,
         ),
     )
 
-    with patch("litellm.acompletion", new=AsyncMock(return_value=mock_response)) as mock_completion:
+    with patch("dheera_ai.acompletion", new=AsyncMock(return_value=mock_response)) as mock_completion:
         resp = await chat_completion(
             request=request,
             fastapi_response=temp_response,
@@ -1236,9 +1236,9 @@ async def test_end_user_jwt_auth(monkeypatch):
 
 
 def test_can_rbac_role_call_route():
-    from litellm.proxy.auth.handle_jwt import JWTAuthManager
-    from litellm.proxy._types import RoleBasedPermissions
-    from litellm.proxy._types import LitellmUserRoles
+    from dheera_ai.proxy.auth.handle_jwt import JWTAuthManager
+    from dheera_ai.proxy._types import RoleBasedPermissions
+    from dheera_ai.proxy._types import LitellmUserRoles
 
     with pytest.raises(HTTPException):
         JWTAuthManager.can_rbac_role_call_route(
@@ -1262,8 +1262,8 @@ def test_user_api_key_auth_jwt_hashing():
 
     Critical: This was a security fix for users
     """
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.proxy.auth.handle_jwt import JWTHandler
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy.auth.handle_jwt import JWTHandler
     
     # Test with a JWT token (3 parts separated by dots)
     jwt_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
@@ -1300,7 +1300,7 @@ def test_jwt_handler_is_jwt_static_method():
     """
     Test that JWTHandler.is_jwt is a static method and works correctly
     """
-    from litellm.proxy.auth.handle_jwt import JWTHandler
+    from dheera_ai.proxy.auth.handle_jwt import JWTHandler
     
     # Test with valid JWT format
     valid_jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
@@ -1326,28 +1326,28 @@ def test_jwt_handler_is_jwt_static_method():
     ],
 )
 def test_check_scope_based_access(requested_model, should_work):
-    from litellm.proxy.auth.handle_jwt import JWTAuthManager
-    from litellm.proxy._types import ScopeMapping
+    from dheera_ai.proxy.auth.handle_jwt import JWTAuthManager
+    from dheera_ai.proxy._types import ScopeMapping
 
     args = {
         "scope_mappings": [
             ScopeMapping(
                 models=["anthropic-claude"],
                 routes=["/v1/chat/completions"],
-                scope="litellm.api.consumer",
+                scope="dheera_ai.api.consumer",
             ),
             ScopeMapping(
                 models=["gpt-3.5-turbo-testing"],
                 routes=None,
-                scope="litellm.api.gpt_3_5_turbo",
+                scope="dheera_ai.api.gpt_3_5_turbo",
             ),
         ],
         "scopes": [
             "profile",
             "groups-scope",
             "email",
-            "litellm.api.gpt_3_5_turbo",
-            "litellm.api.consumer",
+            "dheera_ai.api.gpt_3_5_turbo",
+            "dheera_ai.api.consumer",
         ],
         "request_data": {
             "model": requested_model,
@@ -1355,17 +1355,17 @@ def test_check_scope_based_access(requested_model, should_work):
         },
         "general_settings": {
             "enable_jwt_auth": True,
-            "litellm_jwtauth": {
+            "dheera_ai_jwtauth": {
                 "team_id_jwt_field": "client_id",
                 "team_id_upsert": True,
                 "scope_mappings": [
                     {
-                        "scope": "litellm.api.consumer",
+                        "scope": "dheera_ai.api.consumer",
                         "models": ["anthropic-claude"],
                         "routes": ["/v1/chat/completions"],
                     },
                     {
-                        "scope": "litellm.api.gpt_3_5_turbo",
+                        "scope": "dheera_ai.api.gpt_3_5_turbo",
                         "models": ["gpt-3.5-turbo-testing"],
                     },
                 ],
@@ -1388,7 +1388,7 @@ async def test_custom_validate_called():
     mock_custom_validate = MagicMock(return_value=True)
 
     jwt_handler = MagicMock()
-    jwt_handler.litellm_jwtauth = MagicMock(
+    jwt_handler.dheera_ai_jwtauth = MagicMock(
         custom_validate=mock_custom_validate,
         allowed_routes=["/chat/completions"],
         oidc_userinfo_enabled=False,
@@ -1444,7 +1444,7 @@ async def test_auth_jwt_es256_jwk_path(monkeypatch):
 
     now = int(time.time())
     token = jwt.encode(
-        {"sub": "alice", "aud": "litellm-proxy", "iss": "http://example", "iat": now, "exp": now + 300},
+        {"sub": "alice", "aud": "dheera_ai-proxy", "iss": "http://example", "iat": now, "exp": now + 300},
         ec_priv_pem,
         algorithm="ES256",
         headers={"kid": "ec1"},
@@ -1491,7 +1491,7 @@ async def test_auth_jwt_rs256_regression(monkeypatch):
 
     now = int(time.time())
     token = jwt.encode(
-        {"sub": "bob", "aud": "litellm-proxy", "iss": "http://example", "iat": now, "exp": now + 300},
+        {"sub": "bob", "aud": "dheera_ai-proxy", "iss": "http://example", "iat": now, "exp": now + 300},
         rsa_priv_pem,
         algorithm="RS256",
         headers={"kid": "rsa1"},
@@ -1523,7 +1523,7 @@ async def test_auth_jwt_mismatched_key_fails(monkeypatch):
     )
     now = int(time.time())
     token = jwt.encode(
-        {"sub": "mallory", "aud": "litellm-proxy", "iss": "http://example", "iat": now, "exp": now + 300},
+        {"sub": "mallory", "aud": "dheera_ai-proxy", "iss": "http://example", "iat": now, "exp": now + 300},
         ec_priv_pem,
         algorithm="ES256",
         headers={"kid": "ec1"},

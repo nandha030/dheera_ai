@@ -10,17 +10,17 @@ sys.path.insert(
 )  # Adds the parent directory to the system path
 import pytest
 
-import litellm
-from litellm import completion, embedding
+import dheera_ai
+from dheera_ai import completion, embedding
 
-litellm.set_verbose = True
+dheera_ai.set_verbose = True
 
 model_alias_map = {"good-model": "groq/llama-3.1-8b-instant"}
 
 
 def test_model_alias_map(caplog):
     try:
-        litellm.model_alias_map = model_alias_map
+        dheera_ai.model_alias_map = model_alias_map
         response = completion(
             "good-model",
             messages=[{"role": "user", "content": "Hey, how's it going?"}],
@@ -36,7 +36,7 @@ def test_model_alias_map(caplog):
             assert "ERROR" not in log
 
         assert "llama-3.1-8b-instant" in response.model
-    except litellm.ServiceUnavailableError:
+    except dheera_ai.ServiceUnavailableError:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")

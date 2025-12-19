@@ -5,8 +5,8 @@ sys.path.insert(0, os.path.abspath("../.."))
 
 import pytest
 
-from litellm.integrations.posthog import PostHogLogger
-from litellm.types.utils import StandardLoggingPayload
+from dheera_ai.integrations.posthog import PostHogLogger
+from dheera_ai.types.utils import StandardLoggingPayload
 from typing import cast
 
 # Set env vars for tests
@@ -136,7 +136,7 @@ async def test_distinct_id_fallback_chain():
     standard_payload = create_standard_logging_payload()
     kwargs = {
         "standard_logging_object": standard_payload,
-        "litellm_params": {"metadata": {"user_id": "metadata-user-123"}},
+        "dheera_ai_params": {"metadata": {"user_id": "metadata-user-123"}},
     }
 
     distinct_id = posthog_logger._get_distinct_id(standard_payload, kwargs)
@@ -184,7 +184,7 @@ async def test_custom_metadata_support():
 
     kwargs = {
         "standard_logging_object": standard_payload,
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "user_id": "user-123",  # should be used for distinct_id, not custom property
                 "project_name": "test_project",  # should appear as project_name
@@ -208,13 +208,13 @@ async def test_custom_metadata_support():
 
 @pytest.mark.asyncio
 async def test_custom_metadata_filters_internal_fields():
-    """Test that LiteLLM internal fields are filtered out from custom metadata"""
+    """Test that DheeraAI internal fields are filtered out from custom metadata"""
     posthog_logger = PostHogLogger()
     standard_payload = create_standard_logging_payload()
 
     kwargs = {
         "standard_logging_object": standard_payload,
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "custom_field": "should_appear",
                 "endpoint": "/chat/completions",  # internal field - should be filtered
@@ -245,7 +245,7 @@ async def test_custom_metadata_with_no_metadata():
     posthog_logger = PostHogLogger()
     standard_payload = create_standard_logging_payload()
 
-    # Test with no litellm_params
+    # Test with no dheera_ai_params
     kwargs = {"standard_logging_object": standard_payload}
     event_payload = posthog_logger.create_posthog_event_payload(kwargs)
 
@@ -256,7 +256,7 @@ async def test_custom_metadata_with_no_metadata():
     # Test with empty metadata
     kwargs = {
         "standard_logging_object": standard_payload,
-        "litellm_params": {"metadata": {}},
+        "dheera_ai_params": {"metadata": {}},
     }
     event_payload = posthog_logger.create_posthog_event_payload(kwargs)
 
@@ -268,7 +268,7 @@ async def test_custom_metadata_with_no_metadata():
 @pytest.mark.asyncio
 async def test_dynamic_credentials():
     """Test that per-request credentials override environment variables"""
-    from litellm.types.utils import StandardCallbackDynamicParams
+    from dheera_ai.types.utils import StandardCallbackDynamicParams
 
     posthog_logger = PostHogLogger()
 
@@ -317,7 +317,7 @@ def test_async_callback_atexit_handler_exists():
     since unit testing atexit behavior across event loop boundaries is complex.
     """
     import atexit
-    from litellm.litellm_core_utils.logging_worker import GLOBAL_LOGGING_WORKER
+    from dheera_ai.dheera_ai_core_utils.logging_worker import GLOBAL_LOGGING_WORKER
 
     # Verify GLOBAL_LOGGING_WORKER has _flush_on_exit method
     assert hasattr(GLOBAL_LOGGING_WORKER, '_flush_on_exit'), \

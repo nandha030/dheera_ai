@@ -5,12 +5,12 @@
 ::: 
 
 ## Callback Class
-You can create a custom callback class to precisely log events as they occur in litellm. 
+You can create a custom callback class to precisely log events as they occur in dheera_ai. 
 
 ```python
-import litellm
-from litellm.integrations.custom_logger import CustomLogger
-from litellm import completion, acompletion
+import dheera_ai
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai import completion, acompletion
 
 class MyCustomHandler(CustomLogger):
     def log_pre_api_call(self, model, messages, kwargs): 
@@ -36,7 +36,7 @@ class MyCustomHandler(CustomLogger):
 
 customHandler = MyCustomHandler()
 
-litellm.callbacks = [customHandler]
+dheera_ai.callbacks = [customHandler]
 
 ## sync 
 response = completion(model="gpt-3.5-turbo", messages=[{ "role": "user", "content": "Hi 👋 - i'm openai"}],
@@ -63,7 +63,7 @@ asyncio.run(completion())
 - `log_pre_api_call` - Log before API call
 - `log_post_api_call` - Log after API call
 
-**Proxy-only hooks** (only work with LiteLLM Proxy):
+**Proxy-only hooks** (only work with Dheera AI Proxy):
 - `async_post_call_success_hook` - Access user data + modify responses
 - `async_pre_call_hook` - Modify requests before sending
 
@@ -75,7 +75,7 @@ You can use `async_post_call_success_hook` to add custom headers or metadata to 
 async def async_post_call_success_hook(data, user_api_key_dict, response):
     # Add a custom header to the response
     additional_headers = getattr(response, "_hidden_params", {}).get("additional_headers", {}) or {}
-    additional_headers["x-litellm-custom-header"] = "my-value"
+    additional_headers["x-dheera_ai-custom-header"] = "my-value"
     if not hasattr(response, "_hidden_params"):
         response._hidden_params = {}
     response._hidden_params["additional_headers"] = additional_headers
@@ -88,9 +88,9 @@ This allows you to inject custom metadata or headers into the response for downs
 If you just want to log on a specific event (e.g. on input) - you can use callback functions. 
 
 You can set custom callbacks to trigger for:
-- `litellm.input_callback`   - Track inputs/transformed inputs before making the LLM API call
-- `litellm.success_callback` - Track inputs/outputs after making LLM API call
-- `litellm.failure_callback` - Track inputs/outputs + exceptions for litellm calls
+- `dheera_ai.input_callback`   - Track inputs/transformed inputs before making the LLM API call
+- `dheera_ai.success_callback` - Track inputs/outputs after making LLM API call
+- `dheera_ai.failure_callback` - Track inputs/outputs + exceptions for dheera_ai calls
 
 ## Defining a Custom Callback Function
 Create a custom callback function that takes specific arguments:
@@ -111,18 +111,18 @@ def custom_callback(
 
 ### Setting the custom callback function
 ```python
-import litellm
-litellm.success_callback = [custom_callback]
+import dheera_ai
+dheera_ai.success_callback = [custom_callback]
 ```
 
 ## Using Your Custom Callback Function
 
 ```python
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 # Assign the custom callback function
-litellm.success_callback = [custom_callback]
+dheera_ai.success_callback = [custom_callback]
 
 response = completion(
     model="gpt-3.5-turbo",
@@ -143,8 +143,8 @@ print(response)
 We recommend using the Custom Logger class for async.
 
 ```python
-from litellm.integrations.custom_logger import CustomLogger
-from litellm import acompletion 
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai import acompletion 
 
 class MyCustomHandler(CustomLogger):
     #### ASYNC #### 
@@ -160,7 +160,7 @@ class MyCustomHandler(CustomLogger):
 import asyncio 
 customHandler = MyCustomHandler()
 
-litellm.callbacks = [customHandler]
+dheera_ai.callbacks = [customHandler]
 
 def async completion():
     response = await acompletion(model="gpt-3.5-turbo", messages=[{ "role": "user", "content": "Hi 👋 - i'm openai"}],
@@ -174,19 +174,19 @@ asyncio.run(completion())
 
 If you just want to pass in an async function for logging. 
 
-LiteLLM currently supports just async success callback functions for async completion/embedding calls. 
+Dheera AI currently supports just async success callback functions for async completion/embedding calls. 
 
 ```python
-import asyncio, litellm 
+import asyncio, dheera_ai 
 
 async def async_test_logging_fn(kwargs, completion_obj, start_time, end_time):
     print(f"On Async Success!")
 
 async def test_chat_openai():
     try:
-        # litellm.set_verbose = True
-        litellm.success_callback = [async_test_logging_fn]
-        response = await litellm.acompletion(model="gpt-3.5-turbo",
+        # dheera_ai.set_verbose = True
+        dheera_ai.success_callback = [async_test_logging_fn]
+        response = await dheera_ai.acompletion(model="gpt-3.5-turbo",
                               messages=[{
                                   "role": "user",
                                   "content": "Hi 👋 - i'm openai"
@@ -206,7 +206,7 @@ asyncio.run(test_chat_openai())
 The kwargs dictionary contains all the details about your API call.
 
 :::info
-For the complete logging payload specification, see the [Standard Logging Payload Spec](https://docs.litellm.ai/docs/proxy/logging_spec).
+For the complete logging payload specification, see the [Standard Logging Payload Spec](https://docs.dheera_ai.ai/docs/proxy/logging_spec).
 :::
 
 ```python
@@ -218,7 +218,7 @@ def custom_callback(kwargs, completion_response, start_time, end_time):
     cache_hit = kwargs.get("cache_hit", False)
     
     # Access metadata you passed in
-    metadata = kwargs.get("litellm_params", {}).get("metadata", {})
+    metadata = kwargs.get("dheera_ai_params", {}).get("metadata", {})
 ```
 
 **Key fields in kwargs:**
@@ -226,17 +226,17 @@ def custom_callback(kwargs, completion_response, start_time, end_time):
 - `messages` - Input messages  
 - `response_cost` - Calculated cost
 - `cache_hit` - Whether response was cached
-- `litellm_params.metadata` - Your custom metadata
+- `dheera_ai_params.metadata` - Your custom metadata
 
 ## Practical Examples
 
 ### Track API Costs
 ```python
 def track_cost_callback(kwargs, completion_response, start_time, end_time):
-    cost = kwargs["response_cost"] # litellm calculates this for you
+    cost = kwargs["response_cost"] # dheera_ai calculates this for you
     print(f"Request cost: ${cost}")
 
-litellm.success_callback = [track_cost_callback]
+dheera_ai.success_callback = [track_cost_callback]
 
 response = completion(model="gpt-3.5-turbo", messages=[{"role": "user", "content": "Hello"}])
 ```
@@ -247,7 +247,7 @@ def get_transformed_inputs(kwargs):
     params_to_model = kwargs["additional_args"]["complete_input_dict"]
     print("params to model", params_to_model)
 
-litellm.input_callback = [get_transformed_inputs]
+dheera_ai.input_callback = [get_transformed_inputs]
 
 response = completion(model="claude-2", messages=[{"role": "user", "content": "Hello"}])
 ```
@@ -264,14 +264,14 @@ def send_to_analytics(kwargs, completion_response, start_time, end_time):
     }
     requests.post("https://your-analytics.com/api", json=data)
 
-litellm.success_callback = [send_to_analytics]
+dheera_ai.success_callback = [send_to_analytics]
 ```
 
 ## Common Issues
 
 ### Callback Not Called
 Make sure you:
-1. Register callbacks correctly: `litellm.callbacks = [MyHandler()]`
+1. Register callbacks correctly: `dheera_ai.callbacks = [MyHandler()]`
 2. Use the right hook names (check spelling)
 3. Don't use proxy-only hooks in library mode
 

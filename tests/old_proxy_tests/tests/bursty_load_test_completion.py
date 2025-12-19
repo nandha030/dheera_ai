@@ -1,16 +1,16 @@
 import time, asyncio
 from openai import AsyncOpenAI
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import traceback
 
 
-litellm_client = AsyncOpenAI(api_key="test", base_url="http://0.0.0.0:8000")
+dheera_ai_client = AsyncOpenAI(api_key="test", base_url="http://0.0.0.0:8000")
 
 
-async def litellm_completion():
-    # Your existing code for litellm_completion goes here
+async def dheera_ai_completion():
+    # Your existing code for dheera_ai_completion goes here
     try:
-        response = await litellm_client.chat.completions.create(
+        response = await dheera_ai_client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "user", "content": f"This is a test: {uuid.uuid4()}" * 180}
@@ -28,7 +28,7 @@ async def litellm_completion():
 async def main():
     start = time.time()
     n = 60  # Send 60 concurrent requests, each with 4k tokens = 240k Tokens
-    tasks = [litellm_completion() for _ in range(n)]
+    tasks = [dheera_ai_completion() for _ in range(n)]
 
     chat_completions = await asyncio.gather(*tasks)
 

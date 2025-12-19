@@ -7,17 +7,17 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
+import dheera_ai
 import pytest
 
-from litellm.utils import (
-    LiteLLMResponseObjectHandler,
+from dheera_ai.utils import (
+    DheeraAIResponseObjectHandler,
 )
 
 
 from datetime import timedelta
 
-from litellm.types.utils import (
+from dheera_ai.types.utils import (
     ModelResponse,
     TextCompletionResponse,
     TextChoices,
@@ -44,7 +44,7 @@ def test_convert_chat_to_text_completion():
     )
 
     text_completion = TextCompletionResponse()
-    result = LiteLLMResponseObjectHandler.convert_chat_to_text_completion(
+    result = DheeraAIResponseObjectHandler.convert_chat_to_text_completion(
         response=chat_response, text_completion_response=text_completion
     )
 
@@ -68,7 +68,7 @@ def test_convert_provider_response_logprobs_non_huggingface():
     """Test converting provider logprobs for non-huggingface provider"""
     response = ModelResponse(id="test123", _hidden_params={})
 
-    result = LiteLLMResponseObjectHandler._convert_provider_response_logprobs_to_text_completion_logprobs(
+    result = DheeraAIResponseObjectHandler._convert_provider_response_logprobs_to_text_completion_logprobs(
         response=response, custom_llm_provider="openai"
     )
 
@@ -98,7 +98,7 @@ def test_convert_chat_to_text_completion_multiple_choices():
     )
 
     text_completion = TextCompletionResponse()
-    result = LiteLLMResponseObjectHandler.convert_chat_to_text_completion(
+    result = DheeraAIResponseObjectHandler.convert_chat_to_text_completion(
         response=chat_response, text_completion_response=text_completion
     )
 
@@ -125,7 +125,7 @@ async def test_text_completion_include_usage(sync_mode):
     """Test text completion with include_usage"""
     last_chunk = None
     if sync_mode:
-        response = await litellm.atext_completion(
+        response = await dheera_ai.atext_completion(
             model="gpt-3.5-turbo",
             prompt="Hello, world!",
             stream=True,
@@ -136,7 +136,7 @@ async def test_text_completion_include_usage(sync_mode):
             print(chunk)
             last_chunk = chunk
     else:
-        response = litellm.text_completion(
+        response = dheera_ai.text_completion(
             model="gpt-3.5-turbo",
             prompt="Hello, world!",
             stream=True,

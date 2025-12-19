@@ -4,7 +4,7 @@ Control which model groups can forward client headers to the underlying LLM prov
 
 ## Overview
 
-By default, LiteLLM does not forward client headers to LLM provider APIs for security reasons. However, you can selectively enable header forwarding for specific model groups using the `forward_client_headers_to_llm_api` setting.
+By default, Dheera AI does not forward client headers to LLM provider APIs for security reasons. However, you can selectively enable header forwarding for specific model groups using the `forward_client_headers_to_llm_api` setting.
 
 ## Configuration
 
@@ -22,15 +22,15 @@ Add the `forward_client_headers_to_llm_api` setting under `model_group_settings`
 ```yaml
 model_list:
   - model_name: gpt-4o-mini
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o-mini
       api_key: "your-api-key"
   - model_name: "wildcard-models/*"
-    litellm_params:
+    dheera_ai_params:
       model: "openai/*"
       api_key: "your-api-key"
 
-litellm_settings:
+dheera_ai_settings:
   model_group_settings:
     forward_client_headers_to_llm_api:
       - gpt-4o-mini
@@ -61,7 +61,7 @@ If your team has model aliases configured, the forwarding will work with both th
 
 ## Forwarded Headers
 
-When enabled for a model group, LiteLLM forwards the following types of headers:
+When enabled for a model group, Dheera AI forwards the following types of headers:
 
 ### Custom Headers (x- prefix)
 - Any header starting with `x-` (except `x-stainless-*` which can cause OpenAI SDK issues)
@@ -72,10 +72,10 @@ When enabled for a model group, LiteLLM forwards the following types of headers:
 - **OpenAI**: `openai-organization` (when enabled via `forward_openai_org_id: true`)
 
 ### User Information Headers (Optional)
-When `add_user_information_to_llm_headers` is enabled, LiteLLM adds:
-- `x-litellm-user-id`
-- `x-litellm-org-id`
-- Other user metadata as `x-litellm-*` headers
+When `add_user_information_to_llm_headers` is enabled, Dheera AI adds:
+- `x-dheera_ai-user-id`
+- `x-dheera_ai-org-id`
+- Other user metadata as `x-dheera_ai-*` headers
 
 ## Security Considerations
 
@@ -135,25 +135,25 @@ curl -X POST "https://your-proxy.com/v1/chat/completions" \
 model_list:
   # Fixed model with header forwarding
   - model_name: byok-fixed-gpt-4o-mini
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o-mini
       api_base: "https://your-openai-endpoint.com"
       api_key: "your-api-key"
       
   # Wildcard model group with header forwarding
   - model_name: "byok-wildcard/*"
-    litellm_params:
+    dheera_ai_params:
       model: "openai/*"
       api_base: "https://your-openai-endpoint.com"
       api_key: "your-api-key"
       
   # Standard model without header forwarding
   - model_name: standard-gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: "your-api-key"
 
-litellm_settings:
+dheera_ai_settings:
   # Enable user info headers globally (optional)
   add_user_information_to_llm_headers: true
   
@@ -193,7 +193,7 @@ To test if headers are being forwarded:
 ## Related Features
 
 - [Request Headers](./request_headers.md) - Complete list of supported request headers
-- [Response Headers](./response_headers.md) - Headers returned by LiteLLM
+- [Response Headers](./response_headers.md) - Headers returned by Dheera AI
 - [Team Model Aliases](./team_model_add.md) - Configure model aliases for teams
 - [Model Access Control](./model_access.md) - Control which users can access which models
 

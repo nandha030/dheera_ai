@@ -23,7 +23,7 @@ Tool search is available on:
 
 ## Tool Search Variants
 
-LiteLLM supports both tool search variants:
+Dheera AI supports both tool search variants:
 
 ### 1. Regex Tool Search (`tool_search_tool_regex_20251119`)
 
@@ -38,9 +38,9 @@ Claude uses natural language queries to search for tools using the BM25 algorith
 ### Basic Example with Regex Tool Search
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-5-20250929",
     messages=[
         {"role": "user", "content": "What is the weather in San Francisco?"}
@@ -100,9 +100,9 @@ print(response.choices[0].message.content)
 ### BM25 Tool Search Example
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-5-20250929",
     messages=[
         {"role": "user", "content": "Search for Python files containing 'authentication'"}
@@ -137,9 +137,9 @@ response = litellm.completion(
 ## Using with Azure Anthropic
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="azure_anthropic/claude-sonnet-4-5",
     api_base="https://<your-resource>.services.ai.azure.com/anthropic",
     api_key="your-azure-api-key",
@@ -173,9 +173,9 @@ response = litellm.completion(
 ## Using with Vertex AI
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="vertex_ai/claude-sonnet-4-5",
     vertex_project="your-project-id",
     vertex_location="us-central1",
@@ -197,9 +197,9 @@ response = litellm.completion(
 Tool search works with streaming:
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-5-20250929",
     messages=[
         {"role": "user", "content": "Get the weather"}
@@ -233,16 +233,16 @@ for chunk in response:
         print(chunk.choices[0].delta.content, end="")
 ```
 
-## LiteLLM Proxy
+## Dheera AI Proxy
 
-Tool search works automatically through the LiteLLM proxy:
+Tool search works automatically through the Dheera AI proxy:
 
 ### Proxy Config
 
 ```yaml
 model_list:
   - model_name: claude-sonnet
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-sonnet-4-5-20250929
       api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -253,7 +253,7 @@ model_list:
 import openai
 
 client = openai.OpenAI(
-    api_key="your-litellm-proxy-key",
+    api_key="your-dheera_ai-proxy-key",
     base_url="http://0.0.0.0:4000"
 )
 
@@ -290,13 +290,13 @@ response = client.chat.completions.create(
 
 ### Beta Header
 
-LiteLLM automatically detects tool search tools and adds the appropriate beta header based on your provider:
+Dheera AI automatically detects tool search tools and adds the appropriate beta header based on your provider:
 
 - **Anthropic API & Microsoft Foundry**: `advanced-tool-use-2025-11-20`
 - **Google Cloud Vertex AI**: `tool-search-tool-2025-10-19`
 - **Amazon Bedrock** (Invoke API, Opus 4.5 only): `tool-search-tool-2025-10-19`
 
-You don't need to manually specify beta headers—LiteLLM handles this automatically.
+You don't need to manually specify beta headers—Dheera AI handles this automatically.
 
 ### Deferred Loading
 
@@ -317,7 +317,7 @@ Write clear, descriptive tool names and descriptions that match how users descri
 Tool search requests are tracked in the usage object:
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-5-20250929",
     messages=[{"role": "user", "content": "Search for tools"}],
     tools=[...]
@@ -408,5 +408,5 @@ When using Bedrock's Invoke API:
 ## Additional Resources
 
 - [Anthropic Tool Search Documentation](https://docs.anthropic.com/en/docs/build-with-claude/tool-use/tool-search)
-- [LiteLLM Tool Calling Guide](https://docs.litellm.ai/docs/completion/function_call)
+- [Dheera AI Tool Calling Guide](https://docs.dheera_ai.ai/docs/completion/function_call)
 

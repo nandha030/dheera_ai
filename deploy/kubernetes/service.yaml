@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: litellm-service
+  name: dheera_ai-service
 spec:
   selector:
-    app: litellm
+    app: dheera_ai
   ports:
     - protocol: TCP
       port: 4000

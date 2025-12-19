@@ -7,24 +7,24 @@ Drop unsupported OpenAI params by your LLM Provider.
 
 ## Default Behavior
 
-**By default, LiteLLM raises an exception** if you send a parameter to a model that doesn't support it. 
+**By default, Dheera AI raises an exception** if you send a parameter to a model that doesn't support it. 
 
-For example, if you send `temperature=0.2` to a model that doesn't support the `temperature` parameter, LiteLLM will raise an exception.
+For example, if you send `temperature=0.2` to a model that doesn't support the `temperature` parameter, Dheera AI will raise an exception.
 
-**When `drop_params=True` is set**, LiteLLM will drop the unsupported parameter instead of raising an exception. This allows your code to work seamlessly across different providers without having to customize parameters for each one.
+**When `drop_params=True` is set**, Dheera AI will drop the unsupported parameter instead of raising an exception. This allows your code to work seamlessly across different providers without having to customize parameters for each one.
 
 ## Quick Start 
 
 ```python 
-import litellm 
+import dheera_ai 
 import os 
 
 # set keys 
 os.environ["COHERE_API_KEY"] = "co-.."
 
-litellm.drop_params = True # 👈 KEY CHANGE
+dheera_ai.drop_params = True # 👈 KEY CHANGE
 
-response = litellm.completion(
+response = dheera_ai.completion(
                 model="command-r",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
                 response_format={"key": "value"},
@@ -32,16 +32,16 @@ response = litellm.completion(
 ```
 
 
-LiteLLM maps all supported openai params by provider + model (e.g. function calling is supported by anthropic on bedrock but not titan). 
+Dheera AI maps all supported openai params by provider + model (e.g. function calling is supported by anthropic on bedrock but not titan). 
 
-See `litellm.get_supported_openai_params("command-r")` [**Code**](https://github.com/BerriAI/litellm/blob/main/litellm/utils.py#L3584)
+See `dheera_ai.get_supported_openai_params("command-r")` [**Code**](https://github.com/BerriAI/dheera_ai/blob/main/dheera_ai/utils.py#L3584)
 
 If a provider/model doesn't support a particular param, you can drop it. 
 
 ## OpenAI Proxy Usage
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
     drop_params: true
 ```
 
@@ -53,13 +53,13 @@ Just drop_params when calling specific models
 <TabItem value="sdk" label="SDK">
 
 ```python 
-import litellm 
+import dheera_ai 
 import os 
 
 # set keys 
 os.environ["COHERE_API_KEY"] = "co-.."
 
-response = litellm.completion(
+response = dheera_ai.completion(
                 model="command-r",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
                 response_format={"key": "value"},
@@ -70,7 +70,7 @@ response = litellm.completion(
 <TabItem value="proxy" label="PROXY">
 
 ```yaml
-- litellm_params:
+- dheera_ai_params:
     api_base: my-base
     model: openai/my-model
     drop_params: true # 👈 KEY CHANGE
@@ -89,13 +89,13 @@ Use `additional_drop_params`
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm 
+import dheera_ai 
 import os 
 
 # set keys 
 os.environ["COHERE_API_KEY"] = "co-.."
 
-response = litellm.completion(
+response = dheera_ai.completion(
                 model="command-r",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
                 response_format={"key": "value"},
@@ -106,7 +106,7 @@ response = litellm.completion(
 <TabItem value="proxy" label="PROXY">
 
 ```yaml
-- litellm_params:
+- dheera_ai_params:
     api_base: my-base
     model: openai/my-model
     additional_drop_params: ["response_format"] # 👈 KEY CHANGE
@@ -125,9 +125,9 @@ Drop nested fields within complex objects using JSONPath-like notation:
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="bedrock/us.anthropic.claude-sonnet-4-5-20250929-v1:0",
     messages=[{"role": "user", "content": "Hello"}],
     tools=[{
@@ -146,7 +146,7 @@ response = litellm.completion(
 ```yaml
 model_list:
   - model_name: my-bedrock-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-sonnet-4-5-20250929-v1:0
       additional_drop_params: ["tools[*].input_examples"]  # Remove from all tools
 ```
@@ -169,17 +169,17 @@ model_list:
 
 ## Specify allowed openai params in a request
 
-Tell litellm to allow specific openai params in a request. Use this if you get a `litellm.UnsupportedParamsError` and want to allow a param. LiteLLM will pass the param as is to the model.
+Tell dheera_ai to allow specific openai params in a request. Use this if you get a `dheera_ai.UnsupportedParamsError` and want to allow a param. Dheera AI will pass the param as is to the model.
 
 
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 In this example we pass `allowed_openai_params=["tools"]` to allow the `tools` param.
 
-```python showLineNumbers title="Pass allowed_openai_params to LiteLLM Python SDK"
-await litellm.acompletion(
+```python showLineNumbers title="Pass allowed_openai_params to Dheera AI Python SDK"
+await dheera_ai.acompletion(
     model="azure/o_series/<my-deployment-name>",
     api_key="xxxxx",
     api_base=api_base,
@@ -189,9 +189,9 @@ await litellm.acompletion(
 )
 ```
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
-When using litellm proxy you can pass `allowed_openai_params` in two ways:
+When using dheera_ai proxy you can pass `allowed_openai_params` in two ways:
 
 1. Dynamically pass `allowed_openai_params` in a request
 2. Set `allowed_openai_params` on the config.yaml file for a specific model
@@ -230,7 +230,7 @@ You can also set `allowed_openai_params` on the config.yaml file for a specific 
 ```yaml showLineNumbers title="Set allowed_openai_params on config.yaml"
 model_list:
   - model_name: azure-o1-preview
-    litellm_params:
+    dheera_ai_params:
       model: azure/o_series/<my-deployment-name>
       api_key: xxxxx
       api_base: https://openai-prod-test.openai.azure.com/openai/deployments/o1/chat/completions?api-version=2025-01-01-preview

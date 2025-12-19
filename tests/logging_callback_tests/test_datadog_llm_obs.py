@@ -18,13 +18,13 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-import litellm
-from litellm import completion
-from litellm._logging import verbose_logger
-from litellm.integrations.datadog.datadog_llm_obs import DataDogLLMObsLogger
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai._logging import verbose_logger
+from dheera_ai.integrations.datadog.datadog_llm_obs import DataDogLLMObsLogger
 from datetime import datetime, timedelta
-from litellm.types.integrations.datadog_llm_obs import *
-from litellm.types.utils import (
+from dheera_ai.types.integrations.datadog_llm_obs import *
+from dheera_ai.types.utils import (
     StandardLoggingPayload,
     StandardLoggingModelInformation,
     StandardLoggingMetadata,
@@ -88,11 +88,11 @@ def create_standard_logging_payload() -> StandardLoggingPayload:
 @pytest.mark.asyncio
 async def test_datadog_llm_obs_logging():
     datadog_llm_obs_logger = DataDogLLMObsLogger()
-    litellm.callbacks = [datadog_llm_obs_logger]
-    litellm.set_verbose = True
+    dheera_ai.callbacks = [datadog_llm_obs_logger]
+    dheera_ai.set_verbose = True
 
     for _ in range(2):
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="gpt-4o",
             messages=[{"role": "user", "content": "Hello testing dd llm obs!"}],
             mock_response="hi",

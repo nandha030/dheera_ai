@@ -4,24 +4,24 @@ import pytest
 from unittest.mock import AsyncMock, patch
 from fastapi import HTTPException
 sys.path.insert(0, os.path.abspath("../.."))
-from litellm.proxy.guardrails.guardrail_hooks.javelin import JavelinGuardrail
-import litellm
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.caching.caching import DualCache
+from dheera_ai.proxy.guardrails.guardrail_hooks.javelin import JavelinGuardrail
+import dheera_ai
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.caching.caching import DualCache
 
 @pytest.mark.asyncio
 async def test_javelin_guardrail_reject_prompt():
     """
     Test that the Javelin guardrail raises HTTPException when violations are detected, preventing the request from going to the LLM.
     """
-    # litellm._turn_on_debug()
+    # dheera_ai._turn_on_debug()
     guardrail = JavelinGuardrail(
         guardrail_name="promptinjectiondetection",
         api_base="https://api-dev.javelin.live",
         api_key="test_key",
         api_version="v1",
-        metadata={"request_source": "litellm-test"},
-        application="litellm-test",
+        metadata={"request_source": "dheera_ai-test"},
+        application="dheera_ai-test",
     )
 
     mock_response = {
@@ -87,8 +87,8 @@ async def test_javelin_guardrail_trustsafety():
         api_base="https://api-dev.javelin.live",
         api_key="test_key",
         api_version="v1",
-        metadata={"request_source": "litellm-test"},
-        application="litellm-test",
+        metadata={"request_source": "dheera_ai-test"},
+        application="dheera_ai-test",
     )
 
     mock_response = {
@@ -162,8 +162,8 @@ async def test_javelin_guardrail_language_detection():
         api_base="https://api-dev.javelin.live",
         api_key="test_key",
         api_version="v1",
-        metadata={"request_source": "litellm-test"},
-        application="litellm-test",
+        metadata={"request_source": "dheera_ai-test"},
+        application="dheera_ai-test",
     )
 
     mock_response = {
@@ -223,8 +223,8 @@ async def test_javelin_guardrail_no_user_message():
         api_base="https://api-dev.javelin.live",
         api_key="test_key",
         api_version="v1",
-        metadata={"request_source": "litellm-test"},
-        application="litellm-test",
+        metadata={"request_source": "dheera_ai-test"},
+        application="dheera_ai-test",
     )
 
     user_api_key_dict = UserAPIKeyAuth(api_key="test_key")

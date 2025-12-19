@@ -2,11 +2,11 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 # SambaNova
-[https://cloud.sambanova.ai/](http://cloud.sambanova.ai?utm_source=litellm&utm_medium=external&utm_campaign=cloud_signup)
+[https://cloud.sambanova.ai/](http://cloud.sambanova.ai?utm_source=dheera_ai&utm_medium=external&utm_campaign=cloud_signup)
 
 :::tip
 
-**We support ALL Sambanova models, just set `model=sambanova/<any-model-on-sambanova>` as a prefix when sending litellm requests. For the complete supported model list, visit https://docs.sambanova.ai/cloud/docs/get-started/supported-models **
+**We support ALL Sambanova models, just set `model=sambanova/<any-model-on-sambanova>` as a prefix when sending dheera_ai requests. For the complete supported model list, visit https://docs.sambanova.ai/cloud/docs/get-started/supported-models **
 
 :::
 
@@ -18,7 +18,7 @@ os.environ['SAMBANOVA_API_KEY']
 
 ## Sample Usage
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['SAMBANOVA_API_KEY'] = ""
@@ -41,7 +41,7 @@ print(response)
 
 ## Sample Usage - Streaming
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['SAMBANOVA_API_KEY'] = ""
@@ -69,16 +69,16 @@ for chunk in response:
 ```
 
 
-## Usage with LiteLLM Proxy Server
+## Usage with Dheera AI Proxy Server
 
-Here's how to call a Sambanova model with the LiteLLM Proxy Server
+Here's how to call a Sambanova model with the Dheera AI Proxy Server
 
 1. Modify the config.yaml 
 
   ```yaml
   model_list:
     - model_name: my-model
-      litellm_params:
+      dheera_ai_params:
         model: sambanova/<your-model-name>  # add sambanova/ prefix to route as Sambanova provider
         api_key: api-key                 # api key to send your model
   ```
@@ -87,10 +87,10 @@ Here's how to call a Sambanova model with the LiteLLM Proxy Server
 2. Start the proxy 
 
   ```bash
-  $ litellm --config /path/to/config.yaml
+  $ dheera_ai --config /path/to/config.yaml
   ```
 
-3. Send Request to LiteLLM Proxy Server
+3. Send Request to Dheera AI Proxy Server
 
   <Tabs>
 
@@ -99,8 +99,8 @@ Here's how to call a Sambanova model with the LiteLLM Proxy Server
   ```python
   import openai
   client = openai.OpenAI(
-      api_key="sk-1234",             # pass litellm proxy key, if you're using virtual keys
-      base_url="http://0.0.0.0:4000" # litellm-proxy-base url
+      api_key="sk-1234",             # pass dheera_ai proxy key, if you're using virtual keys
+      base_url="http://0.0.0.0:4000" # dheera_ai-proxy-base url
   )
 
   response = client.chat.completions.create(
@@ -140,7 +140,7 @@ Here's how to call a Sambanova model with the LiteLLM Proxy Server
 ## SambaNova - Tool Calling
 
 ```python
-import litellm
+import dheera_ai
 
 # Example dummy function
 
@@ -156,7 +156,7 @@ tools = [
     {
         "type": "function",
         "function": {
-            "name": "import litellm",
+            "name": "import dheera_ai",
             "description": "Get the current weather in a given location",
             "parameters": {
                 "type": "object",
@@ -173,7 +173,7 @@ tools = [
     }
 ]
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="sambanova/Meta-Llama-3.3-70B-Instruct",
     messages=messages,
     tools=tools,
@@ -214,7 +214,7 @@ if tool_calls:
             }
         )  # extend conversation with function response
     print(f"messages: {messages}")
-    second_response = litellm.completion(
+    second_response = dheera_ai.completion(
         model="sambanova/Meta-Llama-3.3-70B-Instruct", messages=messages
     )  # get a new response from the model where it can see the function response
     print("second response\n", second_response)
@@ -223,7 +223,7 @@ if tool_calls:
 ## SambaNova - Vision Example
 
 ```python
-import litellm
+import dheera_ai
 
 # Auxiliary function to get b64 images
 def data_url_from_image(file_path):
@@ -237,7 +237,7 @@ def data_url_from_image(file_path):
     data_url = f"data:{mime_type};base64,{encoded_string}"
     return data_url
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model = "sambanova/Llama-4-Maverick-17B-128E-Instruct", 
     messages=[
         {
@@ -267,9 +267,9 @@ print(response.choices[0].message.content)
 ## SambaNova - Structured Output
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="sambanova/Meta-Llama-3.3-70B-Instruct",
     messages=[
         {
@@ -311,9 +311,9 @@ print(response.choices[0].message.content))
 ## SambaNova - Embeddings
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.embedding(
+response = dheera_ai.embedding(
     model="sambanova/E5-Mistral-7B-Instruct",
     input=["sample text to embed", "another sample text to embed"]
 )

@@ -15,10 +15,10 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-import litellm
-from litellm._logging import verbose_logger
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.utils import StandardLoggingPayload
+import dheera_ai
+from dheera_ai._logging import verbose_logger
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.utils import StandardLoggingPayload
 
 
 class TestCustomLogger(CustomLogger):
@@ -33,10 +33,10 @@ class TestCustomLogger(CustomLogger):
 
 @pytest.mark.asyncio
 async def test_global_redaction_on():
-    litellm.turn_off_message_logging = True
+    dheera_ai.turn_off_message_logging = True
     test_custom_logger = TestCustomLogger()
-    litellm.callbacks = [test_custom_logger]
-    response = await litellm.acompletion(
+    dheera_ai.callbacks = [test_custom_logger]
+    response = await dheera_ai.acompletion(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "hi"}],
         mock_response="hello",
@@ -45,8 +45,8 @@ async def test_global_redaction_on():
     await asyncio.sleep(1)
     standard_logging_payload = test_custom_logger.logged_standard_logging_payload
     assert standard_logging_payload is not None
-    assert standard_logging_payload["response"] == {"text": "redacted-by-litellm"}
-    assert standard_logging_payload["messages"][0]["content"] == "redacted-by-litellm"
+    assert standard_logging_payload["response"] == {"text": "redacted-by-dheera_ai"}
+    assert standard_logging_payload["messages"][0]["content"] == "redacted-by-dheera_ai"
     print(
         "logged standard logging payload",
         json.dumps(standard_logging_payload, indent=2),
@@ -56,10 +56,10 @@ async def test_global_redaction_on():
 @pytest.mark.parametrize("turn_off_message_logging", [True, False])
 @pytest.mark.asyncio
 async def test_global_redaction_with_dynamic_params(turn_off_message_logging):
-    litellm.turn_off_message_logging = True
+    dheera_ai.turn_off_message_logging = True
     test_custom_logger = TestCustomLogger()
-    litellm.callbacks = [test_custom_logger]
-    response = await litellm.acompletion(
+    dheera_ai.callbacks = [test_custom_logger]
+    response = await dheera_ai.acompletion(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "hi"}],
         turn_off_message_logging=turn_off_message_logging,
@@ -75,9 +75,9 @@ async def test_global_redaction_with_dynamic_params(turn_off_message_logging):
     )
 
     if turn_off_message_logging is True:
-        assert standard_logging_payload["response"] == {"text": "redacted-by-litellm"}
+        assert standard_logging_payload["response"] == {"text": "redacted-by-dheera_ai"}
         assert (
-            standard_logging_payload["messages"][0]["content"] == "redacted-by-litellm"
+            standard_logging_payload["messages"][0]["content"] == "redacted-by-dheera_ai"
         )
     else:
         assert (
@@ -90,10 +90,10 @@ async def test_global_redaction_with_dynamic_params(turn_off_message_logging):
 @pytest.mark.parametrize("turn_off_message_logging", [True, False])
 @pytest.mark.asyncio
 async def test_global_redaction_off_with_dynamic_params(turn_off_message_logging):
-    litellm.turn_off_message_logging = False
+    dheera_ai.turn_off_message_logging = False
     test_custom_logger = TestCustomLogger()
-    litellm.callbacks = [test_custom_logger]
-    response = await litellm.acompletion(
+    dheera_ai.callbacks = [test_custom_logger]
+    response = await dheera_ai.acompletion(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "hi"}],
         turn_off_message_logging=turn_off_message_logging,
@@ -108,9 +108,9 @@ async def test_global_redaction_off_with_dynamic_params(turn_off_message_logging
         json.dumps(standard_logging_payload, indent=2),
     )
     if turn_off_message_logging is True:
-        assert standard_logging_payload["response"] == {"text": "redacted-by-litellm"}
+        assert standard_logging_payload["response"] == {"text": "redacted-by-dheera_ai"}
         assert (
-            standard_logging_payload["messages"][0]["content"] == "redacted-by-litellm"
+            standard_logging_payload["messages"][0]["content"] == "redacted-by-dheera_ai"
         )
     else:
         assert (
@@ -123,9 +123,9 @@ async def test_global_redaction_off_with_dynamic_params(turn_off_message_logging
 @pytest.mark.asyncio
 async def test_redaction_responses_api():
     """Test redaction with ResponsesAPIResponse format"""
-    litellm.turn_off_message_logging = True
+    dheera_ai.turn_off_message_logging = True
     test_custom_logger = TestCustomLogger(turn_off_message_logging=True)
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     
     # Mock a ResponsesAPIResponse-style response
     mock_response = {
@@ -134,7 +134,7 @@ async def test_redaction_responses_api():
         "usage": {"input_tokens": 5, "output_tokens": 5, "total_tokens": 10}
     }
     
-    response = await litellm.aresponses(
+    response = await dheera_ai.aresponses(
         model="gpt-3.5-turbo",
         input="hi",
         mock_response=mock_response,
@@ -152,7 +152,7 @@ async def test_redaction_responses_api():
     assert "prompt_tokens" in standard_logging_payload["response"]["usage"]
     assert "completion_tokens" in standard_logging_payload["response"]["usage"]
     
-    assert standard_logging_payload["messages"][0]["content"] == "redacted-by-litellm"
+    assert standard_logging_payload["messages"][0]["content"] == "redacted-by-dheera_ai"
     
     # Verify that output content is redacted
     assert "output" in standard_logging_payload["response"]
@@ -161,7 +161,7 @@ async def test_redaction_responses_api():
         if "content" in output_item and isinstance(output_item["content"], list):
             for content_item in output_item["content"]:
                 if "text" in content_item:
-                    assert content_item["text"] == "redacted-by-litellm", f"Expected redacted text but got: {content_item['text']}"
+                    assert content_item["text"] == "redacted-by-dheera_ai", f"Expected redacted text but got: {content_item['text']}"
     print(
         "logged standard logging payload for ResponsesAPIResponse",
         json.dumps(standard_logging_payload, indent=2),
@@ -171,9 +171,9 @@ async def test_redaction_responses_api():
 @pytest.mark.asyncio
 async def test_redaction_responses_api_stream():
     """Test redaction with ResponsesAPIResponse format"""
-    litellm.turn_off_message_logging = True
+    dheera_ai.turn_off_message_logging = True
     test_custom_logger = TestCustomLogger(turn_off_message_logging=True)
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     
     # Mock a ResponsesAPIResponse-style response with streaming chunks
     mock_response = [
@@ -192,7 +192,7 @@ async def test_redaction_responses_api_stream():
         }
     ]
     
-    response = await litellm.aresponses(
+    response = await dheera_ai.aresponses(
         model="gpt-3.5-turbo",
         input="hi",
         mock_response=mock_response,
@@ -211,12 +211,12 @@ async def test_redaction_responses_api_stream():
     # Verify redaction in ResponsesAPIResponse format
     # The streaming response is in ModelResponse format (choices), not ResponsesAPIResponse format (output)
     assert isinstance(standard_logging_payload["response"], dict)
-    assert standard_logging_payload["messages"][0]["content"] == "redacted-by-litellm"
+    assert standard_logging_payload["messages"][0]["content"] == "redacted-by-dheera_ai"
     
     # Verify that response content is redacted (ModelResponse format)
     if "choices" in standard_logging_payload["response"]:
         # ModelResponse format
-        assert standard_logging_payload["response"]["choices"][0]["message"]["content"] == "redacted-by-litellm"
+        assert standard_logging_payload["response"]["choices"][0]["message"]["content"] == "redacted-by-dheera_ai"
     elif "output" in standard_logging_payload["response"]:
         # ResponsesAPIResponse format
         output_items = standard_logging_payload["response"]["output"]
@@ -224,7 +224,7 @@ async def test_redaction_responses_api_stream():
             if "content" in output_item and isinstance(output_item["content"], list):
                 for content_item in output_item["content"]:
                     if "text" in content_item:
-                        assert content_item["text"] == "redacted-by-litellm", f"Expected redacted text but got: {content_item['text']}"
+                        assert content_item["text"] == "redacted-by-dheera_ai", f"Expected redacted text but got: {content_item['text']}"
     print(
         "logged standard logging payload for ResponsesAPIResponse stream",
         json.dumps(standard_logging_payload, indent=2),
@@ -234,7 +234,7 @@ async def test_redaction_responses_api_stream():
 @pytest.mark.asyncio
 async def test_redaction_responses_api_with_reasoning_summary():
     """Test that reasoning summary in ResponsesAPIResponse output is properly redacted"""
-    from litellm.litellm_core_utils.redact_messages import perform_redaction
+    from dheera_ai.dheera_ai_core_utils.redact_messages import perform_redaction
     
     # Create a simple mock object with output items that have reasoning summaries
     class MockResponsesAPIResponse:
@@ -270,10 +270,10 @@ async def test_redaction_responses_api_with_reasoning_summary():
     mock_response.__class__.__name__ = 'ResponsesAPIResponse'
     
     # Patch isinstance to recognize our mock as ResponsesAPIResponse
-    import litellm
+    import dheera_ai
     original_isinstance = isinstance
     def patched_isinstance(obj, cls):
-        if cls == litellm.ResponsesAPIResponse and obj.__class__.__name__ == 'ResponsesAPIResponse':
+        if cls == dheera_ai.ResponsesAPIResponse and obj.__class__.__name__ == 'ResponsesAPIResponse':
             return True
         return original_isinstance(obj, cls)
     
@@ -292,12 +292,12 @@ async def test_redaction_responses_api_with_reasoning_summary():
         
         # Verify reasoning summary text is redacted
         reasoning_item = redacted_result.output[0]
-        assert reasoning_item.summary[0].text == "redacted-by-litellm", \
+        assert reasoning_item.summary[0].text == "redacted-by-dheera_ai", \
             "Reasoning summary text should be redacted"
         
         # Verify message content is also redacted
         message_item = redacted_result.output[1]
-        assert message_item.content[0].text == "redacted-by-litellm", \
+        assert message_item.content[0].text == "redacted-by-dheera_ai", \
             "Message content text should be redacted"
         
         # Verify top-level reasoning field is removed
@@ -305,7 +305,7 @@ async def test_redaction_responses_api_with_reasoning_summary():
             "Top-level reasoning field should be None"
         
         # Verify input messages are redacted
-        assert model_call_details["messages"][0]["content"] == "redacted-by-litellm", \
+        assert model_call_details["messages"][0]["content"] == "redacted-by-dheera_ai", \
             "Input messages should be redacted"
         
         print("✓ Reasoning summary redaction test passed")
@@ -317,7 +317,7 @@ async def test_redaction_responses_api_with_reasoning_summary():
 @pytest.mark.asyncio
 async def test_redaction_with_coroutine_objects():
     """Test that redaction handles coroutine objects correctly without pickle errors"""
-    from litellm.litellm_core_utils.redact_messages import perform_redaction
+    from dheera_ai.dheera_ai_core_utils.redact_messages import perform_redaction
     
     # Test with a coroutine object (simulating streaming response)
     async def mock_async_generator():
@@ -327,7 +327,7 @@ async def test_redaction_with_coroutine_objects():
     
     # This should not raise a pickle error
     result = perform_redaction({}, coroutine)
-    assert result == {"text": "redacted-by-litellm"}
+    assert result == {"text": "redacted-by-dheera_ai"}
     
     # Test with an async function
     async def mock_async_function():
@@ -335,7 +335,7 @@ async def test_redaction_with_coroutine_objects():
     
     async_func = mock_async_function()
     result = perform_redaction({}, async_func)
-    assert result == {"text": "redacted-by-litellm"}
+    assert result == {"text": "redacted-by-dheera_ai"}
     
     # Test with an object that has __aiter__ method (async generator)
     class MockAsyncGenerator:
@@ -347,7 +347,7 @@ async def test_redaction_with_coroutine_objects():
     
     mock_gen = MockAsyncGenerator()
     result = perform_redaction({}, mock_gen)
-    assert result == {"text": "redacted-by-litellm"}
+    assert result == {"text": "redacted-by-dheera_ai"}
     
     # Test with an object that has __anext__ method (async iterator)
     class MockAsyncIterator:
@@ -356,19 +356,19 @@ async def test_redaction_with_coroutine_objects():
     
     mock_iter = MockAsyncIterator()
     result = perform_redaction({}, mock_iter)
-    assert result == {"text": "redacted-by-litellm"}
+    assert result == {"text": "redacted-by-dheera_ai"}
 
 
 @pytest.mark.asyncio
 async def test_redaction_with_streaming_response():
     """Test that redaction works correctly with streaming responses that return coroutines"""
-    litellm.turn_off_message_logging = True
+    dheera_ai.turn_off_message_logging = True
     test_custom_logger = TestCustomLogger()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     
     # This simulates the scenario where a streaming response returns a coroutine
     # that would normally cause the pickle error
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "hi"}],
         stream=True,
@@ -385,8 +385,8 @@ async def test_redaction_with_streaming_response():
     assert standard_logging_payload is not None
     
     # Verify that redaction worked without pickle errors
-    assert standard_logging_payload["response"] == {"text": "redacted-by-litellm"}
-    assert standard_logging_payload["messages"][0]["content"] == "redacted-by-litellm"
+    assert standard_logging_payload["response"] == {"text": "redacted-by-dheera_ai"}
+    assert standard_logging_payload["messages"][0]["content"] == "redacted-by-dheera_ai"
     print(
         "logged standard logging payload for streaming with coroutine handling",
         json.dumps(standard_logging_payload, indent=2),
@@ -396,14 +396,14 @@ async def test_redaction_with_streaming_response():
 @pytest.mark.asyncio
 async def test_disable_redaction_header_responses_api():
     """
-    Test that LiteLLM-Disable-Message-Redaction header works for Responses API.
+    Test that DheeraAI-Disable-Message-Redaction header works for Responses API.
     
     This test verifies the fix for the issue where the header wasn't respected
-    because Responses API uses 'litellm_metadata' instead of 'metadata'.
+    because Responses API uses 'dheera_ai_metadata' instead of 'metadata'.
     """
-    litellm.turn_off_message_logging = True
+    dheera_ai.turn_off_message_logging = True
     test_custom_logger = TestCustomLogger()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     
     # Mock a ResponsesAPIResponse-style response
     mock_response = {
@@ -412,14 +412,14 @@ async def test_disable_redaction_header_responses_api():
         "usage": {"input_tokens": 5, "output_tokens": 5, "total_tokens": 10}
     }
     
-    # Pass the header via litellm_metadata (as the proxy does for Responses API)
-    response = await litellm.aresponses(
+    # Pass the header via dheera_ai_metadata (as the proxy does for Responses API)
+    response = await dheera_ai.aresponses(
         model="gpt-3.5-turbo",
         input="hi",
         mock_response=mock_response,
-        litellm_metadata={
+        dheera_ai_metadata={
             "headers": {
-                "litellm-disable-message-redaction": "true"
+                "dheera_ai-disable-message-redaction": "true"
             }
         }
     )
@@ -435,7 +435,7 @@ async def test_disable_redaction_header_responses_api():
     )
     
     # The content should NOT be redacted
-    assert standard_logging_payload["response"] != {"text": "redacted-by-litellm"}
+    assert standard_logging_payload["response"] != {"text": "redacted-by-dheera_ai"}
     assert standard_logging_payload["messages"][0]["content"] == "hi"
 
 
@@ -447,19 +447,19 @@ async def test_redaction_with_metadata_completion_api():
     This test verifies that get_metadata_variable_name_from_kwargs properly
     selects the appropriate metadata field for header detection.
     """
-    litellm.turn_off_message_logging = True
+    dheera_ai.turn_off_message_logging = True
     test_custom_logger = TestCustomLogger()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     
     # When metadata is passed, the system uses get_metadata_variable_name_from_kwargs
     # to determine which field to check
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "hi"}],
         mock_response="hello",
         metadata={
             "headers": {
-                "litellm-disable-message-redaction": "true"
+                "dheera_ai-disable-message-redaction": "true"
             }
         }
     )
@@ -475,5 +475,5 @@ async def test_redaction_with_metadata_completion_api():
     
     # Verify the helper function works correctly - with get_metadata_variable_name_from_kwargs,
     # the system checks the appropriate field for headers
-    assert standard_logging_payload["response"] == {"text": "redacted-by-litellm"}
-    assert standard_logging_payload["messages"][0]["content"] == "redacted-by-litellm"
+    assert standard_logging_payload["response"] == {"text": "redacted-by-dheera_ai"}
+    assert standard_logging_payload["messages"][0]["content"] == "redacted-by-dheera_ai"

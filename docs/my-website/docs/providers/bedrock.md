@@ -7,14 +7,14 @@ ALL Bedrock models (Anthropic, Meta, Deepseek, Mistral, Amazon, etc.) are Suppor
 | Property | Details |
 |-------|-------|
 | Description | Amazon Bedrock is a fully managed service that offers a choice of high-performing foundation models (FMs). |
-| Provider Route on LiteLLM | `bedrock/`, [`bedrock/converse/`](#set-converse--invoke-route), [`bedrock/invoke/`](#set-invoke-route), [`bedrock/converse_like/`](#calling-via-internal-proxy), [`bedrock/llama/`](#deepseek-not-r1), [`bedrock/deepseek_r1/`](#deepseek-r1), [`bedrock/qwen3/`](#qwen3-imported-models), [`bedrock/qwen2/`](./bedrock_imported.md#qwen2-imported-models), [`bedrock/openai/`](./bedrock_imported.md#openai-compatible-imported-models-qwen-25-vl-etc) |
+| Provider Route on Dheera AI | `bedrock/`, [`bedrock/converse/`](#set-converse--invoke-route), [`bedrock/invoke/`](#set-invoke-route), [`bedrock/converse_like/`](#calling-via-internal-proxy), [`bedrock/llama/`](#deepseek-not-r1), [`bedrock/deepseek_r1/`](#deepseek-r1), [`bedrock/qwen3/`](#qwen3-imported-models), [`bedrock/qwen2/`](./bedrock_imported.md#qwen2-imported-models), [`bedrock/openai/`](./bedrock_imported.md#openai-compatible-imported-models-qwen-25-vl-etc) |
 | Provider Doc | [Amazon Bedrock ↗](https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html) |
 | Supported OpenAI Endpoints | `/chat/completions`, `/completions`, `/embeddings`, `/images/generations` |
 | Rerank Endpoint | `/rerank` |
 | Pass-through Endpoint | [Supported](../pass_through/bedrock.md) |
 
 
-LiteLLM requires `boto3` to be installed on your system for Bedrock requests
+Dheera AI requires `boto3` to be installed on your system for Bedrock requests
 ```shell
 pip install boto3>=1.28.57
 ```
@@ -29,11 +29,11 @@ For **Amazon Nova Models**: Bump to v1.53.5+
 
 :::info
 
-LiteLLM uses boto3 to handle authentication. All these options are supported - https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html#credentials.
+Dheera AI uses boto3 to handle authentication. All these options are supported - https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html#credentials.
 
 :::
  
-LiteLLM supports API key authentication in addition to traditional boto3 authentication methods. For additional API key details, refer to [docs](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html).
+Dheera AI supports API key authentication in addition to traditional boto3 authentication methods. For additional API key details, refer to [docs](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html).
 
 Option 1: use the AWS_BEARER_TOKEN_BEDROCK environment variable 
 
@@ -57,7 +57,7 @@ response = completion(
 ```yaml
 model_list:
   - model_name: bedrock-claude-3-sonnet
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
       api_key: os.environ/AWS_BEARER_TOKEN_BEDROCK
 ```
@@ -66,14 +66,14 @@ model_list:
 
 ## Usage
 
-<a target="_blank" href="https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/LiteLLM_Bedrock.ipynb">
+<a target="_blank" href="https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/Dheera AI_Bedrock.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
 os.environ["AWS_SECRET_ACCESS_KEY"] = ""
@@ -85,16 +85,16 @@ response = completion(
 )
 ```
 
-## LiteLLM Proxy Usage 
+## Dheera AI Proxy Usage 
 
-Here's how to call Bedrock with the LiteLLM Proxy Server
+Here's how to call Bedrock with the Dheera AI Proxy Server
 
 ### 1. Setup config.yaml
 
 ```yaml
 model_list:
   - model_name: bedrock-claude-3-5-sonnet
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -119,7 +119,7 @@ api_key: Optional[str],
 ### 2. Start the proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 ### 3. Test it
 
@@ -151,7 +151,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(model="bedrock-claude-v1", messages = [
     {
         "role": "user",
@@ -175,7 +175,7 @@ from langchain.prompts.chat import (
 from langchain.schema import HumanMessage, SystemMessage
 
 chat = ChatOpenAI(
-    openai_api_base="http://0.0.0.0:4000", # set openai_api_base to the LiteLLM Proxy
+    openai_api_base="http://0.0.0.0:4000", # set openai_api_base to the Dheera AI Proxy
     model = "bedrock-claude-v1",
     temperature=0.1
 )
@@ -185,7 +185,7 @@ messages = [
         content="You are a helpful assistant that im using to make a test request to."
     ),
     HumanMessage(
-        content="test from litellm. tell me why it's amazing in 1 sentence"
+        content="test from dheera_ai. tell me why it's amazing in 1 sentence"
     ),
 ]
 response = chat(messages)
@@ -202,7 +202,7 @@ print(response)
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
 os.environ["AWS_SECRET_ACCESS_KEY"] = ""
@@ -223,7 +223,7 @@ response = completion(
 ```yaml
 model_list:
   - model_name: bedrock-claude-v1
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-instant-v1
       temperature: <your-temp>
       top_p: <your-top-p>
@@ -239,7 +239,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(model="bedrock-claude-v1", messages = [
     {
         "role": "user",
@@ -259,14 +259,14 @@ print(response)
 
 ## Pass provider-specific params 
 
-If you pass a non-openai param to litellm, we'll assume it's provider-specific and send it as a kwarg in the request body. [See more](../completion/input.md#provider-specific-params)
+If you pass a non-openai param to dheera_ai, we'll assume it's provider-specific and send it as a kwarg in the request body. [See more](../completion/input.md#provider-specific-params)
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
 os.environ["AWS_SECRET_ACCESS_KEY"] = ""
@@ -286,7 +286,7 @@ response = completion(
 ```yaml
 model_list:
   - model_name: bedrock-claude-v1
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-instant-v1
       top_k: 1 # 👈 PROVIDER-SPECIFIC PARAM
 ```
@@ -301,7 +301,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(model="bedrock-claude-v1", messages = [
     {
         "role": "user",
@@ -330,7 +330,7 @@ Attach metadata to Bedrock requests for logging and cost attribution.
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
 os.environ["AWS_SECRET_ACCESS_KEY"] = ""
@@ -353,7 +353,7 @@ response = completion(
 ```yaml
 model_list:
   - model_name: bedrock-claude-v1
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
       requestMetadata:
         cost_center: "engineering"
@@ -382,13 +382,13 @@ response = client.chat.completions.create(
 
 ## Usage - Function Calling / Tool calling
 
-LiteLLM supports tool calling via Bedrock's Converse and Invoke API's.
+Dheera AI supports tool calling via Bedrock's Converse and Invoke API's.
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # set env
 os.environ["AWS_ACCESS_KEY_ID"] = ""
@@ -438,14 +438,14 @@ assert isinstance(
 ```yaml
 model_list:
   - model_name: bedrock-claude-3-7
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0 # for bedrock invoke, specify `bedrock/invoke/<model>`
 ```
 
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -453,7 +453,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer $LITELLM_API_KEY" \
+-H "Authorization: Bearer $DHEERA_AI_API_KEY" \
 -d '{
   "model": "bedrock-claude-3-7",
   "messages": [
@@ -498,7 +498,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 ## Usage - Vision 
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # set env
 os.environ["AWS_ACCESS_KEY_ID"] = ""
@@ -516,7 +516,7 @@ def encode_image(image_path):
 image_path = "../proxy/cached_logo.jpg"
 # Getting the base64 string
 base64_image = encode_image(image_path)
-resp = litellm.completion(
+resp = dheera_ai.completion(
     model="bedrock/anthropic.claude-3-sonnet-20240229-v1:0",
     messages=[
         {
@@ -558,7 +558,7 @@ The `signature` is required by Anthropic on subsequent calls, if 'thinking' cont
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # set env
 os.environ["AWS_ACCESS_KEY_ID"] = ""
@@ -582,7 +582,7 @@ print(resp)
 ```yaml
 model_list:
   - model_name: bedrock-claude-3-7
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0
       reasoning_effort: "low" # 👈 EITHER HERE OR ON REQUEST
 ```
@@ -590,7 +590,7 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -658,7 +658,7 @@ Same as [Anthropic API response](../providers/anthropic#usage---thinking--reason
 
 ## Usage - Anthropic Beta Features
 
-LiteLLM supports Anthropic's beta features on AWS Bedrock through the `anthropic-beta` header. This enables access to experimental features like:
+Dheera AI supports Anthropic's beta features on AWS Bedrock through the `anthropic-beta` header. This enables access to experimental features like:
 
 - **1M Context Window** - Up to 1 million tokens of context (Claude Sonnet 4)
 - **Computer Use Tools** - AI that can interact with computer interfaces
@@ -684,7 +684,7 @@ LiteLLM supports Anthropic's beta features on AWS Bedrock through the `anthropic
 **Single Beta Feature**
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 # set env
@@ -706,7 +706,7 @@ response = completion(
 **Multiple Beta Features**
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # Combine multiple beta features (comma-separated)
 response = completion(
@@ -722,7 +722,7 @@ response = completion(
 **Computer Use Tools with Beta Features**
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # Computer use tools automatically add computer-use-2024-10-22
 # You can add additional beta features
@@ -749,13 +749,13 @@ response = completion(
 ```yaml
 model_list:
   - model_name: claude-sonnet-4-1m
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-sonnet-4-20250115-v1:0
       extra_headers:
         anthropic-beta: "context-1m-2025-08-07"  # 👈 Enable 1M context
 
   - model_name: claude-computer-use
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/converse/anthropic.claude-3-5-sonnet-20241022-v2:0
       extra_headers:
         anthropic-beta: "computer-use-2024-10-22,context-1m-2025-08-07"
@@ -806,7 +806,7 @@ Beta features may require special access or permissions in your AWS account. Som
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os 
 from pydantic import BaseModel
 
@@ -841,7 +841,7 @@ print(response.choices[0].message.content)
 ```yaml
 model_list:
   - model_name: bedrock-claude-3-7
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0 # specify invoke via `bedrock/invoke/<model_name>` 
       aws_access_key_id: os.environ/CUSTOM_AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/CUSTOM_AWS_SECRET_ACCESS_KEY
@@ -851,7 +851,7 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -859,7 +859,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "bedrock-claude-3-7",
     "messages": [
@@ -913,7 +913,7 @@ Valid from v1.65.1+
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0",
@@ -930,7 +930,7 @@ response = completion(
 ```yaml
 model_list:
   - model_name: bedrock-claude-3-7
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0
       performanceConfig: {"latency": "optimized"} # 👈 EITHER HERE OR ON REQUEST
 ```
@@ -938,7 +938,7 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -946,7 +946,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "bedrock-claude-3-7",
     "messages": [{"role": "user", "content": "What is the capital of France?"}],
@@ -971,7 +971,7 @@ Control the processing tier for your Bedrock requests using `serviceTier`. Valid
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="bedrock/converse/qwen.qwen3-235b-a22b-2507-v1:0",
@@ -988,7 +988,7 @@ response = completion(
 ```yaml
 model_list:
   - model_name: qwen3-235b-priority
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/converse/qwen.qwen3-235b-a22b-2507-v1:0
       aws_region_name: ap-northeast-1
       serviceTier:
@@ -998,7 +998,7 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -1006,7 +1006,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "qwen3-235b-priority",
     "messages": [{"role": "user", "content": "What is the capital of France?"}],
@@ -1018,11 +1018,11 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 </Tabs>
 ## Usage - Bedrock Guardrails
 
-Example of using [Bedrock Guardrails with LiteLLM](https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-converse-api.html)
+Example of using [Bedrock Guardrails with Dheera AI](https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-converse-api.html)
 
 ### Selective Content Moderation with `guarded_text`
 
-LiteLLM supports selective content moderation using the `guarded_text` content type. This allows you to wrap only specific content that should be moderated by Bedrock Guardrails, rather than evaluating the entire conversation.
+Dheera AI supports selective content moderation using the `guarded_text` content type. This allows you to wrap only specific content that should be moderated by Bedrock Guardrails, rather than evaluating the entire conversation.
 
 **How it works:**
 - Content with `type: "guarded_text"` gets automatically wrapped in `guardrailConverseContent` blocks
@@ -1034,10 +1034,10 @@ If `guarded_text` is not used, the entire conversation history will be sent to t
 :::
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM SDK">
+<TabItem value="sdk" label="Dheera AI SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # set env
 os.environ["AWS_ACCESS_KEY_ID"] = ""
@@ -1089,7 +1089,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(model="anthropic.claude-v2", messages = [
     {
         "role": "user",
@@ -1116,7 +1116,7 @@ print(response)
 ```yaml
 model_list:
   - model_name: bedrock-claude-v1
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-instant-v1
       aws_access_key_id: os.environ/CUSTOM_AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/CUSTOM_AWS_SECRET_ACCESS_KEY
@@ -1132,7 +1132,7 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -1145,7 +1145,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(model="bedrock-claude-v1", messages = [
     {
         "role": "user",
@@ -1182,7 +1182,7 @@ If you're using Anthropic's Claude with Bedrock, you can "put words in Claude's 
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
 os.environ["AWS_SECRET_ACCESS_KEY"] = ""
@@ -1211,7 +1211,7 @@ If you're using Anthropic's Claude 2.1 with Bedrock, `system` role messages are 
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
 os.environ["AWS_SECRET_ACCESS_KEY"] = ""
@@ -1239,7 +1239,7 @@ Assistant:
 ## Usage - Streaming
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
 os.environ["AWS_SECRET_ACCESS_KEY"] = ""
@@ -1278,13 +1278,13 @@ for chunk in response:
 
 ## Cross-region inferencing 
 
-LiteLLM supports Bedrock [cross-region inferencing](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html) across all [supported bedrock models](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html).
+Dheera AI supports Bedrock [cross-region inferencing](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html) across all [supported bedrock models](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html).
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 import os 
 
 
@@ -1293,7 +1293,7 @@ os.environ["AWS_SECRET_ACCESS_KEY"] = ""
 os.environ["AWS_REGION_NAME"] = ""
 
 
-litellm.set_verbose = True #  👈 SEE RAW REQUEST 
+dheera_ai.set_verbose = True #  👈 SEE RAW REQUEST 
 
 response = completion(
     model="bedrock/us.anthropic.claude-3-haiku-20240307-v1:0",
@@ -1313,7 +1313,7 @@ print("Final Response: {}".format(response))
 ```yaml
 model_list:
   - model_name: bedrock-claude-haiku
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-haiku-20240307-v1:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -1324,7 +1324,7 @@ model_list:
 #### 2. Start the proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 #### 3. Test it
@@ -1357,7 +1357,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(model="bedrock-claude-haiku", messages = [
     {
         "role": "user",
@@ -1381,7 +1381,7 @@ from langchain.prompts.chat import (
 from langchain.schema import HumanMessage, SystemMessage
 
 chat = ChatOpenAI(
-    openai_api_base="http://0.0.0.0:4000", # set openai_api_base to the LiteLLM Proxy
+    openai_api_base="http://0.0.0.0:4000", # set openai_api_base to the Dheera AI Proxy
     model = "bedrock-claude-haiku",
     temperature=0.1
 )
@@ -1391,7 +1391,7 @@ messages = [
         content="You are a helpful assistant that im using to make a test request to."
     ),
     HumanMessage(
-        content="test from litellm. tell me why it's amazing in 1 sentence"
+        content="test from dheera_ai. tell me why it's amazing in 1 sentence"
     ),
 ]
 response = chat(messages)
@@ -1409,11 +1409,11 @@ print(response)
 
 :::info
 
-Supported from LiteLLM Version `v1.53.5`
+Supported from Dheera AI Version `v1.53.5`
 
 :::
 
-LiteLLM defaults to the `invoke` route. LiteLLM uses the `converse` route for Bedrock models that support it.
+Dheera AI defaults to the `invoke` route. Dheera AI uses the `converse` route for Bedrock models that support it.
 
 To explicitly set the route, do `bedrock/converse/<model>` or `bedrock/invoke/<model>`.
 
@@ -1424,7 +1424,7 @@ E.g.
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 completion(model="bedrock/converse/us.amazon.nova-pro-v1:0")
 ```
@@ -1435,7 +1435,7 @@ completion(model="bedrock/converse/us.amazon.nova-pro-v1:0")
 ```yaml
 model_list:
   - model_name: bedrock-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/converse/us.amazon.nova-pro-v1:0
 ```
 
@@ -1450,22 +1450,22 @@ Use `user_continue_message` to add a default user message, for cases (e.g. Autog
 ```yaml
 model_list:
   - model_name: "bedrock-claude"
-    litellm_params:
+    dheera_ai_params:
       model: "bedrock/anthropic.claude-instant-v1"
       user_continue_message: {"role": "user", "content": "Please continue"}
 ```
 
 OR 
 
-just set `litellm.modify_params=True` and LiteLLM will automatically handle this with a default user_continue_message.
+just set `dheera_ai.modify_params=True` and Dheera AI will automatically handle this with a default user_continue_message.
 
 ```yaml
 model_list:
   - model_name: "bedrock-claude"
-    litellm_params:
+    dheera_ai_params:
       model: "bedrock/anthropic.claude-instant-v1"
 
-litellm_settings:
+dheera_ai_settings:
    modify_params: true
 ```
 
@@ -1483,11 +1483,11 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 
 ## Usage - PDF / Document Understanding
 
-LiteLLM supports Document Understanding for Bedrock models - [AWS Bedrock Docs](https://docs.aws.amazon.com/nova/latest/userguide/modalities-document.html).
+Dheera AI supports Document Understanding for Bedrock models - [AWS Bedrock Docs](https://docs.aws.amazon.com/nova/latest/userguide/modalities-document.html).
 
 :::info
 
-LiteLLM supports ALL Bedrock document types - 
+Dheera AI supports ALL Bedrock document types - 
 
 E.g.: "pdf", "csv", "doc", "docx", "xls", "xlsx", "html", "txt", "md"
 
@@ -1501,7 +1501,7 @@ You can also pass these as either `image_url` or `base64`
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm.utils import supports_pdf_input, completion
+from dheera_ai.utils import supports_pdf_input, completion
 
 # set aws credentials
 os.environ["AWS_ACCESS_KEY_ID"] = ""
@@ -1549,7 +1549,7 @@ assert response is not None
 ```yaml
 model_list:
   - model_name: bedrock-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -1559,7 +1559,7 @@ model_list:
 2. Start the proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -1590,7 +1590,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm.utils import supports_pdf_input, completion
+from dheera_ai.utils import supports_pdf_input, completion
 
 # set aws credentials
 os.environ["AWS_ACCESS_KEY_ID"] = ""
@@ -1635,7 +1635,7 @@ assert response is not None
 ```yaml
 model_list:
   - model_name: bedrock-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -1645,7 +1645,7 @@ model_list:
 2. Start the proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -1680,7 +1680,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python title="GPT OSS SDK Usage" showLineNumbers
-from litellm import completion
+from dheera_ai import completion
 import os
 
 # Set AWS credentials
@@ -1712,14 +1712,14 @@ print(response.choices[0].message.content)
 ```yaml title="config.yaml" showLineNumbers
 model_list:
   - model_name: gpt-oss-20b
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/converse/openai.gpt-oss-20b-1:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
       aws_region_name: os.environ/AWS_REGION_NAME
       
   - model_name: gpt-oss-120b
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/converse/openai.gpt-oss-120b-1:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -1728,8 +1728,8 @@ model_list:
 
 **2. Start proxy**
 
-```bash title="Start LiteLLM Proxy" showLineNumbers
-litellm --config /path/to/config.yaml
+```bash title="Start Dheera AI Proxy" showLineNumbers
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -1756,7 +1756,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 
 ## TwelveLabs Pegasus - Video Understanding
 
-TwelveLabs Pegasus 1.2 is a video understanding model that can analyze and describe video content. LiteLLM supports this model through Bedrock's `/invoke` endpoint.
+TwelveLabs Pegasus 1.2 is a video understanding model that can analyze and describe video content. Dheera AI supports this model through Bedrock's `/invoke` endpoint.
 
 | Property | Details |
 |----------|---------|
@@ -1777,7 +1777,7 @@ TwelveLabs Pegasus 1.2 is a video understanding model that can analyze and descr
 <TabItem value="sdk" label="SDK">
 
 ```python title="TwelveLabs Pegasus SDK Usage" showLineNumbers
-from litellm import completion
+from dheera_ai import completion
 import os
 
 # Set AWS credentials
@@ -1809,7 +1809,7 @@ print(response.choices[0].message.content)
 ```yaml title="config.yaml" showLineNumbers
 model_list:
   - model_name: pegasus-video
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.twelvelabs.pegasus-1-2-v1:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -1818,8 +1818,8 @@ model_list:
 
 **2. Start proxy**
 
-```bash title="Start LiteLLM Proxy" showLineNumbers
-litellm --config /path/to/config.yaml
+```bash title="Start Dheera AI Proxy" showLineNumbers
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -1856,7 +1856,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 You can also pass video content directly as base64:
 
 ```python title="Base64 Video Input" showLineNumbers
-from litellm import completion
+from dheera_ai import completion
 import base64
 
 # Read video file and encode to base64
@@ -1886,8 +1886,8 @@ To use provisioned throughput Bedrock models pass
 
 Completion
 ```python
-import litellm
-response = litellm.completion(
+import dheera_ai
+response = dheera_ai.completion(
     model="bedrock/anthropic.claude-instant-v1",
     model_id="provisioned-model-arn",
     messages=[{"content": "Hello, how are you?", "role": "user"}]
@@ -1896,8 +1896,8 @@ response = litellm.completion(
 
 Embedding
 ```python
-import litellm
-response = litellm.embedding(
+import dheera_ai
+response = dheera_ai.embedding(
     model="bedrock/amazon.titan-embed-text-v1",
     model_id="provisioned-model-arn",
     input=["hi"],
@@ -1907,9 +1907,9 @@ response = litellm.embedding(
 
 ## Supported AWS Bedrock Models
 
-LiteLLM supports ALL Bedrock models. 
+Dheera AI supports ALL Bedrock models. 
 
-Here's an example of using a bedrock model with LiteLLM. For a complete list, refer to the [model cost map](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json)
+Here's an example of using a bedrock model with Dheera AI. For a complete list, refer to the [model cost map](https://github.com/BerriAI/dheera_ai/blob/main/model_prices_and_context_window.json)
 
 | Model Name                 | Command                                                          |
 |----------------------------|------------------------------------------------------------------|
@@ -1946,7 +1946,7 @@ Here's an example of using a bedrock model with LiteLLM. For a complete list, re
 ## Bedrock Embedding
 
 ### API keys
-This can be set as env variables or passed as **params to litellm.embedding()**
+This can be set as env variables or passed as **params to dheera_ai.embedding()**
 ```python
 import os
 os.environ["AWS_ACCESS_KEY_ID"] = ""        # Access key
@@ -1956,28 +1956,28 @@ os.environ["AWS_REGION_NAME"] = ""           # us-east-1, us-east-2, us-west-1, 
 
 ### Usage
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 response = embedding(
     model="bedrock/amazon.titan-embed-text-v1",
-    input=["good morning from litellm"],
+    input=["good morning from dheera_ai"],
 )
 print(response)
 ```
 
 #### Titan V2 - encoding_format support
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 # Float format (default)
 response = embedding(
     model="bedrock/amazon.titan-embed-text-v2:0",
-    input=["good morning from litellm"],
+    input=["good morning from dheera_ai"],
     encoding_format="float"  # Returns float array
 )
 
 # Binary format
 response = embedding(
     model="bedrock/amazon.titan-embed-text-v2:0",
-    input=["good morning from litellm"],
+    input=["good morning from dheera_ai"],
     encoding_format="base64"  # Returns base64 encoded binary
 )
 ```
@@ -1987,14 +1987,14 @@ response = embedding(
 | Model Name           | Usage                               | Supported Additional OpenAI params |
 |----------------------|---------------------------------------------|-----|
 | Titan Embeddings V2 | `embedding(model="bedrock/amazon.titan-embed-text-v2:0", input=input)` | `dimensions`, `encoding_format` |
-| Titan Embeddings - V1 | `embedding(model="bedrock/amazon.titan-embed-text-v1", input=input)` | [here](https://github.com/BerriAI/litellm/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/litellm/llms/bedrock/embed/amazon_titan_g1_transformation.py#L53)
-| Titan Multimodal Embeddings | `embedding(model="bedrock/amazon.titan-embed-image-v1", input=input)` | [here](https://github.com/BerriAI/litellm/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/litellm/llms/bedrock/embed/amazon_titan_multimodal_transformation.py#L28) |
-| Cohere Embeddings - English | `embedding(model="bedrock/cohere.embed-english-v3", input=input)` | [here](https://github.com/BerriAI/litellm/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/litellm/llms/bedrock/embed/cohere_transformation.py#L18)
-| Cohere Embeddings - Multilingual | `embedding(model="bedrock/cohere.embed-multilingual-v3", input=input)` | [here](https://github.com/BerriAI/litellm/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/litellm/llms/bedrock/embed/cohere_transformation.py#L18)
+| Titan Embeddings - V1 | `embedding(model="bedrock/amazon.titan-embed-text-v1", input=input)` | [here](https://github.com/BerriAI/dheera_ai/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/dheera_ai/llms/bedrock/embed/amazon_titan_g1_transformation.py#L53)
+| Titan Multimodal Embeddings | `embedding(model="bedrock/amazon.titan-embed-image-v1", input=input)` | [here](https://github.com/BerriAI/dheera_ai/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/dheera_ai/llms/bedrock/embed/amazon_titan_multimodal_transformation.py#L28) |
+| Cohere Embeddings - English | `embedding(model="bedrock/cohere.embed-english-v3", input=input)` | [here](https://github.com/BerriAI/dheera_ai/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/dheera_ai/llms/bedrock/embed/cohere_transformation.py#L18)
+| Cohere Embeddings - Multilingual | `embedding(model="bedrock/cohere.embed-multilingual-v3", input=input)` | [here](https://github.com/BerriAI/dheera_ai/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/dheera_ai/llms/bedrock/embed/cohere_transformation.py#L18)
 
-### Advanced - [Drop Unsupported Params](https://docs.litellm.ai/docs/completion/drop_params#openai-proxy-usage)
+### Advanced - [Drop Unsupported Params](https://docs.dheera_ai.ai/docs/completion/drop_params#openai-proxy-usage)
 
-### Advanced - [Pass model/provider-specific Params](https://docs.litellm.ai/docs/completion/provider_specific_params#proxy-usage)
+### Advanced - [Pass model/provider-specific Params](https://docs.dheera_ai.ai/docs/completion/provider_specific_params#proxy-usage)
 
 ## Image Generation
 
@@ -2018,7 +2018,7 @@ You can either pass it in the model name - `model="bedrock/arn:...` or as a sepa
 <TabItem label="SDK" value="sdk">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os 
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
@@ -2042,7 +2042,7 @@ print(response)
 ```yaml
 model_list:
   - model_name: anthropic-claude-3-5-sonnet
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
       # You have to set the ARN application inference profile in the model_id parameter
       model_id: arn:aws:bedrock:eu-central-1:000000000000:application-inference-profile/a0a0a0a0a0a0
@@ -2051,7 +2051,7 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -2059,7 +2059,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl -L -X POST 'http://0.0.0.0:4000/v1/chat/completions' \
 -H 'Content-Type: application/json' \
--H 'Authorization: Bearer $LITELLM_API_KEY' \
+-H 'Authorization: Bearer $DHEERA_AI_API_KEY' \
 -d '{
   "model": "anthropic-claude-3-5-sonnet",
   "messages": [
@@ -2082,10 +2082,10 @@ curl -L -X POST 'http://0.0.0.0:4000/v1/chat/completions' \
 ## Boto3 - Authentication
 
 ### Passing credentials as parameters - Completion()
-Pass AWS credentials as parameters to litellm.completion
+Pass AWS credentials as parameters to dheera_ai.completion
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
             model="bedrock/anthropic.claude-instant-v1",
@@ -2105,10 +2105,10 @@ This can be used to override existing headers (e.g. `Authorization`) when callin
 
 ```python
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
-litellm.set_verbose = True # 👈 SEE RAW REQUEST
+dheera_ai.set_verbose = True # 👈 SEE RAW REQUEST
 
 response = completion(
             model="bedrock/anthropic.claude-instant-v1",
@@ -2129,7 +2129,7 @@ response = completion(
 ```yaml
 model_list:
     - model_name: bedrock-model
-      litellm_params:
+      dheera_ai_params:
         model: bedrock/anthropic.claude-instant-v1
         aws_access_key_id: "",
         aws_secret_access_key: "",
@@ -2141,7 +2141,7 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml --detailed_debug
+dheera_ai --config /path/to/config.yaml --detailed_debug
 ```
 
 3. Test it! 
@@ -2175,7 +2175,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
             model="bedrock/anthropic.claude-instant-v1",
@@ -2187,7 +2187,7 @@ or pass `aws_profile_name`:
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
             model="bedrock/anthropic.claude-instant-v1",
@@ -2201,7 +2201,7 @@ response = completion(
 - Set `aws_role_name` and `aws_session_name`
 
 
-| LiteLLM Parameter | Boto3 Parameter | Description | Boto3 Documentation |
+| Dheera AI Parameter | Boto3 Parameter | Description | Boto3 Documentation |
 |------------------|-----------------|-------------|-------------------|
 | `aws_access_key_id` | `aws_access_key_id` | AWS access key associated with an IAM user or role | [Credentials](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html) |
 | `aws_secret_access_key` | `aws_secret_access_key` | AWS secret key associated with the access key | [Credentials](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html) |
@@ -2216,13 +2216,13 @@ Make the bedrock completion call
 
 ### Required AWS IAM Policy for AssumeRole
 
-To use `aws_role_name` (STS AssumeRole) with LiteLLM, your IAM user or role **must** have permission to call `sts:AssumeRole` on the target role. If you see an error like:
+To use `aws_role_name` (STS AssumeRole) with Dheera AI, your IAM user or role **must** have permission to call `sts:AssumeRole` on the target role. If you see an error like:
 
 ```
-An error occurred (AccessDenied) when calling the AssumeRole operation: User: arn:aws:sts::...:assumed-role/litellm-ecs-task-role/... is not authorized to perform: sts:AssumeRole on resource: arn:aws:iam::...:role/Enterprise/BedrockCrossAccountConsumer
+An error occurred (AccessDenied) when calling the AssumeRole operation: User: arn:aws:sts::...:assumed-role/dheera_ai-ecs-task-role/... is not authorized to perform: sts:AssumeRole on resource: arn:aws:iam::...:role/Enterprise/BedrockCrossAccountConsumer
 ```
 
-This means the IAM identity running LiteLLM does **not** have permission to assume the target role. You must update your IAM policy to allow this action.
+This means the IAM identity running Dheera AI does **not** have permission to assume the target role. You must update your IAM policy to allow this action.
 
 #### Example IAM Policy
 
@@ -2249,7 +2249,7 @@ Replace `<TARGET_ROLE_ARN>` with the ARN of the role you want to assume (e.g., `
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
             model="bedrock/anthropic.claude-instant-v1",
@@ -2264,7 +2264,7 @@ response = completion(
 If you also need to dynamically set the aws user accessing the role, add the additional args in the completion()/embedding() function
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
             model="bedrock/anthropic.claude-instant-v1",
@@ -2285,7 +2285,7 @@ response = completion(
 ```yaml
 model_list:
   - model_name: bedrock/*
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/*
       aws_role_name: arn:aws:iam::888602223428:role/iam_local_role # AWS RoleArn
       aws_session_name: "bedrock-session" # AWS RoleSessionName
@@ -2300,7 +2300,7 @@ model_list:
 
 ### Passing an external BedrockRuntime.Client as a parameter - Completion()
   
-This is a deprecated flow. Boto3 is not async. And boto3.client does not let us make the http call through httpx. Pass in your aws params through the method above 👆. [See Auth Code](https://github.com/BerriAI/litellm/blob/55a20c7cce99a93d36a82bf3ae90ba3baf9a7f89/litellm/llms/bedrock_httpx.py#L284) [Add new auth flow](https://github.com/BerriAI/litellm/issues)
+This is a deprecated flow. Boto3 is not async. And boto3.client does not let us make the http call through httpx. Pass in your aws params through the method above 👆. [See Auth Code](https://github.com/BerriAI/dheera_ai/blob/55a20c7cce99a93d36a82bf3ae90ba3baf9a7f89/dheera_ai/llms/bedrock_httpx.py#L284) [Add new auth flow](https://github.com/BerriAI/dheera_ai/issues)
 
 :::warning
 
@@ -2313,12 +2313,12 @@ Experimental - 2024-Jun-23:
 
 :::
 
-Pass an external BedrockRuntime.Client object as a parameter to litellm.completion. Useful when using an AWS credentials profile, SSO session, assumed role session, or if environment variables are not available for auth.
+Pass an external BedrockRuntime.Client object as a parameter to dheera_ai.completion. Useful when using an AWS credentials profile, SSO session, assumed role session, or if environment variables are not available for auth.
 
 Create a client from session credentials:
 ```python
 import boto3
-from litellm import completion
+from dheera_ai import completion
 
 bedrock = boto3.client(
             service_name="bedrock-runtime",
@@ -2338,7 +2338,7 @@ response = completion(
 Create a client from AWS profile in `~/.aws/config`:
 ```python
 import boto3
-from litellm import completion
+from dheera_ai import completion
 
 dev_session = boto3.Session(profile_name="dev-profile")
 bedrock = dev_session.client(
@@ -2360,7 +2360,7 @@ Use the `bedrock/converse_like/model` endpoint to call bedrock converse model vi
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="bedrock/converse_like/some-model",
@@ -2372,14 +2372,14 @@ response = completion(
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 1. Setup config.yaml
 
 ```yaml
 model_list:
     - model_name: anthropic-claude
-      litellm_params:
+      dheera_ai_params:
         model: bedrock/converse_like/some-model
         api_base: https://some-api-url/models
 ```
@@ -2387,7 +2387,7 @@ model_list:
 2. Start proxy server
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```

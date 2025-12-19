@@ -4,7 +4,7 @@ import Image from '@theme/IdealImage';
 
 # Agent Gateway (A2A Protocol) - Overview
 
-Add A2A Agents on LiteLLM AI Gateway, Invoke agents in A2A Protocol, track request/response logs in LiteLLM Logs. Manage which Teams, Keys can access which Agents onboarded.
+Add A2A Agents on Dheera AI AI Gateway, Invoke agents in A2A Protocol, track request/response logs in Dheera AI Logs. Manage which Teams, Keys can access which Agents onboarded.
 
 <Image 
   img={require('../img/a2a_gateway.png')}
@@ -24,7 +24,7 @@ Add A2A Agents on LiteLLM AI Gateway, Invoke agents in A2A Protocol, track reque
 
 :::tip
 
-LiteLLM follows the [A2A (Agent-to-Agent) Protocol](https://github.com/google/A2A) for invoking agents.
+Dheera AI follows the [A2A (Agent-to-Agent) Protocol](https://github.com/google/A2A) for invoking agents.
 
 :::
 
@@ -32,7 +32,7 @@ LiteLLM follows the [A2A (Agent-to-Agent) Protocol](https://github.com/google/A2
 
 ### Add A2A Agents
 
-You can add A2A-compatible agents through the LiteLLM Admin UI.
+You can add A2A-compatible agents through the Dheera AI Admin UI.
 
 1. Navigate to the **Agents** tab
 2. Click **Add Agent**
@@ -48,27 +48,27 @@ The URL should be the invocation URL for your A2A agent (e.g., `http://localhost
 
 ### Add Azure AI Foundry Agents
 
-Follow [this guide, to add your azure ai foundry agent to LiteLLM Agent Gateway](./providers/azure_ai_agents#litellm-a2a-gateway)
+Follow [this guide, to add your azure ai foundry agent to Dheera AI Agent Gateway](./providers/azure_ai_agents#dheera_ai-a2a-gateway)
 
 ### Add Vertex AI Agent Engine
 
-Follow [this guide, to add your Vertex AI Agent Engine to LiteLLM Agent Gateway](./providers/vertex_ai_agent_engine)
+Follow [this guide, to add your Vertex AI Agent Engine to Dheera AI Agent Gateway](./providers/vertex_ai_agent_engine)
 
 ### Add Bedrock AgentCore Agents
 
-Follow [this guide, to add your bedrock agentcore agent to LiteLLM Agent Gateway](./providers/bedrock_agentcore#litellm-a2a-gateway)
+Follow [this guide, to add your bedrock agentcore agent to Dheera AI Agent Gateway](./providers/bedrock_agentcore#dheera_ai-a2a-gateway)
 
 ### Add LangGraph Agents
 
-Follow [this guide, to add your langgraph agent to LiteLLM Agent Gateway](./providers/langgraph#litellm-a2a-gateway)
+Follow [this guide, to add your langgraph agent to Dheera AI Agent Gateway](./providers/langgraph#dheera_ai-a2a-gateway)
 
 ### Add Pydantic AI Agents
 
-Follow [this guide, to add your pydantic ai agent to LiteLLM Agent Gateway](./providers/pydantic_ai_agent#litellm-a2a-gateway)
+Follow [this guide, to add your pydantic ai agent to Dheera AI Agent Gateway](./providers/pydantic_ai_agent#dheera_ai-a2a-gateway)
 
 ## Invoking your Agents
 
-Use the [A2A Python SDK](https://pypi.org/project/a2a/) to invoke agents through LiteLLM.
+Use the [A2A Python SDK](https://pypi.org/project/a2a/) to invoke agents through Dheera AI.
 
 This example shows how to:
 1. **List available agents** - Query `/v1/agents` to see which agents your key can access
@@ -83,16 +83,16 @@ from a2a.client import A2ACardResolver, A2AClient
 from a2a.types import MessageSendParams, SendMessageRequest
 
 # === CONFIGURE THESE ===
-LITELLM_BASE_URL = "http://localhost:4000"  # Your LiteLLM proxy URL
-LITELLM_VIRTUAL_KEY = "sk-1234"             # Your LiteLLM Virtual Key
+DHEERA_AI_BASE_URL = "http://localhost:4000"  # Your Dheera AI proxy URL
+DHEERA_AI_VIRTUAL_KEY = "sk-1234"             # Your Dheera AI Virtual Key
 # =======================
 
 async def main():
-    headers = {"Authorization": f"Bearer {LITELLM_VIRTUAL_KEY}"}
+    headers = {"Authorization": f"Bearer {DHEERA_AI_VIRTUAL_KEY}"}
     
     async with httpx.AsyncClient(headers=headers) as client:
         # Step 1: List available agents
-        response = await client.get(f"{LITELLM_BASE_URL}/v1/agents")
+        response = await client.get(f"{DHEERA_AI_BASE_URL}/v1/agents")
         agents = response.json()
         
         print("Available agents:")
@@ -110,7 +110,7 @@ async def main():
         print(f"\nInvoking: {agent_name}")
         
         # Step 3: Use A2A protocol to invoke the agent
-        base_url = f"{LITELLM_BASE_URL}/a2a/{agent_id}"
+        base_url = f"{DHEERA_AI_BASE_URL}/a2a/{agent_id}"
         resolver = A2ACardResolver(httpx_client=client, base_url=base_url)
         agent_card = await resolver.get_agent_card()
         a2a_client = A2AClient(httpx_client=client, agent_card=agent_card)
@@ -144,14 +144,14 @@ from a2a.client import A2ACardResolver, A2AClient
 from a2a.types import MessageSendParams, SendStreamingMessageRequest
 
 # === CONFIGURE THESE ===
-LITELLM_BASE_URL = "http://localhost:4000"  # Your LiteLLM proxy URL
-LITELLM_VIRTUAL_KEY = "sk-1234"             # Your LiteLLM Virtual Key
-LITELLM_AGENT_NAME = "ij-local"             # Agent name registered in LiteLLM
+DHEERA_AI_BASE_URL = "http://localhost:4000"  # Your Dheera AI proxy URL
+DHEERA_AI_VIRTUAL_KEY = "sk-1234"             # Your Dheera AI Virtual Key
+DHEERA_AI_AGENT_NAME = "ij-local"             # Agent name registered in Dheera AI
 # =======================
 
 async def main():
-    base_url = f"{LITELLM_BASE_URL}/a2a/{LITELLM_AGENT_NAME}"
-    headers = {"Authorization": f"Bearer {LITELLM_VIRTUAL_KEY}"}
+    base_url = f"{DHEERA_AI_BASE_URL}/a2a/{DHEERA_AI_AGENT_NAME}"
+    headers = {"Authorization": f"Bearer {DHEERA_AI_VIRTUAL_KEY}"}
     
     async with httpx.AsyncClient(headers=headers) as httpx_client:
         # Resolve agent card and create client
@@ -181,7 +181,7 @@ if __name__ == "__main__":
 
 ## Tracking Agent Logs
 
-After invoking an agent, you can view the request logs in the LiteLLM **Logs** tab.
+After invoking an agent, you can view the request logs in the Dheera AI **Logs** tab.
 
 The logs show:
 - **Request/Response content** sent to and received from the agent
@@ -203,15 +203,15 @@ POST /a2a/{agent_name}/message/send
 
 ### Authentication
 
-Include your LiteLLM Virtual Key in the `Authorization` header:
+Include your Dheera AI Virtual Key in the `Authorization` header:
 
 ```
-Authorization: Bearer sk-your-litellm-key
+Authorization: Bearer sk-your-dheera_ai-key
 ```
 
 ### Request Format
 
-LiteLLM follows the [A2A JSON-RPC 2.0 specification](https://github.com/google/A2A):
+Dheera AI follows the [A2A JSON-RPC 2.0 specification](https://github.com/google/A2A):
 
 ```json title="Request Body"
 {

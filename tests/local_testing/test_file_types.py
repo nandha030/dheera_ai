@@ -1,4 +1,4 @@
-from litellm.types.files import (
+from dheera_ai.types.files import (
     FILE_EXTENSIONS,
     FILE_MIME_TYPES,
     FileType,

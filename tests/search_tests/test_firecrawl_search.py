@@ -1,5 +1,5 @@
 from unittest.mock import Mock, patch
-import litellm
+import dheera_ai
 
 
 def test_firecrawl_search_request_body():
@@ -21,8 +21,8 @@ def test_firecrawl_search_request_body():
         }
     }
     
-    with patch("litellm.llms.custom_httpx.http_handler.HTTPHandler.post", return_value=mock_response) as mock_post:
-        litellm.search(
+    with patch("dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post", return_value=mock_response) as mock_post:
+        dheera_ai.search(
             query="test query",
             search_provider="firecrawl",
             max_results=10,

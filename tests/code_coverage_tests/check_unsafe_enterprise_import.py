@@ -30,9 +30,9 @@ class EnterpriseImportFinder(ast.NodeVisitor):
         self.in_try_block = len(self.try_blocks) > 0
 
     def visit_Import(self, node):
-        # Check for direct imports of litellm_enterprise
+        # Check for direct imports of dheera_ai_enterprise
         for name in node.names:
-            if "litellm_enterprise" in name.name or "enterprise" in name.name:
+            if "dheera_ai_enterprise" in name.name or "enterprise" in name.name:
                 if not self.in_try_block:
                     self.unsafe_imports.append({
                         "file": self.current_file,
@@ -43,8 +43,8 @@ class EnterpriseImportFinder(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_ImportFrom(self, node):
-        # Check for from litellm_enterprise imports
-        if node.module and ("litellm_enterprise" in node.module or "enterprise" in node.module):
+        # Check for from dheera_ai_enterprise imports
+        if node.module and ("dheera_ai_enterprise" in node.module or "enterprise" in node.module):
             if not self.in_try_block:
                 self.unsafe_imports.append({
                     "file": self.current_file,
@@ -74,8 +74,8 @@ def find_unsafe_enterprise_imports_in_directory(directory):
     return unsafe_imports
 
 if __name__ == "__main__":
-    # Check for unsafe enterprise imports in the litellm directory
-    directory_path = "./litellm"
+    # Check for unsafe enterprise imports in the dheera_ai directory
+    directory_path = "./dheera_ai"
     unsafe_imports = find_unsafe_enterprise_imports_in_directory(directory_path)
     
     if unsafe_imports:

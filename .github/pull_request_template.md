@@ -4,13 +4,13 @@
 
 ## Pre-Submission checklist
 
-**Please complete all items before asking a LiteLLM maintainer to review your PR**
+**Please complete all items before asking a Dheera AI maintainer to review your PR**
 
-- [ ] I have Added testing in the [`tests/litellm/`](https://github.com/BerriAI/litellm/tree/main/tests/litellm) directory, **Adding at least 1 test is a hard requirement** - [see details](https://docs.litellm.ai/docs/extras/contributing_code)
-- [ ] My PR passes all unit tests on [`make test-unit`](https://docs.litellm.ai/docs/extras/contributing_code)
+- [ ] I have Added testing in the [`tests/dheera_ai/`](https://github.com/BerriAI/dheera_ai/tree/main/tests/dheera_ai) directory, **Adding at least 1 test is a hard requirement** - [see details](https://docs.dheera_ai.ai/docs/extras/contributing_code)
+- [ ] My PR passes all unit tests on [`make test-unit`](https://docs.dheera_ai.ai/docs/extras/contributing_code)
 - [ ] My PR's scope is as isolated as possible, it only solves 1 specific problem
 
-## CI (LiteLLM team)
+## CI (Dheera AI team)
 
 > **CI status guideline:**
 >

@@ -8,7 +8,7 @@ import asyncio
 import json
 import logging
 import tempfile
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 
 import json
 from datetime import datetime, timedelta, timezone
@@ -16,14 +16,14 @@ from datetime import datetime
 
 import pytest
 
-import litellm
-from litellm import completion
-from litellm._logging import verbose_logger
-from litellm.integrations.gcs_bucket.gcs_bucket import (
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai._logging import verbose_logger
+from dheera_ai.integrations.gcs_bucket.gcs_bucket import (
     GCSBucketLogger,
     StandardLoggingPayload,
 )
-from litellm.types.utils import StandardCallbackDynamicParams
+from dheera_ai.types.utils import StandardCallbackDynamicParams
 
 
 # This is the response payload that GCS would return.
@@ -103,7 +103,7 @@ mock_response_data = {
         "api_base": "https://exampleopenaiendpoint-production.up.railway.app/",
         "response_cost": 3.7500000000000003e-05,
         "additional_headers": {},
-        "litellm_overhead_time_ms": 2.126,
+        "dheera_ai_overhead_time_ms": 2.126,
     },
     "model_map_information": {
         "model_map_key": "gpt-3.5-turbo-0301",

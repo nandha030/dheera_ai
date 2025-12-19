@@ -1,7 +1,7 @@
-import { uiSpendLogsCall } from '../../../ui/litellm-dashboard/src/components/networking';
+import { uiSpendLogsCall } from '../../../ui/dheera_ai-dashboard/src/components/networking';
 
 // Mock the networking module
-jest.mock('../../../ui/litellm-dashboard/src/components/networking', () => ({
+jest.mock('../../../ui/dheera_ai-dashboard/src/components/networking', () => ({
   uiSpendLogsCall: jest.fn(),
 }));
 

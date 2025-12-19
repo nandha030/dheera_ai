@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 | Property | Details |
 |-------|-------|
 | Description | Helicone is an AI gateway and observability platform that provides OpenAI-compatible endpoints with advanced monitoring, caching, and analytics capabilities. |
-| Provider Route on LiteLLM | `helicone/` |
+| Provider Route on Dheera AI | `helicone/` |
 | Link to Provider Doc | [Helicone Documentation ↗](https://docs.helicone.ai) |
 | Base URL | `https://ai-gateway.helicone.ai/` |
 | Supported Operations | [`/chat/completions`](#sample-usage), [`/completions`](#text-completion), [`/embeddings`](#embeddings) |
@@ -35,14 +35,14 @@ os.environ["HELICONE_API_KEY"] = ""  # your Helicone API key
 
 Get your Helicone API key from your [Helicone dashboard](https://helicone.ai).
 
-## Usage - LiteLLM Python SDK
+## Usage - Dheera AI Python SDK
 
 ### Non-streaming
 
 ```python showLineNumbers title="Helicone Non-streaming Completion"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["HELICONE_API_KEY"] = ""  # your Helicone API key
 
@@ -61,8 +61,8 @@ print(response)
 
 ```python showLineNumbers title="Helicone Streaming Completion"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["HELICONE_API_KEY"] = ""  # your Helicone API key
 
@@ -83,8 +83,8 @@ for chunk in response:
 
 ```python showLineNumbers title="Helicone with Custom Properties"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["HELICONE_API_KEY"] = ""  # your Helicone API key
 
@@ -105,11 +105,11 @@ print(response)
 
 ```python showLineNumbers title="Helicone Text Completion"
 import os
-import litellm
+import dheera_ai
 
 os.environ["HELICONE_API_KEY"] = ""  # your Helicone API key
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="helicone/gpt-4o-mini",  # text completion model
     prompt="Once upon a time"
 )
@@ -121,16 +121,16 @@ print(response)
 ## Retry and Fallback Mechanisms
 
 ```python
-import litellm
+import dheera_ai
 
-litellm.api_base = "https://ai-gateway.helicone.ai/"
-litellm.metadata = {
+dheera_ai.api_base = "https://ai-gateway.helicone.ai/"
+dheera_ai.metadata = {
     "Helicone-Retry-Enabled": "true",
     "helicone-retry-num": "3",
     "helicone-retry-factor": "2",
 }
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="helicone/gpt-4o-mini/openai,claude-3-5-sonnet-20241022/anthropic", # Try OpenAI first, then fallback to Anthropic, then continue with other models,
     messages=[{"role": "user", "content": "Hello"}]
 )
@@ -173,9 +173,9 @@ Pass these as metadata to leverage Helicone features:
 Example with headers:
 
 ```python showLineNumbers title="Helicone with Custom Headers"
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="helicone/gpt-4",
     messages=[{"role": "user", "content": "Hello"}],
     metadata={
@@ -195,12 +195,12 @@ response = litellm.completion(
 Helicone acts as a gateway and supports multiple providers:
 
 ```python showLineNumbers title="Helicone with Anthropic"
-import litellm
+import dheera_ai
 
 # Set both Helicone and Anthropic keys
 os.environ["HELICONE_API_KEY"] = "your-helicone-key"
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="helicone/claude-3.5-haiku/anthropic",
     messages=[{"role": "user", "content": "Hello"}]
 )
@@ -211,9 +211,9 @@ response = litellm.completion(
 Enable caching to reduce costs and latency:
 
 ```python showLineNumbers title="Helicone Caching"
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="helicone/gpt-4",
     messages=[{"role": "user", "content": "What is 2+2?"}],
     metadata={
@@ -222,7 +222,7 @@ response = litellm.completion(
 )
 
 # Subsequent identical requests will be served from cache
-response2 = litellm.completion(
+response2 = dheera_ai.completion(
     model="helicone/gpt-4",
     messages=[{"role": "user", "content": "What is 2+2?"}],
     metadata={

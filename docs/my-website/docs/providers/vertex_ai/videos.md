@@ -3,12 +3,12 @@ import TabItem from '@theme/TabItem';
 
 # Vertex AI Video Generation (Veo)
 
-LiteLLM supports Vertex AI's Veo video generation models using the unified OpenAI video API surface.
+Dheera AI supports Vertex AI's Veo video generation models using the unified OpenAI video API surface.
 
 | Property | Details |
 |-------|-------|
 | Description | Google Cloud Vertex AI Veo video generation models |
-| Provider Route on LiteLLM | `vertex_ai/` |
+| Provider Route on Dheera AI | `vertex_ai/` |
 | Supported Models | `veo-2.0-generate-001`, `veo-3.0-generate-preview`, `veo-3.0-fast-generate-preview`, `veo-3.1-generate-preview`, `veo-3.1-fast-generate-preview` |
 | Cost Tracking | ✅ Duration-based pricing |
 | Logging Support | ✅ Full request/response logging |
@@ -38,7 +38,7 @@ with open("/path/to/service_account.json", "r", encoding="utf-8") as f:
 ### Basic Usage
 
 ```python
-from litellm import video_generation, video_status, video_content
+from dheera_ai import video_generation, video_status, video_content
 import json
 import os
 import time
@@ -101,7 +101,7 @@ with open("generated_video.mp4", "wb") as f:
 
 ## Video Generation Parameters
 
-LiteLLM converts OpenAI-style parameters to Veo's API shape automatically:
+Dheera AI converts OpenAI-style parameters to Veo's API shape automatically:
 
 | OpenAI Parameter | Vertex AI Parameter | Description | Example |
 |------------------|---------------------|-------------|---------|
@@ -120,7 +120,7 @@ LiteLLM converts OpenAI-style parameters to Veo's API shape automatically:
 ## Async Usage
 
 ```python
-from litellm import avideo_generation, avideo_status, avideo_content
+from dheera_ai import avideo_generation, avideo_status, avideo_content
 import asyncio
 import json
 
@@ -166,14 +166,14 @@ async def workflow():
 asyncio.run(workflow())
 ```
 
-## LiteLLM Proxy Usage
+## Dheera AI Proxy Usage
 
 Add Veo models to your `config.yaml`:
 
 ```yaml
 model_list:
   - model_name: veo-3
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/veo-3.0-generate-preview
       vertex_project: os.environ/VERTEXAI_PROJECT
       vertex_location: os.environ/VERTEXAI_LOCATION
@@ -198,11 +198,11 @@ curl --location 'http://0.0.0.0:4000/videos' \
 
 # Step 2: Poll status
 curl --location 'http://localhost:4000/v1/videos/{video_id}' \
---header 'x-litellm-api-key: sk-1234'
+--header 'x-dheera_ai-api-key: sk-1234'
 
 # Step 3: Download video
 curl --location 'http://localhost:4000/v1/videos/{video_id}/content' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --output video.mp4
 ```
 
@@ -210,22 +210,22 @@ curl --location 'http://localhost:4000/v1/videos/{video_id}/content' \
 <TabItem value="python" label="Python SDK">
 
 ```python
-import litellm
+import dheera_ai
 
-litellm.api_base = "http://0.0.0.0:4000"
-litellm.api_key = "sk-1234"
+dheera_ai.api_base = "http://0.0.0.0:4000"
+dheera_ai.api_key = "sk-1234"
 
-response = litellm.video_generation(
+response = dheera_ai.video_generation(
     model="veo-3",
     prompt="Aerial shot over a futuristic city at sunrise",
 )
 
-status = litellm.video_status(video_id=response.id)
+status = dheera_ai.video_status(video_id=response.id)
 while status.status not in ["completed", "failed"]:
-    status = litellm.video_status(video_id=response.id)
+    status = dheera_ai.video_status(video_id=response.id)
 
 if status.status == "completed":
-    content = litellm.video_content(video_id=response.id)
+    content = dheera_ai.video_content(video_id=response.id)
     with open("veo_city.mp4", "wb") as f:
         f.write(content)
 ```
@@ -235,7 +235,7 @@ if status.status == "completed":
 
 ## Cost Tracking
 
-LiteLLM records the duration returned by Veo so you can apply duration-based pricing.
+Dheera AI records the duration returned by Veo so you can apply duration-based pricing.
 
 ```python
 with open("/path/to/service_account.json", "r", encoding="utf-8") as f:

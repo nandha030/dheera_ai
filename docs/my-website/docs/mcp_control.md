@@ -4,28 +4,28 @@ import Image from '@theme/IdealImage';
 
 # MCP Permission Management
 
-Control which MCP servers and tools can be accessed by specific keys, teams, or organizations in LiteLLM. When a client attempts to list or call tools, LiteLLM enforces access controls based on configured permissions.
+Control which MCP servers and tools can be accessed by specific keys, teams, or organizations in Dheera AI. When a client attempts to list or call tools, Dheera AI enforces access controls based on configured permissions.
 
 ## Overview
 
-LiteLLM provides fine-grained permission management for MCP servers, allowing you to:
+Dheera AI provides fine-grained permission management for MCP servers, allowing you to:
 
 - **Restrict MCP access by entity**: Control which keys, teams, or organizations can access specific MCP servers
 - **Tool-level filtering**: Automatically filter available tools based on entity permissions
-- **Centralized control**: Manage all MCP permissions from the LiteLLM Admin UI or API
+- **Centralized control**: Manage all MCP permissions from the Dheera AI Admin UI or API
 
 This ensures that only authorized entities can discover and use MCP tools, providing an additional security layer for your MCP infrastructure.
 
 :::info Related Documentation
-- [MCP Overview](./mcp.md) - Learn about MCP in LiteLLM
+- [MCP Overview](./mcp.md) - Learn about MCP in Dheera AI
 - [MCP Cost Tracking](./mcp_cost.md) - Track costs for MCP tool calls
 - [MCP Guardrails](./mcp_guardrail.md) - Apply security guardrails to MCP calls
-- [Using MCP](./mcp_usage.md) - How to use MCP with LiteLLM
+- [Using MCP](./mcp_usage.md) - How to use MCP with Dheera AI
 :::
 
 ## How It Works
 
-LiteLLM supports managing permissions for MCP Servers by Keys, Teams, Organizations (entities) on LiteLLM. When a MCP client attempts to list tools, LiteLLM will only return the tools the entity has permissions to access.
+Dheera AI supports managing permissions for MCP Servers by Keys, Teams, Organizations (entities) on Dheera AI. When a MCP client attempts to list tools, Dheera AI will only return the tools the entity has permissions to access.
 
 When Creating a Key, Team, or Organization, you can select the allowed MCP Servers that the entity has access to.
 
@@ -210,7 +210,7 @@ This configuration ensures that:
 
 ## MCP Server Access Control
 
-LiteLLM Proxy provides two methods for controlling access to specific MCP servers:
+Dheera AI Proxy provides two methods for controlling access to specific MCP servers:
 
 1. **URL-based Namespacing** - Use URL paths to directly access specific servers or access groups
 2. **Header-based Namespacing** - Use the `x-mcp-servers` header to specify which servers to access
@@ -219,7 +219,7 @@ LiteLLM Proxy provides two methods for controlling access to specific MCP server
 
 ### Method 1: URL-based Namespacing
 
-LiteLLM Proxy supports URL-based namespacing for MCP servers using the format `/<servers or access groups>/mcp`. This allows you to:
+Dheera AI Proxy supports URL-based namespacing for MCP servers using the format `/<servers or access groups>/mcp`. This allows you to:
 
 - **Direct URL Access**: Point MCP clients directly to specific servers or access groups via URL
 - **Simplified Configuration**: Use URLs instead of headers for server selection
@@ -228,7 +228,7 @@ LiteLLM Proxy supports URL-based namespacing for MCP servers using the format `/
 #### URL Format
 
 ```
-<your-litellm-proxy-base-url>/<server_alias_or_access_group>/mcp
+<your-dheera_ai-proxy-base-url>/<server_alias_or_access_group>/mcp
 ```
 
 **Examples:**
@@ -251,11 +251,11 @@ curl --location 'https://api.openai.com/v1/responses' \
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "<your-litellm-proxy-base-url>/github_mcp/mcp",
+            "server_label": "dheera_ai",
+            "server_url": "<your-dheera_ai-proxy-base-url>/github_mcp/mcp",
             "require_approval": "never",
             "headers": {
-                "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY"
+                "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY"
             }
         }
     ],
@@ -268,22 +268,22 @@ This example uses URL namespacing to access only the "github" MCP server.
 
 </TabItem>
 
-<TabItem value="litellm" label="LiteLLM Proxy">
+<TabItem value="dheera_ai" label="Dheera AI Proxy">
 
 ```bash title="cURL Example with URL Namespacing" showLineNumbers
-curl --location '<your-litellm-proxy-base-url>/v1/responses' \
+curl --location '<your-dheera_ai-proxy-base-url>/v1/responses' \
 --header 'Content-Type: application/json' \
---header "Authorization: Bearer $LITELLM_API_KEY" \
+--header "Authorization: Bearer $DHEERA_AI_API_KEY" \
 --data '{
     "model": "gpt-4o",
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "<your-litellm-proxy-base-url>/dev_group/mcp",
+            "server_label": "dheera_ai",
+            "server_url": "<your-dheera_ai-proxy-base-url>/dev_group/mcp",
             "require_approval": "never",
             "headers": {
-                "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY"
+                "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY"
             }
         }
     ],
@@ -301,10 +301,10 @@ This example uses URL namespacing to access all servers in the "dev_group" acces
 ```json title="Cursor MCP Configuration with URL Namespacing" showLineNumbers
 {
   "mcpServers": {
-    "LiteLLM": {
-      "url": "<your-litellm-proxy-base-url>/github_mcp,zapier/mcp",
+    "Dheera AI": {
+      "url": "<your-dheera_ai-proxy-base-url>/github_mcp,zapier/mcp",
       "headers": {
-        "x-litellm-api-key": "Bearer $LITELLM_API_KEY"
+        "x-dheera_ai-api-key": "Bearer $DHEERA_AI_API_KEY"
       }
     }
   }
@@ -336,7 +336,7 @@ The header accepts a comma-separated list of server aliases: `"alias_1,Server2,S
 
 **Notes:**
 - If the header is not provided, tools from all available MCP servers will be accessible
-- This method works with the standard LiteLLM MCP endpoint
+- This method works with the standard Dheera AI MCP endpoint
 
 <Tabs>
 <TabItem value="openai" label="OpenAI API">
@@ -350,11 +350,11 @@ curl --location 'https://api.openai.com/v1/responses' \
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "<your-litellm-proxy-base-url>/mcp/",
+            "server_label": "dheera_ai",
+            "server_url": "<your-dheera_ai-proxy-base-url>/mcp/",
             "require_approval": "never",
             "headers": {
-                "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY",
+                "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY",
                 "x-mcp-servers": "alias_1"
             }
         }
@@ -368,22 +368,22 @@ In this example, the request will only have access to tools from the "alias_1" M
 
 </TabItem>
 
-<TabItem value="litellm" label="LiteLLM Proxy">
+<TabItem value="dheera_ai" label="Dheera AI Proxy">
 
 ```bash title="cURL Example with Header Namespacing" showLineNumbers
-curl --location '<your-litellm-proxy-base-url>/v1/responses' \
+curl --location '<your-dheera_ai-proxy-base-url>/v1/responses' \
 --header 'Content-Type: application/json' \
---header "Authorization: Bearer $LITELLM_API_KEY" \
+--header "Authorization: Bearer $DHEERA_AI_API_KEY" \
 --data '{
     "model": "gpt-4o",
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "<your-litellm-proxy-base-url>/mcp/",
+            "server_label": "dheera_ai",
+            "server_url": "<your-dheera_ai-proxy-base-url>/mcp/",
             "require_approval": "never",
             "headers": {
-                "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY",
+                "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY",
                 "x-mcp-servers": "alias_1,Server2"
             }
         }
@@ -402,10 +402,10 @@ This configuration restricts the request to only use tools from the specified MC
 ```json title="Cursor MCP Configuration with Header Namespacing" showLineNumbers
 {
   "mcpServers": {
-    "LiteLLM": {
-      "url": "<your-litellm-proxy-base-url>/mcp/",
+    "Dheera AI": {
+      "url": "<your-dheera_ai-proxy-base-url>/mcp/",
       "headers": {
-        "x-litellm-api-key": "Bearer $LITELLM_API_KEY",
+        "x-dheera_ai-api-key": "Bearer $DHEERA_AI_API_KEY",
         "x-mcp-servers": "alias_1,Server2"
       }
     }
@@ -425,7 +425,7 @@ This configuration in Cursor IDE settings will limit tool access to only the spe
 | Feature | Header Namespacing | URL Namespacing |
 |---------|-------------------|-----------------|
 | **Method** | Uses `x-mcp-servers` header | Uses URL path `/<servers>/mcp` |
-| **Endpoint** | Standard `litellm_proxy` endpoint | Custom `/<servers>/mcp` endpoint |
+| **Endpoint** | Standard `dheera_ai_proxy` endpoint | Custom `/<servers>/mcp` endpoint |
 | **Configuration** | Requires additional header | Self-contained in URL |
 | **Multiple Servers** | Comma-separated in header | Comma-separated in URL path |
 | **Access Groups** | Supported via header | Supported via URL path |
@@ -444,11 +444,11 @@ curl --location 'https://api.openai.com/v1/responses' \
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "<your-litellm-proxy-base-url>/mcp/",
+            "server_label": "dheera_ai",
+            "server_url": "<your-dheera_ai-proxy-base-url>/mcp/",
             "require_approval": "never",
             "headers": {
-                "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY",
+                "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY",
                 "x-mcp-servers": "alias_1"
             }
         }
@@ -462,22 +462,22 @@ In this example, the request will only have access to tools from the "alias_1" M
 
 </TabItem>
 
-<TabItem value="litellm" label="LiteLLM Proxy">
+<TabItem value="dheera_ai" label="Dheera AI Proxy">
 
 ```bash title="cURL Example with Server Segregation" showLineNumbers
-curl --location '<your-litellm-proxy-base-url>/v1/responses' \
+curl --location '<your-dheera_ai-proxy-base-url>/v1/responses' \
 --header 'Content-Type: application/json' \
---header "Authorization: Bearer $LITELLM_API_KEY" \
+--header "Authorization: Bearer $DHEERA_AI_API_KEY" \
 --data '{
     "model": "gpt-4o",
     "tools": [
         {
             "type": "mcp",
-            "server_label": "litellm",
-            "server_url": "litellm_proxy",
+            "server_label": "dheera_ai",
+            "server_url": "dheera_ai_proxy",
             "require_approval": "never",
             "headers": {
-                "x-litellm-api-key": "Bearer YOUR_LITELLM_API_KEY",
+                "x-dheera_ai-api-key": "Bearer YOUR_DHEERA_AI_API_KEY",
                 "x-mcp-servers": "alias_1,Server2"
             }
         }
@@ -496,10 +496,10 @@ This configuration restricts the request to only use tools from the specified MC
 ```json title="Cursor MCP Configuration with Server Segregation" showLineNumbers
 {
   "mcpServers": {
-    "LiteLLM": {
-      "url": "litellm_proxy",
+    "Dheera AI": {
+      "url": "dheera_ai_proxy",
       "headers": {
-        "x-litellm-api-key": "Bearer $LITELLM_API_KEY",
+        "x-dheera_ai-api-key": "Bearer $DHEERA_AI_API_KEY",
         "x-mcp-servers": "alias_1,Server2"
       }
     }
@@ -536,7 +536,7 @@ While adding `mcp_servers` using the config:
 ##### B. Creating Access Groups using UI
 
 To create an access group:
-- Go to MCP Servers in the LiteLLM UI
+- Go to MCP Servers in the Dheera AI UI
 - Click "Add a New MCP Server" 
 - Under "MCP Access Groups", create a new group (e.g., "dev_group") by typing it
 - Add the same group name to other servers to group them together
@@ -553,10 +553,10 @@ Include the access group name in the `x-mcp-servers` header:
 ```json title="Cursor Configuration with Access Groups" showLineNumbers
 {
   "mcpServers": {
-    "LiteLLM": {
-      "url": "litellm_proxy",
+    "Dheera AI": {
+      "url": "dheera_ai_proxy",
       "headers": {
-        "x-litellm-api-key": "Bearer $LITELLM_API_KEY",
+        "x-dheera_ai-api-key": "Bearer $DHEERA_AI_API_KEY",
         "x-mcp-servers": "dev_group"
       }
     }
@@ -571,7 +571,7 @@ This gives you access to all servers in the "dev_group" access group.
 
 When creating API keys, you can assign them to specific access groups for permission management:
 
-- Go to "Keys" in the LiteLLM UI and click "Create Key"
+- Go to "Keys" in the Dheera AI UI and click "Create Key"
 - Select the desired MCP access groups from the dropdown
 - The key will have access to all MCP servers in those groups
 - This is reflected in the Test Key page

@@ -4,7 +4,7 @@ import TabItem from '@theme/TabItem';
 # Proxy - Load Balancing
 Load balance multiple instances of the same model
 
-The proxy will handle routing requests (using LiteLLM's Router). **Set `rpm` in the config if you want maximize throughput**
+The proxy will handle routing requests (using Dheera AI's Router). **Set `rpm` in the config if you want maximize throughput**
 
 
 :::info
@@ -15,7 +15,7 @@ For more details on routing strategies / params, see [Routing](../routing.md)
 
 ## How Load Balancing Works
 
-LiteLLM automatically distributes requests across multiple deployments of the same model using its built-in router. the proxy routes traffic to optimize performance and reliability.
+Dheera AI automatically distributes requests across multiple deployments of the same model using its built-in router. the proxy routes traffic to optimize performance and reliability.
 
 "simple-shuffle" routing strategy is used by default
 
@@ -41,19 +41,19 @@ Use the `order` parameter to prioritize specific deployments. [See Deployment Or
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/<your-deployment-name>
       api_base: <your-azure-endpoint>
       api_key: <your-azure-api-key>
       rpm: 6      # Rate limit for this deployment: in requests per minute (rpm)
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-turbo-small-ca
       api_base: https://my-endpoint-canada-berri992.openai.azure.com/
       api_key: <your-azure-api-key>
       rpm: 6
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-turbo-large
       api_base: https://openai-france-1234.openai.azure.com/
       api_key: <your-azure-api-key>
@@ -64,7 +64,7 @@ router_settings:
   model_group_alias: {"gpt-4": "gpt-3.5-turbo"} # all requests with `gpt-4` will be routed to models with `gpt-3.5-turbo`
   num_retries: 2
   timeout: 30                                  # 30 seconds
-  redis_host: <your redis host>                # set this when using multiple litellm proxy deployments, load balancing state stored in redis
+  redis_host: <your redis host>                # set this when using multiple dheera_ai proxy deployments, load balancing state stored in redis
   redis_password: <your redis password>
   redis_port: 1992
 ```
@@ -76,7 +76,7 @@ Detailed information about [routing strategies can be found here](../routing)
 #### Step 2: Start Proxy with config
 
 ```shell
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 ### Test - Simple Call
@@ -134,7 +134,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 
 In this request, the following will occur:
 1. A rate limit exception will be raised 
-2. LiteLLM proxy will retry the request on the model group (default retries are 3).
+2. Dheera AI proxy will retry the request on the model group (default retries are 3).
 
 ```bash
 curl -X POST 'http://0.0.0.0:4000/chat/completions' \
@@ -149,25 +149,25 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 }'
 ```
 
-[**See Code**](https://github.com/BerriAI/litellm/blob/6b8806b45f970cb2446654d2c379f8dcaa93ce3c/litellm/router.py#L2535)
+[**See Code**](https://github.com/BerriAI/dheera_ai/blob/6b8806b45f970cb2446654d2c379f8dcaa93ce3c/dheera_ai/router.py#L2535)
 
 
-## Load Balancing using multiple litellm instances (Kubernetes, Auto Scaling)
+## Load Balancing using multiple dheera_ai instances (Kubernetes, Auto Scaling)
 
-LiteLLM Proxy supports sharing rpm/tpm shared across multiple litellm instances, pass `redis_host`, `redis_password` and `redis_port` to enable this. (LiteLLM will use Redis to track rpm/tpm usage )
+Dheera AI Proxy supports sharing rpm/tpm shared across multiple dheera_ai instances, pass `redis_host`, `redis_password` and `redis_port` to enable this. (Dheera AI will use Redis to track rpm/tpm usage )
 
 Example config
 
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/<your-deployment-name>
       api_base: <your-azure-endpoint>
       api_key: <your-azure-api-key>
       rpm: 6      # Rate limit for this deployment: in requests per minute (rpm)
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-turbo-small-ca
       api_base: https://my-endpoint-canada-berri992.openai.azure.com/
       api_key: <your-azure-api-key>
@@ -193,7 +193,7 @@ model_group_alias: {
 
 These aliases are shown on `/v1/models`, `/v1/model/info`, and `/v1/model_group/info` by default.
 
-litellm.Router() settings can be set under `router_settings`. You can set `model_group_alias`, `routing_strategy`, `num_retries`,`timeout` . See all Router supported params [here](https://github.com/BerriAI/litellm/blob/1b942568897a48f014fa44618ec3ce54d7570a46/litellm/router.py#L64)
+dheera_ai.Router() settings can be set under `router_settings`. You can set `model_group_alias`, `routing_strategy`, `num_retries`,`timeout` . See all Router supported params [here](https://github.com/BerriAI/dheera_ai/blob/1b942568897a48f014fa44618ec3ce54d7570a46/dheera_ai/router.py#L64)
 
 
 
@@ -204,7 +204,7 @@ Example config with `router_settings`
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/<your-deployment-name>
       api_base: <your-azure-endpoint>
       api_key: <your-azure-api-key>
@@ -224,7 +224,7 @@ Use this if you want to set-up aliases for:
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/<your-deployment-name>
       api_base: <your-azure-endpoint>
       api_key: <your-azure-api-key>
@@ -249,18 +249,18 @@ class RouterModelGroupAliasItem(TypedDict):
 
 ## Deployment Ordering (Priority)
 
-Set `order` in `litellm_params` to prioritize deployments. Lower values = higher priority. When multiple deployments share the same `order`, the routing strategy picks among them.
+Set `order` in `dheera_ai_params` to prioritize deployments. Lower values = higher priority. When multiple deployments share the same `order`, the routing strategy picks among them.
 
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-4-primary
       api_key: os.environ/AZURE_API_KEY
       order: 1  # 👈 Highest priority - always tried first
 
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-4-fallback
       api_key: os.environ/AZURE_API_KEY_2
       order: 2  # 👈 Used when order=1 is unavailable

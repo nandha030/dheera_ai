@@ -4,18 +4,18 @@ import httpx
 import openai
 
 # Set Litellm proxy variables here
-LITELLM_BASE_URL = "http://0.0.0.0:4000"
-LITELLM_PROXY_API_KEY = "sk-1234"
+DHEERA_AI_BASE_URL = "http://0.0.0.0:4000"
+DHEERA_AI_PROXY_API_KEY = "sk-1234"
 
-client = openai.OpenAI(api_key=LITELLM_PROXY_API_KEY, base_url=LITELLM_BASE_URL)
+client = openai.OpenAI(api_key=DHEERA_AI_PROXY_API_KEY, base_url=DHEERA_AI_BASE_URL)
 httpx_client = httpx.Client(timeout=30)
 
 ################################
 # First create a cachedContents object
 print("creating cached content")
 create_cache = httpx_client.post(
-    url=f"{LITELLM_BASE_URL}/vertex-ai/cachedContents",
-    headers={"Authorization": f"Bearer {LITELLM_PROXY_API_KEY}"},
+    url=f"{DHEERA_AI_BASE_URL}/vertex-ai/cachedContents",
+    headers={"Authorization": f"Bearer {DHEERA_AI_PROXY_API_KEY}"},
     json={
         "model": "gemini-1.5-pro-001",
         "contents": [

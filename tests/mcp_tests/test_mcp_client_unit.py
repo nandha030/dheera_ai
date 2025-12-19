@@ -10,8 +10,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 # Add the project root to the path
 sys.path.insert(0, os.path.abspath("../../.."))
 
-from litellm.experimental_mcp_client.client import MCPClient
-from litellm.types.mcp import MCPAuth, MCPTransport
+from dheera_ai.experimental_mcp_client.client import MCPClient
+from dheera_ai.types.mcp import MCPAuth, MCPTransport
 from mcp.types import Tool as MCPTool, CallToolResult as MCPCallToolResult
 
 
@@ -82,8 +82,8 @@ class TestMCPClientUnitTests:
         assert headers == {}
 
     @pytest.mark.asyncio
-    @patch("litellm.experimental_mcp_client.client.streamablehttp_client")
-    @patch("litellm.experimental_mcp_client.client.ClientSession")
+    @patch("dheera_ai.experimental_mcp_client.client.streamablehttp_client")
+    @patch("dheera_ai.experimental_mcp_client.client.ClientSession")
     async def test_run_with_session(self, mock_session_class, mock_transport):
         """Test run_with_session establishes session with auth headers."""
         # Setup mocks
@@ -118,8 +118,8 @@ class TestMCPClientUnitTests:
         mock_session_instance.initialize.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch("litellm.experimental_mcp_client.client.streamablehttp_client")
-    @patch("litellm.experimental_mcp_client.client.ClientSession")
+    @patch("dheera_ai.experimental_mcp_client.client.streamablehttp_client")
+    @patch("dheera_ai.experimental_mcp_client.client.ClientSession")
     async def test_list_tools(self, mock_session_class, mock_transport):
         """Test listing tools from the server."""
         # Setup mocks
@@ -156,8 +156,8 @@ class TestMCPClientUnitTests:
         mock_session_instance.list_tools.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch("litellm.experimental_mcp_client.client.streamablehttp_client")
-    @patch("litellm.experimental_mcp_client.client.ClientSession")
+    @patch("dheera_ai.experimental_mcp_client.client.streamablehttp_client")
+    @patch("dheera_ai.experimental_mcp_client.client.ClientSession")
     async def test_call_tool(self, mock_session_class, mock_transport):
         """Test calling a tool."""
         from mcp.types import CallToolRequestParams

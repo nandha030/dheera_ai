@@ -1,9 +1,9 @@
 # Integrations
 
-This section covers integrations with various tools and services that can be used with LiteLLM (either Proxy or SDK).
+This section covers integrations with various tools and services that can be used with Dheera AI (either Proxy or SDK).
 
 ## AI Agent Frameworks
-- **[Letta](./letta.md)** - Build stateful LLM agents with persistent memory using LiteLLM Proxy
+- **[Letta](./letta.md)** - Build stateful LLM agents with persistent memory using Dheera AI Proxy
 
 ## Development Tools
 - **[OpenWebUI](../tutorials/openweb_ui.md)** - Self-hosted ChatGPT-style interface

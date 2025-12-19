@@ -6,7 +6,7 @@ import TabItem from '@theme/TabItem';
 | Property | Details |
 |-------|-------|
 | Description | Amazon Nova is a family of foundation models built by Amazon that deliver frontier intelligence and industry-leading price performance. |
-| Provider Route on LiteLLM | `amazon_nova/` |
+| Provider Route on Dheera AI | `amazon_nova/` |
 | Provider Doc | [Amazon Nova ↗](https://docs.aws.amazon.com/nova/latest/userguide/what-is-nova.html) |
 | Supported OpenAI Endpoints | `/chat/completions`, `v1/responses` |
 | Other Supported Endpoints | `v1/messages`, `/generateContent` | 
@@ -26,7 +26,7 @@ export AMAZON_NOVA_API_KEY="your-api-key"
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # Set your API key
 os.environ["AMAZON_NOVA_API_KEY"] = "your-api-key"
@@ -50,13 +50,13 @@ print(response)
 ```yaml
 model_list:
   - model_name: amazon-nova-micro
-    litellm_params:
+    dheera_ai_params:
       model: amazon_nova/nova-micro-v1
       api_key: os.environ/AMAZON_NOVA_API_KEY
 ```
 ### 2. Start the proxy
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 ### 3. Test it
@@ -94,7 +94,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AMAZON_NOVA_API_KEY"] = "your-api-key"
 
@@ -139,7 +139,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AMAZON_NOVA_API_KEY"] = "your-api-key"
 
@@ -220,7 +220,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AMAZON_NOVA_API_KEY"] = "your-api-key"
 
@@ -245,7 +245,7 @@ print(response)
 ```yaml
 model_list:
   - model_name: amazon-nova-pro
-    litellm_params:
+    dheera_ai_params:
       model: amazon_nova/nova-pro-v1
       temperature: 0.8
       max_tokens: 500

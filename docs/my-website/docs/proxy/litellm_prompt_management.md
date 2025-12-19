@@ -1,15 +1,15 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# LiteLLM AI Gateway Prompt Management
+# Dheera AI AI Gateway Prompt Management
 
-Use the LiteLLM AI Gateway to create, manage and version your prompts.
+Use the Dheera AI AI Gateway to create, manage and version your prompts.
 
 ## Quick Start
 
 ### Accessing the Prompts Interface
 
-1. Navigate to **Experimental > Prompts** in your LiteLLM dashboard
+1. Navigate to **Experimental > Prompts** in your Dheera AI dashboard
 2. You'll see a table displaying all your existing prompts with the following columns:
    - **Prompt ID**: Unique identifier for each prompt
    - **Model**: The LLM model configured for the prompt
@@ -80,7 +80,7 @@ Once you're satisfied with your prompt, click the **Save** button in the top rig
 
 ## Using Your Prompts
 
-Now that your prompt is published, you can use it in your application via the LiteLLM proxy API. Click the **Get Code** button in the UI to view code snippets customized for your prompt.
+Now that your prompt is published, you can use it in your application via the Dheera AI proxy API. Click the **Get Code** button in the UI to view code snippets customized for your prompt.
 
 ### Basic Usage
 
@@ -297,7 +297,7 @@ main();
 
 ## Prompt Versioning
 
-LiteLLM automatically versions your prompts each time you update them. This allows you to maintain a complete history of changes and roll back to previous versions if needed.
+Dheera AI automatically versions your prompts each time you update them. This allows you to maintain a complete history of changes and roll back to previous versions if needed.
 
 ### View Prompt Details
 
@@ -307,7 +307,7 @@ Click on any prompt ID in the prompts table to view its details page. This page 
 - **Prompt Type**: The storage type (e.g., db)
 - **Created At**: When the prompt was first created
 - **Last Updated**: Timestamp of the most recent update
-- **LiteLLM Parameters**: The raw JSON configuration
+- **Dheera AI Parameters**: The raw JSON configuration
 
 ![Prompt Details](../../img/edit_prompt.png)
 

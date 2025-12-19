@@ -16,16 +16,16 @@ import concurrent
 
 from dotenv import load_dotenv
 
-import litellm
+import dheera_ai
 
-from litellm import Router
+from dheera_ai import Router
 
 load_dotenv()
 
 model_list = [
     {  # list of model deployments
         "model_name": "gpt-3.5-turbo",  # openai model name
-        "litellm_params": {  # params for litellm completion/embedding call
+        "dheera_ai_params": {  # params for dheera_ai completion/embedding call
             "model": "azure/gpt-4.1-mini",
             "api_key": "bad-key",
             "api_version": os.getenv("AZURE_API_VERSION"),
@@ -36,7 +36,7 @@ model_list = [
     },
     {
         "model_name": "gpt-3.5-turbo",  # openai model name
-        "litellm_params": {  # params for litellm completion/embedding call
+        "dheera_ai_params": {  # params for dheera_ai completion/embedding call
             "model": "gpt-3.5-turbo",
             "api_key": os.getenv("OPENAI_API_KEY"),
         },
@@ -56,7 +56,7 @@ def test_multiple_deployments_sync():
     import concurrent
     import time
 
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
     results = []
     router = Router(
         model_list=model_list,
@@ -82,7 +82,7 @@ def test_multiple_deployments_sync():
 
 
 def test_multiple_deployments_parallel():
-    litellm.set_verbose = False  # Corrected the syntax for setting verbose to False
+    dheera_ai.set_verbose = False  # Corrected the syntax for setting verbose to False
     results = []
     futures = {}
     start_time = time.time()
@@ -124,7 +124,7 @@ def test_multiple_deployments_parallel():
     print(f"ELAPSED TIME: {end_time - start_time}")
 
 
-# Assuming litellm, router, and executor are defined somewhere in your code
+# Assuming dheera_ai, router, and executor are defined somewhere in your code
 
 
 # test_multiple_deployments_parallel()
@@ -136,13 +136,13 @@ async def test_cooldown_same_model_name(sync_mode):
     # azure/chatgpt, api_base: 1234
     # azure/chatgpt, api_base: 1235
     # if 1234 fails, it should only cooldown 1234 and then try with 1235
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
     try:
         print("testing cooldown same model name")
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4.1-nano",
                     "api_key": "bad-key",
                     "tpm": 90,
@@ -150,7 +150,7 @@ async def test_cooldown_same_model_name(sync_mode):
             },
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4.1-nano",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                     "tpm": 1,
@@ -178,9 +178,9 @@ async def test_cooldown_same_model_name(sync_mode):
             model_ids = []
             for model in router.model_list:
                 model_ids.append(model["model_info"]["id"])
-            print("\n litellm model ids ", model_ids)
+            print("\n dheera_ai model ids ", model_ids)
 
-            # example litellm_model_names ['azure/gpt-4.1-mini-ModelID-64321', 'azure/gpt-4.1-mini-ModelID-63960']
+            # example dheera_ai_model_names ['azure/gpt-4.1-mini-ModelID-64321', 'azure/gpt-4.1-mini-ModelID-63960']
             assert (
                 model_ids[0] != model_ids[1]
             )  # ensure both models have a uuid added, and they have different names
@@ -195,9 +195,9 @@ async def test_cooldown_same_model_name(sync_mode):
             model_ids = []
             for model in router.model_list:
                 model_ids.append(model["model_info"]["id"])
-            print("\n litellm model ids ", model_ids)
+            print("\n dheera_ai model ids ", model_ids)
 
-            # example litellm_model_names ['azure/gpt-4.1-mini-ModelID-64321', 'azure/gpt-4.1-mini-ModelID-63960']
+            # example dheera_ai_model_names ['azure/gpt-4.1-mini-ModelID-64321', 'azure/gpt-4.1-mini-ModelID-63960']
             assert (
                 model_ids[0] != model_ids[1]
             )  # ensure both models have a uuid added, and they have different names

@@ -18,23 +18,23 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-import litellm
-from litellm import completion
-from litellm._logging import verbose_logger
-from litellm.integrations.custom_guardrail import CustomGuardrail
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai._logging import verbose_logger
+from dheera_ai.integrations.custom_guardrail import CustomGuardrail
 
 
 from typing import Any, Dict, List, Literal, Optional, Union
 
-import litellm
-from litellm._logging import verbose_proxy_logger
-from litellm.caching.caching import DualCache
-from litellm.integrations.custom_guardrail import CustomGuardrail
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.proxy.guardrails.guardrail_helpers import should_proceed_based_on_metadata
-from litellm.types.guardrails import GuardrailEventHooks
-from litellm.proxy.guardrails.guardrail_endpoints import _get_guardrails_list_response
-from litellm.types.guardrails import GuardrailInfoResponse, ListGuardrailsResponse
+import dheera_ai
+from dheera_ai._logging import verbose_proxy_logger
+from dheera_ai.caching.caching import DualCache
+from dheera_ai.integrations.custom_guardrail import CustomGuardrail
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.proxy.guardrails.guardrail_helpers import should_proceed_based_on_metadata
+from dheera_ai.types.guardrails import GuardrailEventHooks
+from dheera_ai.proxy.guardrails.guardrail_endpoints import _get_guardrails_list_response
+from dheera_ai.types.guardrails import GuardrailInfoResponse, ListGuardrailsResponse
 
 
 def test_get_guardrail_from_metadata():
@@ -156,7 +156,7 @@ def test_get_guardrails_list_response():
     sample_config = [
         {
             "guardrail_name": "test-guard",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "guardrail": "test-guard",
                 "mode": "pre_call",
                 "api_key": "test-api-key",
@@ -197,7 +197,7 @@ def test_get_guardrails_list_response():
     minimal_config = [
         {
             "guardrail_name": "minimal-guard",
-            "litellm_params": {"guardrail": "minimal-guard", "mode": "pre_call"},
+            "dheera_ai_params": {"guardrail": "minimal-guard", "mode": "pre_call"},
         }
     ]
     minimal_response = _get_guardrails_list_response(minimal_config)

@@ -6,9 +6,9 @@ import TabItem from '@theme/TabItem';
 | Property | Details |
 |-------|-------|
 | Description | Meta's Llama API provides access to Meta's family of large language models. |
-| Provider Route on LiteLLM | `meta_llama/` |
+| Provider Route on Dheera AI | `meta_llama/` |
 | Supported Endpoints | `/chat/completions`, `/completions`, `/responses` |
-| API Reference | [Llama API Reference ↗](https://llama.developer.meta.com?utm_source=partner-litellm&utm_medium=website) |
+| API Reference | [Llama API Reference ↗](https://llama.developer.meta.com?utm_source=partner-dheera_ai&utm_medium=website) |
 
 ## Required Variables
 
@@ -19,7 +19,7 @@ os.environ["LLAMA_API_KEY"] = ""  # your Meta Llama API key
 ## Supported Models
 
 :::info
-All models listed here https://llama.developer.meta.com/docs/models/ are supported. We actively maintain the list of models, token window, etc. [here](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json).
+All models listed here https://llama.developer.meta.com/docs/models/ are supported. We actively maintain the list of models, token window, etc. [here](https://github.com/BerriAI/dheera_ai/blob/main/model_prices_and_context_window.json).
 
 :::
 
@@ -31,14 +31,14 @@ All models listed here https://llama.developer.meta.com/docs/models/ are support
 | `Llama-3.3-70B-Instruct` | 128k | 4028 | Text | Text |
 | `Llama-3.3-8B-Instruct` | 128k | 4028 | Text | Text |
 
-## Usage - LiteLLM Python SDK
+## Usage - Dheera AI Python SDK
 
 ### Non-streaming
 
 ```python showLineNumbers title="Meta Llama Non-streaming Completion"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["LLAMA_API_KEY"] = ""  # your Meta Llama API key
 
@@ -52,8 +52,8 @@ response = completion(model="meta_llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
 
 ```python showLineNumbers title="Meta Llama Streaming Completion"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["LLAMA_API_KEY"] = ""  # your Meta Llama API key
 
@@ -74,8 +74,8 @@ for chunk in response:
 
 ```python showLineNumbers title="Meta Llama Function Calling"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["LLAMA_API_KEY"] = ""  # your Meta Llama API key
 
@@ -121,8 +121,8 @@ print(response.choices[0].message.tool_calls)
 
 ```python showLineNumbers title="Meta Llama Tool Use"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["LLAMA_API_KEY"] = ""  # your Meta Llama API key
 
@@ -169,28 +169,28 @@ response = completion(
 print(response.choices[0].message.content)
 ```
 
-## Usage - LiteLLM Proxy
+## Usage - Dheera AI Proxy
 
 
-Add the following to your LiteLLM Proxy configuration file:
+Add the following to your Dheera AI Proxy configuration file:
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: meta_llama/Llama-3.3-70B-Instruct
-    litellm_params:
+    dheera_ai_params:
       model: meta_llama/Llama-3.3-70B-Instruct
       api_key: os.environ/LLAMA_API_KEY
 
   - model_name: meta_llama/Llama-3.3-8B-Instruct
-    litellm_params:
+    dheera_ai_params:
       model: meta_llama/Llama-3.3-8B-Instruct
       api_key: os.environ/LLAMA_API_KEY
 ```
 
-Start your LiteLLM Proxy server:
+Start your Dheera AI Proxy server:
 
-```bash showLineNumbers title="Start LiteLLM Proxy"
-litellm --config config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy"
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -239,14 +239,14 @@ for chunk in response:
 
 </TabItem>
 
-<TabItem value="litellm-sdk" label="LiteLLM SDK">
+<TabItem value="dheera_ai-sdk" label="Dheera AI SDK">
 
-```python showLineNumbers title="Meta Llama via Proxy - LiteLLM SDK"
-import litellm
+```python showLineNumbers title="Meta Llama via Proxy - Dheera AI SDK"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy
-response = litellm.completion(
-    model="litellm_proxy/meta_llama/Llama-3.3-70B-Instruct",
+# Configure Dheera AI to use your proxy
+response = dheera_ai.completion(
+    model="dheera_ai_proxy/meta_llama/Llama-3.3-70B-Instruct",
     messages=[{"role": "user", "content": "Write a short poem about AI."}],
     api_base="http://localhost:4000",
     api_key="your-proxy-api-key"
@@ -255,12 +255,12 @@ response = litellm.completion(
 print(response.choices[0].message.content)
 ```
 
-```python showLineNumbers title="Meta Llama via Proxy - LiteLLM SDK Streaming"
-import litellm
+```python showLineNumbers title="Meta Llama via Proxy - Dheera AI SDK Streaming"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy with streaming
-response = litellm.completion(
-    model="litellm_proxy/meta_llama/Llama-3.3-70B-Instruct",
+# Configure Dheera AI to use your proxy with streaming
+response = dheera_ai.completion(
+    model="dheera_ai_proxy/meta_llama/Llama-3.3-70B-Instruct",
     messages=[{"role": "user", "content": "Write a short poem about AI."}],
     api_base="http://localhost:4000",
     api_key="your-proxy-api-key",
@@ -300,4 +300,4 @@ curl http://localhost:4000/v1/chat/completions \
 </TabItem>
 </Tabs>
 
-For more detailed information on using the LiteLLM Proxy, see the [LiteLLM Proxy documentation](../providers/litellm_proxy).
+For more detailed information on using the Dheera AI Proxy, see the [Dheera AI Proxy documentation](../providers/dheera_ai_proxy).

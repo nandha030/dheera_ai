@@ -138,7 +138,7 @@ curl -X POST "http://localhost:4000/v1/vector_stores/vs_692658d337c4819183f2ad84
     -H "Authorization: Bearer sk-1234" \
     -H "Content-Type: application/json" \
     -d '{
-        "query": "What is LiteLLM?",
+        "query": "What is Dheera AI?",
         "custom_llm_provider": "openai"
     }'
 ```
@@ -147,7 +147,7 @@ Response:
 ```json
 {
   "object": "vector_store.search_results.page",
-  "search_query": ["What is LiteLLM?"],
+  "search_query": ["What is Dheera AI?"],
   "data": [
     {
       "file_id": "file-M2pJJiWH56cfUP4Fe7rJay",
@@ -157,7 +157,7 @@ Response:
       "content": [
         {
           "type": "text",
-          "text": "Test document abc123 for RAG ingestion.\nThis is a sample document to test the RAG ingest API.\nLiteLLM provides a unified interface for vector stores."
+          "text": "Test document abc123 for RAG ingestion.\nThis is a sample document to test the RAG ingest API.\nDheera AI provides a unified interface for vector stores."
         }
       ]
     }
@@ -209,7 +209,7 @@ Response:
 | `aws_region_name` | string | `us-west-2` | AWS region |
 
 :::info Bedrock Auto-Creation
-When `vector_store_id` is omitted, LiteLLM automatically creates:
+When `vector_store_id` is omitted, Dheera AI automatically creates:
 - S3 bucket for document storage
 - OpenSearch Serverless collection
 - IAM role with required permissions

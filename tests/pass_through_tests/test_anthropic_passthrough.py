@@ -24,7 +24,7 @@ async def test_anthropic_basic_completion_with_headers():
         "model": "claude-sonnet-4-5-20250929",
         "max_tokens": 10,
         "messages": [{"role": "user", "content": "Say 'hello test' and nothing else"}],
-        "litellm_metadata": {
+        "dheera_ai_metadata": {
             "tags": ["test-tag-1", "test-tag-2"],
         },
     }
@@ -46,9 +46,9 @@ async def test_anthropic_basic_completion_with_headers():
             # fix null checks for reported_usage
             anthropic_api_input_tokens = reported_usage.get("input_tokens", None) if reported_usage else None
             anthropic_api_output_tokens = reported_usage.get("output_tokens", None) if reported_usage else None
-            litellm_call_id = response_headers.get("x-litellm-call-id")
+            dheera_ai_call_id = response_headers.get("x-dheera_ai-call-id")
 
-            print(f"LiteLLM Call ID: {litellm_call_id}")
+            print(f"DheeraAI Call ID: {dheera_ai_call_id}")
 
             # Wait for spend to be logged
             await asyncio.sleep(15)
@@ -60,7 +60,7 @@ async def test_anthropic_basic_completion_with_headers():
                 print(f"Attempt {attempt + 1}/{max_retries} to check spend logs")
 
                 async with session.get(
-                    f"http://0.0.0.0:4000/spend/logs?request_id={litellm_call_id}",
+                    f"http://0.0.0.0:4000/spend/logs?request_id={dheera_ai_call_id}",
                     headers={"Authorization": "Bearer sk-1234"},
                 ) as spend_response:
                     print("text spend response")
@@ -90,7 +90,7 @@ async def test_anthropic_basic_completion_with_headers():
             assert isinstance(log_entry, dict), "Log entry should be a dictionary"
 
             # Request metadata assertions
-            assert log_entry["request_id"] == litellm_call_id, "Request ID should match"
+            assert log_entry["request_id"] == dheera_ai_call_id, "Request ID should match"
             assert (
                 log_entry["call_type"] == "pass_through_endpoint"
             ), "Call type should be pass_through_endpoint"
@@ -155,7 +155,7 @@ async def test_anthropic_streaming_with_headers():
             {"role": "user", "content": "Say 'hello stream test' and nothing else"}
         ],
         "stream": True,
-        "litellm_metadata": {
+        "dheera_ai_metadata": {
             "tags": ["test-tag-stream-1", "test-tag-stream-2"],
             "user": "test-user-1",
         },
@@ -170,8 +170,8 @@ async def test_anthropic_streaming_with_headers():
             assert response.status == 200, "Response should be successful"
             response_headers = response.headers
             print(f"Response headers: {response_headers}")
-            litellm_call_id = response_headers.get("x-litellm-call-id")
-            print(f"LiteLLM Call ID: {litellm_call_id}")
+            dheera_ai_call_id = response_headers.get("x-dheera_ai-call-id")
+            print(f"DheeraAI Call ID: {dheera_ai_call_id}")
 
             collected_output = []
             async for line in response.content:
@@ -220,7 +220,7 @@ async def test_anthropic_streaming_with_headers():
                 print(f"Attempt {attempt + 1}/{max_retries} to check spend logs")
 
                 async with session.get(
-                    f"http://0.0.0.0:4000/spend/logs?request_id={litellm_call_id}",
+                    f"http://0.0.0.0:4000/spend/logs?request_id={dheera_ai_call_id}",
                     headers={"Authorization": "Bearer sk-1234"},
                 ) as spend_response:
                     spend_data = await spend_response.json()
@@ -248,7 +248,7 @@ async def test_anthropic_streaming_with_headers():
             assert isinstance(log_entry, dict), "Log entry should be a dictionary"
 
             # Request metadata assertions
-            assert log_entry["request_id"] == litellm_call_id, "Request ID should match"
+            assert log_entry["request_id"] == dheera_ai_call_id, "Request ID should match"
             assert (
                 log_entry["call_type"] == "pass_through_endpoint"
             ), "Call type should be pass_through_endpoint"

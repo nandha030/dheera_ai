@@ -4,7 +4,7 @@ import aiohttp, openai
 from openai import OpenAI, AsyncOpenAI
 from typing import Optional, List, Union
 import json
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 
 
 async def chat_completion(
@@ -93,10 +93,10 @@ async def test_llm_guard_triggered_safe_request():
 
         print("response=", response, "response headers", headers)
 
-        assert "x-litellm-applied-guardrails" in headers
+        assert "x-dheera_ai-applied-guardrails" in headers
 
         assert (
-            headers["x-litellm-applied-guardrails"]
+            headers["x-dheera_ai-applied-guardrails"]
             == "aporia-pre-guard,aporia-post-guard"
         )
 
@@ -146,7 +146,7 @@ async def test_no_llm_guard_triggered():
 
         print("response=", response, "response headers", headers)
 
-        assert "x-litellm-applied-guardrails" not in headers
+        assert "x-dheera_ai-applied-guardrails" not in headers
 
 
 @pytest.mark.asyncio
@@ -182,7 +182,7 @@ async def test_guardrails_with_api_key_controls():
         await asyncio.sleep(3)
 
         print("response=", response, "response headers", headers)
-        assert "x-litellm-applied-guardrails" not in headers
+        assert "x-dheera_ai-applied-guardrails" not in headers
 
         # test guardrails triggered for key with guardrails
         response, headers = await chat_completion(
@@ -192,8 +192,8 @@ async def test_guardrails_with_api_key_controls():
             messages=[{"role": "user", "content": f"Hello my name is ishaan@berri.ai"}],
         )
 
-        assert "x-litellm-applied-guardrails" in headers
-        assert headers["x-litellm-applied-guardrails"] == "bedrock-pre-guard"
+        assert "x-dheera_ai-applied-guardrails" in headers
+        assert headers["x-dheera_ai-applied-guardrails"] == "bedrock-pre-guard"
 
 
 @pytest.mark.asyncio
@@ -229,13 +229,13 @@ async def test_custom_guardrail_during_call_triggered():
                 session,
                 "sk-1234",
                 model="fake-openai-endpoint",
-                messages=[{"role": "user", "content": f"Hello do you like litellm?"}],
+                messages=[{"role": "user", "content": f"Hello do you like dheera_ai?"}],
                 guardrails=["custom-during-guard"],
             )
             pytest.fail("Should have thrown an exception")
         except Exception as e:
             print(e)
-            assert "Guardrail failed words - `litellm` detected" in str(e)
+            assert "Guardrail failed words - `dheera_ai` detected" in str(e)
 
 
 async def create_team(session, guardrails: Optional[List] = None):
@@ -302,7 +302,7 @@ async def test_guardrails_with_team_controls():
         await asyncio.sleep(3)
 
         print("response=", response, "response headers", headers)
-        assert "x-litellm-applied-guardrails" not in headers
+        assert "x-dheera_ai-applied-guardrails" not in headers
 
         response, headers = await chat_completion(
             session,
@@ -313,5 +313,5 @@ async def test_guardrails_with_team_controls():
 
         print("response headers=", json.dumps(headers, indent=4))
 
-        assert "x-litellm-applied-guardrails" in headers
-        assert headers["x-litellm-applied-guardrails"] == "bedrock-pre-guard"
+        assert "x-dheera_ai-applied-guardrails" in headers
+        assert headers["x-dheera_ai-applied-guardrails"] == "bedrock-pre-guard"

@@ -7,8 +7,8 @@
 | Property                   | Details                                                                                         |
 | -------------------------- | ----------------------------------------------------------------------------------------------- |
 | Description                | The fastest and most efficient inference engine to build production-ready, compound AI systems. |
-| Provider Route on LiteLLM  | `friendliai/`                                                                                   |
-| Provider Doc               | [FriendliAI ↗](https://friendli.ai/docs/sdk/integrations/litellm)                               |
+| Provider Route on Dheera AI  | `friendliai/`                                                                                   |
+| Provider Doc               | [FriendliAI ↗](https://friendli.ai/docs/sdk/integrations/dheera_ai)                               |
 | Supported OpenAI Endpoints | `/chat/completions`, `/completions`                                                             |
 
 ## API Key
@@ -21,14 +21,14 @@ os.environ['FRIENDLI_TOKEN']
 ## Sample Usage
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['FRIENDLI_TOKEN'] = ""
 response = completion(
     model="friendliai/meta-llama-3.1-8b-instruct",
     messages=[
-       {"role": "user", "content": "hello from litellm"}
+       {"role": "user", "content": "hello from dheera_ai"}
    ],
 )
 print(response)
@@ -37,14 +37,14 @@ print(response)
 ## Sample Usage - Streaming
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['FRIENDLI_TOKEN'] = ""
 response = completion(
     model="friendliai/meta-llama-3.1-8b-instruct",
     messages=[
-       {"role": "user", "content": "hello from litellm"}
+       {"role": "user", "content": "hello from dheera_ai"}
    ],
     stream=True
 )

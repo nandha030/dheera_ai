@@ -13,7 +13,7 @@ Group requests into sessions. This allows you to group related requests together
 
 ### `/chat/completions`
 
-To group multiple requests into a single session, pass the same `litellm_session_id` in the metadata for each request. Here's how to do it:
+To group multiple requests into a single session, pass the same `dheera_ai_session_id` in the metadata for each request. Here's how to do it:
 
 <Tabs>
 <TabItem value="openai" label="OpenAI Python v1.0.0+">
@@ -29,7 +29,7 @@ import uuid
 session_id = str(uuid.uuid4())
 
 client = openai.OpenAI(
-    api_key="<your litellm api key>",
+    api_key="<your dheera_ai api key>",
     base_url="http://0.0.0.0:4000"
 )
 
@@ -43,7 +43,7 @@ response1 = client.chat.completions.create(
         }
     ],
     extra_body={
-        "litellm_session_id": session_id  # Pass the session ID
+        "dheera_ai_session_id": session_id  # Pass the session ID
     }
 )
 ```
@@ -62,7 +62,7 @@ response2 = client.chat.completions.create(
         }
     ],
     extra_body={
-        "litellm_session_id": session_id  # Reuse the same session ID
+        "dheera_ai_session_id": session_id  # Reuse the same session ID
     }
 )
 ```
@@ -82,10 +82,10 @@ session_id = str(uuid.uuid4())
 
 chat = ChatOpenAI(
     openai_api_base="http://0.0.0.0:4000",
-    api_key="<your litellm api key>",
+    api_key="<your dheera_ai api key>",
     model="gpt-4o",
     extra_body={
-        "litellm_session_id": session_id  # Pass the session ID
+        "dheera_ai_session_id": session_id  # Pass the session ID
     }
 )
 
@@ -112,7 +112,7 @@ Generate a new session ID and make the initial API call. The session ID in the m
 SESSION_ID=$(uuidgen)
 
 # Store your API key
-API_KEY="<your litellm api key>"
+API_KEY="<your dheera_ai api key>"
 
 # First request in session
 curl --location 'http://0.0.0.0:4000/chat/completions' \
@@ -126,7 +126,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
         "content": "Write a short story about a robot"
         }
     ],
-    "litellm_session_id": "'$SESSION_ID'"
+    "dheera_ai_session_id": "'$SESSION_ID'"
 }'
 ```
 
@@ -146,31 +146,31 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
         "content": "Now write a poem about that robot"
         }
     ],
-    "litellm_session_id": "'$SESSION_ID'"
+    "dheera_ai_session_id": "'$SESSION_ID'"
 }'
 ```
 
 </TabItem>
-<TabItem value="litellm" label="LiteLLM Python SDK">
+<TabItem value="dheera_ai" label="Dheera AI Python SDK">
 
 **Request 1**
 Start a new session by creating a unique ID and making the initial request. This session ID will be used to group related requests together.
 
 ```python showLineNumbers
-import litellm
+import dheera_ai
 import uuid
 
 # Create a session ID
 session_id = str(uuid.uuid4())
 
 # First request in session
-response1 = litellm.completion(
+response1 = dheera_ai.completion(
     model="gpt-4o",
     messages=[{"role": "user", "content": "Write a short story about a robot"}],
     api_base="http://0.0.0.0:4000",
-    api_key="<your litellm api key>",
+    api_key="<your dheera_ai api key>",
     metadata={
-        "litellm_session_id": session_id  # Pass the session ID
+        "dheera_ai_session_id": session_id  # Pass the session ID
     }
 )
 ```
@@ -180,13 +180,13 @@ Continue the conversation by making another request with the same session ID, li
 
 ```python showLineNumbers
 # Second request using same session ID
-response2 = litellm.completion(
+response2 = dheera_ai.completion(
     model="gpt-4o",
     messages=[{"role": "user", "content": "Now write a poem about that robot"}],
     api_base="http://0.0.0.0:4000",
-    api_key="<your litellm api key>",
+    api_key="<your dheera_ai api key>",
     metadata={
-        "litellm_session_id": session_id  # Reuse the same session ID
+        "dheera_ai_session_id": session_id  # Reuse the same session ID
     }
 )
 ```
@@ -208,7 +208,7 @@ Make the initial request and store the response ID for linking follow-up request
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="<your litellm api key>",
+    api_key="<your dheera_ai api key>",
     base_url="http://0.0.0.0:4000"
 )
 
@@ -242,7 +242,7 @@ Make the initial request. The response will include an ID that can be used to li
 
 ```bash showLineNumbers
 # Store your API key
-API_KEY="<your litellm api key>"
+API_KEY="<your dheera_ai api key>"
 
 # First request in session
 curl http://localhost:4000/v1/responses \
@@ -272,20 +272,20 @@ curl http://localhost:4000/v1/responses \
 ```
 
 </TabItem>
-<TabItem value="litellm" label="LiteLLM Python SDK">
+<TabItem value="dheera_ai" label="Dheera AI Python SDK">
 
 **Request 1**
 Make the initial request and store the response ID for linking follow-up requests.
 
 ```python showLineNumbers
-import litellm
+import dheera_ai
 
 # First request in session
-response1 = litellm.responses(
+response1 = dheera_ai.responses(
     model="anthropic/claude-3-sonnet-20240229-v1:0",
     input="Write a short story about a robot",
     api_base="http://0.0.0.0:4000",
-    api_key="<your litellm api key>"
+    api_key="<your dheera_ai api key>"
 )
 
 # Store the response ID for the next request
@@ -297,11 +297,11 @@ Make a follow-up request using the previous response ID to maintain the conversa
 
 ```python showLineNumbers
 # Second request using previous response ID
-response2 = litellm.responses(
+response2 = dheera_ai.responses(
     model="anthropic/claude-3-sonnet-20240229-v1:0",
     input="Now write a poem about that robot",
     api_base="http://0.0.0.0:4000",
-    api_key="<your litellm api key>",
+    api_key="<your dheera_ai api key>",
     previous_response_id=response_id  # Link to previous request
 )
 ```

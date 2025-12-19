@@ -8,18 +8,18 @@ Call Bedrock AgentCore in the OpenAI Request/Response format.
 | Property | Details |
 |----------|---------|
 | Description | Amazon Bedrock AgentCore provides direct access to hosted agent runtimes for executing agentic workflows with foundation models. |
-| Provider Route on LiteLLM | `bedrock/agentcore/{AGENT_RUNTIME_ARN}` |
+| Provider Route on Dheera AI | `bedrock/agentcore/{AGENT_RUNTIME_ARN}` |
 | Provider Doc | [AWS Bedrock AgentCore ↗](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agentcore_InvokeAgentRuntime.html) |
 
 ## Quick Start
 
-### Model Format to LiteLLM
+### Model Format to Dheera AI
 
-To call a bedrock agent runtime through LiteLLM, use the following model format.
+To call a bedrock agent runtime through Dheera AI, use the following model format.
 
-Here the `model=bedrock/agentcore/` tells LiteLLM to call the bedrock `InvokeAgentRuntime` API.
+Here the `model=bedrock/agentcore/` tells Dheera AI to call the bedrock `InvokeAgentRuntime` API.
 
-```shell showLineNumbers title="Model Format to LiteLLM"
+```shell showLineNumbers title="Model Format to Dheera AI"
 bedrock/agentcore/{AGENT_RUNTIME_ARN}
 ```
 
@@ -28,13 +28,13 @@ bedrock/agentcore/{AGENT_RUNTIME_ARN}
 
 You can find the Agent Runtime ARN in your AWS Bedrock console under AgentCore.
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 ```python showLineNumbers title="Basic AgentCore Completion"
-import litellm
+import dheera_ai
 
 # Make a completion request to your AgentCore runtime
-response = litellm.completion(
+response = dheera_ai.completion(
     model="bedrock/agentcore/arn:aws:bedrock-agentcore:us-west-2:123456789012:runtime/my-agent-runtime",
     messages=[
         {
@@ -49,10 +49,10 @@ print(f"Usage: {response.usage}")
 ```
 
 ```python showLineNumbers title="Streaming AgentCore Responses"
-import litellm
+import dheera_ai
 
 # Stream responses from your AgentCore runtime
-response = litellm.completion(
+response = dheera_ai.completion(
     model="bedrock/agentcore/arn:aws:bedrock-agentcore:us-west-2:123456789012:runtime/my-agent-runtime",
     messages=[
         {
@@ -68,24 +68,24 @@ for chunk in response:
         print(chunk.choices[0].delta.content, end="")
 ```
 
-### LiteLLM Proxy
+### Dheera AI Proxy
 
 #### 1. Configure your model in config.yaml
 
 <Tabs>
 <TabItem value="config-yaml" label="config.yaml">
 
-```yaml showLineNumbers title="LiteLLM Proxy Configuration"
+```yaml showLineNumbers title="Dheera AI Proxy Configuration"
 model_list:
   - model_name: agentcore-runtime-1
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/agentcore/arn:aws:bedrock-agentcore:us-west-2:123456789012:runtime/my-agent-runtime
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
       aws_region_name: us-west-2
 
   - model_name: agentcore-runtime-2
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/agentcore/arn:aws:bedrock-agentcore:us-east-1:987654321098:runtime/production-runtime
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -95,10 +95,10 @@ model_list:
 </TabItem>
 </Tabs>
 
-#### 2. Start the LiteLLM Proxy
+#### 2. Start the Dheera AI Proxy
 
-```bash showLineNumbers title="Start LiteLLM Proxy"
-litellm --config config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy"
+dheera_ai --config config.yaml
 ```
 
 #### 3. Make requests to your AgentCore runtimes
@@ -109,7 +109,7 @@ litellm --config config.yaml
 ```bash showLineNumbers title="Basic AgentCore Request"
 curl http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "model": "agentcore-runtime-1",
     "messages": [
@@ -124,7 +124,7 @@ curl http://localhost:4000/v1/chat/completions \
 ```bash showLineNumbers title="Streaming AgentCore Request"
 curl http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "model": "agentcore-runtime-2",
     "messages": [
@@ -141,13 +141,13 @@ curl http://localhost:4000/v1/chat/completions \
 
 <TabItem value="openai-sdk" label="OpenAI Python SDK">
 
-```python showLineNumbers title="Using OpenAI SDK with LiteLLM Proxy"
+```python showLineNumbers title="Using OpenAI SDK with Dheera AI Proxy"
 from openai import OpenAI
 
-# Initialize client with your LiteLLM proxy URL
+# Initialize client with your Dheera AI proxy URL
 client = OpenAI(
     base_url="http://localhost:4000",
-    api_key="your-litellm-api-key"
+    api_key="your-dheera_ai-api-key"
 )
 
 # Make a completion request to your AgentCore runtime
@@ -169,7 +169,7 @@ from openai import OpenAI
 
 client = OpenAI(
     base_url="http://localhost:4000", 
-    api_key="your-litellm-api-key"
+    api_key="your-dheera_ai-api-key"
 )
 
 # Stream AgentCore responses
@@ -200,9 +200,9 @@ AgentCore supports additional parameters that can be passed to customize the run
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers title="Using AgentCore-specific parameters"
-from litellm import completion
+from dheera_ai import completion
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="bedrock/agentcore/arn:aws:bedrock-agentcore:us-west-2:123456789012:runtime/my-agent-runtime",
     messages=[
         {
@@ -218,10 +218,10 @@ response = litellm.completion(
 </TabItem>
 <TabItem value="proxy" label="Proxy">
 
-```yaml showLineNumbers title="LiteLLM Proxy Configuration with Parameters"
+```yaml showLineNumbers title="Dheera AI Proxy Configuration with Parameters"
 model_list:
   - model_name: agentcore-runtime-prod
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/agentcore/arn:aws:bedrock-agentcore:us-west-2:123456789012:runtime/my-agent-runtime
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -237,10 +237,10 @@ model_list:
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `qualifier` | string | Optional runtime qualifier/version to invoke a specific version of the agent runtime |
-| `runtimeSessionId` | string | Optional custom session ID (must be 33+ characters). If not provided, LiteLLM generates one automatically |
+| `runtimeSessionId` | string | Optional custom session ID (must be 33+ characters). If not provided, Dheera AI generates one automatically |
 
 ## Further Reading
 
 - [AWS Bedrock AgentCore Documentation](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agentcore_InvokeAgentRuntime.html)
-- [LiteLLM Authentication to Bedrock](https://docs.litellm.ai/docs/providers/bedrock#boto3---authentication)
+- [Dheera AI Authentication to Bedrock](https://docs.dheera_ai.ai/docs/providers/bedrock#boto3---authentication)
 

@@ -8,7 +8,7 @@ load_dotenv()
 
 
 # Set the base URL as needed
-base_url = "https://api.litellm.ai"
+base_url = "https://api.dheera_ai.ai"
 # # Uncomment the line below if you want to switch to the local server
 # base_url = "http://0.0.0.0:8000"
 
@@ -17,14 +17,14 @@ config = {
     "model_list": [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-3.5-turbo",
                 "api_key": os.environ["OPENAI_API_KEY"],
             },
         },
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-4.1-mini",
                 "api_key": os.environ["AZURE_API_KEY"],
                 "api_base": "https://openai-gpt-4-test-v-1.openai.azure.com/",
@@ -42,7 +42,7 @@ response = requests.post(
         "config": config,
         "duration": "30d",  # default to 30d, set it to 30m if you want a temp key
     },
-    headers={"Authorization": "Bearer sk-hosted-litellm"},
+    headers={"Authorization": "Bearer sk-hosted-dheera_ai"},
 )
 
 print("\nresponse from generating key", response.text)

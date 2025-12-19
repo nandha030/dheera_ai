@@ -16,10 +16,10 @@ Anthropic-compatible token counting endpoint. Count tokens for messages before s
 
 ## Quick Start
 
-### 1. Start LiteLLM Proxy
+### 1. Start Dheera AI Proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -76,25 +76,25 @@ print(response.json())
 }
 ```
 
-## LiteLLM Proxy Configuration
+## Dheera AI Proxy Configuration
 
 Add models to your `config.yaml`:
 
 ```yaml
 model_list:
   - model_name: claude-3-5-sonnet
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet-20241022
       api_key: os.environ/ANTHROPIC_API_KEY
 
   - model_name: claude-vertex
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/claude-3-5-sonnet-v2@20241022
       vertex_project: my-project
       vertex_location: us-east5
 
   - model_name: claude-bedrock
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0
       aws_region_name: us-west-2
 ```
@@ -204,11 +204,11 @@ curl -X POST "http://localhost:4000/v1/messages/count_tokens" \
 
 ## Comparison with Anthropic Passthrough
 
-LiteLLM provides two ways to count tokens:
+Dheera AI provides two ways to count tokens:
 
 | Endpoint | Description | Use Case |
 |----------|-------------|----------|
-| `/v1/messages/count_tokens` | LiteLLM's Anthropic-compatible endpoint | Works with all supported providers (Anthropic, Vertex AI, Bedrock, etc.) |
+| `/v1/messages/count_tokens` | Dheera AI's Anthropic-compatible endpoint | Works with all supported providers (Anthropic, Vertex AI, Bedrock, etc.) |
 | `/anthropic/v1/messages/count_tokens` | [Pass-through to Anthropic API](./pass_through/anthropic_completion.md#example-2-token-counting-api) | Direct Anthropic API access with native headers |
 
 ### Pass-through Example
@@ -218,7 +218,7 @@ For direct Anthropic API access with full native headers:
 ```bash
 curl --request POST \
     --url http://0.0.0.0:4000/anthropic/v1/messages/count_tokens \
-    --header "x-api-key: $LITELLM_API_KEY" \
+    --header "x-api-key: $DHEERA_AI_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
     --header "anthropic-beta: token-counting-2024-11-01" \
     --header "content-type: application/json" \

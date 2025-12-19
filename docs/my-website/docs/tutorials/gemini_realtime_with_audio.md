@@ -1,24 +1,24 @@
 # Call Gemini Realtime API with Audio Input/Output 
 
 :::info
-Requires LiteLLM Proxy v1.70.1+
+Requires Dheera AI Proxy v1.70.1+
 :::
 
-1. Setup config.yaml for LiteLLM Proxy 
+1. Setup config.yaml for Dheera AI Proxy 
 
 ```yaml
 model_list:
   - model_name: "gemini-2.0-flash"
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.0-flash-live-001
     model_info:
       mode: realtime
 ```
 
-2. Start LiteLLM Proxy 
+2. Start Dheera AI Proxy 
 
 ```bash
-litellm-proxy start
+dheera_ai-proxy start
 ```
 
 3. Run test script 
@@ -38,7 +38,7 @@ import numpy as np
 
 # Load environment variables
 
-OPENAI_API_KEY = "sk-1234"  # Replace with your LiteLLM API key
+OPENAI_API_KEY = "sk-1234"  # Replace with your Dheera AI API key
 OPENAI_API_URL = 'ws://{PROXY_URL}/v1/realtime?model=gemini-2.0-flash' # REPLACE WITH `wss://{PROXY_URL}/v1/realtime?model=gemini-2.0-flash` for secure connection
 WAV_FILE_PATH = "/path/to/audio.wav"  # Replace with your .wav file path
 

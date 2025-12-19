@@ -1,83 +1,83 @@
 model_list:
   - model_name: gpt-3.5-turbo-end-user-test
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
       region_name: "eu"
     model_info:
       id: "1"
   - model_name: gpt-3.5-turbo-end-user-test
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1-mini
-      api_key: os.environ/OPENAI_API_KEY # The `os.environ/` prefix tells litellm to read this from the env. See https://docs.litellm.ai/docs/simple_proxy#load-api-keys-from-vault
+      api_key: os.environ/OPENAI_API_KEY # The `os.environ/` prefix tells dheera_ai to read this from the env. See https://docs.dheera_ai.ai/docs/simple_proxy#load-api-keys-from-vault
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1-mini
-      api_key: os.environ/OPENAI_API_KEY # The `os.environ/` prefix tells litellm to read this from the env. See https://docs.litellm.ai/docs/simple_proxy#load-api-keys-from-vault
+      api_key: os.environ/OPENAI_API_KEY # The `os.environ/` prefix tells dheera_ai to read this from the env. See https://docs.dheera_ai.ai/docs/simple_proxy#load-api-keys-from-vault
   - model_name: gpt-3.5-turbo-large
-    litellm_params: 
+    dheera_ai_params: 
       model: "gpt-3.5-turbo-1106"
       api_key: os.environ/OPENAI_API_KEY
       rpm: 480
       timeout: 300
       stream_timeout: 60
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1-mini
-      api_key: os.environ/OPENAI_API_KEY # The `os.environ/` prefix tells litellm to read this from the env. See https://docs.litellm.ai/docs/simple_proxy#load-api-keys-from-vault
+      api_key: os.environ/OPENAI_API_KEY # The `os.environ/` prefix tells dheera_ai to read this from the env. See https://docs.dheera_ai.ai/docs/simple_proxy#load-api-keys-from-vault
       rpm: 480
       timeout: 300
       stream_timeout: 60
   - model_name: sagemaker-completion-model
-    litellm_params:
+    dheera_ai_params:
       model: sagemaker/berri-benchmarking-Llama-2-70b-chat-hf-4
       input_cost_per_second: 0.000420  
   - model_name: text-embedding-ada-002
-    litellm_params: 
+    dheera_ai_params: 
       model: openai/text-embedding-ada-002
       api_key: os.environ/OPENAI_API_KEY
     model_info:
       mode: embedding
       base_model: text-embedding-ada-002
   - model_name: dall-e-2 # some tests use dall-e-2 which is now deprecated, alias to dall-e-3
-    litellm_params:
+    dheera_ai_params:
       model: openai/dall-e-3
   - model_name: openai-dall-e-3
-    litellm_params:
+    dheera_ai_params:
       model: dall-e-3
   - model_name: fake-openai-endpoint
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
   - model_name: fake-openai-endpoint-2
-    litellm_params:
+    dheera_ai_params:
       model: openai/my-fake-model
       api_key: my-fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
       stream_timeout: 0.001
       rpm: 1
   - model_name: fake-openai-endpoint-3
-    litellm_params:
+    dheera_ai_params:
       model: openai/my-fake-model
       api_key: my-fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
       stream_timeout: 0.001
       rpm: 1000
   - model_name: fake-openai-endpoint-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/my-fake-model
       api_key: my-fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
       num_retries: 50
   - model_name: fake-openai-endpoint-3
-    litellm_params:
+    dheera_ai_params:
       model: openai/my-fake-model-2
       api_key: my-fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
       stream_timeout: 0.001
       rpm: 1000
   - model_name: bad-model
-    litellm_params:
+    dheera_ai_params:
       model: openai/bad-model
       api_key: os.environ/OPENAI_API_KEY
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
@@ -87,7 +87,7 @@ model_list:
     model_info:
       health_check_timeout: 1
   - model_name: good-model
-    litellm_params:
+    dheera_ai_params:
       model: openai/bad-model
       api_key: os.environ/OPENAI_API_KEY
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
@@ -95,61 +95,61 @@ model_list:
     model_info:
       health_check_timeout: 1
   - model_name: "*"
-    litellm_params:
+    dheera_ai_params:
       model: openai/*
       api_key: os.environ/OPENAI_API_KEY
   - model_name: realtime-v1
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-realtime-20250828-standard
       api_version: "2025-08-28"
       realtime_protocol: GA # Possible values: "GA"/ "v1", "beta" 
 
   - model_name: realtime-beta
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-realtime-20250828-standard
       api_version: 2025-04-01-preview
 
 
   # provider specific wildcard routing
   - model_name: "anthropic/*"
-    litellm_params:
+    dheera_ai_params:
       model: "anthropic/*"
       api_key: os.environ/ANTHROPIC_API_KEY
   - model_name: "bedrock/*"
-    litellm_params:
+    dheera_ai_params:
       model: "bedrock/*"
   - model_name: "groq/*"
-    litellm_params:
+    dheera_ai_params:
       model: "groq/*"
       api_key: os.environ/GROQ_API_KEY
   - model_name: mistral-embed
-    litellm_params:
+    dheera_ai_params:
       model: mistral/mistral-embed
   - model_name: gpt-instruct # [PROD TEST] - tests if `/health` automatically infers this to be a text completion model
-    litellm_params:
+    dheera_ai_params:
       model: text-completion-openai/gpt-3.5-turbo-instruct
   - model_name: fake-openai-endpoint-5
-    litellm_params:
+    dheera_ai_params:
       model: openai/my-fake-model
       api_key: my-fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
       timeout: 1
   - model_name: badly-configured-openai-endpoint
-    litellm_params:
+    dheera_ai_params:
       model: openai/my-fake-model
       api_key: my-fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.appxxxx/
   - model_name: gemini-1.5-flash
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-1.5-flash
       api_key: os.environ/GOOGLE_API_KEY
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4o
       api_key: os.environ/OPENAI_API_KEY
 
 
-litellm_settings:
+dheera_ai_settings:
   # set_verbose: True  # Uncomment this if you want to see verbose logs; not recommended in production
   drop_params: True
   success_callback: ["prometheus"]
@@ -205,7 +205,7 @@ router_settings:
   model_group_alias: {"my-special-fake-model-alias-name": "fake-openai-endpoint-3"} 
 
 general_settings: 
-  master_key: sk-1234 # [OPTIONAL] Use to enforce auth on proxy. See - https://docs.litellm.ai/docs/proxy/virtual_keys
+  master_key: sk-1234 # [OPTIONAL] Use to enforce auth on proxy. See - https://docs.dheera_ai.ai/docs/proxy/virtual_keys
   store_model_in_db: True
   proxy_budget_rescheduler_min_time: 60
   proxy_budget_rescheduler_max_time: 64
@@ -217,7 +217,7 @@ general_settings:
   # database_url: "postgresql://<user>:<password>@<host>:<port>/<dbname>" # [OPTIONAL] use for token-based auth to proxy
 
   pass_through_endpoints:
-    - path: "/v1/rerank"                                  # route you want to add to LiteLLM Proxy Server
+    - path: "/v1/rerank"                                  # route you want to add to Dheera AI Proxy Server
       target: "https://api.cohere.com/v1/rerank"          # URL this route should forward requests to
       headers:                                            # headers to forward to this URL
         content-type: application/json                    # (Optional) Extra Headers to pass to this endpoint 

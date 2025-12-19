@@ -4,31 +4,31 @@ import pytest
 import asyncio
 from typing import Optional
 from unittest.mock import patch, AsyncMock
-from litellm.responses.litellm_completion_transformation.handler import LiteLLMCompletionTransformationHandler
-from litellm.responses.litellm_completion_transformation.transformation import LiteLLMCompletionResponsesConfig
-from litellm.types.utils import ModelResponse
+from dheera_ai.responses.dheera_ai_completion_transformation.handler import DheeraAICompletionTransformationHandler
+from dheera_ai.responses.dheera_ai_completion_transformation.transformation import DheeraAICompletionResponsesConfig
+from dheera_ai.types.utils import ModelResponse
 
 
 sys.path.insert(0, os.path.abspath("../.."))
-import litellm
-from litellm.integrations.custom_logger import CustomLogger
+import dheera_ai
+from dheera_ai.integrations.custom_logger import CustomLogger
 import json
-from litellm.types.utils import StandardLoggingPayload
-from litellm.types.llms.openai import (
+from dheera_ai.types.utils import StandardLoggingPayload
+from dheera_ai.types.llms.openai import (
     ResponseCompletedEvent,
     ResponsesAPIResponse,
     ResponseAPIUsage,
     IncompleteDetails,
 )
-import litellm
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
+import dheera_ai
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
 from base_responses_api import BaseResponsesAPITest
 from openai.types.responses.function_tool import FunctionTool
 
 
 class TestAnthropicResponsesAPITest(BaseResponsesAPITest):
     def get_base_completion_call_args(self):
-        #litellm._turn_on_debug()
+        #dheera_ai._turn_on_debug()
         return {
             "model": "anthropic/claude-sonnet-4-5-20250929",
         }
@@ -52,7 +52,7 @@ class TestAnthropicResponsesAPITest(BaseResponsesAPITest):
 
 def test_multiturn_tool_calls():
     # Test streaming response with tools for Anthropic
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     shell_tool = dict(FunctionTool(
         type="function",
         name="shell",
@@ -71,7 +71,7 @@ def test_multiturn_tool_calls():
 
     
     # Step 1: Initial request with the tool
-    response = litellm.responses(
+    response = dheera_ai.responses(
         input=[{
             'role': 'user', 
             'content': [
@@ -97,7 +97,7 @@ def test_multiturn_tool_calls():
             break
 
     # Use await with asyncio.run for the async function
-    follow_up_response = litellm.responses(
+    follow_up_response = dheera_ai.responses(
         model='anthropic/claude-3-7-sonnet-latest',
         previous_response_id=response_id,
         input=[{
@@ -115,29 +115,29 @@ def test_multiturn_tool_calls():
 
 @pytest.mark.asyncio
 async def test_async_response_api_handler_merges_trace_id_without_error():
-    handler = LiteLLMCompletionTransformationHandler()
+    handler = DheeraAICompletionTransformationHandler()
 
-    async def fake_session_handler(previous_response_id, litellm_completion_request):
-        litellm_completion_request["litellm_trace_id"] = "session-trace"
-        return litellm_completion_request
+    async def fake_session_handler(previous_response_id, dheera_ai_completion_request):
+        dheera_ai_completion_request["dheera_ai_trace_id"] = "session-trace"
+        return dheera_ai_completion_request
 
     with patch.object(
-        LiteLLMCompletionResponsesConfig,
+        DheeraAICompletionResponsesConfig,
         "async_responses_api_session_handler",
         side_effect=fake_session_handler,
     ):
-        with patch("litellm.acompletion", new_callable=AsyncMock) as mock_acompletion:
+        with patch("dheera_ai.acompletion", new_callable=AsyncMock) as mock_acompletion:
             mock_acompletion.return_value = ModelResponse(
                 id="id", created=0, model="test", object="chat.completion", choices=[]
             )
             await handler.async_response_api_handler(
-                litellm_completion_request={"model": "test"},
+                dheera_ai_completion_request={"model": "test"},
                 request_input="hi",
                 responses_api_request={"previous_response_id": "123"},
-                litellm_trace_id="original-trace",
+                dheera_ai_trace_id="original-trace",
             )
             # ensure acompletion called once with merged trace_id
             assert mock_acompletion.call_count == 1
             assert (
-                mock_acompletion.call_args.kwargs["litellm_trace_id"] == "session-trace"
+                mock_acompletion.call_args.kwargs["dheera_ai_trace_id"] == "session-trace"
             )

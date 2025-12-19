@@ -5,23 +5,23 @@ import asyncio
 from typing import Optional, cast
 from unittest.mock import patch, AsyncMock
 import httpx
-from litellm.llms.openai.responses.transformation import OpenAIResponsesAPIConfig
-from litellm.litellm_core_utils.litellm_logging import Logging as LiteLLMLoggingObj
+from dheera_ai.llms.openai.responses.transformation import OpenAIResponsesAPIConfig
+from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging as DheeraAILoggingObj
 import time
 import json
 
 sys.path.insert(0, os.path.abspath("../.."))
-import litellm
-from litellm.integrations.custom_logger import CustomLogger
+import dheera_ai
+from dheera_ai.integrations.custom_logger import CustomLogger
 import json
-from litellm.types.utils import StandardLoggingPayload
-from litellm.types.llms.openai import (
+from dheera_ai.types.utils import StandardLoggingPayload
+from dheera_ai.types.llms.openai import (
     ResponseCompletedEvent,
     ResponsesAPIResponse,
     ResponseAPIUsage,
     IncompleteDetails,
 )
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
 from base_responses_api import BaseResponsesAPITest, validate_responses_api_response
 
 
@@ -58,7 +58,7 @@ def validate_standard_logging_payload(
 
     Args:
         slp (StandardLoggingPayload): The standard logging payload object to validate
-        response (dict): The litellm response to compare against
+        response (dict): The dheera_ai response to compare against
         request_model (str): The model name that was requested
     """
     # Validate payload exists
@@ -94,12 +94,12 @@ def validate_standard_logging_payload(
 
 @pytest.mark.asyncio
 def test_basic_openai_responses_api_streaming_with_logging():
-    litellm._turn_on_debug()
-    litellm.set_verbose = True
+    dheera_ai._turn_on_debug()
+    dheera_ai.set_verbose = True
     test_custom_logger = TestCustomLogger()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     request_model = "gpt-4o"
-    response = litellm.responses(
+    response = dheera_ai.responses(
         model=request_model,
         input="hi",
         stream=True,
@@ -108,7 +108,7 @@ def test_basic_openai_responses_api_streaming_with_logging():
     for event in response:
         if event.type == "response.completed":
             final_response = event
-        print("litellm response=", json.dumps(event, indent=4, default=str))
+        print("dheera_ai response=", json.dumps(event, indent=4, default=str))
 
     print("sleeping for 2 seconds...")
     time.sleep(2)
@@ -127,56 +127,56 @@ def test_basic_openai_responses_api_streaming_with_logging():
     )
 
 
-def validate_responses_match(slp_response, litellm_response):
-    """Validate that the standard logging payload OpenAI response matches the litellm response"""
+def validate_responses_match(slp_response, dheera_ai_response):
+    """Validate that the standard logging payload OpenAI response matches the dheera_ai response"""
     # Validate core fields
-    assert slp_response["id"] == litellm_response["id"], "ID mismatch"
-    assert slp_response["model"] == litellm_response["model"], "Model mismatch"
+    assert slp_response["id"] == dheera_ai_response["id"], "ID mismatch"
+    assert slp_response["model"] == dheera_ai_response["model"], "Model mismatch"
     assert (
-        slp_response["created_at"] == litellm_response["created_at"]
+        slp_response["created_at"] == dheera_ai_response["created_at"]
     ), "Created at mismatch"
 
     # Validate usage
     assert (
         slp_response["usage"]["prompt_tokens"]
-        == litellm_response["usage"]["input_tokens"]
+        == dheera_ai_response["usage"]["input_tokens"]
     ), "Input tokens mismatch"
     assert (
         slp_response["usage"]["completion_tokens"]
-        == litellm_response["usage"]["output_tokens"]
+        == dheera_ai_response["usage"]["output_tokens"]
     ), "Output tokens mismatch"
     assert (
         slp_response["usage"]["total_tokens"]
-        == litellm_response["usage"]["total_tokens"]
+        == dheera_ai_response["usage"]["total_tokens"]
     ), "Total tokens mismatch"
 
     # Validate output/messages
     assert len(slp_response["output"]) == len(
-        litellm_response["output"]
+        dheera_ai_response["output"]
     ), "Output length mismatch"
-    for slp_msg, litellm_msg in zip(slp_response["output"], litellm_response["output"]):
-        assert slp_msg["role"] == litellm_msg.role, "Message role mismatch"
-        # Access the content's text field for the litellm response
-        litellm_content = litellm_msg.content[0].text if litellm_msg.content else ""
+    for slp_msg, dheera_ai_msg in zip(slp_response["output"], dheera_ai_response["output"]):
+        assert slp_msg["role"] == dheera_ai_msg.role, "Message role mismatch"
+        # Access the content's text field for the dheera_ai response
+        dheera_ai_content = dheera_ai_msg.content[0].text if dheera_ai_msg.content else ""
         assert (
-            slp_msg["content"][0]["text"] == litellm_content
-        ), f"Message content mismatch. Expected {litellm_content}, Got {slp_msg['content']}"
-        assert slp_msg["status"] == litellm_msg.status, "Message status mismatch"
+            slp_msg["content"][0]["text"] == dheera_ai_content
+        ), f"Message content mismatch. Expected {dheera_ai_content}, Got {slp_msg['content']}"
+        assert slp_msg["status"] == dheera_ai_msg.status, "Message status mismatch"
 
 
 @pytest.mark.asyncio
 async def test_basic_openai_responses_api_non_streaming_with_logging():
-    litellm._turn_on_debug()
-    litellm.set_verbose = True
+    dheera_ai._turn_on_debug()
+    dheera_ai.set_verbose = True
     test_custom_logger = TestCustomLogger()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     request_model = "gpt-4o"
-    response = await litellm.aresponses(
+    response = await dheera_ai.aresponses(
         model=request_model,
         input="hi",
     )
 
-    print("litellm response=", json.dumps(response, indent=4, default=str))
+    print("dheera_ai response=", json.dumps(response, indent=4, default=str))
     print("response hidden params=", response._hidden_params)
 
     print("sleeping for 2 seconds...")
@@ -202,19 +202,19 @@ async def test_openai_responses_api_returns_headers(sync_mode):
     Test that OpenAI responses API returns OpenAI headers in _hidden_params.
     This ensures the proxy can forward these headers to clients.
 
-    Related issue: LiteLLM responses API should return OpenAI headers like chat completions does
+    Related issue: DheeraAI responses API should return OpenAI headers like chat completions does
     """
-    litellm._turn_on_debug()
-    litellm.set_verbose = True
+    dheera_ai._turn_on_debug()
+    dheera_ai.set_verbose = True
 
     if sync_mode:
-        response = litellm.responses(
+        response = dheera_ai.responses(
             model="gpt-4o",
             input="Say hello",
             max_output_tokens=20,
         )
     else:
-        response = await litellm.aresponses(
+        response = await dheera_ai.aresponses(
             model="gpt-4o",
             input="Say hello",
             max_output_tokens=20,
@@ -275,7 +275,7 @@ async def test_openai_responses_api_returns_headers(sync_mode):
 
 def validate_stream_event(event):
     """
-    Validate that a streaming event from litellm.responses() or litellm.aresponses()
+    Validate that a streaming event from dheera_ai.responses() or dheera_ai.aresponses()
     with stream=True conforms to the expected structure based on its event type.
 
     Args:
@@ -459,12 +459,12 @@ def validate_stream_event(event):
 @pytest.mark.asyncio
 async def test_openai_responses_api_streaming_validation(sync_mode):
     """Test that validates each streaming event from the responses API"""
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     event_types_seen = set()
 
     if sync_mode:
-        response = litellm.responses(
+        response = dheera_ai.responses(
             model="gpt-4o",
             input="Tell me about artificial intelligence in 3 sentences.",
             stream=True,
@@ -474,7 +474,7 @@ async def test_openai_responses_api_streaming_validation(sync_mode):
             validate_stream_event(event)
             event_types_seen.add(event.type)
     else:
-        response = await litellm.aresponses(
+        response = await dheera_ai.aresponses(
             model="gpt-4o",
             input="Tell me about artificial intelligence in 3 sentences.",
             stream=True,
@@ -495,16 +495,16 @@ async def test_openai_responses_api_streaming_validation(sync_mode):
 
 @pytest.mark.parametrize("sync_mode", [True, False])
 @pytest.mark.asyncio
-async def test_openai_responses_litellm_router(sync_mode):
+async def test_openai_responses_dheera_ai_router(sync_mode):
     """
-    Test the OpenAI responses API with LiteLLM Router in both sync and async modes
+    Test the OpenAI responses API with DheeraAI Router in both sync and async modes
     """
-    litellm._turn_on_debug()
-    router = litellm.Router(
+    dheera_ai._turn_on_debug()
+    router = dheera_ai.Router(
         model_list=[
             {
                 "model_name": "gpt4o-special-alias",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4o",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
@@ -540,16 +540,16 @@ async def test_openai_responses_litellm_router(sync_mode):
 
 @pytest.mark.parametrize("sync_mode", [True, False])
 @pytest.mark.asyncio
-async def test_openai_responses_litellm_router_streaming(sync_mode):
+async def test_openai_responses_dheera_ai_router_streaming(sync_mode):
     """
-    Test the OpenAI responses API with streaming through LiteLLM Router
+    Test the OpenAI responses API with streaming through DheeraAI Router
     """
-    litellm._turn_on_debug()
-    router = litellm.Router(
+    dheera_ai._turn_on_debug()
+    router = dheera_ai.Router(
         model_list=[
             {
                 "model_name": "gpt4o-special-alias",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4o",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
@@ -590,7 +590,7 @@ async def test_openai_responses_litellm_router_streaming(sync_mode):
 
 
 @pytest.mark.asyncio
-async def test_openai_responses_litellm_router_no_metadata():
+async def test_openai_responses_dheera_ai_router_no_metadata():
     """
     Test that metadata is not passed through when using the Router for responses API
     """
@@ -646,18 +646,18 @@ async def test_openai_responses_litellm_router_no_metadata():
             return self._json_data
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         # Configure the mock to return our response
         mock_post.return_value = MockResponse(mock_response, 200)
 
-        litellm._turn_on_debug()
-        router = litellm.Router(
+        dheera_ai._turn_on_debug()
+        router = dheera_ai.Router(
             model_list=[
                 {
                     "model_name": "gpt4o-special-alias",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "model": "gpt-4o",
                         "api_key": "fake-key",
                     },
@@ -683,7 +683,7 @@ async def test_openai_responses_litellm_router_no_metadata():
 
 
 @pytest.mark.asyncio
-async def test_openai_responses_litellm_router_with_metadata():
+async def test_openai_responses_dheera_ai_router_with_metadata():
     """
     Test that metadata is correctly passed through when explicitly provided to the Router for responses API
     """
@@ -744,18 +744,18 @@ async def test_openai_responses_litellm_router_with_metadata():
             return self._json_data
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         # Configure the mock to return our response
         mock_post.return_value = MockResponse(mock_response, 200)
 
-        litellm._turn_on_debug()
-        router = litellm.Router(
+        dheera_ai._turn_on_debug()
+        router = dheera_ai.Router(
             model_list=[
                 {
                     "model_name": "gpt4o-special-alias",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "model": "gpt-4o",
                         "api_key": "fake-key",
                     },
@@ -782,13 +782,13 @@ async def test_openai_responses_litellm_router_with_metadata():
 
 
 @pytest.mark.asyncio
-async def test_openai_responses_litellm_router_with_prompt():
+async def test_openai_responses_dheera_ai_router_with_prompt():
     """Test that prompt object is passed through the Router for responses API"""
 
     prompt_obj = {
         "id": "pmpt_abc123",
         "version": "2",
-        "variables": {"random_variable": "ishaan_from_litellm"},
+        "variables": {"random_variable": "ishaan_from_dheera_ai"},
     }
 
     mock_response = {
@@ -827,17 +827,17 @@ async def test_openai_responses_litellm_router_with_prompt():
             return self._json_data
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         mock_post.return_value = MockResponse(mock_response, 200)
 
-        litellm._turn_on_debug()
-        router = litellm.Router(
+        dheera_ai._turn_on_debug()
+        router = dheera_ai.Router(
             model_list=[
                 {
                     "model_name": "gpt4o-special-alias",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "model": "gpt-4o",
                         "api_key": "fake-key",
                     },
@@ -859,9 +859,9 @@ async def test_openai_responses_litellm_router_with_prompt():
 def test_bad_request_bad_param_error():
     """Raise a BadRequestError when an invalid parameter value is provided"""
     try:
-        litellm.responses(model="gpt-4o", input="This should fail", temperature=2000)
+        dheera_ai.responses(model="gpt-4o", input="This should fail", temperature=2000)
         pytest.fail("Expected BadRequestError but no exception was raised")
-    except litellm.BadRequestError as e:
+    except dheera_ai.BadRequestError as e:
         print(f"Exception raised: {e}")
         print(f"Exception type: {type(e)}")
         print(f"Exception args: {e.args}")
@@ -874,11 +874,11 @@ def test_bad_request_bad_param_error():
 async def test_async_bad_request_bad_param_error():
     """Raise a BadRequestError when an invalid parameter value is provided"""
     try:
-        await litellm.aresponses(
+        await dheera_ai.aresponses(
             model="gpt-4o", input="This should fail", temperature=2000
         )
         pytest.fail("Expected BadRequestError but no exception was raised")
-    except litellm.BadRequestError as e:
+    except dheera_ai.BadRequestError as e:
         print(f"Exception raised: {e}")
         print(f"Exception type: {type(e)}")
         print(f"Exception args: {e.args}")
@@ -891,7 +891,7 @@ async def test_async_bad_request_bad_param_error():
 @pytest.mark.parametrize("sync_mode", [True, False])
 async def test_openai_o1_pro_response_api(sync_mode):
     """
-    Test that LiteLLM correctly handles an incomplete response from OpenAI's o1-pro model
+    Test that DheeraAI correctly handles an incomplete response from OpenAI's o1-pro model
     due to reaching max_output_tokens limit.
     """
     # Mock response from o1-pro
@@ -944,17 +944,17 @@ async def test_openai_o1_pro_response_api(sync_mode):
             return self._json_data
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         # Configure the mock to return our response
         mock_post.return_value = MockResponse(mock_response, 200)
 
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
 
         # Call o1-pro with max_output_tokens=20
-        response = await litellm.aresponses(
+        response = await dheera_ai.aresponses(
             model="openai/o1-pro",
             input="Write a detailed essay about artificial intelligence and its impact on society",
             max_output_tokens=20,
@@ -988,7 +988,7 @@ async def test_openai_o1_pro_response_api(sync_mode):
 @pytest.mark.parametrize("sync_mode", [True, False])
 async def test_openai_o1_pro_response_api_streaming(sync_mode):
     """
-    Test that LiteLLM correctly handles an incomplete response from OpenAI's o1-pro model
+    Test that DheeraAI correctly handles an incomplete response from OpenAI's o1-pro model
     due to reaching max_output_tokens limit in both sync and async streaming modes.
     """
     # Mock response from o1-pro
@@ -1041,23 +1041,23 @@ async def test_openai_o1_pro_response_api_streaming(sync_mode):
             return self._json_data
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         # Configure the mock to return our response
         mock_post.return_value = MockResponse(mock_response, 200)
 
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
 
         # Verify the request was made correctly
         if sync_mode:
             # For sync mode, we need to patch the sync HTTP handler
             with patch(
-                "litellm.llms.custom_httpx.http_handler.HTTPHandler.post",
+                "dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post",
                 return_value=MockResponse(mock_response, 200),
             ) as mock_sync_post:
-                response = litellm.responses(
+                response = dheera_ai.responses(
                     model="openai/o1-pro",
                     input="Write a detailed essay about artificial intelligence and its impact on society",
                     max_output_tokens=20,
@@ -1068,7 +1068,7 @@ async def test_openai_o1_pro_response_api_streaming(sync_mode):
                 event_count = 0
                 for event in response:
                     print(
-                        f"Sync litellm response #{event_count}:",
+                        f"Sync dheera_ai response #{event_count}:",
                         json.dumps(event, indent=4, default=str),
                     )
                     event_count += 1
@@ -1081,7 +1081,7 @@ async def test_openai_o1_pro_response_api_streaming(sync_mode):
                 assert "stream" not in request_body
         else:
             # For async mode
-            response = await litellm.aresponses(
+            response = await dheera_ai.aresponses(
                 model="openai/o1-pro",
                 input="Write a detailed essay about artificial intelligence and its impact on society",
                 max_output_tokens=20,
@@ -1092,7 +1092,7 @@ async def test_openai_o1_pro_response_api_streaming(sync_mode):
             event_count = 0
             async for event in response:
                 print(
-                    f"Async litellm response #{event_count}:",
+                    f"Async dheera_ai response #{event_count}:",
                     json.dumps(event, indent=4, default=str),
                 )
                 event_count += 1
@@ -1107,9 +1107,9 @@ async def test_openai_o1_pro_response_api_streaming(sync_mode):
 
 def test_basic_computer_use_preview_tool_call():
     """
-    Test that LiteLLM correctly handles a computer_use_preview tool call where the environment is set to "linux"
+    Test that DheeraAI correctly handles a computer_use_preview tool call where the environment is set to "linux"
 
-    linux is an unsupported environment for the computer_use_preview tool, but litellm users should still be able to pass it to openai
+    linux is an unsupported environment for the computer_use_preview tool, but dheera_ai users should still be able to pass it to openai
     """
     # Mock response from OpenAI
 
@@ -1162,14 +1162,14 @@ def test_basic_computer_use_preview_tool_call():
             return self._json_data
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.HTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post",
         return_value=MockResponse(mock_response, 200),
     ) as mock_post:
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
 
         # Call the responses API with computer_use_preview tool
-        response = litellm.responses(
+        response = dheera_ai.responses(
             model="openai/computer-use-preview",
             tools=[
                 {
@@ -1206,7 +1206,7 @@ def test_basic_computer_use_preview_tool_call():
 
 
 def test_mcp_tools_with_responses_api():
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     MCP_TOOLS = [
         {
             "type": "mcp",
@@ -1222,7 +1222,7 @@ def test_mcp_tools_with_responses_api():
     #########################################################
     # Step 1: OpenAI will use MCP LIST, and return a list of MCP calls for our approval
     try:
-        response = litellm.responses(model=MODEL, tools=MCP_TOOLS, input=USER_QUERY)
+        response = dheera_ai.responses(model=MODEL, tools=MCP_TOOLS, input=USER_QUERY)
         print(response)
 
         response = cast(ResponsesAPIResponse, response)
@@ -1235,7 +1235,7 @@ def test_mcp_tools_with_responses_api():
 
         # Step 2: Send followup with approval for the MCP call
         if mcp_approval_id:
-            response_with_mcp_call = litellm.responses(
+            response_with_mcp_call = dheera_ai.responses(
                 model=MODEL,
                 tools=MCP_TOOLS,
                 input=[
@@ -1248,7 +1248,7 @@ def test_mcp_tools_with_responses_api():
                 previous_response_id=response.id,
             )
             print(response_with_mcp_call)
-    except litellm.APIError as e:
+    except dheera_ai.APIError as e:
         if (
             "424" in str(e)
             or "Failed Dependency" in str(e)
@@ -1257,7 +1257,7 @@ def test_mcp_tools_with_responses_api():
             pytest.skip(f"Skipping test due to external MCP server error: {e}")
         else:
             raise e
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         if "500" in str(e) or "server_error" in str(e):
             pytest.skip(
                 f"Skipping test due to OpenAI server error (likely MCP server unavailable): {e}"
@@ -1269,11 +1269,11 @@ def test_mcp_tools_with_responses_api():
 @pytest.mark.asyncio
 async def test_openai_responses_api_field_types():
     """Test that specific fields in the response have the correct types"""
-    litellm._turn_on_debug()
-    litellm.set_verbose = True
+    dheera_ai._turn_on_debug()
+    dheera_ai.set_verbose = True
 
     # Test with store=True
-    response = await litellm.aresponses(
+    response = await dheera_ai.aresponses(
         model="gpt-4o",
         input="hi",
     )
@@ -1286,7 +1286,7 @@ async def test_openai_responses_api_field_types():
     assert response.store is True, "store field should match input value"
 
     # Test without store parameter
-    response_without_store = await litellm.aresponses(model="gpt-4o", input="hi")
+    response_without_store = await dheera_ai.aresponses(model="gpt-4o", input="hi")
 
     # Verify created_at is still an integer
     assert isinstance(
@@ -1303,13 +1303,13 @@ async def test_store_field_transformation():
     config = OpenAIResponsesAPIConfig()
 
     # Initialize logging object with required parameters
-    logging_obj = LiteLLMLoggingObj(
+    logging_obj = DheeraAILoggingObj(
         model="gpt-4o",
         messages=[],
         stream=False,
         call_type="aresponses",
         start_time=time.time(),
-        litellm_call_id="test-call-id",
+        dheera_ai_call_id="test-call-id",
         function_id="test-function-id",
     )
 
@@ -1416,7 +1416,7 @@ async def test_store_field_transformation():
 async def test_aresponses_service_tier_and_safety_identifier():
     """
     Test that service_tier and safety_identifier parameters are correctly sent in the request body
-    when using litellm.aresponses.
+    when using dheera_ai.aresponses.
     """
     mock_response = {
         "id": "resp_01234567890abcdef",
@@ -1467,17 +1467,17 @@ async def test_aresponses_service_tier_and_safety_identifier():
             return self._json_data
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         # Configure the mock to return our response
         mock_post.return_value = MockResponse(mock_response, 200)
 
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
 
         # Call aresponses with service_tier and safety_identifier
-        response = await litellm.aresponses(
+        response = await dheera_ai.aresponses(
             model="openai/gpt-4o",
             input="Test with service tier and safety identifier",
             service_tier="flex",
@@ -1564,17 +1564,17 @@ async def test_openai_gpt5_reasoning_effort_parameter():
             return self._json_data
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         # Configure the mock to return our response
         mock_post.return_value = MockResponse(mock_response, 200)
 
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
 
         # Call aresponses with reasoning_effort parameter
-        response = await litellm.aresponses(
+        response = await dheera_ai.aresponses(
             model="openai/gpt-5-mini",
             input="What is the capital of France?",
             reasoning={"effort": "minimal"},
@@ -1602,9 +1602,9 @@ async def test_openai_gpt5_reasoning_effort_parameter():
 @pytest.mark.asyncio
 @pytest.mark.parametrize("stream", [True, False])
 async def test_basic_openai_responses_with_websearch(stream):
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     request_model = "gpt-4o"
-    response = await litellm.aresponses(
+    response = await dheera_ai.aresponses(
         model=request_model,
         stream=stream,
         input="hi",
@@ -1620,20 +1620,20 @@ async def test_basic_openai_responses_with_websearch(stream):
 @pytest.mark.asyncio
 async def test_openai_responses_api_token_limit_error():
     """
-    Relevant issue: https://github.com/BerriAI/litellm/issues/15785
+    Relevant issue: https://github.com/BerriAI/dheera_ai/issues/15785
 
 
     When this fails you'll see:
     "pydantic_core._pydantic_core.ValidationError: 3 validation errors for ErrorEvent"
     in the console.
     """
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     # Generate text with >400k tokens to trigger token limit error
     oversized_text = "This is a test sentence. " * 50000  # ~400k tokens
 
     # This will raise ValidationError instead of showing the real error
-    response = await litellm.aresponses(
+    response = await dheera_ai.aresponses(
         model="gpt-5-mini", input=oversized_text, stream=True
     )
 
@@ -1643,9 +1643,9 @@ async def test_openai_responses_api_token_limit_error():
 
 async def test_openai_streaming_logging():
     """Test that OpenAI Responses API streaming logging is working correctly."""
-    litellm._turn_on_debug()
-    from litellm.integrations.custom_logger import CustomLogger
-    from litellm.types.utils import Usage
+    dheera_ai._turn_on_debug()
+    from dheera_ai.integrations.custom_logger import CustomLogger
+    from dheera_ai.types.utils import Usage
 
     class TestCustomLogger(CustomLogger):
         validate_usage = False
@@ -1668,9 +1668,9 @@ async def test_openai_streaming_logging():
             self.validate_usage = True
 
     tcl = TestCustomLogger()
-    litellm.callbacks = [tcl]
+    dheera_ai.callbacks = [tcl]
     request_model = "gpt-5-mini"
-    response = await litellm.aresponses(
+    response = await dheera_ai.aresponses(
         model=request_model,
         input="What is the capital of France?",
         stream=True,
@@ -1680,7 +1680,7 @@ async def test_openai_streaming_logging():
     async for event in response:
         if event.type == "response.completed":
             final_response = event
-        print("litellm response=", json.dumps(event, indent=4, default=str))
+        print("dheera_ai response=", json.dumps(event, indent=4, default=str))
 
     await asyncio.sleep(2)
     assert tcl.validate_usage, "Usage should be validated"
@@ -1731,12 +1731,12 @@ def extra_body_mock_response_data():
 async def test_aresponses_extra_body_params_passed(extra_body_mock_response_data):
     """Test that extra_body parameters are passed in async mode."""
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         mock_post.return_value = MockResponse(extra_body_mock_response_data, 200)
 
-        response = await litellm.aresponses(
+        response = await dheera_ai.aresponses(
             model="gpt-4o",
             input="Test input",
             max_output_tokens=20,
@@ -1765,10 +1765,10 @@ async def test_aresponses_extra_body_params_passed(extra_body_mock_response_data
 def test_responses_extra_body_params_passed_sync(extra_body_mock_response_data):
     """Test that extra_body parameters are passed in sync mode."""
     with patch(
-        "litellm.llms.custom_httpx.http_handler.HTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post",
         return_value=MockResponse(extra_body_mock_response_data, 200),
     ) as mock_post:
-        response = litellm.responses(
+        response = dheera_ai.responses(
             model="gpt-4o",
             input="Sync test",
             max_output_tokens=20,
@@ -1794,12 +1794,12 @@ def test_responses_extra_body_params_passed_sync(extra_body_mock_response_data):
 async def test_extra_body_merges_with_request_data(extra_body_mock_response_data):
     """Test that extra_body is merged into the request data."""
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         mock_post.return_value = MockResponse(extra_body_mock_response_data, 200)
 
-        await litellm.aresponses(
+        await dheera_ai.aresponses(
             model="gpt-4o",
             input="Test",
             temperature=0.7,

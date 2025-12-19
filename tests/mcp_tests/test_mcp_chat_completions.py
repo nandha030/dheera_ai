@@ -1,17 +1,17 @@
 import pytest
 
-import litellm
-from litellm.types.utils import ModelResponse
+import dheera_ai
+from dheera_ai.types.utils import ModelResponse
 
 
 @pytest.mark.asyncio
 async def test_acompletion_mcp_auto_exec(monkeypatch):
     from types import SimpleNamespace
 
-    from litellm.responses.mcp.litellm_proxy_mcp_handler import (
-        LiteLLM_Proxy_MCP_Handler,
+    from dheera_ai.responses.mcp.dheera_ai_proxy_mcp_handler import (
+        DheeraAI_Proxy_MCP_Handler,
     )
-    from litellm.responses.utils import ResponsesAPIRequestUtils
+    from dheera_ai.responses.utils import ResponsesAPIRequestUtils
 
     dummy_tool = SimpleNamespace(
         name="local_search",
@@ -19,7 +19,7 @@ async def test_acompletion_mcp_auto_exec(monkeypatch):
         inputSchema={"type": "object", "properties": {}},
     )
 
-    async def fake_process(user_api_key_auth, mcp_tools_with_litellm_proxy):
+    async def fake_process(user_api_key_auth, mcp_tools_with_dheera_ai_proxy):
         return [dummy_tool], {"local_search": "local"}
 
     async def fake_execute(**kwargs):
@@ -39,12 +39,12 @@ async def test_acompletion_mcp_auto_exec(monkeypatch):
     fake_execute.called = False  # type: ignore[attr-defined]
 
     monkeypatch.setattr(
-        LiteLLM_Proxy_MCP_Handler,
+        DheeraAI_Proxy_MCP_Handler,
         "_process_mcp_tools_without_openai_transform",
         fake_process,
     )
     monkeypatch.setattr(
-        LiteLLM_Proxy_MCP_Handler,
+        DheeraAI_Proxy_MCP_Handler,
         "_execute_tool_calls",
         fake_execute,
     )
@@ -54,13 +54,13 @@ async def test_acompletion_mcp_auto_exec(monkeypatch):
         staticmethod(lambda secret_fields, tools: (None, None, None, None)),
     )
 
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": "hello"}],
         tools=[
             {
                 "type": "mcp",
-                "server_url": "litellm_proxy/mcp/local",
+                "server_url": "dheera_ai_proxy/mcp/local",
                 "server_label": "local",
                 "require_approval": "never",
             }
@@ -84,10 +84,10 @@ async def test_acompletion_mcp_auto_exec(monkeypatch):
 async def test_acompletion_mcp_respects_manual_approval(monkeypatch):
     from types import SimpleNamespace
 
-    from litellm.responses.mcp.litellm_proxy_mcp_handler import (
-        LiteLLM_Proxy_MCP_Handler,
+    from dheera_ai.responses.mcp.dheera_ai_proxy_mcp_handler import (
+        DheeraAI_Proxy_MCP_Handler,
     )
-    from litellm.responses.utils import ResponsesAPIRequestUtils
+    from dheera_ai.responses.utils import ResponsesAPIRequestUtils
 
     dummy_tool = SimpleNamespace(
         name="local_search",
@@ -95,19 +95,19 @@ async def test_acompletion_mcp_respects_manual_approval(monkeypatch):
         inputSchema={"type": "object", "properties": {}},
     )
 
-    async def fake_process(user_api_key_auth, mcp_tools_with_litellm_proxy):
+    async def fake_process(user_api_key_auth, mcp_tools_with_dheera_ai_proxy):
         return [dummy_tool], {"local_search": "local"}
 
     async def fake_execute(**kwargs):
         pytest.fail("auto execution should not run when approval is required")
 
     monkeypatch.setattr(
-        LiteLLM_Proxy_MCP_Handler,
+        DheeraAI_Proxy_MCP_Handler,
         "_process_mcp_tools_without_openai_transform",
         fake_process,
     )
     monkeypatch.setattr(
-        LiteLLM_Proxy_MCP_Handler,
+        DheeraAI_Proxy_MCP_Handler,
         "_execute_tool_calls",
         fake_execute,
     )
@@ -117,13 +117,13 @@ async def test_acompletion_mcp_respects_manual_approval(monkeypatch):
         staticmethod(lambda secret_fields, tools: (None, None, None, None)),
     )
 
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": "hello"}],
         tools=[
             {
                 "type": "mcp",
-                "server_url": "litellm_proxy/mcp/local",
+                "server_url": "dheera_ai_proxy/mcp/local",
                 "server_label": "local",
                 "require_approval": "manual",
             }

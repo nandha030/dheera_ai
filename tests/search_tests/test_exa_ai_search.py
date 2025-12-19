@@ -1,5 +1,5 @@
 import pytest
-import litellm
+import dheera_ai
 from typing import List, Union
 
 from tests.search_tests.base_search_unit_tests import BaseSearchTest

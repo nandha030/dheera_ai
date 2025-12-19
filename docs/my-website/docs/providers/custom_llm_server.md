@@ -4,7 +4,7 @@ import Image from '@theme/IdealImage';
 
 # Custom API Server (Custom Format)
 
-Call your custom torch-serve / internal LLM APIs via LiteLLM
+Call your custom torch-serve / internal LLM APIs via Dheera AI
 
 :::info
 
@@ -13,24 +13,24 @@ Call your custom torch-serve / internal LLM APIs via LiteLLM
 :::
 
 Supported Routes:
-- `/v1/chat/completions` -> `litellm.acompletion`
-- `/v1/completions` -> `litellm.atext_completion`
-- `/v1/embeddings` -> `litellm.aembedding`
-- `/v1/images/generations` -> `litellm.aimage_generation`
-- `/v1/images/edits` -> `litellm.aimage_edit`
+- `/v1/chat/completions` -> `dheera_ai.acompletion`
+- `/v1/completions` -> `dheera_ai.atext_completion`
+- `/v1/embeddings` -> `dheera_ai.aembedding`
+- `/v1/images/generations` -> `dheera_ai.aimage_generation`
+- `/v1/images/edits` -> `dheera_ai.aimage_edit`
 
-- `/v1/messages` -> `litellm.acompletion`
+- `/v1/messages` -> `dheera_ai.acompletion`
 
 ## Quick Start 
 
 ```python showLineNumbers
-import litellm
-from litellm import CustomLLM, completion, get_llm_provider
+import dheera_ai
+from dheera_ai import CustomLLM, completion, get_llm_provider
 
 
 class MyCustomLLM(CustomLLM):
-    def completion(self, *args, **kwargs) -> litellm.ModelResponse:
-        return litellm.completion(
+    def completion(self, *args, **kwargs) -> dheera_ai.ModelResponse:
+        return dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hello world"}],
             mock_response="Hi!",
@@ -38,7 +38,7 @@ class MyCustomLLM(CustomLLM):
 
 my_custom_llm = MyCustomLLM()
 
-litellm.custom_provider_map = [ # 👈 KEY STEP - REGISTER HANDLER
+dheera_ai.custom_provider_map = [ # 👈 KEY STEP - REGISTER HANDLER
         {"provider": "my-custom-llm", "custom_handler": my_custom_llm}
     ]
 
@@ -55,20 +55,20 @@ assert resp.choices[0].message.content == "Hi!"
 1. Setup your `custom_handler.py` file 
 
 ```python
-import litellm
-from litellm import CustomLLM, completion, get_llm_provider
+import dheera_ai
+from dheera_ai import CustomLLM, completion, get_llm_provider
 
 
 class MyCustomLLM(CustomLLM):
-    def completion(self, *args, **kwargs) -> litellm.ModelResponse:
-        return litellm.completion(
+    def completion(self, *args, **kwargs) -> dheera_ai.ModelResponse:
+        return dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hello world"}],
             mock_response="Hi!",
         )  # type: ignore
 
-    async def acompletion(self, *args, **kwargs) -> litellm.ModelResponse:
-        return litellm.completion(
+    async def acompletion(self, *args, **kwargs) -> dheera_ai.ModelResponse:
+        return dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hello world"}],
             mock_response="Hi!",
@@ -90,19 +90,19 @@ custom_handler: `custom_handler.my_custom_llm`
 ```yaml
 model_list:
   - model_name: "test-model"             
-    litellm_params:
+    dheera_ai_params:
       model: "openai/text-embedding-ada-002"
   - model_name: "my-custom-model"
-    litellm_params:
+    dheera_ai_params:
       model: "my-custom-llm/my-model"
 
-litellm_settings:
+dheera_ai_settings:
   custom_provider_map:
   - {"provider": "my-custom-llm", "custom_handler": custom_handler.my_custom_llm}
 ```
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -155,8 +155,8 @@ s/o [@Eloy Lafuente](https://github.com/stronk7) for this code example.
 ```python
 import time
 from typing import Iterator, AsyncIterator
-from litellm.types.utils import GenericStreamingChunk, ModelResponse
-from litellm import CustomLLM, completion, acompletion
+from dheera_ai.types.utils import GenericStreamingChunk, ModelResponse
+from dheera_ai import CustomLLM, completion, acompletion
 
 class UnixTimeLLM(CustomLLM):
     def completion(self, *args, **kwargs) -> ModelResponse:
@@ -200,9 +200,9 @@ unixtime = UnixTimeLLM()
 
 1. Setup your `custom_handler.py` file 
 ```python
-import litellm
-from litellm import CustomLLM
-from litellm.types.utils import ImageResponse, ImageObject
+import dheera_ai
+from dheera_ai import CustomLLM
+from dheera_ai.types.utils import ImageResponse, ImageObject
 
 
 class MyCustomLLM(CustomLLM):
@@ -228,19 +228,19 @@ custom_handler: `custom_handler.my_custom_llm`
 ```yaml
 model_list:
   - model_name: "test-model"             
-    litellm_params:
+    dheera_ai_params:
       model: "openai/text-embedding-ada-002"
   - model_name: "my-custom-model"
-    litellm_params:
+    dheera_ai_params:
       model: "my-custom-llm/my-model"
 
-litellm_settings:
+dheera_ai_settings:
   custom_provider_map:
   - {"provider": "my-custom-llm", "custom_handler": custom_handler.my_custom_llm}
 ```
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -268,9 +268,9 @@ Expected Response
 
 1. Setup your `custom_handler.py` file
 ```python
-import litellm
-from litellm import CustomLLM
-from litellm.types.utils import ImageResponse, ImageObject
+import dheera_ai
+from dheera_ai import CustomLLM
+from dheera_ai.types.utils import ImageResponse, ImageObject
 import time
 
 class MyCustomLLM(CustomLLM):
@@ -310,16 +310,16 @@ custom_handler: `custom_handler.my_custom_llm`
 ```yaml
 model_list:
   - model_name: "my-custom-image-edit-model"
-    litellm_params:
+    dheera_ai_params:
       model: "my-custom-llm/my-model"
 
-litellm_settings:
+dheera_ai_settings:
   custom_provider_map:
   - {"provider": "my-custom-llm", "custom_handler": custom_handler.my_custom_llm}
 ```
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -344,18 +344,18 @@ Expected Response
 ## Anthropic `/v1/messages`
 
 - Write the integration for .acompletion
-- litellm will transform it to /v1/messages
+- dheera_ai will transform it to /v1/messages
 
 1. Setup your `custom_handler.py` file 
 
 ```python
-import litellm
-from litellm import CustomLLM, completion, get_llm_provider
+import dheera_ai
+from dheera_ai import CustomLLM, completion, get_llm_provider
 
 
 class MyCustomLLM(CustomLLM):
-    async def acompletion(self, *args, **kwargs) -> litellm.ModelResponse:
-        return litellm.completion(
+    async def acompletion(self, *args, **kwargs) -> dheera_ai.ModelResponse:
+        return dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hello world"}],
             mock_response="Hi!",
@@ -377,19 +377,19 @@ custom_handler: `custom_handler.my_custom_llm`
 ```yaml
 model_list:
   - model_name: "test-model"             
-    litellm_params:
+    dheera_ai_params:
       model: "openai/text-embedding-ada-002"
   - model_name: "my-custom-model"
-    litellm_params:
+    dheera_ai_params:
       model: "my-custom-llm/my-model"
 
-litellm_settings:
+dheera_ai_settings:
   custom_provider_map:
   - {"provider": "my-custom-llm", "custom_handler": custom_handler.my_custom_llm}
 ```
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -447,14 +447,14 @@ Here's how to set this:
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
-from litellm import CustomLLM, completion, get_llm_provider
+import dheera_ai
+from dheera_ai import CustomLLM, completion, get_llm_provider
 
 
 class MyCustomLLM(CustomLLM):
-    def completion(self, *args, **kwargs) -> litellm.ModelResponse:
+    def completion(self, *args, **kwargs) -> dheera_ai.ModelResponse:
         assert kwargs["optional_params"] == {"my_custom_param": "my-custom-param"} # 👈 CHECK HERE
-        return litellm.completion(
+        return dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hello world"}],
             mock_response="Hi!",
@@ -462,7 +462,7 @@ class MyCustomLLM(CustomLLM):
 
 my_custom_llm = MyCustomLLM()
 
-litellm.custom_provider_map = [ # 👈 KEY STEP - REGISTER HANDLER
+dheera_ai.custom_provider_map = [ # 👈 KEY STEP - REGISTER HANDLER
         {"provider": "my-custom-llm", "custom_handler": my_custom_llm}
     ]
 
@@ -475,9 +475,9 @@ resp = completion(model="my-custom-llm/my-model", my_custom_param="my-custom-par
 
 1. Setup your `custom_handler.py` file 
 ```python
-import litellm
-from litellm import CustomLLM
-from litellm.types.utils import ImageResponse, ImageObject
+import dheera_ai
+from dheera_ai import CustomLLM
+from dheera_ai.types.utils import ImageResponse, ImageObject
 
 
 class MyCustomLLM(CustomLLM):
@@ -504,20 +504,20 @@ custom_handler: `custom_handler.my_custom_llm`
 ```yaml
 model_list:
   - model_name: "test-model"             
-    litellm_params:
+    dheera_ai_params:
       model: "openai/text-embedding-ada-002"
   - model_name: "my-custom-model"
-    litellm_params:
+    dheera_ai_params:
       model: "my-custom-llm/my-model"
       my_custom_param: "my-custom-param" # 👈 CUSTOM PARAM
 
-litellm_settings:
+dheera_ai_settings:
   custom_provider_map:
   - {"provider": "my-custom-llm", "custom_handler": custom_handler.my_custom_llm}
 ```
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -540,9 +540,9 @@ curl -X POST 'http://0.0.0.0:4000/v1/images/generations' \
 ## Custom Handler Spec
 
 ```python
-from litellm.types.utils import GenericStreamingChunk, ModelResponse, ImageResponse
+from dheera_ai.types.utils import GenericStreamingChunk, ModelResponse, ImageResponse
 from typing import Iterator, AsyncIterator, Any, Optional, Union
-from litellm.llms.base import BaseLLM
+from dheera_ai.llms.base import BaseLLM
 
 class CustomLLMError(Exception):  # use this for all your exceptions
     def __init__(

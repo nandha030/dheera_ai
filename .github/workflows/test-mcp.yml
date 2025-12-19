@@ -1,4 +1,4 @@
-name: LiteLLM MCP Tests (folder - tests/mcp_tests)
+name: Dheera AI MCP Tests (folder - tests/mcp_tests)
 
 on:
   pull_request:
@@ -14,8 +14,8 @@ jobs:
 
     - name: Thank You Message
       run: |
-        echo "### 🙏 Thank you for contributing to LiteLLM!" >> $GITHUB_STEP_SUMMARY
-        echo "Your PR is being tested now. We appreciate your help in making LiteLLM better!" >> $GITHUB_STEP_SUMMARY
+        echo "### 🙏 Thank you for contributing to Dheera AI!" >> $GITHUB_STEP_SUMMARY
+        echo "Your PR is being tested now. We appreciate your help in making Dheera AI better!" >> $GITHUB_STEP_SUMMARY
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -38,7 +38,7 @@ jobs:
         poetry run pip install "mcp==1.10.1"
         poetry run pip install pytest-xdist
 
-    - name: Setup litellm-enterprise as local package
+    - name: Setup dheera_ai-enterprise as local package
       run: |
         cd enterprise
         python -m pip install -e .
@@ -46,4 +46,4 @@ jobs:
 
     - name: Run MCP tests
       run: |
-        poetry run pytest tests/mcp_tests -x -vv -n 4 --cov=litellm --cov-report=xml --durations=5
+        poetry run pytest tests/mcp_tests -x -vv -n 4 --cov=dheera_ai --cov-report=xml --durations=5

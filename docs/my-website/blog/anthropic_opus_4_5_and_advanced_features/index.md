@@ -4,15 +4,15 @@ title: "Day 0 Support: Claude 4.5 Opus (+Advanced Features)"
 date: 2025-11-25T10:00:00
 authors:
   - name: Sameer Kankute
-    title: SWE @ LiteLLM (LLM Translation)
+    title: SWE @ Dheera AI (LLM Translation)
     url: https://www.linkedin.com/in/sameer-kankute/
     image_url: https://media.licdn.com/dms/image/v2/D4D03AQHB_loQYd5gjg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1719137160975?e=1765411200&v=beta&t=c8396f--_lH6Fb_pVvx_jGholPfcl0bvwmNynbNdnII
   - name: Krrish Dholakia
-    title: "CEO, LiteLLM"
+    title: "CEO, Dheera AI"
     url: https://www.linkedin.com/in/krish-d/
     image_url: https://pbs.twimg.com/profile_images/1298587542745358340/DZv3Oj-h_400x400.jpg
   - name: Ishaan Jaff
-    title: "CTO, LiteLLM"
+    title: "CTO, Dheera AI"
     url: https://www.linkedin.com/in/reffajnaahsi/
     image_url: https://pbs.twimg.com/profile_images/1613813310264340481/lz54oEiB_400x400.jpg
 tags: [anthropic, claude, tool search, programmatic tool calling, effort, advanced features]
@@ -22,7 +22,7 @@ hide_table_of_contents: false
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-This guide covers Anthropic's latest model (Claude Opus 4.5) and its advanced features now available in LiteLLM: Tool Search, Programmatic Tool Calling, Tool Input Examples, and the Effort Parameter.
+This guide covers Anthropic's latest model (Claude Opus 4.5) and its advanced features now available in Dheera AI: Tool Search, Programmatic Tool Calling, Tool Input Examples, and the Effort Parameter.
 
 ---
 
@@ -38,12 +38,12 @@ Supported Providers: [Anthropic](../../docs/providers/anthropic), [Bedrock](../.
 ## Usage
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # set env - [OPTIONAL] replace with your anthropic key
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
@@ -57,22 +57,22 @@ print(response)
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 **1. Setup config.yaml**
 
 ```yaml
 model_list:
   - model_name: claude-4 ### RECEIVED MODEL NAME ###
-    litellm_params: # all params accepted by litellm.completion() - https://docs.litellm.ai/docs/completion/input
-      model: claude-opus-4-5-20251101 ### MODEL NAME sent to `litellm.completion()` ###
+    dheera_ai_params: # all params accepted by dheera_ai.completion() - https://docs.dheera_ai.ai/docs/completion/input
+      model: claude-opus-4-5-20251101 ### MODEL NAME sent to `dheera_ai.completion()` ###
       api_key: "os.environ/ANTHROPIC_API_KEY" # does os.getenv("ANTHROPIC_API_KEY")
 ```
 
 **2. Start the proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 **3. Test it!**
@@ -82,7 +82,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl --location 'http://0.0.0.0:4000/chat/completions' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_KEY' \
 --data ' {
       "model": "claude-4",
       "messages": [
@@ -99,7 +99,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 ```bash
 curl --location 'http://0.0.0.0:4000/v1/messages' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_KEY' \
 --data ' {
       "model": "claude-4",
       "max_tokens": 1024,
@@ -121,19 +121,19 @@ curl --location 'http://0.0.0.0:4000/v1/messages' \
 
 :::info
 
-LiteLLM uses the boto3 library to authenticate with Bedrock.
+Dheera AI uses the boto3 library to authenticate with Bedrock.
 
 For more ways to authenticate with Bedrock, see the [Bedrock documentation](../../docs/providers/bedrock#authentication).
 
 :::
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
 os.environ["AWS_SECRET_ACCESS_KEY"] = ""
@@ -147,15 +147,15 @@ response = completion(
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 **1. Setup config.yaml**
 
 ```yaml
 model_list:
   - model_name: claude-4 ### RECEIVED MODEL NAME ###
-    litellm_params: # all params accepted by litellm.completion() - https://docs.litellm.ai/docs/completion/input
-      model: bedrock/us.anthropic.claude-opus-4-5-20251101-v1:0 ### MODEL NAME sent to `litellm.completion()` ###
+    dheera_ai_params: # all params accepted by dheera_ai.completion() - https://docs.dheera_ai.ai/docs/completion/input
+      model: bedrock/us.anthropic.claude-opus-4-5-20251101-v1:0 ### MODEL NAME sent to `dheera_ai.completion()` ###
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
       aws_region_name: os.environ/AWS_REGION_NAME
@@ -164,7 +164,7 @@ model_list:
 **2. Start the proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 **3. Test it!**
@@ -174,7 +174,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl --location 'http://0.0.0.0:4000/chat/completions' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_KEY' \
 --data ' {
       "model": "claude-4",
       "messages": [
@@ -191,7 +191,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 ```bash
 curl --location 'http://0.0.0.0:4000/v1/messages' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_KEY' \
 --data ' {
       "model": "claude-4",
       "max_tokens": 1024,
@@ -209,7 +209,7 @@ curl --location 'http://0.0.0.0:4000/v1/messages' \
 ```bash
 curl --location 'http://0.0.0.0:4000/bedrock/model/claude-4/invoke' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_KEY' \
 --data ' {
       "max_tokens": 1024,
       "messages": [{"role": "user", "content": "Hello, how are you?"}]
@@ -220,7 +220,7 @@ curl --location 'http://0.0.0.0:4000/bedrock/model/claude-4/invoke' \
 ```bash
 curl --location 'http://0.0.0.0:4000/bedrock/model/claude-4/converse' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_KEY' \
 --data ' {
       "messages": [{"role": "user", "content": "Hello, how are you?"}]
     }'
@@ -235,10 +235,10 @@ curl --location 'http://0.0.0.0:4000/bedrock/model/claude-4/converse' \
 
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import json 
 
 ## GET CREDENTIALS 
@@ -265,14 +265,14 @@ response = completion(
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 **1. Setup config.yaml**
 
 ```yaml
 model_list:
   - model_name: claude-4 ### RECEIVED MODEL NAME ###
-    litellm_params:
+    dheera_ai_params:
         model: vertex_ai/claude-opus-4-5@20251101
         vertex_credentials: "/path/to/service_account.json"
         vertex_project: "your-project-id"
@@ -282,7 +282,7 @@ model_list:
 **2. Start the proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 **3. Test it!**
@@ -292,7 +292,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl --location 'http://0.0.0.0:4000/chat/completions' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_KEY' \
 --data ' {
       "model": "claude-4",
       "messages": [
@@ -309,7 +309,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 ```bash
 curl --location 'http://0.0.0.0:4000/v1/messages' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_KEY' \
 --data ' {
       "model": "claude-4",
       "max_tokens": 1024,
@@ -329,14 +329,14 @@ curl --location 'http://0.0.0.0:4000/v1/messages' \
 
 ## Usage - Azure Anthropic (Azure Foundry Claude)
 
-LiteLLM funnels Azure Claude deployments through the `azure_ai/` provider so Claude Opus models on Azure Foundry keep working with Tool Search, Effort, streaming, and the rest of the advanced feature set. Point `AZURE_AI_API_BASE` to `https://<resource>.services.ai.azure.com/anthropic` (LiteLLM appends `/v1/messages` automatically) and authenticate with `AZURE_AI_API_KEY` or an Azure AD token.
+Dheera AI funnels Azure Claude deployments through the `azure_ai/` provider so Claude Opus models on Azure Foundry keep working with Tool Search, Effort, streaming, and the rest of the advanced feature set. Point `AZURE_AI_API_BASE` to `https://<resource>.services.ai.azure.com/anthropic` (Dheera AI appends `/v1/messages` automatically) and authenticate with `AZURE_AI_API_KEY` or an Azure AD token.
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # Configure Azure credentials
 os.environ["AZURE_AI_API_KEY"] = "your-azure-ai-api-key"
@@ -356,7 +356,7 @@ for chunk in response:
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 **1. Set environment variables**
 
@@ -370,16 +370,16 @@ export AZURE_AI_API_BASE="https://my-resource.services.ai.azure.com/anthropic"
 ```yaml
 model_list:
   - model_name: claude-4-azure
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/claude-opus-4-1
       api_key: os.environ/AZURE_AI_API_KEY
       api_base: os.environ/AZURE_AI_API_BASE
 ```
 
-**3. Start LiteLLM**
+**3. Start Dheera AI**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 **4. Test the Azure Claude route**
@@ -387,13 +387,13 @@ litellm --config /path/to/config.yaml
 ```bash
 curl --location 'http://0.0.0.0:4000/chat/completions' \
   --header 'Content-Type: application/json' \
-  --header 'Authorization: Bearer $LITELLM_KEY' \
+  --header 'Authorization: Bearer $DHEERA_AI_KEY' \
   --data '{
     "model": "claude-4-azure",
     "messages": [
       {
         "role": "user",
-        "content": "How do I use Claude Opus 4 via Azure Anthropic in LiteLLM?"
+        "content": "How do I use Claude Opus 4 via Azure Anthropic in Dheera AI?"
       }
     ],
     "max_tokens": 1024
@@ -411,10 +411,10 @@ This lets Claude work with thousands of tools, by dynamically loading tools on-d
 ### Usage Example
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python
-import litellm
+import dheera_ai
 import os
 
 # Configure your API key
@@ -488,7 +488,7 @@ tools = [
 ]
 
 # Make a request - Claude will search for and use relevant tools
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-opus-4-5-20251101",
     messages=[{
         "role": "user",
@@ -505,14 +505,14 @@ if hasattr(response.usage, 'server_tool_use'):
     print(f"Tool searches performed: {response.usage.server_tool_use.tool_search_requests}")
 ```
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 1. Setup config.yaml
 
 ```yaml
 model_list:
   - model_name: claude-4
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-opus-4-5-20251101
       api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -520,7 +520,7 @@ model_list:
 2. Start the proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -529,7 +529,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl --location 'http://0.0.0.0:4000/chat/completions' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_KEY' \
 --data ' {
       "model": "claude-4",
       "messages": [{
@@ -628,10 +628,10 @@ tools = [
 Programmatic tool calling allows Claude to write code that calls your tools programmatically. [Learn more](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python
-import litellm
+import dheera_ai
 import json
 
 # Define tools that can be called programmatically
@@ -663,7 +663,7 @@ tools = [
 ]
 
 # First request
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-5-20250929",
     messages=[{
         "role": "user",
@@ -707,7 +707,7 @@ for tool_call in response.choices[0].message.tool_calls:
         })
 
 # Get final response
-final_response = litellm.completion(
+final_response = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-5-20250929",
     messages=messages,
     tools=tools
@@ -717,14 +717,14 @@ print("\nFinal answer:", final_response.choices[0].message.content)
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 1. Setup config.yaml
 
 ```yaml
 model_list:
   - model_name: claude-4
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-opus-4-5-20251101
       api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -732,7 +732,7 @@ model_list:
 2. Start the proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -741,7 +741,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl --location 'http://0.0.0.0:4000/chat/completions' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_KEY' \
 --data ' {
       "model": "claude-4",
       "messages": [{
@@ -788,10 +788,10 @@ You can now provide Claude with examples of how to use your tools. [Learn more](
 
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python
-import litellm
+import dheera_ai
 
 tools = [
     {
@@ -856,7 +856,7 @@ tools = [
     }
 ]
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-5-20250929",
     messages=[{
         "role": "user",
@@ -869,14 +869,14 @@ print("Tool call:", response.choices[0].message.tool_calls[0].function.arguments
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 1. Setup config.yaml
 
 ```yaml
 model_list:
   - model_name: claude-4
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-opus-4-5-20251101
       api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -884,7 +884,7 @@ model_list:
 2. Start the proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -893,7 +893,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl --location 'http://0.0.0.0:4000/chat/completions' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_KEY' \
 --data ' {
       "model": "claude-4",
       "messages": [{
@@ -975,7 +975,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 Control how much effort Claude puts into its response using the `reasoning_effort` parameter. This allows you to trade off between response thoroughness and token efficiency.
 
 :::info
-LiteLLM automatically maps `reasoning_effort` to Anthropic's `output_config` format and adds the required `effort-2025-11-24` beta header for Claude Opus 4.5.
+Dheera AI automatically maps `reasoning_effort` to Anthropic's `output_config` format and adds the required `effort-2025-11-24` beta header for Claude Opus 4.5.
 :::
 
 Potential values for `reasoning_effort` parameter: `"high"`, `"medium"`, `"low"`.
@@ -983,15 +983,15 @@ Potential values for `reasoning_effort` parameter: `"high"`, `"medium"`, `"low"`
 ### Usage Example
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python
-import litellm
+import dheera_ai
 
 message = "Analyze the trade-offs between microservices and monolithic architectures"
 
 # High effort (default) - Maximum capability
-response_high = litellm.completion(
+response_high = dheera_ai.completion(
     model="anthropic/claude-opus-4-5-20251101",
     messages=[{"role": "user", "content": message}],
     reasoning_effort="high"
@@ -1002,7 +1002,7 @@ print(response_high.choices[0].message.content)
 print(f"Tokens used: {response_high.usage.completion_tokens}\n")
 
 # Medium effort - Balanced approach
-response_medium = litellm.completion(
+response_medium = dheera_ai.completion(
     model="anthropic/claude-opus-4-5-20251101",
     messages=[{"role": "user", "content": message}],
     reasoning_effort="medium"
@@ -1013,7 +1013,7 @@ print(response_medium.choices[0].message.content)
 print(f"Tokens used: {response_medium.usage.completion_tokens}\n")
 
 # Low effort - Maximum efficiency
-response_low = litellm.completion(
+response_low = dheera_ai.completion(
     model="anthropic/claude-opus-4-5-20251101",
     messages=[{"role": "user", "content": message}],
     reasoning_effort="low"
@@ -1031,14 +1031,14 @@ print(f"Low:    {response_low.usage.completion_tokens} tokens")
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 1. Setup config.yaml
 
 ```yaml
 model_list:
   - model_name: claude-4
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-opus-4-5-20251101
       api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -1046,7 +1046,7 @@ model_list:
 2. Start the proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -1054,7 +1054,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl --location 'http://0.0.0.0:4000/chat/completions' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer $LITELLM_KEY' \
+--header 'Authorization: Bearer $DHEERA_AI_KEY' \
 --data ' {
       "model": "claude-4",
       "messages": [{

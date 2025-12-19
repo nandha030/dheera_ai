@@ -84,15 +84,15 @@ ignored_function_names = [
 
 def main():
     # router_file = [
-    #     "./litellm/user_api_key_auth.py",
+    #     "./dheera_ai/user_api_key_auth.py",
     # ]
     router_file = [
-        "../../litellm/proxy/auth/user_api_key_auth.py",
+        "../../dheera_ai/proxy/auth/user_api_key_auth.py",
     ]
     # router_file = [
-    #     "../../litellm/router.py",
-    #     "../../litellm/router_utils/pattern_match_deployments.py",
-    #     "../../litellm/router_utils/batch_utils.py",
+    #     "../../dheera_ai/router.py",
+    #     "../../dheera_ai/router_utils/pattern_match_deployments.py",
+    #     "../../dheera_ai/router_utils/batch_utils.py",
     # ]  ## LOCAL TESTING
     # tests_dir = (
     #     "./tests/"  # Update this path if your tests directory is located elsewhere

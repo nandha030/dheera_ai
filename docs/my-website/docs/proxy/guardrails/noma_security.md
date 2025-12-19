@@ -8,26 +8,26 @@ Use [Noma Security](https://noma.security/) to protect your LLM applications wit
 
 ## Quick Start
 
-### 1. Define Guardrails on your LiteLLM config.yaml
+### 1. Define Guardrails on your Dheera AI config.yaml
 
 Define your guardrails under the `guardrails` section:
 
-```yaml showLineNumbers title="litellm config.yaml"
+```yaml showLineNumbers title="dheera_ai config.yaml"
 model_list:
   - model_name: gpt-4o-mini
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o-mini
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "noma-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: noma
       mode: "during_call"
       api_key: os.environ/NOMA_API_KEY
       api_base: os.environ/NOMA_API_BASE
   - guardrail_name: "noma-pre-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: noma
       mode: "pre_call"
       api_key: os.environ/NOMA_API_KEY
@@ -40,10 +40,10 @@ guardrails:
 - `post_call` Run **after** LLM call, on **input & output**
 - `during_call` Run **during** LLM call, on **input**. Same as `pre_call` but runs in parallel with the LLM call. Response not returned until guardrail check completes
 
-### 2. Start LiteLLM Gateway
+### 2. Start Dheera AI Gateway
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 ### 3. Test request
@@ -126,7 +126,7 @@ Expected response:
 ```yaml
 guardrails:
   - guardrail_name: "noma-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: noma
       mode: "pre_call"
       api_key: os.environ/NOMA_API_KEY
@@ -145,7 +145,7 @@ guardrails:
 ### Optional Parameters
 
 - **`api_base`**: Noma API base URL (defaults to `https://api.noma.security/`)
-- **`application_id`**: Your application identifier (defaults to `"litellm"`)
+- **`application_id`**: Your application identifier (defaults to `"dheera_ai"`)
 - **`monitor_mode`**: If `true`, logs violations without blocking (defaults to `false`)
 - **`block_failures`**: If `true`, blocks requests when guardrail API failures occur (defaults to `true`)
 - **`anonymize_input`**: If `true`, replaces sensitive content with anonymized version (defaults to `false`)
@@ -172,7 +172,7 @@ Use monitor mode to test your guardrails without blocking requests:
 ```yaml
 guardrails:
   - guardrail_name: "noma-monitor"
-    litellm_params:
+    dheera_ai_params:
       guardrail: noma
       mode: "pre_call"
       api_key: os.environ/NOMA_API_KEY
@@ -186,7 +186,7 @@ Control behavior when the Noma API is unavailable:
 ```yaml
 guardrails:
   - guardrail_name: "noma-failopen"
-    litellm_params:
+    dheera_ai_params:
       guardrail: noma
       mode: "pre_call"
       api_key: os.environ/NOMA_API_KEY
@@ -200,7 +200,7 @@ Enable anonymization to replace sensitive content instead of blocking:
 ```yaml
 guardrails:
   - guardrail_name: "noma-anonymize"
-    litellm_params:
+    dheera_ai_params:
       guardrail: noma
       mode: "pre_call"
       api_key: os.environ/NOMA_API_KEY
@@ -214,14 +214,14 @@ Apply different configurations for input and output:
 ```yaml
 guardrails:
   - guardrail_name: "noma-strict-input"
-    litellm_params:
+    dheera_ai_params:
       guardrail: noma
       mode: "pre_call"
       api_key: os.environ/NOMA_API_KEY
       block_failures: true
 
   - guardrail_name: "noma-monitor-output"
-    litellm_params:
+    dheera_ai_params:
       guardrail: noma
       mode: "post_call"
       api_key: os.environ/NOMA_API_KEY

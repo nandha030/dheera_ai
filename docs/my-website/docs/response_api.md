@@ -4,7 +4,7 @@ import TabItem from '@theme/TabItem';
 # /responses
 
 
-LiteLLM provides a BETA endpoint in the spec of [OpenAI's `/responses` API](https://platform.openai.com/docs/api-reference/responses)
+Dheera AI provides a BETA endpoint in the spec of [OpenAI's `/responses` API](https://platform.openai.com/docs/api-reference/responses)
 
 Requests to /chat/completions may be bridged here automatically when the provider lacks support for that endpoint. The model’s default `mode` determines how bridging works.(see `model_prices_and_context_window`) 
 
@@ -19,22 +19,22 @@ Requests to /chat/completions may be bridged here automatically when the provide
 | Loadbalancing | ✅ | Works between supported models |
 | Guardrails | ✅ | Applies to input and output text (non-streaming only) |
 | Supported operations | Create a response, Get a response, Delete a response | |
-| Supported LiteLLM Versions | 1.63.8+ | |
-| Supported LLM providers | **All LiteLLM supported providers** | `openai`, `anthropic`, `bedrock`, `vertex_ai`, `gemini`, `azure`, `azure_ai` etc. |
+| Supported Dheera AI Versions | 1.63.8+ | |
+| Supported LLM providers | **All Dheera AI supported providers** | `openai`, `anthropic`, `bedrock`, `vertex_ai`, `gemini`, `azure`, `azure_ai` etc. |
 
 ## Usage
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 <Tabs>
 <TabItem value="openai" label="OpenAI">
 
 #### Non-streaming
 ```python showLineNumbers title="OpenAI Non-streaming Response"
-import litellm
+import dheera_ai
 
 # Non-streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/o1-pro",
     input="Tell me a three sentence bedtime story about a unicorn.",
     max_output_tokens=100
@@ -77,10 +77,10 @@ print(response)
 
 #### Streaming
 ```python showLineNumbers title="OpenAI Streaming Response"
-import litellm
+import dheera_ai
 
 # Streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/o1-pro",
     input="Tell me a three sentence bedtime story about a unicorn.",
     stream=True
@@ -92,11 +92,11 @@ for event in response:
 
 #### Image Generation with Streaming
 ```python showLineNumbers title="OpenAI Streaming Image Generation"
-import litellm
+import dheera_ai
 import base64
 
 # Streaming image generation with partial images
-stream = litellm.responses(
+stream = dheera_ai.responses(
     model="gpt-4.1",  # Use an actual image generation model
     input="Generate a gorgeous image of a river made of white owl feathers",
     stream=True,
@@ -119,11 +119,11 @@ Image generation is supported for models that generate images. Generated images 
 
 **Gemini (Google AI Studio):**
 ```python showLineNumbers title="Gemini Image Generation"
-import litellm
+import dheera_ai
 import base64
 
 # Gemini image generation models don't require tools parameter
-response = litellm.responses(
+response = dheera_ai.responses(
     model="gemini/gemini-2.5-flash-image",
     input="Generate a cute cat playing with yarn"
 )
@@ -143,11 +143,11 @@ print(f"Image saved: generated_{response.output[0].id}.png")
 
 **OpenAI:**
 ```python showLineNumbers title="OpenAI Image Generation"
-import litellm
+import dheera_ai
 import base64
 
 # OpenAI models require tools parameter for image generation
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/gpt-4o",
     input="Generate a futuristic city at sunset",
     tools=[{"type": "image_generation"}]
@@ -194,10 +194,10 @@ When image generation is successful, the response contains:
 
 #### GET a Response
 ```python showLineNumbers title="Get Response by ID"
-import litellm
+import dheera_ai
 
 # First, create a response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/o1-pro",
     input="Tell me a three sentence bedtime story about a unicorn.",
     max_output_tokens=100
@@ -207,24 +207,24 @@ response = litellm.responses(
 response_id = response.id
 
 # Retrieve the response by ID
-retrieved_response = litellm.get_responses(
+retrieved_response = dheera_ai.get_responses(
     response_id=response_id
 )
 
 print(retrieved_response)
 
 # For async usage
-# retrieved_response = await litellm.aget_responses(response_id=response_id)
+# retrieved_response = await dheera_ai.aget_responses(response_id=response_id)
 ```
 
 #### CANCEL a Response
 You can cancel an in-progress response (if supported by the provider):
 
 ```python showLineNumbers title="Cancel Response by ID"
-import litellm
+import dheera_ai
 
 # First, create a response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/o1-pro",
     input="Tell me a three sentence bedtime story about a unicorn.",
     max_output_tokens=100
@@ -234,14 +234,14 @@ response = litellm.responses(
 response_id = response.id
 
 # Cancel the response by ID
-cancel_response = litellm.cancel_responses(
+cancel_response = dheera_ai.cancel_responses(
     response_id=response_id
 )
 
 print(cancel_response)
 
 # For async usage
-# cancel_response = await litellm.acancel_responses(response_id=response_id)
+# cancel_response = await dheera_ai.acancel_responses(response_id=response_id)
 ```
 
 
@@ -256,10 +256,10 @@ This will attempt to cancel the in-progress response with the given ID.
 
 #### DELETE a Response
 ```python showLineNumbers title="Delete Response by ID"
-import litellm
+import dheera_ai
 
 # First, create a response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/o1-pro",
     input="Tell me a three sentence bedtime story about a unicorn.",
     max_output_tokens=100
@@ -269,14 +269,14 @@ response = litellm.responses(
 response_id = response.id
 
 # Delete the response by ID
-delete_response = litellm.delete_responses(
+delete_response = dheera_ai.delete_responses(
     response_id=response_id
 )
 
 print(delete_response)
 
 # For async usage
-# delete_response = await litellm.adelete_responses(response_id=response_id)
+# delete_response = await dheera_ai.adelete_responses(response_id=response_id)
 ```
 
 </TabItem>
@@ -285,14 +285,14 @@ print(delete_response)
 
 #### Non-streaming
 ```python showLineNumbers title="Anthropic Non-streaming Response"
-import litellm
+import dheera_ai
 import os
 
 # Set API key
 os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"
 
 # Non-streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="anthropic/claude-3-5-sonnet-20240620",
     input="Tell me a three sentence bedtime story about a unicorn.",
     max_output_tokens=100
@@ -303,14 +303,14 @@ print(response)
 
 #### Streaming
 ```python showLineNumbers title="Anthropic Streaming Response"
-import litellm
+import dheera_ai
 import os
 
 # Set API key
 os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"
 
 # Streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="anthropic/claude-3-5-sonnet-20240620",
     input="Tell me a three sentence bedtime story about a unicorn.",
     stream=True
@@ -326,7 +326,7 @@ for event in response:
 
 #### Non-streaming
 ```python showLineNumbers title="Vertex AI Non-streaming Response"
-import litellm
+import dheera_ai
 import os
 
 # Set credentials - Vertex AI uses application default credentials
@@ -335,7 +335,7 @@ os.environ["VERTEXAI_PROJECT"] = "your-gcp-project-id"
 os.environ["VERTEXAI_LOCATION"] = "us-central1"
 
 # Non-streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="vertex_ai/gemini-1.5-pro",
     input="Tell me a three sentence bedtime story about a unicorn.",
     max_output_tokens=100
@@ -346,7 +346,7 @@ print(response)
 
 #### Streaming
 ```python showLineNumbers title="Vertex AI Streaming Response"
-import litellm
+import dheera_ai
 import os
 
 # Set credentials - Vertex AI uses application default credentials
@@ -355,7 +355,7 @@ os.environ["VERTEXAI_PROJECT"] = "your-gcp-project-id"
 os.environ["VERTEXAI_LOCATION"] = "us-central1"
 
 # Streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="vertex_ai/gemini-1.5-pro",
     input="Tell me a three sentence bedtime story about a unicorn.",
     stream=True
@@ -371,7 +371,7 @@ for event in response:
 
 #### Non-streaming
 ```python showLineNumbers title="AWS Bedrock Non-streaming Response"
-import litellm
+import dheera_ai
 import os
 
 # Set AWS credentials
@@ -380,7 +380,7 @@ os.environ["AWS_SECRET_ACCESS_KEY"] = "your-secret-access-key"
 os.environ["AWS_REGION_NAME"] = "us-west-2"  # or your AWS region
 
 # Non-streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="bedrock/anthropic.claude-3-sonnet-20240229-v1:0",
     input="Tell me a three sentence bedtime story about a unicorn.",
     max_output_tokens=100
@@ -391,7 +391,7 @@ print(response)
 
 #### Streaming
 ```python showLineNumbers title="AWS Bedrock Streaming Response"
-import litellm
+import dheera_ai
 import os
 
 # Set AWS credentials
@@ -400,7 +400,7 @@ os.environ["AWS_SECRET_ACCESS_KEY"] = "your-secret-access-key"
 os.environ["AWS_REGION_NAME"] = "us-west-2"  # or your AWS region
 
 # Streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="bedrock/anthropic.claude-3-sonnet-20240229-v1:0",
     input="Tell me a three sentence bedtime story about a unicorn.",
     stream=True
@@ -416,14 +416,14 @@ for event in response:
 
 #### Non-streaming
 ```python showLineNumbers title="Google AI Studio Non-streaming Response"
-import litellm
+import dheera_ai
 import os
 
 # Set API key for Google AI Studio
 os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"
 
 # Non-streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="gemini/gemini-1.5-flash",
     input="Tell me a three sentence bedtime story about a unicorn.",
     max_output_tokens=100
@@ -434,14 +434,14 @@ print(response)
 
 #### Streaming
 ```python showLineNumbers title="Google AI Studio Streaming Response"
-import litellm
+import dheera_ai
 import os
 
 # Set API key for Google AI Studio
 os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"
 
 # Streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="gemini/gemini-1.5-flash",
     input="Tell me a three sentence bedtime story about a unicorn.",
     stream=True
@@ -454,12 +454,12 @@ for event in response:
 </TabItem>
 </Tabs>
 
-### LiteLLM Proxy with OpenAI SDK
+### Dheera AI Proxy with OpenAI SDK
 
-First, set up and start your LiteLLM proxy server.
+First, set up and start your Dheera AI proxy server.
 
-```bash title="Start LiteLLM Proxy Server"
-litellm --config /path/to/config.yaml
+```bash title="Start Dheera AI Proxy Server"
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -467,11 +467,11 @@ litellm --config /path/to/config.yaml
 <Tabs>
 <TabItem value="openai" label="OpenAI">
 
-First, add this to your litellm proxy config.yaml:
+First, add this to your dheera_ai proxy config.yaml:
 ```yaml showLineNumbers title="OpenAI Proxy Configuration"
 model_list:
   - model_name: openai/o1-pro
-    litellm_params:
+    dheera_ai_params:
       model: openai/o1-pro
       api_key: os.environ/OPENAI_API_KEY
 ```
@@ -596,11 +596,11 @@ print(delete_response)
 
 <TabItem value="anthropic" label="Anthropic">
 
-First, add this to your litellm proxy config.yaml:
+First, add this to your dheera_ai proxy config.yaml:
 ```yaml showLineNumbers title="Anthropic Proxy Configuration"
 model_list:
   - model_name: anthropic/claude-3-5-sonnet-20240620
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet-20240620
       api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -649,11 +649,11 @@ for event in response:
 
 <TabItem value="vertex" label="Vertex AI">
 
-First, add this to your litellm proxy config.yaml:
+First, add this to your dheera_ai proxy config.yaml:
 ```yaml showLineNumbers title="Vertex AI Proxy Configuration"
 model_list:
   - model_name: vertex_ai/gemini-1.5-pro
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/gemini-1.5-pro
       vertex_project: your-gcp-project-id
       vertex_location: us-central1
@@ -703,11 +703,11 @@ for event in response:
 
 <TabItem value="bedrock" label="AWS Bedrock">
 
-First, add this to your litellm proxy config.yaml:
+First, add this to your dheera_ai proxy config.yaml:
 ```yaml showLineNumbers title="AWS Bedrock Proxy Configuration"
 model_list:
   - model_name: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -758,11 +758,11 @@ for event in response:
 
 <TabItem value="gemini" label="Google AI Studio">
 
-First, add this to your litellm proxy config.yaml:
+First, add this to your dheera_ai proxy config.yaml:
 ```yaml showLineNumbers title="Google AI Studio Proxy Configuration"
 model_list:
   - model_name: gemini/gemini-1.5-flash
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-1.5-flash
       api_key: os.environ/GEMINI_API_KEY
 ```
@@ -812,7 +812,7 @@ for event in response:
 
 ## Response ID Security
 
-By default, LiteLLM Proxy prevents users from accessing other users' response IDs.
+By default, Dheera AI Proxy prevents users from accessing other users' response IDs.
 
 This is done by encrypting the response ID with the user ID, enabling users to only access their own response IDs.
 
@@ -840,18 +840,18 @@ This allows any user to access any response ID.
 
 | Provider | Supported Parameters |
 |----------|---------------------|
-| `openai` | [All Responses API parameters are supported](https://github.com/BerriAI/litellm/blob/7c3df984da8e4dff9201e4c5353fdc7a2b441831/litellm/llms/openai/responses/transformation.py#L23) |
-| `azure` | [All Responses API parameters are supported](https://github.com/BerriAI/litellm/blob/7c3df984da8e4dff9201e4c5353fdc7a2b441831/litellm/llms/openai/responses/transformation.py#L23) |
-| `anthropic` | [See supported parameters here](https://github.com/BerriAI/litellm/blob/f39d9178868662746f159d5ef642c7f34f9bfe5f/litellm/responses/litellm_completion_transformation/transformation.py#L57) |
-| `bedrock` | [See supported parameters here](https://github.com/BerriAI/litellm/blob/f39d9178868662746f159d5ef642c7f34f9bfe5f/litellm/responses/litellm_completion_transformation/transformation.py#L57) |
-| `gemini` | [See supported parameters here](https://github.com/BerriAI/litellm/blob/f39d9178868662746f159d5ef642c7f34f9bfe5f/litellm/responses/litellm_completion_transformation/transformation.py#L57) |
-| `vertex_ai` | [See supported parameters here](https://github.com/BerriAI/litellm/blob/f39d9178868662746f159d5ef642c7f34f9bfe5f/litellm/responses/litellm_completion_transformation/transformation.py#L57) |
-| `azure_ai` | [See supported parameters here](https://github.com/BerriAI/litellm/blob/f39d9178868662746f159d5ef642c7f34f9bfe5f/litellm/responses/litellm_completion_transformation/transformation.py#L57) |
-| All other llm api providers | [See supported parameters here](https://github.com/BerriAI/litellm/blob/f39d9178868662746f159d5ef642c7f34f9bfe5f/litellm/responses/litellm_completion_transformation/transformation.py#L57) |
+| `openai` | [All Responses API parameters are supported](https://github.com/BerriAI/dheera_ai/blob/7c3df984da8e4dff9201e4c5353fdc7a2b441831/dheera_ai/llms/openai/responses/transformation.py#L23) |
+| `azure` | [All Responses API parameters are supported](https://github.com/BerriAI/dheera_ai/blob/7c3df984da8e4dff9201e4c5353fdc7a2b441831/dheera_ai/llms/openai/responses/transformation.py#L23) |
+| `anthropic` | [See supported parameters here](https://github.com/BerriAI/dheera_ai/blob/f39d9178868662746f159d5ef642c7f34f9bfe5f/dheera_ai/responses/dheera_ai_completion_transformation/transformation.py#L57) |
+| `bedrock` | [See supported parameters here](https://github.com/BerriAI/dheera_ai/blob/f39d9178868662746f159d5ef642c7f34f9bfe5f/dheera_ai/responses/dheera_ai_completion_transformation/transformation.py#L57) |
+| `gemini` | [See supported parameters here](https://github.com/BerriAI/dheera_ai/blob/f39d9178868662746f159d5ef642c7f34f9bfe5f/dheera_ai/responses/dheera_ai_completion_transformation/transformation.py#L57) |
+| `vertex_ai` | [See supported parameters here](https://github.com/BerriAI/dheera_ai/blob/f39d9178868662746f159d5ef642c7f34f9bfe5f/dheera_ai/responses/dheera_ai_completion_transformation/transformation.py#L57) |
+| `azure_ai` | [See supported parameters here](https://github.com/BerriAI/dheera_ai/blob/f39d9178868662746f159d5ef642c7f34f9bfe5f/dheera_ai/responses/dheera_ai_completion_transformation/transformation.py#L57) |
+| All other llm api providers | [See supported parameters here](https://github.com/BerriAI/dheera_ai/blob/f39d9178868662746f159d5ef642c7f34f9bfe5f/dheera_ai/responses/dheera_ai_completion_transformation/transformation.py#L57) |
 
 ## Load Balancing with Session Continuity.
 
-When using the Responses API with multiple deployments of the same model (e.g., multiple Azure OpenAI endpoints), LiteLLM provides session continuity. This ensures that follow-up requests using a `previous_response_id` are routed to the same deployment that generated the original response.
+When using the Responses API with multiple deployments of the same model (e.g., multiple Azure OpenAI endpoints), Dheera AI provides session continuity. This ensures that follow-up requests using a `previous_response_id` are routed to the same deployment that generated the original response.
 
 
 #### Example Usage
@@ -860,14 +860,14 @@ When using the Responses API with multiple deployments of the same model (e.g., 
 <TabItem value="python-sdk" label="Python SDK">
 
 ```python showLineNumbers title="Python SDK with Session Continuity"
-import litellm
+import dheera_ai
 
 # Set up router with multiple deployments of the same model
-router = litellm.Router(
+router = dheera_ai.Router(
     model_list=[
         {
             "model_name": "azure-gpt4-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-4-turbo",
                 "api_key": "your-api-key-1",
                 "api_version": "2024-06-01",
@@ -876,7 +876,7 @@ router = litellm.Router(
         },
         {
             "model_name": "azure-gpt4-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-4-turbo",
                 "api_key": "your-api-key-2",
                 "api_version": "2024-06-01",
@@ -911,18 +911,18 @@ follow_up = await router.aresponses(
 
 #### 1. Setup session continuity on proxy config.yaml
 
-To enable session continuity for Responses API in your LiteLLM proxy, set `optional_pre_call_checks: ["responses_api_deployment_check"]` in your proxy config.yaml.
+To enable session continuity for Responses API in your Dheera AI proxy, set `optional_pre_call_checks: ["responses_api_deployment_check"]` in your proxy config.yaml.
 
 ```yaml showLineNumbers title="config.yaml with Session Continuity"
 model_list:
   - model_name: azure-gpt4-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-4-turbo
       api_key: your-api-key-1
       api_version: 2024-06-01
       api_base: https://endpoint1.openai.azure.com
   - model_name: azure-gpt4-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-4-turbo
       api_key: your-api-key-2
       api_version: 2024-06-01
@@ -932,7 +932,7 @@ router_settings:
   optional_pre_call_checks: ["responses_api_deployment_check"]
 ```
 
-#### 2. Use the OpenAI Python SDK to make requests to LiteLLM Proxy
+#### 2. Use the OpenAI Python SDK to make requests to Dheera AI Proxy
 
 ```python showLineNumbers title="OpenAI Client with Proxy Server"
 from openai import OpenAI
@@ -963,20 +963,20 @@ follow_up = client.responses.create(
 
 ## Calling non-Responses API endpoints (`/responses` to `/chat/completions` Bridge)
 
-LiteLLM allows you to call non-Responses API models via a bridge to LiteLLM's `/chat/completions` endpoint. This is useful for calling Anthropic, Gemini and even non-Responses API OpenAI models.
+Dheera AI allows you to call non-Responses API models via a bridge to Dheera AI's `/chat/completions` endpoint. This is useful for calling Anthropic, Gemini and even non-Responses API OpenAI models.
 
 
 #### Python SDK Usage
 
 ```python showLineNumbers title="SDK Usage"
-import litellm
+import dheera_ai
 import os
 
 # Set API key
 os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"
 
 # Non-streaming response
-response = litellm.responses(
+response = dheera_ai.responses(
     model="anthropic/claude-3-5-sonnet-20240620",
     input="Tell me a three sentence bedtime story about a unicorn.",
     max_output_tokens=100
@@ -985,22 +985,22 @@ response = litellm.responses(
 print(response)
 ```
 
-#### LiteLLM Proxy Usage
+#### Dheera AI Proxy Usage
 
 **Setup Config:**
 
 ```yaml showLineNumbers title="Example Configuration"
 model_list:
 - model_name: anthropic-model
-  litellm_params:
+  dheera_ai_params:
     model: anthropic/claude-3-5-sonnet-20240620
     api_key: os.environ/ANTHROPIC_API_KEY
 ```
 
 **Start Proxy:**
 
-```bash showLineNumbers title="Start LiteLLM Proxy"
-litellm --config /path/to/config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy"
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -1025,20 +1025,20 @@ curl http://localhost:4000/v1/responses \
 
 ## Session Management
 
-LiteLLM Proxy supports session management for all supported models. This allows you to store and fetch conversation history (state) in LiteLLM Proxy. 
+Dheera AI Proxy supports session management for all supported models. This allows you to store and fetch conversation history (state) in Dheera AI Proxy. 
 
 #### Usage
 
 1. Enable storing request / response content in the database
 
-Set `store_prompts_in_cold_storage: true` in your proxy config.yaml. When this is enabled, LiteLLM will store the request and response content in the s3 bucket you specify.
+Set `store_prompts_in_cold_storage: true` in your proxy config.yaml. When this is enabled, Dheera AI will store the request and response content in the s3 bucket you specify.
 
 ```yaml showLineNumbers title="config.yaml with Session Continuity"
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["s3_v2"]
   cold_storage_custom_logger: s3_v2
-  s3_callback_params: # learn more https://docs.litellm.ai/docs/proxy/logging#s3-buckets
-    s3_bucket_name: litellm-logs   # AWS Bucket Name for S3
+  s3_callback_params: # learn more https://docs.dheera_ai.ai/docs/proxy/logging#s3-buckets
+    s3_bucket_name: dheera_ai-logs   # AWS Bucket Name for S3
     s3_region_name: us-west-2      
 
 general_settings:
@@ -1069,7 +1069,7 @@ curl http://localhost:4000/v1/responses \
 ```python
 from openai import OpenAI
 
-# Initialize the client with your LiteLLM proxy URL
+# Initialize the client with your Dheera AI proxy URL
 client = OpenAI(
     base_url="http://localhost:4000",
     api_key="sk-1234"
@@ -1128,7 +1128,7 @@ curl http://localhost:4000/v1/responses \
 ```python
 from openai import OpenAI
 
-# Initialize the client with your LiteLLM proxy URL
+# Initialize the client with your Dheera AI proxy URL
 client = OpenAI(
     base_url="http://localhost:4000",
     api_key="sk-1234"
@@ -1186,7 +1186,7 @@ curl http://localhost:4000/v1/responses \
 ```python
 from openai import OpenAI
 
-# Initialize the client with your LiteLLM proxy URL
+# Initialize the client with your Dheera AI proxy URL
 client = OpenAI(
     base_url="http://localhost:4000",
     api_key="sk-1234"

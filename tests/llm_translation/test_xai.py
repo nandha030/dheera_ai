@@ -13,11 +13,11 @@ import httpx
 import pytest
 from respx import MockRouter
 
-import litellm
-from litellm import Choices, Message, ModelResponse, EmbeddingResponse, Usage
-from litellm import completion
+import dheera_ai
+from dheera_ai import Choices, Message, ModelResponse, EmbeddingResponse, Usage
+from dheera_ai import completion
 from unittest.mock import patch
-from litellm.llms.xai.chat.transformation import XAIChatConfig, XAI_API_BASE
+from dheera_ai.llms.xai.chat.transformation import XAIChatConfig, XAI_API_BASE
 from base_llm_unit_tests import BaseReasoningLLMTests, BaseLLMChatTest
 
 
@@ -124,7 +124,7 @@ def test_xai_grok_4_stop_not_supported(model):
     """
     Test that grok-4 models do not support the stop parameter
 
-    Issue: https://github.com/BerriAI/litellm/issues/12635
+    Issue: https://github.com/BerriAI/dheera_ai/issues/12635
     """
     supported_params = XAIChatConfig().get_supported_openai_params(model=model)
     assert "stop" not in supported_params
@@ -173,5 +173,5 @@ class TestXAIChat(BaseLLMChatTest):
         }
 
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
         pass

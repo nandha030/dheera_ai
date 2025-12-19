@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Letta Integration
 
-[Letta](https://github.com/letta-ai/letta) (formerly MemGPT) is a framework for building stateful LLM agents with persistent memory. This guide shows how to integrate both LiteLLM SDK and LiteLLM Proxy with Letta to leverage multiple LLM providers while building memory-enabled agents.
+[Letta](https://github.com/letta-ai/letta) (formerly MemGPT) is a framework for building stateful LLM agents with persistent memory. This guide shows how to integrate both Dheera AI SDK and Dheera AI Proxy with Letta to leverage multiple LLM providers while building memory-enabled agents.
 
 ## What is Letta?
 
@@ -16,33 +16,33 @@ Letta allows you to build LLM agents that can:
 ## Prerequisites
 
 ```bash
-pip install letta litellm
+pip install letta dheera_ai
 ```
 
 ## Quick Start
 
 <Tabs>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
-### 1. Start LiteLLM Proxy
+### 1. Start Dheera AI Proxy
 
-First, create a configuration file for your LiteLLM proxy:
+First, create a configuration file for your Dheera AI proxy:
 
 ```yaml
 # config.yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
   - model_name: claude-3-sonnet
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-sonnet-20240229
       api_key: os.environ/ANTHROPIC_API_KEY
 
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-35-turbo
       api_key: os.environ/AZURE_API_KEY
       api_base: os.environ/AZURE_API_BASE
@@ -52,25 +52,25 @@ model_list:
 Start the proxy:
 
 ```bash
-litellm --config config.yaml --port 4000
+dheera_ai --config config.yaml --port 4000
 ```
 
-### 2. Configure Letta with LiteLLM Proxy
+### 2. Configure Letta with Dheera AI Proxy
 
-Configure Letta to use your LiteLLM proxy endpoint:
+Configure Letta to use your Dheera AI proxy endpoint:
 
 ```python
 import letta
 from letta import create_client
 
-# Configure Letta to use LiteLLM proxy
+# Configure Letta to use Dheera AI proxy
 client = create_client()
 
 # Configure the LLM endpoint
 client.set_default_llm_config(
-    model="gpt-4",  # This should match a model from your LiteLLM config
+    model="gpt-4",  # This should match a model from your Dheera AI config
     model_endpoint_type="openai",
-    model_endpoint="http://localhost:4000",  # Your LiteLLM proxy URL
+    model_endpoint="http://localhost:4000",  # Your Dheera AI proxy URL
     context_window=8192
 )
 
@@ -83,49 +83,49 @@ client.set_default_embedding_config(
 ```
 
 </TabItem>
-<TabItem value="sdk" label="LiteLLM SDK">
+<TabItem value="sdk" label="Dheera AI SDK">
 
-### 1. Configure LiteLLM SDK
+### 1. Configure Dheera AI SDK
 
-Set up your API keys and configure LiteLLM:
+Set up your API keys and configure Dheera AI:
 
 ```python
 import os
-import litellm
+import dheera_ai
 
 # Set your API keys
 os.environ["OPENAI_API_KEY"] = "your-openai-key"
 os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-key"
 
 # Optional: Configure default settings
-litellm.set_verbose = True  # For debugging
+dheera_ai.set_verbose = True  # For debugging
 ```
 
 ### 2. Create Custom LLM Wrapper for Letta
 
-Create a custom LLM wrapper that uses LiteLLM SDK:
+Create a custom LLM wrapper that uses Dheera AI SDK:
 
 ```python
 import letta
 from letta import create_client
 from letta.llm_api.llm_api_base import LLMConfig
-import litellm
+import dheera_ai
 from typing import List, Dict, Any
 
-class LiteLLMWrapper:
+class Dheera AIWrapper:
     def __init__(self, model: str):
         self.model = model
     
     def chat_completions_create(self, messages: List[Dict], **kwargs):
-        # Use LiteLLM SDK for completion
-        response = litellm.completion(
+        # Use Dheera AI SDK for completion
+        response = dheera_ai.completion(
             model=self.model,
             messages=messages,
             **kwargs
         )
         return response
 
-# Configure Letta with custom LiteLLM wrapper
+# Configure Letta with custom Dheera AI wrapper
 client = create_client()
 
 # Set up LLM configuration using direct SDK integration
@@ -144,7 +144,7 @@ client.set_default_llm_config(llm_config)
 ### 3. Create and Use a Letta Agent
 
 <Tabs>
-<TabItem value="proxy" label="Using LiteLLM Proxy">
+<TabItem value="proxy" label="Using Dheera AI Proxy">
 
 ```python
 import letta
@@ -179,18 +179,18 @@ print(f"Agent response: {response.messages[-1].text}")
 ```
 
 </TabItem>
-<TabItem value="sdk" label="Using LiteLLM SDK">
+<TabItem value="sdk" label="Using Dheera AI SDK">
 
 ```python
 import letta
 from letta import create_client
-import litellm
+import dheera_ai
 import os
 
 # Set up environment variables
 os.environ["OPENAI_API_KEY"] = "your-openai-key"
 
-# Create Letta client with LiteLLM integration
+# Create Letta client with Dheera AI integration
 client = create_client()
 
 # Create a new agent
@@ -226,7 +226,7 @@ print(f"Agent response: {response.messages[-1].text}")
 ### Using Different Models for Different Agents
 
 <Tabs>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 ```python
 from letta import LLMConfig, EmbeddingConfig
@@ -261,11 +261,11 @@ creative_agent = client.create_agent(
 ```
 
 </TabItem>
-<TabItem value="sdk" label="LiteLLM SDK">
+<TabItem value="sdk" label="Dheera AI SDK">
 
 ```python
 import os
-import litellm
+import dheera_ai
 from letta import LLMConfig, EmbeddingConfig
 
 # Set up API keys for different providers
@@ -274,13 +274,13 @@ os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-key"
 
 # Create different LLM configurations for direct SDK usage
 gpt4_config = LLMConfig(
-    model="openai/gpt-4",  # Using LiteLLM model format
+    model="openai/gpt-4",  # Using Dheera AI model format
     model_endpoint_type="openai",
     context_window=8192
 )
 
 claude_config = LLMConfig(
-    model="anthropic/claude-3-sonnet-20240229",  # Using LiteLLM model format
+    model="anthropic/claude-3-sonnet-20240229",  # Using Dheera AI model format
     model_endpoint_type="openai",
     context_window=200000
 )
@@ -305,7 +305,7 @@ creative_agent = client.create_agent(
 ### Function Calling with Tools
 
 <Tabs>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 ```python
 # Define custom tools for your agent
@@ -336,10 +336,10 @@ response = client.user_message(
 ```
 
 </TabItem>
-<TabItem value="sdk" label="LiteLLM SDK">
+<TabItem value="sdk" label="Dheera AI SDK">
 
 ```python
-import litellm
+import dheera_ai
 import os
 
 # Set up API keys
@@ -356,7 +356,7 @@ def save_note(content: str) -> str:
     # Your note saving implementation
     return f"Note saved: {content}"
 
-# Create agent with tools (using LiteLLM SDK directly)
+# Create agent with tools (using Dheera AI SDK directly)
 agent_state = client.create_agent(
     name="research-assistant",
     system="You are a research assistant that can search the web and save notes.",
@@ -382,9 +382,9 @@ response = client.user_message(
 ## Authentication
 
 <Tabs>
-<TabItem value="proxy" label="LiteLLM Proxy Authentication">
+<TabItem value="proxy" label="Dheera AI Proxy Authentication">
 
-If your LiteLLM proxy requires authentication:
+If your Dheera AI proxy requires authentication:
 
 ```python
 import os
@@ -400,7 +400,7 @@ llm_config = LLMConfig(
 )
 
 # If using API keys with your proxy
-os.environ["OPENAI_API_KEY"] = "your-litellm-proxy-api-key"
+os.environ["OPENAI_API_KEY"] = "your-dheera_ai-proxy-api-key"
 
 client = create_client()
 client.set_default_llm_config(llm_config)
@@ -415,7 +415,7 @@ general_settings:
 
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: os.environ/OPENAI_API_KEY
 ```
@@ -432,13 +432,13 @@ llm_config = LLMConfig(
 ```
 
 </TabItem>
-<TabItem value="sdk" label="LiteLLM SDK Authentication">
+<TabItem value="sdk" label="Dheera AI SDK Authentication">
 
-With LiteLLM SDK, set up your provider API keys directly:
+With Dheera AI SDK, set up your provider API keys directly:
 
 ```python
 import os
-import litellm
+import dheera_ai
 
 # Set up API keys for different providers
 os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
@@ -448,8 +448,8 @@ os.environ["AZURE_API_BASE"] = "https://your-resource.openai.azure.com"
 os.environ["AZURE_API_VERSION"] = "2023-07-01-preview"
 
 # Optional: Configure default settings
-litellm.api_key = os.environ.get("OPENAI_API_KEY")  # Default key
-litellm.set_verbose = True  # For debugging
+dheera_ai.api_key = os.environ.get("OPENAI_API_KEY")  # Default key
+dheera_ai.set_verbose = True  # For debugging
 
 # Use in Letta configuration
 from letta import LLMConfig
@@ -474,22 +474,22 @@ azure_config = LLMConfig(
 ## Load Balancing and Fallbacks
 
 <Tabs>
-<TabItem value="proxy" label="LiteLLM Proxy Features">
+<TabItem value="proxy" label="Dheera AI Proxy Features">
 
-LiteLLM proxy's load balancing and fallback features work seamlessly with Letta:
+Dheera AI proxy's load balancing and fallback features work seamlessly with Letta:
 
 ```yaml
 # config.yaml with fallbacks
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: os.environ/OPENAI_API_KEY
     tpm: 40000
     rpm: 500
 
   - model_name: gpt-4  # Same model name for fallback
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-4
       api_key: os.environ/AZURE_API_KEY
       api_base: os.environ/AZURE_API_BASE
@@ -505,20 +505,20 @@ router_settings:
 The proxy handles all routing, load balancing, and fallbacks transparently for Letta.
 
 </TabItem>
-<TabItem value="sdk" label="LiteLLM SDK Router">
+<TabItem value="sdk" label="Dheera AI SDK Router">
 
-With LiteLLM SDK, you can set up routing and fallbacks programmatically:
+With Dheera AI SDK, you can set up routing and fallbacks programmatically:
 
 ```python
-import litellm
-from litellm import Router
+import dheera_ai
+from dheera_ai import Router
 
 # Configure router with multiple models
 router = Router(
     model_list=[
         {
             "model_name": "gpt-4",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "openai/gpt-4",
                 "api_key": os.environ["OPENAI_API_KEY"]
             },
@@ -527,7 +527,7 @@ router = Router(
         },
         {
             "model_name": "gpt-4",  # Same name for fallback
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-4", 
                 "api_key": os.environ["AZURE_API_KEY"],
                 "api_base": os.environ["AZURE_API_BASE"],
@@ -550,7 +550,7 @@ def custom_completion(messages, model="gpt-4", **kwargs):
     )
 
 # Use with Letta by monkey-patching or custom wrapper
-litellm.completion = custom_completion
+dheera_ai.completion = custom_completion
 ```
 
 </TabItem>
@@ -559,7 +559,7 @@ litellm.completion = custom_completion
 ## Monitoring and Observability
 
 <Tabs>
-<TabItem value="proxy" label="LiteLLM Proxy Monitoring">
+<TabItem value="proxy" label="Dheera AI Proxy Monitoring">
 
 Enable logging to track your Letta agents' LLM usage through the proxy:
 
@@ -568,7 +568,7 @@ Enable logging to track your Letta agents' LLM usage through the proxy:
 model_list:
   # ... your models
 
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["langfuse"]  # or other observability tools
   
 environment_variables:
@@ -579,16 +579,16 @@ environment_variables:
 View metrics in the proxy dashboard:
 ```bash
 # Start proxy with UI
-litellm --config config.yaml --port 4000 --detailed_debug
+dheera_ai --config config.yaml --port 4000 --detailed_debug
 ```
 
 </TabItem>
-<TabItem value="sdk" label="LiteLLM SDK Monitoring">
+<TabItem value="sdk" label="Dheera AI SDK Monitoring">
 
 Set up observability directly in your SDK integration:
 
 ```python
-import litellm
+import dheera_ai
 import os
 
 # Configure observability callbacks
@@ -596,16 +596,16 @@ os.environ["LANGFUSE_PUBLIC_KEY"] = "your-key"
 os.environ["LANGFUSE_SECRET_KEY"] = "your-secret"
 
 # Set global callbacks
-litellm.success_callback = ["langfuse"]
-litellm.failure_callback = ["langfuse"]
+dheera_ai.success_callback = ["langfuse"]
+dheera_ai.failure_callback = ["langfuse"]
 
 # Optional: Set up custom logging
-litellm.set_verbose = True
+dheera_ai.set_verbose = True
 
 # Create custom completion wrapper with logging
 def logged_completion(messages, model="gpt-4", **kwargs):
     try:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model=model,
             messages=messages,
             **kwargs
@@ -618,7 +618,7 @@ def logged_completion(messages, model="gpt-4", **kwargs):
         raise
 
 # Use in Letta configuration
-litellm.completion = logged_completion
+dheera_ai.completion = logged_completion
 ```
 
 </TabItem>
@@ -627,7 +627,7 @@ litellm.completion = logged_completion
 ## Example: Multi-Agent System
 
 <Tabs>
-<TabItem value="proxy" label="Using LiteLLM Proxy">
+<TabItem value="proxy" label="Using Dheera AI Proxy">
 
 ```python
 import letta
@@ -684,12 +684,12 @@ print(article)
 ```
 
 </TabItem>
-<TabItem value="sdk" label="Using LiteLLM SDK">
+<TabItem value="sdk" label="Using Dheera AI SDK">
 
 ```python
 import letta
 from letta import create_client, LLMConfig
-import litellm
+import dheera_ai
 import os
 
 # Set up environment
@@ -768,7 +768,7 @@ print(article)
 ## Best Practices
 
 <Tabs>
-<TabItem value="proxy" label="LiteLLM Proxy Best Practices">
+<TabItem value="proxy" label="Dheera AI Proxy Best Practices">
 
 1. **Model Selection**: Use appropriate models for different tasks:
    - Claude for analysis and reasoning
@@ -790,7 +790,7 @@ print(article)
 5. **Monitoring**: Enable observability to track agent performance and token usage
 
 </TabItem>
-<TabItem value="sdk" label="LiteLLM SDK Best Practices">
+<TabItem value="sdk" label="Dheera AI SDK Best Practices">
 
 1. **Model Selection**: Choose models based on task requirements:
    - Use `openai/gpt-4` for complex reasoning
@@ -799,12 +799,12 @@ print(article)
 
 2. **Error Handling**: Implement robust error handling with retries:
    ```python
-   import litellm
-   from litellm import completion
+   import dheera_ai
+   from dheera_ai import completion
    
    # Set up retry logic
-   litellm.num_retries = 3
-   litellm.request_timeout = 60
+   dheera_ai.num_retries = 3
+   dheera_ai.request_timeout = 60
    
    # Custom error handling
    def safe_completion(**kwargs):
@@ -837,11 +837,11 @@ print(article)
 ## Troubleshooting
 
 <Tabs>
-<TabItem value="proxy" label="LiteLLM Proxy Issues">
+<TabItem value="proxy" label="Dheera AI Proxy Issues">
 
 ### Connection Issues
 ```bash
-# Test your LiteLLM proxy
+# Test your Dheera AI proxy
 curl -X POST http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
@@ -868,38 +868,38 @@ print(client.get_default_llm_config())
 - **Rate limiting**: Monitor proxy logs for rate limit hits
 
 </TabItem>
-<TabItem value="sdk" label="LiteLLM SDK Issues">
+<TabItem value="sdk" label="Dheera AI SDK Issues">
 
 ### API Key Issues
 ```python
 import os
-import litellm
+import dheera_ai
 
 # Check if API keys are set
 print("OpenAI Key:", os.environ.get("OPENAI_API_KEY", "Not set"))
 print("Anthropic Key:", os.environ.get("ANTHROPIC_API_KEY", "Not set"))
 
-# Test direct LiteLLM call
+# Test direct Dheera AI call
 try:
-    response = litellm.completion(
+    response = dheera_ai.completion(
         model="openai/gpt-3.5-turbo",
         messages=[{"role": "user", "content": "Hello"}]
     )
-    print("LiteLLM working:", response.choices[0].message.content)
+    print("Dheera AI working:", response.choices[0].message.content)
 except Exception as e:
-    print("LiteLLM error:", e)
+    print("Dheera AI error:", e)
 ```
 
 ### Configuration Debugging
 ```python
 # Enable verbose logging
-litellm.set_verbose = True
+dheera_ai.set_verbose = True
 
 # Test model availability
 models = ["openai/gpt-4", "anthropic/claude-3-sonnet-20240229"]
 for model in models:
     try:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model=model,
             messages=[{"role": "user", "content": "Test"}],
             max_tokens=10
@@ -910,7 +910,7 @@ for model in models:
 ```
 
 ### Common SDK Issues
-- **Import errors**: Ensure `pip install litellm letta` is run
+- **Import errors**: Ensure `pip install dheera_ai letta` is run
 - **Model format**: Use `provider/model` format (e.g., `openai/gpt-4`)
 - **API key format**: Different providers have different key formats
 - **Rate limits**: Implement exponential backoff for retries
@@ -921,8 +921,8 @@ for model in models:
 ## Resources
 
 - [Letta Documentation](https://docs.letta.ai/)
-- [LiteLLM Proxy Documentation](../proxy/quick_start.md)
-- [LiteLLM SDK Documentation](../completion/input.md)
+- [Dheera AI Proxy Documentation](../proxy/quick_start.md)
+- [Dheera AI SDK Documentation](../completion/input.md)
 - [Function Calling Guide](../completion/function_call.md)
 - [Observability Setup](../observability/langfuse_integration.md)
 - [Router Configuration](../routing.md)

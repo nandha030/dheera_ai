@@ -1,7 +1,7 @@
-import litellm
-from litellm import get_optional_params
+import dheera_ai
+from dheera_ai import get_optional_params
 
-litellm.add_function_to_prompt = True
+dheera_ai.add_function_to_prompt = True
 optional_params = get_optional_params(
     model="",
     tools=[

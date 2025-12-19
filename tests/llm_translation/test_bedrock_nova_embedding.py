@@ -1,5 +1,5 @@
 """
-Test suite for Amazon Nova Multimodal Embeddings integration with LiteLLM.
+Test suite for Amazon Nova Multimodal Embeddings integration with DheeraAI.
 
 Tests cover:
 - Synchronous text embeddings
@@ -21,8 +21,8 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm.llms.bedrock.embed.amazon_nova_transformation import (
+import dheera_ai
+from dheera_ai.llms.bedrock.embed.amazon_nova_transformation import (
     AmazonNovaEmbeddingConfig,
 )
 
@@ -321,12 +321,12 @@ class TestNovaTransformationResponse:
 
 
 class TestNovaEmbeddingIntegration:
-    """Integration tests for Nova embeddings through LiteLLM."""
+    """Integration tests for Nova embeddings through DheeraAI."""
 
     @pytest.mark.skip(reason="Requires AWS credentials and actual API calls")
     def test_sync_text_embedding_e2e(self):
         """End-to-end test for synchronous text embedding."""
-        response = litellm.embedding(
+        response = dheera_ai.embedding(
             model="bedrock/amazon.nova-2-multimodal-embeddings-v1:0",
             input=["Hello, world!"],
             aws_region_name="us-east-1",
@@ -339,7 +339,7 @@ class TestNovaEmbeddingIntegration:
     @pytest.mark.skip(reason="Requires AWS credentials and actual API calls")
     def test_async_text_embedding_e2e(self):
         """End-to-end test for asynchronous text embedding."""
-        response = litellm.embedding(
+        response = dheera_ai.embedding(
             model="bedrock/async_invoke/amazon.nova-2-multimodal-embeddings-v1:0",
             input=["Long text content for segmentation..."],
             aws_region_name="us-east-1",
@@ -354,7 +354,7 @@ class TestNovaEmbeddingIntegration:
     @pytest.mark.skip(reason="Requires AWS credentials and actual API calls")
     def test_image_embedding_e2e(self):
         """End-to-end test for image embedding."""
-        response = litellm.embedding(
+        response = dheera_ai.embedding(
             model="bedrock/amazon.nova-2-multimodal-embeddings-v1:0",
             input=["s3://my-bucket/image.png"],
             aws_region_name="us-east-1",
@@ -369,7 +369,7 @@ class TestNovaEmbeddingIntegration:
     @pytest.mark.skip(reason="Requires AWS credentials and actual API calls")
     def test_video_embedding_e2e(self):
         """End-to-end test for video embedding."""
-        response = litellm.embedding(
+        response = dheera_ai.embedding(
             model="bedrock/amazon.nova-2-multimodal-embeddings-v1:0",
             input=["s3://my-bucket/video.mp4"],
             aws_region_name="us-east-1",
@@ -386,7 +386,7 @@ class TestNovaEmbeddingIntegration:
     def test_different_dimensions(self):
         """Test different embedding dimensions."""
         for dimension in [256, 384, 1024, 3072]:
-            response = litellm.embedding(
+            response = dheera_ai.embedding(
                 model="bedrock/amazon.nova-2-multimodal-embeddings-v1:0",
                 input=["Test text"],
                 aws_region_name="us-east-1",
@@ -408,7 +408,7 @@ class TestNovaEmbeddingIntegration:
         ]
         
         for purpose in purposes:
-            response = litellm.embedding(
+            response = dheera_ai.embedding(
                 model="bedrock/amazon.nova-2-multimodal-embeddings-v1:0",
                 input=["Test text"],
                 aws_region_name="us-east-1",
@@ -424,7 +424,7 @@ class TestNovaProviderDetection:
 
     def test_nova_provider_detection(self):
         """Test that Nova provider is correctly detected."""
-        from litellm.llms.bedrock.base_aws_llm import BaseAWSLLM
+        from dheera_ai.llms.bedrock.base_aws_llm import BaseAWSLLM
         
         provider = BaseAWSLLM.get_bedrock_embedding_provider(
             "amazon.nova-2-multimodal-embeddings-v1:0"
@@ -436,7 +436,7 @@ class TestNovaProviderDetection:
 
     def test_nova_in_model_name(self):
         """Test that models with 'nova' in the name are detected."""
-        from litellm.llms.bedrock.base_aws_llm import BaseAWSLLM
+        from dheera_ai.llms.bedrock.base_aws_llm import BaseAWSLLM
         
         # Test various Nova model name formats
         test_models = [

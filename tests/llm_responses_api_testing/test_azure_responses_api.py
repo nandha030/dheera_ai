@@ -6,17 +6,17 @@ from typing import Optional
 from unittest.mock import patch, AsyncMock
 
 sys.path.insert(0, os.path.abspath("../.."))
-import litellm
-from litellm.integrations.custom_logger import CustomLogger
+import dheera_ai
+from dheera_ai.integrations.custom_logger import CustomLogger
 import json
-from litellm.types.utils import StandardLoggingPayload
-from litellm.types.llms.openai import (
+from dheera_ai.types.utils import StandardLoggingPayload
+from dheera_ai.types.llms.openai import (
     ResponseCompletedEvent,
     ResponsesAPIResponse,
     ResponseAPIUsage,
     IncompleteDetails,
 )
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
 from base_responses_api import BaseResponsesAPITest
 
 
@@ -36,8 +36,8 @@ async def test_azure_responses_api_preview_api_version():
     """
     Ensure new azure preview api version is working
     """
-    litellm._turn_on_debug()
-    response = await litellm.aresponses(
+    dheera_ai._turn_on_debug()
+    response = await dheera_ai.aresponses(
         model="azure/gpt-5-mini",
         truncation="auto",
         api_version="preview",
@@ -131,11 +131,11 @@ async def test_azure_responses_api_status_error():
         )
         return response
 
-    from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
     from unittest.mock import patch
 
     with patch.object(AsyncHTTPHandler, "post", new=mock_post):
-        response = await litellm.aresponses(
+        response = await dheera_ai.aresponses(
             model="azure/computer-use-preview",
             truncation="auto",
             api_version="preview",
@@ -190,7 +190,7 @@ async def test_azure_responses_api_headers_with_llm_provider_prefix():
     Test that Azure-specific headers like 'x-request-id' and 'apim-request-id'
     are properly forwarded with 'llm_provider-' prefix in response._hidden_params["headers"].
     
-    Issue: https://github.com/BerriAI/litellm/issues/16538
+    Issue: https://github.com/BerriAI/dheera_ai/issues/16538
     
     The fix ensures that processed headers (with llm_provider- prefix) are stored
     in response._hidden_params["headers"] instead of additional_headers, making them
@@ -239,7 +239,7 @@ async def test_azure_responses_api_headers_with_llm_provider_prefix():
         return response
 
     with patch.object(AsyncHTTPHandler, "post", new=mock_post):
-        response = await litellm.aresponses(
+        response = await dheera_ai.aresponses(
             model="azure/gpt-5-codex",
             api_version="2025-03-01-preview",
             api_base="https://test.openai.azure.com",

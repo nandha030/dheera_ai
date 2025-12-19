@@ -2,7 +2,7 @@
 
 ## Concept 
 
-Each model onboarded is a "model deployment" in LiteLLM. 
+Each model onboarded is a "model deployment" in Dheera AI. 
 
 These model deployments are assigned to a "model group", via the "model_name" field in the config.yaml. 
 
@@ -11,7 +11,7 @@ These model deployments are assigned to a "model group", via the "model_name" fi
 ```yaml
 model_list:
   - model_name: my-custom-model
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
 ```
@@ -44,18 +44,18 @@ curl --location 'http://localhost:4000/key/generate' \
 
 ## Loadbalancing 
 
-You can add multiple model deployments to a single "model group". LiteLLM will automatically load balance requests across the model deployments in the group.
+You can add multiple model deployments to a single "model group". Dheera AI will automatically load balance requests across the model deployments in the group.
 
 Example:
 
 ```yaml
 model_list:
   - model_name: my-custom-model
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
   - model_name: my-custom-model
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-4o
       api_key: os.environ/AZURE_API_KEY
       api_base: os.environ/AZURE_API_BASE
@@ -73,15 +73,15 @@ Example:
 ```yaml
 model_list:
   - model_name: my-custom-model
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o-mini
       api_key: os.environ/OPENAI_API_KEY
   - model_name: my-other-model
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   fallbacks: [{"my-custom-model": ["my-other-model"]}]
 ```
 

@@ -2,7 +2,7 @@
 Unit tests for SambaNova chat message transformation
 """
 import pytest
-from litellm.llms.sambanova.chat import SambanovaConfig
+from dheera_ai.llms.sambanova.chat import SambanovaConfig
 
 
 class TestSambanovaContentListHandling:

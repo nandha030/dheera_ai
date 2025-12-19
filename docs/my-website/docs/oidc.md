@@ -1,5 +1,5 @@
 # [BETA] OpenID Connect (OIDC)
-LiteLLM supports using OpenID Connect (OIDC) for authentication to upstream services . This allows you to avoid storing sensitive credentials in your configuration files.
+Dheera AI supports using OpenID Connect (OIDC) for authentication to upstream services . This allows you to avoid storing sensitive credentials in your configuration files.
 
 :::info
 
@@ -10,7 +10,7 @@ This feature is in Beta
 
 ## OIDC Identity Provider (IdP)
 
-LiteLLM supports the following OIDC identity providers:
+Dheera AI supports the following OIDC identity providers:
 
 | Provider                 | Config Name  | Custom Audiences |
 | -------------------------| ------------ | ---------------- |
@@ -34,7 +34,7 @@ Do not use the `file`, `env`, or `env_path` providers unless you know what you'r
 
 ## OIDC Connect Relying Party (RP)
 
-LiteLLM supports the following OIDC relying parties / clients:
+Dheera AI supports the following OIDC relying parties / clients:
 
 - Amazon Bedrock
 - Azure OpenAI
@@ -77,7 +77,7 @@ oidc/env_path/SECRET_TOKEN
 
 :::tip
 
-If you are tempted to use oidc/env_path/AZURE_FEDERATED_TOKEN_FILE, don't do that. Instead, use `oidc/azure/`, as this will ensure continued support from LiteLLM if Azure changes their OIDC configuration and/or adds new features.
+If you are tempted to use oidc/env_path/AZURE_FEDERATED_TOKEN_FILE, don't do that. Instead, use `oidc/azure/`, as this will ensure continued support from Dheera AI if Azure changes their OIDC configuration and/or adds new features.
 
 :::
 
@@ -88,11 +88,11 @@ If you are tempted to use oidc/env_path/AZURE_FEDERATED_TOKEN_FILE, don't do tha
 ```yaml
 model_list:
   - model_name: claude-3-haiku-20240307
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-haiku-20240307-v1:0
       aws_region_name: us-west-2
-      aws_session_name: "litellm"
-      aws_role_name: "arn:aws:iam::YOUR_THING_HERE:role/litellm-google-demo"
+      aws_session_name: "dheera_ai"
+      aws_role_name: "arn:aws:iam::YOUR_THING_HERE:role/dheera_ai-google-demo"
       aws_web_identity_token: "oidc/google/https://example.com"
 ```
 
@@ -101,11 +101,11 @@ model_list:
 ```yaml
 model_list:
   - model_name: command-r
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/cohere.command-r-v1:0
       aws_region_name: us-west-2
       aws_session_name: "my-test-session"
-      aws_role_name: "arn:aws:iam::335785316107:role/litellm-github-unit-tests-circleci"
+      aws_role_name: "arn:aws:iam::335785316107:role/dheera_ai-github-unit-tests-circleci"
       aws_web_identity_token: "oidc/circleci_v2/"
 ```
 
@@ -155,8 +155,8 @@ Trust Relationship:
                 },
                 "ForAnyValue:StringLike": {
                     "oidc.circleci.com/org/c5a99188-154f-4f69-8da2-b442b1bf78dd:sub": [
-                        "org/c5a99188-154f-4f69-8da2-b442b1bf78dd/project/*/user/*/vcs-origin/github.com/BerriAI/litellm/vcs-ref/refs/heads/main",
-                        "org/c5a99188-154f-4f69-8da2-b442b1bf78dd/project/*/user/*/vcs-origin/github.com/BerriAI/litellm/vcs-ref/refs/heads/litellm_*"
+                        "org/c5a99188-154f-4f69-8da2-b442b1bf78dd/project/*/user/*/vcs-origin/github.com/BerriAI/dheera_ai/vcs-ref/refs/heads/main",
+                        "org/c5a99188-154f-4f69-8da2-b442b1bf78dd/project/*/user/*/vcs-origin/github.com/BerriAI/dheera_ai/vcs-ref/refs/heads/dheera_ai_*"
                     ]
                 }
             }
@@ -165,7 +165,7 @@ Trust Relationship:
 }
 ```
 
-This trust relationship restricts CircleCI to only assume the role on the main branch and branches that start with `litellm_`.
+This trust relationship restricts CircleCI to only assume the role on the main branch and branches that start with `dheera_ai_`.
 
 For CircleCI (v1 and v2), you also need to add your organization's OIDC provider in your AWS IAM settings. See https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html for more information.
 
@@ -181,7 +181,7 @@ You should _never_ need to create an IAM user. If you did, you're not using OIDC
 ```yaml
 model_list:
   - model_name: gpt-4o-2024-05-13
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-4o-2024-05-13
       azure_ad_token: "oidc/google/https://example.com"
       api_version: "2024-06-01"
@@ -267,10 +267,10 @@ Please contact us for paid enterprise support if you need help setting up Azure 
 ```yaml
 model list:
   - model_name: aws/claude-3-5-sonnet
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_region_name: "eu-central-1"
       aws_role_name: "arn:aws:iam::12345678:role/bedrock-role"
       aws_web_identity_token: "oidc/azure/api://123-456-789-9d04"
-      aws_session_name: "litellm-session"
+      aws_session_name: "dheera_ai-session"
 ```

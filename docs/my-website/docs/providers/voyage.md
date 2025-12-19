@@ -9,13 +9,13 @@ os.environ['VOYAGE_API_KEY']
 
 ## Sample Usage - Embedding
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 import os
 
 os.environ['VOYAGE_API_KEY'] = ""
 response = embedding(
     model="voyage/voyage-3.5",
-    input=["good morning from litellm"],
+    input=["good morning from dheera_ai"],
 )
 print(response)
 ```
@@ -34,7 +34,7 @@ VoyageAI embeddings support the following optional parameters:
 ### Example with Parameters
 
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 import os
 
 os.environ['VOYAGE_API_KEY'] = "your-api-key"
@@ -87,7 +87,7 @@ VoyageAI's `voyage-context-3` model provides contextualized chunk embeddings, wh
 Contextual embeddings require a **nested input format** where each inner list represents chunks from a single document:
 
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 import os
 
 os.environ['VOYAGE_API_KEY'] = "your-api-key"
@@ -158,7 +158,7 @@ Voyage AI provides reranking models to improve search relevance by reordering do
 ### Quick Start
 
 ```python
-from litellm import rerank
+from dheera_ai import rerank
 import os
 
 os.environ["VOYAGE_API_KEY"] = "your-api-key"
@@ -180,7 +180,7 @@ print(response)
 ### Async Usage
 
 ```python
-from litellm import arerank
+from dheera_ai import arerank
 import os
 import asyncio
 
@@ -202,18 +202,18 @@ async def main():
 asyncio.run(main())
 ```
 
-### LiteLLM Proxy Usage
+### Dheera AI Proxy Usage
 
 Add to your `config.yaml`:
 
 ```yaml
 model_list:
   - model_name: rerank-2.5
-    litellm_params:
+    dheera_ai_params:
       model: voyage/rerank-2.5
       api_key: os.environ/VOYAGE_API_KEY
   - model_name: rerank-2.5-lite
-    litellm_params:
+    dheera_ai_params:
       model: voyage/rerank-2.5-lite
       api_key: os.environ/VOYAGE_API_KEY
 ```

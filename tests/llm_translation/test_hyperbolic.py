@@ -9,8 +9,8 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm import get_llm_provider
+import dheera_ai
+from dheera_ai import get_llm_provider
 
 
 def test_get_llm_provider_hyperbolic():
@@ -24,8 +24,8 @@ def test_hyperbolic_completion_call():
     """Test basic completion call structure for Hyperbolic"""
     # This is primarily a structure test since we don't have actual API keys
     try:
-        litellm.set_verbose = True
-        response = litellm.completion(
+        dheera_ai.set_verbose = True
+        response = dheera_ai.completion(
             model="hyperbolic/qwen-2.5-72b",
             messages=[{"role": "user", "content": "Hello!"}],
             mock_response="Hi there!",
@@ -38,7 +38,7 @@ def test_hyperbolic_completion_call():
 
 def test_hyperbolic_config_initialization():
     """Test that HyperbolicChatConfig initializes correctly"""
-    from litellm.llms.hyperbolic.chat.transformation import HyperbolicChatConfig
+    from dheera_ai.llms.hyperbolic.chat.transformation import HyperbolicChatConfig
 
     config = HyperbolicChatConfig()
     assert config.custom_llm_provider == "hyperbolic"
@@ -46,7 +46,7 @@ def test_hyperbolic_config_initialization():
 
 def test_hyperbolic_get_openai_compatible_provider_info():
     """Test API base and key handling"""
-    from litellm.llms.hyperbolic.chat.transformation import HyperbolicChatConfig
+    from dheera_ai.llms.hyperbolic.chat.transformation import HyperbolicChatConfig
 
     config = HyperbolicChatConfig()
 
@@ -64,7 +64,7 @@ def test_hyperbolic_get_openai_compatible_provider_info():
 
 def test_hyperbolic_in_provider_lists():
     """Test that hyperbolic is in all relevant provider lists"""
-    from litellm.constants import (
+    from dheera_ai.constants import (
         openai_compatible_endpoints,
         openai_compatible_providers,
         openai_text_completion_compatible_providers,
@@ -95,7 +95,7 @@ def test_hyperbolic_models_configuration():
     for model in test_models:
         assert model in model_data
         model_info = model_data[model]
-        assert model_info["litellm_provider"] == "hyperbolic"
+        assert model_info["dheera_ai_provider"] == "hyperbolic"
         assert model_info["mode"] == "chat"
         assert "max_tokens" in model_info
         assert "input_cost_per_token" in model_info
@@ -104,7 +104,7 @@ def test_hyperbolic_models_configuration():
 
 def test_hyperbolic_supported_params():
     """Test that supported OpenAI parameters are correctly configured"""
-    from litellm.llms.hyperbolic.chat.transformation import HyperbolicChatConfig
+    from dheera_ai.llms.hyperbolic.chat.transformation import HyperbolicChatConfig
 
     config = HyperbolicChatConfig()
     supported_params = config.get_supported_openai_params("hyperbolic/deepseek-v3")

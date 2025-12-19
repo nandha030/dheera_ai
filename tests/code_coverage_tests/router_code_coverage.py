@@ -31,7 +31,7 @@ def get_all_functions_called_in_tests(base_dir):
     specifically in files containing the word 'router'.
     """
     called_functions = set()
-    test_dirs = ["local_testing", "router_unit_tests", "test_litellm"]
+    test_dirs = ["local_testing", "router_unit_tests", "test_dheera_ai"]
 
     for test_dir in test_dirs:
         dir_path = os.path.join(base_dir, test_dir)
@@ -80,14 +80,14 @@ ignored_function_names = [
 
 def main():
     router_file = [
-        "./litellm/router.py",
-        "./litellm/router_utils/batch_utils.py",
-        "./litellm/router_utils/pattern_match_deployments.py",
+        "./dheera_ai/router.py",
+        "./dheera_ai/router_utils/batch_utils.py",
+        "./dheera_ai/router_utils/pattern_match_deployments.py",
     ]
     # router_file = [
-    #     "../../litellm/router.py",
-    #     "../../litellm/router_utils/pattern_match_deployments.py",
-    #     "../../litellm/router_utils/batch_utils.py",
+    #     "../../dheera_ai/router.py",
+    #     "../../dheera_ai/router_utils/pattern_match_deployments.py",
+    #     "../../dheera_ai/router_utils/batch_utils.py",
     # ]  ## LOCAL TESTING
     tests_dir = (
         "./tests/"  # Update this path if your tests directory is located elsewhere

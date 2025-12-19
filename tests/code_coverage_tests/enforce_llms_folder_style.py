@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-import litellm
+import dheera_ai
 
 SEARCH_PROVIDERS = [
     "tavily",
@@ -29,7 +29,7 @@ ALLOWED_FILES_IN_LLMS_FOLDER = [
 
 def get_unique_names_from_llms_dir(base_dir: str):
     """
-    Returns a set of unique file and folder names from the root level of litellm/llms directory,
+    Returns a set of unique file and folder names from the root level of dheera_ai/llms directory,
     excluding file extensions and __init__.py
     """
     unique_names = set()
@@ -55,24 +55,24 @@ def get_unique_names_from_llms_dir(base_dir: str):
 
 
 def run_lint_check(unique_names):
-    _all_litellm_providers = [str(provider.value) for provider in litellm.LlmProviders]
+    _all_dheera_ai_providers = [str(provider.value) for provider in dheera_ai.LlmProviders]
     violations = []
     for name in unique_names:
         if (
-            name.lower() not in _all_litellm_providers
+            name.lower() not in _all_dheera_ai_providers
             and name not in ALLOWED_FILES_IN_LLMS_FOLDER
         ):
             violations.append(name)
 
     if len(violations) > 0:
         raise ValueError(
-            f"There are {len(violations)} violations in the llms folder. \n\n {violations}. \n\n Valid providers: {_all_litellm_providers}"
+            f"There are {len(violations)} violations in the llms folder. \n\n {violations}. \n\n Valid providers: {_all_dheera_ai_providers}"
         )
 
 
 def main():
-    llms_dir = "./litellm/llms/"  # Update this path if needed
-    # llms_dir = "../../litellm/llms/"  # LOCAL TESTING
+    llms_dir = "./dheera_ai/llms/"  # Update this path if needed
+    # llms_dir = "../../dheera_ai/llms/"  # LOCAL TESTING
 
     unique_names = get_unique_names_from_llms_dir(llms_dir)
     print("Unique names in llms directory:", sorted(list(unique_names)))

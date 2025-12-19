@@ -7,7 +7,7 @@ import sys
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
+import dheera_ai
 
 
 def get_init_params(cls: Type) -> list[str]:
@@ -32,7 +32,7 @@ def get_init_params(cls: Type) -> list[str]:
     return argspec.args[1:]  # Exclude 'self'
 
 
-router_init_params = set(get_init_params(litellm.router.Router))
+router_init_params = set(get_init_params(dheera_ai.router.Router))
 print(router_init_params)
 router_init_params.remove("model_list")
 

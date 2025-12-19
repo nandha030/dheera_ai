@@ -5,7 +5,7 @@ from datetime import datetime
 # GitHub API endpoints
 GITHUB_API_URL = "https://api.github.com"
 REPO_OWNER = "BerriAI"
-REPO_NAME = "litellm"
+REPO_NAME = "dheera_ai"
 
 # GitHub personal access token (required for uploading release assets)
 GITHUB_ACCESS_TOKEN = os.environ.get("GITHUB_ACCESS_TOKEN")

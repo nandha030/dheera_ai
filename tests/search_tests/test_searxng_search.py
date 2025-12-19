@@ -1,5 +1,5 @@
 import pytest
-import litellm
+import dheera_ai
 import os
 from typing import List, Union
 
@@ -23,14 +23,14 @@ class TestSearXNGSearch(BaseSearchTest):
         Test basic search functionality with a simple query.
         Override to handle free (0.0 cost) provider.
         """
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
-        litellm._turn_on_debug()
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
+        dheera_ai._turn_on_debug()
         search_provider = self.get_search_provider()
         print("Search Provider=", search_provider)
 
         try:
-            response = await litellm.asearch(
+            response = await dheera_ai.asearch(
                 query="latest developments in AI",
                 search_provider=search_provider,
             )
@@ -88,10 +88,10 @@ class TestSearXNGSearch(BaseSearchTest):
         Test search with optional parameters.
         Override for SearXNG since it doesn't natively limit results.
         """
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         search_provider = self.get_search_provider()
 
-        response = litellm.search(
+        response = dheera_ai.search(
             query="machine learning",
             search_provider=search_provider,
             max_results=5,

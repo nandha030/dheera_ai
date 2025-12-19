@@ -6,7 +6,7 @@ import os
 import sys
 import time
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 from datetime import datetime
 
 import pytest
@@ -16,16 +16,16 @@ sys.path.insert(0, os.path.abspath("../.."))
 from typing import List, Literal, Optional, Union
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import litellm
-from litellm import Cache, completion, embedding
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.utils import LiteLLMCommonStrings
+import dheera_ai
+from dheera_ai import Cache, completion, embedding
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.utils import DheeraAICommonStrings
 
 # Test Scenarios (test across completion, streaming, embedding)
 ## 1: Pre-API-Call
 ## 2: Post-API-Call
-## 3: On LiteLLM Call success
-## 4: On LiteLLM Call failure
+## 3: On DheeraAI Call success
+## 4: On DheeraAI Call failure
 ## 5. Caching
 
 # Test models
@@ -34,13 +34,13 @@ from litellm.types.utils import LiteLLMCommonStrings
 ## 3. Non-OpenAI/Azure - e.g. Bedrock
 
 # Test interfaces
-## 1. litellm.completion() + litellm.embeddings()
+## 1. dheera_ai.completion() + dheera_ai.embeddings()
 ## refer to test_custom_callback_input_router.py for the router +  proxy tests
 
 
 class CompletionCustomHandler(
     CustomLogger
-):  # https://docs.litellm.ai/docs/observability/custom_callback#callback-class
+):  # https://docs.dheera_ai.ai/docs/observability/custom_callback#callback-class
     """
     The set of expected inputs to a custom handler for a
     """
@@ -73,18 +73,18 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["model"], str)
             assert isinstance(kwargs["messages"], list)
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["user"], (str, type(None)))
             ### METADATA
-            metadata_value = kwargs["litellm_params"].get("metadata")
+            metadata_value = kwargs["dheera_ai_params"].get("metadata")
             assert metadata_value is None or isinstance(metadata_value, dict)
             if metadata_value is not None:
-                if litellm.turn_off_message_logging is True:
+                if dheera_ai.turn_off_message_logging is True:
                     assert (
                         metadata_value["raw_request"]
-                        is LiteLLMCommonStrings.redacted_by_litellm.value
+                        is DheeraAICommonStrings.redacted_by_dheera_ai.value
                     )
                 else:
                     assert "raw_request" not in metadata_value or isinstance(
@@ -107,7 +107,7 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["model"], str)
             assert isinstance(kwargs["messages"], list)
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["user"], (str, type(None)))
@@ -116,7 +116,7 @@ class CompletionCustomHandler(
             assert (
                 isinstance(
                     kwargs["original_response"],
-                    (str, litellm.CustomStreamWrapper, BaseModel),
+                    (str, dheera_ai.CustomStreamWrapper, BaseModel),
                 )
                 or inspect.iscoroutine(kwargs["original_response"])
                 or inspect.isasyncgen(kwargs["original_response"])
@@ -135,14 +135,14 @@ class CompletionCustomHandler(
             ## END TIME
             assert isinstance(end_time, datetime)
             ## RESPONSE OBJECT
-            assert isinstance(response_obj, litellm.ModelResponse)
+            assert isinstance(response_obj, dheera_ai.ModelResponse)
             ## KWARGS
             assert isinstance(kwargs["model"], str)
             assert isinstance(kwargs["messages"], list) and isinstance(
                 kwargs["messages"][0], dict
             )
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["user"], (str, type(None)))
@@ -153,7 +153,7 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["api_key"], (str, type(None)))
             assert (
                 isinstance(
-                    kwargs["original_response"], (str, litellm.CustomStreamWrapper)
+                    kwargs["original_response"], (str, dheera_ai.CustomStreamWrapper)
                 )
                 or inspect.isasyncgen(kwargs["original_response"])
                 or inspect.iscoroutine(kwargs["original_response"])
@@ -180,9 +180,9 @@ class CompletionCustomHandler(
             assert isinstance(
                 response_obj,
                 (
-                    litellm.ModelResponse,
-                    litellm.EmbeddingResponse,
-                    litellm.ImageResponse,
+                    dheera_ai.ModelResponse,
+                    dheera_ai.EmbeddingResponse,
+                    dheera_ai.ImageResponse,
                 ),
             )
             ## KWARGS
@@ -191,8 +191,8 @@ class CompletionCustomHandler(
                 kwargs["messages"][0], dict
             )
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
-            assert isinstance(kwargs["litellm_params"]["api_base"], str)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"]["api_base"], str)
             assert kwargs["cache_hit"] is None or isinstance(kwargs["cache_hit"], bool)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
@@ -207,8 +207,8 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["api_key"], (str, type(None)))
             assert isinstance(
                 kwargs["original_response"],
-                (str, litellm.CustomStreamWrapper, BaseModel),
-            ), "Original Response={}. Allowed types=[str, litellm.CustomStreamWrapper, BaseModel]".format(
+                (str, dheera_ai.CustomStreamWrapper, BaseModel),
+            ), "Original Response={}. Allowed types=[str, dheera_ai.CustomStreamWrapper, BaseModel]".format(
                 kwargs["original_response"]
             )
             assert isinstance(kwargs["additional_args"], (dict, type(None)))
@@ -235,8 +235,8 @@ class CompletionCustomHandler(
             )
 
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
-            assert isinstance(kwargs["litellm_params"]["metadata"], Optional[dict])
+            assert isinstance(kwargs["dheera_ai_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"]["metadata"], Optional[dict])
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["user"], (str, type(None)))
@@ -247,7 +247,7 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["api_key"], (str, type(None)))
             assert (
                 isinstance(
-                    kwargs["original_response"], (str, litellm.CustomStreamWrapper)
+                    kwargs["original_response"], (str, dheera_ai.CustomStreamWrapper)
                 )
                 or kwargs["original_response"] == None
             )
@@ -270,7 +270,7 @@ class CompletionCustomHandler(
                 kwargs["messages"][0], dict
             )
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["user"], (str, type(None)))
@@ -292,17 +292,17 @@ class CompletionCustomHandler(
             assert isinstance(
                 response_obj,
                 (
-                    litellm.ModelResponse,
-                    litellm.EmbeddingResponse,
-                    litellm.TextCompletionResponse,
+                    dheera_ai.ModelResponse,
+                    dheera_ai.EmbeddingResponse,
+                    dheera_ai.TextCompletionResponse,
                 ),
             )
             ## KWARGS
             assert isinstance(kwargs["model"], str)
             assert isinstance(kwargs["messages"], list)
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
-            assert isinstance(kwargs["litellm_params"]["api_base"], str)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"]["api_base"], str)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["completion_start_time"], datetime)
@@ -312,7 +312,7 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["api_key"], (str, type(None)))
             assert (
                 isinstance(
-                    kwargs["original_response"], (str, litellm.CustomStreamWrapper)
+                    kwargs["original_response"], (str, dheera_ai.CustomStreamWrapper)
                 )
                 or inspect.isasyncgen(kwargs["original_response"])
                 or inspect.iscoroutine(kwargs["original_response"])
@@ -338,7 +338,7 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["model"], str)
             assert isinstance(kwargs["messages"], list)
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["user"], (str, type(None)))
@@ -346,7 +346,7 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["api_key"], (str, type(None)))
             assert (
                 isinstance(
-                    kwargs["original_response"], (str, litellm.CustomStreamWrapper)
+                    kwargs["original_response"], (str, dheera_ai.CustomStreamWrapper)
                 )
                 or inspect.isasyncgen(kwargs["original_response"])
                 or inspect.iscoroutine(kwargs["original_response"])

@@ -1,10 +1,10 @@
 # INSTRUCTIONS FOR LITELLM
 
-This document provides comprehensive instructions for AI agents working in the LiteLLM repository.
+This document provides comprehensive instructions for AI agents working in the Dheera AI repository.
 
 ## OVERVIEW
 
-LiteLLM is a unified interface for 100+ LLMs that:
+Dheera AI is a unified interface for 100+ LLMs that:
 - Translates inputs to provider-specific completion, embedding, and image generation endpoints
 - Provides consistent OpenAI-format output across all providers
 - Includes retry/fallback logic across multiple deployments (Router)
@@ -14,7 +14,7 @@ LiteLLM is a unified interface for 100+ LLMs that:
 ## REPOSITORY STRUCTURE
 
 ### Core Components
-- `litellm/` - Main library code
+- `dheera_ai/` - Main library code
   - `llms/` - Provider-specific implementations (OpenAI, Anthropic, Azure, etc.)
   - `proxy/` - Proxy server implementation (LLM Gateway)
   - `router_utils/` - Load balancing and fallback logic
@@ -24,7 +24,7 @@ LiteLLM is a unified interface for 100+ LLMs that:
 ### Key Directories
 - `tests/` - Comprehensive test suites
 - `docs/my-website/` - Documentation website
-- `ui/litellm-dashboard/` - Admin dashboard UI
+- `ui/dheera_ai-dashboard/` - Admin dashboard UI
 - `enterprise/` - Enterprise-specific features
 
 ## DEVELOPMENT GUIDELINES
@@ -32,7 +32,7 @@ LiteLLM is a unified interface for 100+ LLMs that:
 ### MAKING CODE CHANGES
 
 1. **Provider Implementations**: When adding/modifying LLM providers:
-   - Follow existing patterns in `litellm/llms/{provider}/`
+   - Follow existing patterns in `dheera_ai/llms/{provider}/`
    - Implement proper transformation classes that inherit from `BaseConfig`
    - Support both sync and async operations
    - Handle streaming responses appropriately
@@ -40,7 +40,7 @@ LiteLLM is a unified interface for 100+ LLMs that:
 
 2. **Type Safety**: 
    - Use proper type hints throughout
-   - Update type definitions in `litellm/types/`
+   - Update type definitions in `dheera_ai/types/`
    - Ensure compatibility with both Pydantic v1 and v2
 
 3. **Testing**:
@@ -52,9 +52,9 @@ LiteLLM is a unified interface for 100+ LLMs that:
 ### IMPORTANT PATTERNS
 
 1. **Function/Tool Calling**:
-   - LiteLLM standardizes tool calling across providers
+   - Dheera AI standardizes tool calling across providers
    - OpenAI format is the standard, with transformations for other providers
-   - See `litellm/llms/anthropic/chat/transformation.py` for complex tool handling
+   - See `dheera_ai/llms/anthropic/chat/transformation.py` for complex tool handling
 
 2. **Streaming**:
    - All providers should support streaming where possible
@@ -82,17 +82,17 @@ The proxy server is a critical component that provides:
 - Enterprise features
 
 Key files:
-- `litellm/proxy/proxy_server.py` - Main server implementation
-- `litellm/proxy/auth/` - Authentication logic
-- `litellm/proxy/management_endpoints/` - Admin API endpoints
+- `dheera_ai/proxy/proxy_server.py` - Main server implementation
+- `dheera_ai/proxy/auth/` - Authentication logic
+- `dheera_ai/proxy/management_endpoints/` - Admin API endpoints
 
 ## MCP (MODEL CONTEXT PROTOCOL) SUPPORT
 
-LiteLLM supports MCP for agent workflows:
+Dheera AI supports MCP for agent workflows:
 - MCP server integration for tool calling
 - Transformation between OpenAI and MCP tool formats
 - Support for external MCP servers (Zapier, Jira, Linear, etc.)
-- See `litellm/experimental_mcp_client/` and `litellm/proxy/_experimental/mcp_server/`
+- See `dheera_ai/experimental_mcp_client/` and `dheera_ai/proxy/_experimental/mcp_server/`
 
 ## RUNNING SCRIPTS
 
@@ -105,7 +105,7 @@ When opening issues or pull requests, follow these templates:
 ### Bug Reports (`.github/ISSUE_TEMPLATE/bug_report.yml`)
 - Describe what happened vs. expected behavior
 - Include relevant log output
-- Specify LiteLLM version
+- Specify Dheera AI version
 - Indicate if you're part of an ML Ops team (helps with prioritization)
 
 ### Feature Requests (`.github/ISSUE_TEMPLATE/feature_request.yml`)
@@ -113,7 +113,7 @@ When opening issues or pull requests, follow these templates:
 - Explain motivation and use case with concrete examples
 
 ### Pull Requests (`.github/pull_request_template.md`)
-- Add at least 1 test in `tests/litellm/`
+- Add at least 1 test in `tests/dheera_ai/`
 - Ensure `make test-unit` passes
 
 
@@ -146,7 +146,7 @@ When opening issues or pull requests, follow these templates:
 
 ## COMMON PITFALLS TO AVOID
 
-1. **Breaking Changes**: LiteLLM has many users - avoid breaking existing APIs
+1. **Breaking Changes**: Dheera AI has many users - avoid breaking existing APIs
 2. **Provider Specifics**: Each provider has unique quirks - handle them properly
 3. **Rate Limits**: Respect provider rate limits in tests
 4. **Memory Usage**: Be mindful of memory usage in streaming scenarios
@@ -154,7 +154,7 @@ When opening issues or pull requests, follow these templates:
 
 ## HELPFUL RESOURCES
 
-- Main documentation: https://docs.litellm.ai/
+- Main documentation: https://docs.dheera_ai.ai/
 - Provider-specific docs in `docs/my-website/docs/providers/`
 - Admin UI for testing proxy features
 

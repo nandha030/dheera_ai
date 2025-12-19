@@ -4,7 +4,7 @@ import Image from '@theme/IdealImage';
 
 # UI - Custom Root Path 
 
-💥 Use this when you want to serve LiteLLM on a custom base url path like `https://localhost:4000/api/v1` 
+💥 Use this when you want to serve Dheera AI on a custom base url path like `https://localhost:4000/api/v1` 
 
 :::info
 
@@ -13,7 +13,7 @@ Requires v1.72.3 or higher.
 :::
 
 Limitations:
-- This does not work in [litellm non-root](./deploy#non-root---without-internet-connection) images, as it requires write access to the UI files.
+- This does not work in [dheera_ai non-root](./deploy#non-root---without-internet-connection) images, as it requires write access to the UI files.
 
 ## Usage
 
@@ -28,7 +28,7 @@ export SERVER_ROOT_PATH="/api/v1"
 ### 2. Run the Proxy
 
 ```shell
-litellm proxy --config /path/to/config.yaml
+dheera_ai proxy --config /path/to/config.yaml
 ```
 
 After running the proxy you can access it on `http://0.0.0.0:4000/api/v1/` (since we set `SERVER_ROOT_PATH="/api/v1"`)

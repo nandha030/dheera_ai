@@ -5,9 +5,9 @@ import asyncio
 import aiohttp, openai
 from openai import OpenAI, AsyncOpenAI, AzureOpenAI, AsyncAzureOpenAI
 from typing import Optional, List, Union
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 
-LITELLM_MASTER_KEY = "sk-1234"
+DHEERA_AI_MASTER_KEY = "sk-1234"
 
 
 def response_header_check(response):
@@ -360,10 +360,10 @@ async def test_chat_completion_different_deployments():
             )
         try:
             print(f"results: {results}")
-            init_model_id = results[0]["x-litellm-model-id"]
+            init_model_id = results[0]["x-dheera_ai-model-id"]
             deployments_shuffled = False
             for result in results[1:]:
-                if init_model_id != result["x-litellm-model-id"]:
+                if init_model_id != result["x-dheera_ai-model-id"]:
                     deployments_shuffled = True
             if deployments_shuffled == False:
                 pytest.fail("Expected at least 1 shuffled call")
@@ -550,12 +550,12 @@ async def test_proxy_all_models():
     async with aiohttp.ClientSession() as session:
         # call chat/completions with a model that the key was not created for + the model is not on the config.yaml
         await chat_completion(
-            session=session, key=LITELLM_MASTER_KEY, model="groq/llama-3.1-8b-instant"
+            session=session, key=DHEERA_AI_MASTER_KEY, model="groq/llama-3.1-8b-instant"
         )
 
         await chat_completion(
             session=session,
-            key=LITELLM_MASTER_KEY,
+            key=DHEERA_AI_MASTER_KEY,
             model="anthropic/claude-sonnet-4-5-20250929",
         )
 

@@ -7,7 +7,7 @@ Use this to give users an accurate list of models available behind provider endp
 - Fireworks AI
 - OpenAI
 - Gemini
-- LiteLLM Proxy
+- Dheera AI Proxy
 - Topaz
 - Anthropic
 - XAI
@@ -21,18 +21,18 @@ Use this to give users an accurate list of models available behind provider endp
 ```yaml
 model_list:
     - model_name: xai/*
-      litellm_params:
+      dheera_ai_params:
         model: xai/*
         api_key: os.environ/XAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
     check_provider_endpoint: true # 👈 Enable checking provider endpoint for wildcard models
 ```
 
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -40,7 +40,7 @@ litellm --config /path/to/config.yaml
 **3. Call `/v1/models`**
 
 ```bash
-curl -X GET "http://localhost:4000/v1/models" -H "Authorization: Bearer $LITELLM_KEY"
+curl -X GET "http://localhost:4000/v1/models" -H "Authorization: Bearer $DHEERA_AI_KEY"
 ```
 
 Expected response

@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 | Property | Details |
 |-------|-------|
 | Description | Docker Model Runner allows you to run large language models locally using Docker Desktop. |
-| Provider Route on LiteLLM | `docker_model_runner/` |
+| Provider Route on Dheera AI | `docker_model_runner/` |
 | Link to Provider Doc | [Docker Model Runner ↗](https://docs.docker.com/ai/model-runner/) |
 | Base URL | `http://localhost:22088` |
 | Supported Operations | [`/chat/completions`](#sample-usage) |
@@ -38,7 +38,7 @@ os.environ["DOCKER_MODEL_RUNNER_API_KEY"] = "dummy-key"  # Optional - Docker Mod
 ```
 
 **Note:** 
-- Docker Model Runner typically runs locally and may not require authentication. LiteLLM will use a dummy key by default if no key is provided.
+- Docker Model Runner typically runs locally and may not require authentication. Dheera AI will use a dummy key by default if no key is provided.
 - The API base should include the engine path (e.g., `/engines/llama.cpp`)
 
 ## API Base Structure
@@ -55,14 +55,14 @@ Where `{engine}` is the engine you want to use (typically `llama.cpp`).
 - ✅ Correct: `api_base="http://localhost:22088/engines/llama.cpp"`, `model="docker_model_runner/llama-3.1"`
 - ❌ Incorrect: `api_base="http://localhost:22088"`, `model="docker_model_runner/llama.cpp/llama-3.1"`
 
-## Usage - LiteLLM Python SDK
+## Usage - Dheera AI Python SDK
 
 ### Non-streaming
 
 ```python showLineNumbers title="Docker Model Runner Non-streaming Completion"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 # Specify the engine in the api_base URL
 os.environ["DOCKER_MODEL_RUNNER_API_BASE"] = "http://localhost:22088/engines/llama.cpp"
@@ -82,8 +82,8 @@ print(response)
 
 ```python showLineNumbers title="Docker Model Runner Streaming Completion"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 # Specify the engine in the api_base URL
 os.environ["DOCKER_MODEL_RUNNER_API_BASE"] = "http://localhost:22088/engines/llama.cpp"
@@ -104,8 +104,8 @@ for chunk in response:
 ### Custom API Base and Engine
 
 ```python showLineNumbers title="Custom API Base with Different Engine"
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 messages = [{"content": "Hello, how are you?", "role": "user"}]
 
@@ -123,8 +123,8 @@ print(response)
 ### Using Different Engines
 
 ```python showLineNumbers title="Using a Different Engine"
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 messages = [{"content": "Hello, how are you?", "role": "user"}]
 
@@ -139,27 +139,27 @@ response = completion(
 print(response)
 ```
 
-## Usage - LiteLLM Proxy
+## Usage - Dheera AI Proxy
 
-Add the following to your LiteLLM Proxy configuration file:
+Add the following to your Dheera AI Proxy configuration file:
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: llama-3.1
-    litellm_params:
+    dheera_ai_params:
       model: docker_model_runner/llama-3.1
       api_base: http://localhost:22088/engines/llama.cpp
 
   - model_name: mistral-7b
-    litellm_params:
+    dheera_ai_params:
       model: docker_model_runner/mistral-7b
       api_base: http://localhost:22088/engines/llama.cpp
 ```
 
-Start your LiteLLM Proxy server:
+Start your Dheera AI Proxy server:
 
-```bash showLineNumbers title="Start LiteLLM Proxy"
-litellm --config config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy"
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -179,7 +179,7 @@ client = OpenAI(
 # Non-streaming response
 response = client.chat.completions.create(
     model="llama-3.1",
-    messages=[{"role": "user", "content": "hello from litellm"}]
+    messages=[{"role": "user", "content": "hello from dheera_ai"}]
 )
 
 print(response.choices[0].message.content)
@@ -197,7 +197,7 @@ client = OpenAI(
 # Streaming response
 response = client.chat.completions.create(
     model="llama-3.1",
-    messages=[{"role": "user", "content": "hello from litellm"}],
+    messages=[{"role": "user", "content": "hello from dheera_ai"}],
     stream=True
 )
 
@@ -208,15 +208,15 @@ for chunk in response:
 
 </TabItem>
 
-<TabItem value="litellm-sdk" label="LiteLLM SDK">
+<TabItem value="dheera_ai-sdk" label="Dheera AI SDK">
 
-```python showLineNumbers title="Docker Model Runner via Proxy - LiteLLM SDK"
-import litellm
+```python showLineNumbers title="Docker Model Runner via Proxy - Dheera AI SDK"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy
-response = litellm.completion(
-    model="litellm_proxy/llama-3.1",
-    messages=[{"role": "user", "content": "hello from litellm"}],
+# Configure Dheera AI to use your proxy
+response = dheera_ai.completion(
+    model="dheera_ai_proxy/llama-3.1",
+    messages=[{"role": "user", "content": "hello from dheera_ai"}],
     api_base="http://localhost:4000",
     api_key="your-proxy-api-key"
 )
@@ -224,13 +224,13 @@ response = litellm.completion(
 print(response.choices[0].message.content)
 ```
 
-```python showLineNumbers title="Docker Model Runner via Proxy - LiteLLM SDK Streaming"
-import litellm
+```python showLineNumbers title="Docker Model Runner via Proxy - Dheera AI SDK Streaming"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy with streaming
-response = litellm.completion(
-    model="litellm_proxy/llama-3.1",
-    messages=[{"role": "user", "content": "hello from litellm"}],
+# Configure Dheera AI to use your proxy with streaming
+response = dheera_ai.completion(
+    model="dheera_ai_proxy/llama-3.1",
+    messages=[{"role": "user", "content": "hello from dheera_ai"}],
     api_base="http://localhost:4000",
     api_key="your-proxy-api-key",
     stream=True
@@ -251,7 +251,7 @@ curl http://localhost:4000/v1/chat/completions \
   -H "Authorization: Bearer your-proxy-api-key" \
   -d '{
     "model": "llama-3.1",
-    "messages": [{"role": "user", "content": "hello from litellm"}]
+    "messages": [{"role": "user", "content": "hello from dheera_ai"}]
   }'
 ```
 
@@ -261,7 +261,7 @@ curl http://localhost:4000/v1/chat/completions \
   -H "Authorization: Bearer your-proxy-api-key" \
   -d '{
     "model": "llama-3.1",
-    "messages": [{"role": "user", "content": "hello from litellm"}],
+    "messages": [{"role": "user", "content": "hello from dheera_ai"}],
     "stream": true
   }'
 ```
@@ -269,7 +269,7 @@ curl http://localhost:4000/v1/chat/completions \
 </TabItem>
 </Tabs>
 
-For more detailed information on using the LiteLLM Proxy, see the [LiteLLM Proxy documentation](../providers/litellm_proxy).
+For more detailed information on using the Dheera AI Proxy, see the [Dheera AI Proxy documentation](../providers/dheera_ai_proxy).
 
 ## API Reference
 

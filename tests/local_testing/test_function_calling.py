@@ -13,15 +13,15 @@ sys.path.insert(
 )  # Adds the parent directory to the system path
 import pytest
 from unittest.mock import patch, MagicMock, AsyncMock
-import litellm
-from litellm import RateLimitError, Timeout, completion, completion_cost, embedding
+import dheera_ai
+from dheera_ai import RateLimitError, Timeout, completion, completion_cost, embedding
 
-litellm.num_retries = 0
-litellm.cache = None
-# litellm.set_verbose=True
+dheera_ai.num_retries = 0
+dheera_ai.cache = None
+# dheera_ai.set_verbose=True
 import json
 
-# litellm.success_callback = ["langfuse"]
+# dheera_ai.success_callback = ["langfuse"]
 
 
 def get_current_weather(location, unit="fahrenheit"):
@@ -55,8 +55,8 @@ def get_current_weather(location, unit="fahrenheit"):
 @pytest.mark.flaky(retries=3, delay=1)
 def test_aaparallel_function_call(model):
     try:
-        litellm.set_verbose = True
-        litellm.modify_params = True
+        dheera_ai.set_verbose = True
+        dheera_ai.modify_params = True
         # Step 1: send the conversation and available functions to the model
         messages = [
             {
@@ -87,7 +87,7 @@ def test_aaparallel_function_call(model):
                 },
             }
         ]
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model=model,
             messages=messages,
             tools=tools,
@@ -135,7 +135,7 @@ def test_aaparallel_function_call(model):
                     }
                 )  # extend conversation with function response
             print(f"messages: {messages}")
-            second_response = litellm.completion(
+            second_response = dheera_ai.completion(
                 model=model,
                 messages=messages,
                 temperature=0.2,
@@ -144,9 +144,9 @@ def test_aaparallel_function_call(model):
                 drop_params=True,
             )  # get a new response from the model where it can see the function response
             print("second response\n", second_response)
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         print(e)
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         print(e)
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -165,8 +165,8 @@ def test_aaparallel_function_call(model):
 @pytest.mark.flaky(retries=3, delay=1)
 def test_aaparallel_function_call_with_anthropic_thinking(model):
     try:
-        litellm._turn_on_debug()
-        litellm.modify_params = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.modify_params = True
         # Step 1: send the conversation and available functions to the model
         messages = [
             {
@@ -197,7 +197,7 @@ def test_aaparallel_function_call_with_anthropic_thinking(model):
                 },
             }
         ]
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model=model,
             messages=messages,
             tools=tools,
@@ -246,7 +246,7 @@ def test_aaparallel_function_call_with_anthropic_thinking(model):
                     }
                 )  # extend conversation with function response
             print(f"messages: {messages}")
-            second_response = litellm.completion(
+            second_response = dheera_ai.completion(
                 model=model,
                 messages=messages,
                 seed=22,
@@ -257,15 +257,15 @@ def test_aaparallel_function_call_with_anthropic_thinking(model):
             print("second response\n", second_response)
 
             ## THIRD RESPONSE
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         print(e)
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         print(e)
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
 
 
-from litellm.types.utils import ChatCompletionMessageToolCall, Function, Message
+from dheera_ai.types.utils import ChatCompletionMessageToolCall, Function, Message
 
 
 @pytest.mark.parametrize(
@@ -331,16 +331,16 @@ def test_parallel_function_call_anthropic_error_msg(
 
     Ensure this error is thrown when `tools=` param is not specified. But tool call requests are made.
 
-    Reference Issue: https://github.com/BerriAI/litellm/issues/5747, https://github.com/BerriAI/litellm/issues/5388
+    Reference Issue: https://github.com/BerriAI/dheera_ai/issues/5747, https://github.com/BerriAI/dheera_ai/issues/5388
     """
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         messages = messages
 
         if expected_error_msg:
-            with pytest.raises(litellm.UnsupportedParamsError) as e:
-                second_response = litellm.completion(
+            with pytest.raises(dheera_ai.UnsupportedParamsError) as e:
+                second_response = dheera_ai.completion(
                     model=model,
                     messages=messages,
                     temperature=0.2,
@@ -349,7 +349,7 @@ def test_parallel_function_call_anthropic_error_msg(
                 )  # get a new response from the model where it can see the function response
                 print("second response\n", second_response)
         else:
-            second_response = litellm.completion(
+            second_response = dheera_ai.completion(
                 model=model,
                 messages=messages,
                 temperature=0.2,
@@ -357,9 +357,9 @@ def test_parallel_function_call_anthropic_error_msg(
                 drop_params=True,
             )  # get a new response from the model where it can see the function response
             print("second response\n", second_response)
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         print(e)
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         print(e)
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -367,7 +367,7 @@ def test_parallel_function_call_anthropic_error_msg(
 
 def test_parallel_function_call_stream():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         # Step 1: send the conversation and available functions to the model
         messages = [
             {
@@ -398,7 +398,7 @@ def test_parallel_function_call_stream():
                 },
             }
         ]
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="gpt-3.5-turbo-1106",
             messages=messages,
             tools=tools,
@@ -447,7 +447,7 @@ def test_parallel_function_call_stream():
                     }
                 )  # extend conversation with function response
             print(f"messages: {messages}")
-            second_response = litellm.completion(
+            second_response = dheera_ai.completion(
                 model="gpt-3.5-turbo-1106", messages=messages, temperature=0.2, seed=22
             )  # get a new response from the model where it can see the function response
             print("second response\n", second_response)
@@ -463,7 +463,7 @@ def test_parallel_function_call_stream():
     reason="Flaky test. Groq function calling is not reliable for ci/cd testing."
 )
 def test_groq_parallel_function_call():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     try:
         # Step 1: send the conversation and available functions to the model
         messages = [
@@ -499,7 +499,7 @@ def test_groq_parallel_function_call():
                 },
             }
         ]
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="groq/llama2-70b-4096",
             messages=messages,
             tools=tools,
@@ -549,7 +549,7 @@ def test_groq_parallel_function_call():
                         }
                     )  # extend conversation with function response
                 print(f"messages: {messages}")
-                second_response = litellm.completion(
+                second_response = dheera_ai.completion(
                     model="groq/llama2-70b-4096", messages=messages
                 )  # get a new response from the model where it can see the function response
                 print("second response\n", second_response)
@@ -564,8 +564,8 @@ def test_groq_parallel_function_call():
     ],
 )
 def test_passing_tool_result_as_list(model):
-    litellm.set_verbose = True
-    litellm._turn_on_debug()
+    dheera_ai.set_verbose = True
+    dheera_ai._turn_on_debug()
     messages = [
         {
             "content": [
@@ -708,9 +708,9 @@ def test_passing_tool_result_as_list(model):
 @pytest.mark.asyncio
 @pytest.mark.flaky(retries=6, delay=1)
 async def test_watsonx_tool_choice(sync_mode, monkeypatch):
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
     import json
-    from litellm import acompletion, completion
+    from dheera_ai import acompletion, completion
 
     # Mock the IAM token generation to avoid actual API calls
     monkeypatch.setenv("WATSONX_API_KEY", "mock-api-key")
@@ -718,7 +718,7 @@ async def test_watsonx_tool_choice(sync_mode, monkeypatch):
     monkeypatch.setenv("WATSONX_API_BASE", "https://us-south.ml.cloud.ibm.com")
     monkeypatch.setenv("WATSONX_PROJECT_ID", "mock-project-id")
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     tools = [
         {
             "type": "function",

@@ -2,20 +2,20 @@
 
 ## The Problem
 
-As a guardrail provider, integrating with LiteLLM traditionally requires:
-- Making a PR to the LiteLLM repository
+As a guardrail provider, integrating with Dheera AI traditionally requires:
+- Making a PR to the Dheera AI repository
 - Waiting for review and merge
-- Maintaining provider-specific code in LiteLLM's codebase
+- Maintaining provider-specific code in Dheera AI's codebase
 - Updating the integration for changes to your API
 
 ## The Solution
 
-The **Generic Guardrail API** lets you integrate with LiteLLM **instantly** by implementing a simple API endpoint. No PR required.
+The **Generic Guardrail API** lets you integrate with Dheera AI **instantly** by implementing a simple API endpoint. No PR required.
 
 ### Key Benefits
 
 1. **No PR Needed** - Deploy and integrate immediately
-2. **Universal Support** - Works across ALL LiteLLM endpoints (chat, embeddings, image generation, etc.)
+2. **Universal Support** - Works across ALL Dheera AI endpoints (chat, embeddings, image generation, etc.)
 3. **Simple Contract** - One endpoint, three response types
 4. **Multi-Modal Support** - Handle both text and images in requests/responses
 5. **Custom Parameters** - Pass provider-specific params via config
@@ -23,7 +23,7 @@ The **Generic Guardrail API** lets you integrate with LiteLLM **instantly** by i
 
 ## Supported Endpoints
 
-The Generic Guardrail API works with the following LiteLLM endpoints:
+The Generic Guardrail API works with the following Dheera AI endpoints:
 
 - `/v1/chat/completions` - OpenAI Chat Completions
 - `/v1/completions` - OpenAI Text Completions
@@ -37,16 +37,16 @@ The Generic Guardrail API works with the following LiteLLM endpoints:
 
 ## How It Works
 
-1. LiteLLM extracts text and images from any request (chat messages, embeddings, image prompts, etc.)
+1. Dheera AI extracts text and images from any request (chat messages, embeddings, image prompts, etc.)
 2. Sends extracted content + metadata to your API endpoint
 3. Your API responds with: `BLOCKED`, `NONE`, or `GUARDRAIL_INTERVENED`
-4. LiteLLM enforces the decision and applies any modifications
+4. Dheera AI enforces the decision and applies any modifications
 
 ## API Contract
 
 ### Endpoint
 
-Implement `POST /beta/litellm_basic_guardrail_api`
+Implement `POST /beta/dheera_ai_basic_guardrail_api`
 
 ### Request Format
 
@@ -84,18 +84,18 @@ Implement `POST /beta/litellm_basic_guardrail_api`
     {"role": "user", "content": "Hello"}
   ],
   "request_data": {
-    "user_api_key_hash": "hash of the litellm virtual key used",
-    "user_api_key_alias": "alias of the litellm virtual key used",
-    "user_api_key_user_id": "user id associated with the litellm virtual key used",
-    "user_api_key_user_email": "user email associated with the litellm virtual key used",
-    "user_api_key_team_id": "team id associated with the litellm virtual key used",
-    "user_api_key_team_alias": "team alias associated with the litellm virtual key used",
-    "user_api_key_end_user_id": "end user id associated with the litellm virtual key used",
-    "user_api_key_org_id": "org id associated with the litellm virtual key used"
+    "user_api_key_hash": "hash of the dheera_ai virtual key used",
+    "user_api_key_alias": "alias of the dheera_ai virtual key used",
+    "user_api_key_user_id": "user id associated with the dheera_ai virtual key used",
+    "user_api_key_user_email": "user email associated with the dheera_ai virtual key used",
+    "user_api_key_team_id": "team id associated with the dheera_ai virtual key used",
+    "user_api_key_team_alias": "team alias associated with the dheera_ai virtual key used",
+    "user_api_key_end_user_id": "end user id associated with the dheera_ai virtual key used",
+    "user_api_key_org_id": "org id associated with the dheera_ai virtual key used"
   },
   "input_type": "request",  // "request" or "response"
-  "litellm_call_id": "unique_call_id",  // the call id of the individual LLM call
-  "litellm_trace_id": "trace_id",  // the trace id of the LLM call - useful if there are multiple LLM calls for the same conversation
+  "dheera_ai_call_id": "unique_call_id",  // the call id of the individual LLM call
+  "dheera_ai_trace_id": "trace_id",  // the trace id of the LLM call - useful if there are multiple LLM calls for the same conversation
   "additional_provider_specific_params": {
     // your custom params from config
   }
@@ -114,7 +114,7 @@ Implement `POST /beta/litellm_basic_guardrail_api`
 ```
 
 **Actions:**
-- `BLOCKED` - LiteLLM raises error and blocks request
+- `BLOCKED` - Dheera AI raises error and blocks request
 - `NONE` - Request proceeds unchanged  
 - `GUARDRAIL_INTERVENED` - Request proceeds with modified texts/images (provide `texts` and/or `images` fields)
 
@@ -218,15 +218,15 @@ The `structured_messages` parameter provides the full input in OpenAI chat compl
 - Enforce role-based content restrictions
 - Log structured conversation context
 
-## LiteLLM Configuration
+## Dheera AI Configuration
 
 Add to `config.yaml`:
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   guardrails:
     - guardrail_name: "my-guardrail"
-      litellm_params:
+      dheera_ai_params:
         guardrail: generic_guardrail_api
         mode: pre_call  # or post_call, during_call
         api_base: https://your-guardrail-api.com
@@ -267,7 +267,7 @@ response = client.chat.completions.create(
 
 ## Implementation Example
 
-See [mock_bedrock_guardrail_server.py](https://github.com/BerriAI/litellm/blob/main/cookbook/mock_guardrail_server/mock_bedrock_guardrail_server.py) for a complete reference implementation.
+See [mock_bedrock_guardrail_server.py](https://github.com/BerriAI/dheera_ai/blob/main/cookbook/mock_guardrail_server/mock_bedrock_guardrail_server.py) for a complete reference implementation.
 
 **Minimal FastAPI example:**
 
@@ -286,8 +286,8 @@ class GuardrailRequest(BaseModel):
     structured_messages: Optional[List[Dict[str, Any]]] = None  # OpenAI messages format (for chat endpoints)
     request_data: Dict[str, Any]
     input_type: str  # "request" or "response"
-    litellm_call_id: Optional[str] = None
-    litellm_trace_id: Optional[str] = None
+    dheera_ai_call_id: Optional[str] = None
+    dheera_ai_trace_id: Optional[str] = None
     additional_provider_specific_params: Dict[str, Any]
 
 class GuardrailResponse(BaseModel):
@@ -296,7 +296,7 @@ class GuardrailResponse(BaseModel):
     texts: Optional[List[str]] = None
     images: Optional[List[str]] = None
 
-@app.post("/beta/litellm_basic_guardrail_api")
+@app.post("/beta/dheera_ai_basic_guardrail_api")
 async def apply_guardrail(request: GuardrailRequest):
     # Your guardrail logic here
     
@@ -360,11 +360,11 @@ async def apply_guardrail(request: GuardrailRequest):
 - You want instant integration without waiting for PRs
 - You maintain your own guardrail service
 - You need full control over updates and features
-- You want to support all LiteLLM endpoints automatically
+- You want to support all Dheera AI endpoints automatically
 
 ❌ **Make a PR when:**
-- You want deeper integration with LiteLLM internals
-- Your guardrail requires complex LiteLLM-specific logic
+- You want deeper integration with Dheera AI internals
+- Your guardrail requires complex Dheera AI-specific logic
 - You want to be featured as a built-in provider
 
 ## Questions?

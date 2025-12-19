@@ -6,9 +6,9 @@ import Image from '@theme/IdealImage';
 
 ✨ **This is an Enterprise Feature**
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+[Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
@@ -22,7 +22,7 @@ Read secrets from [Hashicorp Vault](https://developer.hashicorp.com/vault/docs/s
 
 **Step 1.** Add Hashicorp Vault details in your environment
 
-LiteLLM supports three methods of authentication:
+Dheera AI supports three methods of authentication:
 
 1. AppRole authentication (recommended) - `HCP_VAULT_APPROLE_ROLE_ID` and `HCP_VAULT_APPROLE_SECRET_ID`
 2. TLS cert authentication - `HCP_VAULT_CLIENT_CERT` and `HCP_VAULT_CLIENT_KEY`
@@ -48,7 +48,7 @@ HCP_VAULT_TOKEN="hvs.CAESIG52gL6ljBSdmq*****"
 # OPTIONAL
 HCP_VAULT_REFRESH_INTERVAL="86400" # defaults to 86400, frequency of cache refresh for Hashicorp Vault
 HCP_VAULT_MOUNT_NAME="secret" # OPTIONAL. defaults to "secret", set this if your KV engine is mounted elsewhere
-HCP_VAULT_PATH_PREFIX="litellm" # OPTIONAL. defaults to None, set this if your secrets live under a custom prefix like secret/data/litellm/OPENAI_API_KEY
+HCP_VAULT_PATH_PREFIX="dheera_ai" # OPTIONAL. defaults to None, set this if your secrets live under a custom prefix like secret/data/dheera_ai/OPENAI_API_KEY
 ```
 
 **Step 2.** Add to proxy config.yaml
@@ -60,14 +60,14 @@ general_settings:
   # [OPTIONAL SETTINGS]
   key_management_settings: 
     store_virtual_keys: true # OPTIONAL. Defaults to False, when True will store virtual keys in secret manager
-    prefix_for_stored_virtual_keys: "litellm/" # OPTIONAL. If set, this prefix will be used for stored virtual keys in the secret manager
+    prefix_for_stored_virtual_keys: "dheera_ai/" # OPTIONAL. If set, this prefix will be used for stored virtual keys in the secret manager
     access_mode: "read_and_write" # Literal["read_only", "write_only", "read_and_write"]
 ```
 
 **Step 3.** Start + test proxy
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 [Quick Test Proxy](../proxy/user_keys)
@@ -75,7 +75,7 @@ $ litellm --config /path/to/config.yaml
 
 ## Authentication Methods
 
-LiteLLM supports three authentication methods for Hashicorp Vault, with the following priority:
+Dheera AI supports three authentication methods for Hashicorp Vault, with the following priority:
 
 1. **AppRole** - Recommended for production applications
 2. **TLS Certificate** - For certificate-based authentication
@@ -90,19 +90,19 @@ To set up AppRole authentication:
 vault auth enable approle
 ```
 
-2. Create a policy and role for LiteLLM:
+2. Create a policy and role for Dheera AI:
 ```bash
-# Create a policy file (litellm-policy.hcl)
+# Create a policy file (dheera_ai-policy.hcl)
 path "secret/data/*" {
   capabilities = ["create", "read", "update", "delete", "list"]
 }
 
 # Apply the policy
-vault policy write litellm-policy litellm-policy.hcl
+vault policy write dheera_ai-policy dheera_ai-policy.hcl
 
 # Create an AppRole
-vault write auth/approle/role/litellm \
-    token_policies="litellm-policy" \
+vault write auth/approle/role/dheera_ai \
+    token_policies="dheera_ai-policy" \
     token_ttl=32d \
     token_max_ttl=32d
 ```
@@ -110,10 +110,10 @@ vault write auth/approle/role/litellm \
 3. Get your Role ID and Secret ID:
 ```bash
 # Get Role ID
-vault read auth/approle/role/litellm/role-id
+vault read auth/approle/role/dheera_ai/role-id
 
 # Generate Secret ID
-vault write -f auth/approle/role/litellm/secret-id
+vault write -f auth/approle/role/dheera_ai/secret-id
 ```
 
 4. Set the environment variables:
@@ -134,7 +134,7 @@ export HCP_VAULT_CERT_ROLE="your-cert-role"  # Optional
 ```
 
 **How it works:**
-- LiteLLM uses the client certificate and key for mutual TLS authentication
+- Dheera AI uses the client certificate and key for mutual TLS authentication
 - Vault validates the certificate and issues a temporary token
 - The token is cached for the duration of its lease
 
@@ -151,7 +151,7 @@ export HCP_VAULT_TOKEN="hvs.CAESIG52gL6ljBSdmq*****"
 
 **Reading Secrets**
 
-LiteLLM reads secrets from Hashicorp Vault's KV v2 engine using the following URL format:
+Dheera AI reads secrets from Hashicorp Vault's KV v2 engine using the following URL format:
 ```
 {VAULT_ADDR}/v1/{NAMESPACE}/{MOUNT_NAME}/data/{PATH_PREFIX}/{SECRET_NAME}
 ```
@@ -160,18 +160,18 @@ For example, if you have:
 - `HCP_VAULT_ADDR="https://vault.example.com:8200"`
 - `HCP_VAULT_NAMESPACE="admin"`
 - `HCP_VAULT_MOUNT_NAME="secret"`
-- `HCP_VAULT_PATH_PREFIX="litellm"`
+- `HCP_VAULT_PATH_PREFIX="dheera_ai"`
 - Secret name: `AZURE_API_KEY`
 
 
-LiteLLM will look up:
+Dheera AI will look up:
 ```
-https://vault.example.com:8200/v1/admin/secret/data/litellm/AZURE_API_KEY
+https://vault.example.com:8200/v1/admin/secret/data/dheera_ai/AZURE_API_KEY
 ```
 
 ### Expected Secret Format
 
-LiteLLM expects all secrets to be stored as a JSON object with a `key` field containing the secret value.
+Dheera AI expects all secrets to be stored as a JSON object with a `key` field containing the secret value.
 
 For example, for `AZURE_API_KEY`, the secret should be stored as:
 
@@ -185,15 +185,15 @@ For example, for `AZURE_API_KEY`, the secret should be stored as:
 
 **Writing Secrets**
 
-When a Virtual Key is Created / Deleted on LiteLLM, LiteLLM will automatically create / delete the secret in Hashicorp Vault.
+When a Virtual Key is Created / Deleted on Dheera AI, Dheera AI will automatically create / delete the secret in Hashicorp Vault.
 
-- Create Virtual Key on LiteLLM either through the LiteLLM Admin UI or API
+- Create Virtual Key on Dheera AI either through the Dheera AI Admin UI or API
 
 <Image img={require('../../img/hcorp_create_virtual_key.png')} />
 
 
 - Check Hashicorp Vault for secret
 
-LiteLLM stores secret under the `prefix_for_stored_virtual_keys` path (default: `litellm/`)
+Dheera AI stores secret under the `prefix_for_stored_virtual_keys` path (default: `dheera_ai/`)
 
 <Image img={require('../../img/hcorp_virtual_key.png')} />

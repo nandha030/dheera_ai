@@ -10,16 +10,16 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system-path
 import pytest
-from litellm import Router
-from litellm.router_strategy.budget_limiter import RouterBudgetLimiting
-from litellm.types.router import (
+from dheera_ai import Router
+from dheera_ai.router_strategy.budget_limiter import RouterBudgetLimiting
+from dheera_ai.types.router import (
     RoutingStrategy,
 )
-from litellm.types.utils import GenericBudgetConfigType, BudgetConfig
-from litellm.caching.caching import DualCache, RedisCache
+from dheera_ai.types.utils import GenericBudgetConfigType, BudgetConfig
+from dheera_ai.caching.caching import DualCache, RedisCache
 import logging
-from litellm._logging import verbose_router_logger
-import litellm
+from dheera_ai._logging import verbose_router_logger
+import dheera_ai
 from datetime import timezone, timedelta
 
 verbose_router_logger.setLevel(logging.DEBUG)
@@ -73,7 +73,7 @@ async def test_provider_budgets_e2e_test():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "azure/gpt-4.1-mini",
                     "api_key": os.getenv("AZURE_API_KEY"),
                     "api_version": os.getenv("AZURE_API_VERSION"),
@@ -83,7 +83,7 @@ async def test_provider_budgets_e2e_test():
             },
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-4o-mini",
                 },
                 "model_info": {"id": "openai-model-id"},
@@ -140,7 +140,7 @@ async def test_provider_budgets_e2e_test_expect_to_fail():
         model_list=[
             {
                 "model_name": "anthropic/*",  # openai model name
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "anthropic/*",
                 },
             },
@@ -186,14 +186,14 @@ async def test_get_llm_provider_for_deployment():
     )
 
     # Test OpenAI deployment
-    openai_deployment = {"litellm_params": {"model": "openai/gpt-4"}}
+    openai_deployment = {"dheera_ai_params": {"model": "openai/gpt-4"}}
     assert (
         provider_budget._get_llm_provider_for_deployment(openai_deployment) == "openai"
     )
 
     # Test Azure deployment
     azure_deployment = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "model": "azure/gpt-4",
             "api_key": "test",
             "api_base": "test",
@@ -509,7 +509,7 @@ async def test_deployment_budget_limits_e2e_test():
     - Next 3 requests all go to openai/gpt-4o-mini
 
     """
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     cleanup_redis()
     # Modify for test
 
@@ -517,7 +517,7 @@ async def test_deployment_budget_limits_e2e_test():
         model_list=[
             {
                 "model_name": "gpt-4o",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "openai/gpt-4o",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                     "max_budget": 0.000000000001,
@@ -527,7 +527,7 @@ async def test_deployment_budget_limits_e2e_test():
             },
             {
                 "model_name": "gpt-4o",  # openai model name
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-4o-mini",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                     "max_budget": 10,
@@ -571,7 +571,7 @@ async def test_deployment_budgets_e2e_test_expect_to_fail():
         model_list=[
             {
                 "model_name": "openai/gpt-4o-mini",  # openai model name
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-4o-mini",
                     "max_budget": 0.000000000001,
                     "budget_duration": "1d",
@@ -616,7 +616,7 @@ async def test_tag_budgets_e2e_test_expect_to_fail():
     cleanup_redis()
     TAG_NAME = "product:chat-bot"
     TAG_NAME_2 = "product:chat-bot-2"
-    litellm.tag_budget_config = {
+    dheera_ai.tag_budget_config = {
         TAG_NAME: BudgetConfig(max_budget=0.000000000001, budget_duration="1d"),
         TAG_NAME_2: BudgetConfig(max_budget=100, budget_duration="1d"),
     }
@@ -625,7 +625,7 @@ async def test_tag_budgets_e2e_test_expect_to_fail():
         model_list=[
             {
                 "model_name": "openai/gpt-4o-mini",  # openai model name
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-4o-mini",
                 },
             },

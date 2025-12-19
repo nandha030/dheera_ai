@@ -39,18 +39,18 @@ It includes methods that:
 
 Create a new directory with your provider name
 
-#### `litellm/llms/your_provider_name_here`
+#### `dheera_ai/llms/your_provider_name_here`
 
 Inside of there, you will want to add a file for your chat configuration
 
-#### `litellm/llms/your_provider_name_here/chat/transformation.py`
+#### `dheera_ai/llms/your_provider_name_here/chat/transformation.py`
 
 The `transformation.py` file will contain a configuration class that dictates how your api will slot into the liteLLM api.
 
 Define your config class extending `BaseConfig`:
 
 ```python
-from litellm.llms.base_llm.chat.transformation import BaseConfig
+from dheera_ai.llms.base_llm.chat.transformation import BaseConfig
 
 class MyProviderChatConfig(BaseConfig):
     def __init__(self):
@@ -65,7 +65,7 @@ We will fill in the abstract methods at a later point.
 
 liteLLM is working to enhance this process, but currently, what you need to do is the following:
 
-#### `litellm/__init__.py`
+#### `dheera_ai/__init__.py`
 
 At the top part of the file, add your key to the list of keys as an option
 
@@ -88,7 +88,7 @@ from .llms.bedrock.chat.converse_transformation import AmazonConverseConfig
 from .llms.openai_like.chat.handler import OpenAILikeChatConfig
 ```
 
-#### `litellm/main.py`
+#### `dheera_ai/main.py`
 
 Add yourself to `main.py` so requests can be routed to your config class
 
@@ -113,9 +113,9 @@ Then much lower in the code
 elif custom_llm_provider == "bytez":
     api_key = (
         api_key
-        or litellm.bytez_key
+        or dheera_ai.bytez_key
         or get_secret_str("BYTEZ_API_KEY")
-        or litellm.api_key
+        or dheera_ai.api_key
     )
 
     response = base_llm_http_handler.completion(
@@ -128,7 +128,7 @@ elif custom_llm_provider == "bytez":
         acompletion=acompletion,
         logging_obj=logging,
         optional_params=optional_params,
-        litellm_params=litellm_params,
+        dheera_ai_params=dheera_ai_params,
         timeout=timeout,  # type: ignore
         client=client,
         custom_llm_provider=custom_llm_provider,
@@ -141,12 +141,12 @@ elif custom_llm_provider == "bytez":
 
 NOTE you can rely on liteLLM passing each of the args/kwargs to your config via the .completion() call
 
-#### `litellm/constants.py`
+#### `dheera_ai/constants.py`
 
-Add yourself to the list of `LITELLM_CHAT_PROVIDERS`
+Add yourself to the list of `DHEERA_AI_CHAT_PROVIDERS`
 
 ```py
-LITELLM_CHAT_PROVIDERS = [
+DHEERA_AI_CHAT_PROVIDERS = [
     "openai",
     "openai_like",
     "bytez",
@@ -157,7 +157,7 @@ LITELLM_CHAT_PROVIDERS = [
 
 Add yourself to the if statement chain of providers here
 
-#### `litellm/litellm_core_utils/get_llm_provider_logic.py`
+#### `dheera_ai/dheera_ai_core_utils/get_llm_provider_logic.py`
 
 ```py
 elif model == "*":
@@ -166,11 +166,11 @@ elif model == "*":
 elif model.startswith("bytez/"):
     custom_llm_provider = "bytez"
 if not custom_llm_provider:
-    if litellm.suppress_debug_info is False:
+    if dheera_ai.suppress_debug_info is False:
         print()  # noqa
 ```
 
-#### `litellm/litellm_core_utils/streaming_handler.py`
+#### `dheera_ai/dheera_ai_core_utils/streaming_handler.py`
 
 #### If you are doing something custom with streaming, this needs to be updated, e.g.
 
@@ -204,13 +204,13 @@ elif self.custom_llm_provider and self.custom_llm_provider == "bytez":
 
 ### 3. Write a test file to iterate your code
 
-Add a test file somewhere in the project, `tests/test_litellm/llms/my_provider/chat/test.py`
+Add a test file somewhere in the project, `tests/test_dheera_ai/llms/my_provider/chat/test.py`
 
 Write to it the following:
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["MY_PROVIDER_KEY"] = "KEY_GOES_HERE"
 
@@ -251,7 +251,7 @@ If you run with the debugger, after you update `"MY_PROVIDER_API_KEY": "YOUR_API
 
 ### 4. Implement Required Methods
 
-It's wise to follow `completion()` in `litellm/llms/custom_httpx/llm_http_handler.py`
+It's wise to follow `completion()` in `dheera_ai/llms/custom_httpx/llm_http_handler.py`
 
 You will see it calls each of the methods defined in the base class.
 
@@ -303,7 +303,7 @@ def transform_response(...):
 
 ###### `get_sync_custom_stream_wrapper` / `get_async_custom_stream_wrapper`
 
-If you need to do something these are here for you. See the `litellm/llms/sagemaker/chat/transformation.py` or the `litellm/llms/bytez/chat/transformation.py` implementation to better understand how to use these.
+If you need to do something these are here for you. See the `dheera_ai/llms/sagemaker/chat/transformation.py` or the `dheera_ai/llms/bytez/chat/transformation.py` implementation to better understand how to use these.
 
 Use `CustomStreamWrapper` + `httpx` streaming client to yield content.
 
@@ -311,7 +311,7 @@ Use `CustomStreamWrapper` + `httpx` streaming client to yield content.
 
 ### 🧪 Tests
 
-Create tests in `tests/test_litellm/llms/my_provider/chat/test.py`. Iterate until you are satisfied with the quality!
+Create tests in `tests/test_dheera_ai/llms/my_provider/chat/test.py`. Iterate until you are satisfied with the quality!
 
 ---
 

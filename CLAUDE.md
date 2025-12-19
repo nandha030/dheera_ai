@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Testing
 - `make test` - Run all tests
-- `make test-unit` - Run unit tests (tests/test_litellm) with 4 parallel workers
+- `make test-unit` - Run unit tests (tests/test_dheera_ai) with 4 parallel workers
 - `make test-integration` - Run integration tests (excludes unit tests)
 - `pytest tests/` - Direct pytest execution
 
@@ -34,29 +34,29 @@ When contributing to the project, use the appropriate templates:
 **Bug Reports** (`.github/ISSUE_TEMPLATE/bug_report.yml`):
 - Describe what happened vs. what you expected
 - Include relevant log output
-- Specify your LiteLLM version
+- Specify your Dheera AI version
 
 **Feature Requests** (`.github/ISSUE_TEMPLATE/feature_request.yml`):
 - Describe the feature clearly
 - Explain the motivation and use case
 
 **Pull Requests** (`.github/pull_request_template.md`):
-- Add at least 1 test in `tests/litellm/`
+- Add at least 1 test in `tests/dheera_ai/`
 - Ensure `make test-unit` passes
 
 ## Architecture Overview
 
-LiteLLM is a unified interface for 100+ LLM providers with two main components:
+Dheera AI is a unified interface for 100+ LLM providers with two main components:
 
-### Core Library (`litellm/`)
-- **Main entry point**: `litellm/main.py` - Contains core completion() function
-- **Provider implementations**: `litellm/llms/` - Each provider has its own subdirectory
-- **Router system**: `litellm/router.py` + `litellm/router_utils/` - Load balancing and fallback logic
-- **Type definitions**: `litellm/types/` - Pydantic models and type hints
-- **Integrations**: `litellm/integrations/` - Third-party observability, caching, logging
-- **Caching**: `litellm/caching/` - Multiple cache backends (Redis, in-memory, S3, etc.)
+### Core Library (`dheera_ai/`)
+- **Main entry point**: `dheera_ai/main.py` - Contains core completion() function
+- **Provider implementations**: `dheera_ai/llms/` - Each provider has its own subdirectory
+- **Router system**: `dheera_ai/router.py` + `dheera_ai/router_utils/` - Load balancing and fallback logic
+- **Type definitions**: `dheera_ai/types/` - Pydantic models and type hints
+- **Integrations**: `dheera_ai/integrations/` - Third-party observability, caching, logging
+- **Caching**: `dheera_ai/caching/` - Multiple cache backends (Redis, in-memory, S3, etc.)
 
-### Proxy Server (`litellm/proxy/`)
+### Proxy Server (`dheera_ai/proxy/`)
 - **Main server**: `proxy_server.py` - FastAPI application
 - **Authentication**: `auth/` - API key management, JWT, OAuth2
 - **Database**: `db/` - Prisma ORM with PostgreSQL/SQLite support
@@ -68,7 +68,7 @@ LiteLLM is a unified interface for 100+ LLM providers with two main components:
 ## Key Patterns
 
 ### Provider Implementation
-- Providers inherit from base classes in `litellm/llms/base.py`
+- Providers inherit from base classes in `dheera_ai/llms/base.py`
 - Each provider has transformation functions for input/output formatting
 - Support both sync and async operations
 - Handle streaming responses and function calling
@@ -76,7 +76,7 @@ LiteLLM is a unified interface for 100+ LLM providers with two main components:
 ### Error Handling
 - Provider-specific exceptions mapped to OpenAI-compatible errors
 - Fallback logic handled by Router system
-- Comprehensive logging through `litellm/_logging.py`
+- Comprehensive logging through `dheera_ai/_logging.py`
 
 ### Configuration
 - YAML config files for proxy server (see `proxy/example_config_yaml/`)
@@ -92,7 +92,7 @@ LiteLLM is a unified interface for 100+ LLM providers with two main components:
 - Type hints required for all public APIs
 
 ### Testing Strategy
-- Unit tests in `tests/test_litellm/`
+- Unit tests in `tests/test_dheera_ai/`
 - Integration tests for each provider in `tests/llm_translation/`
 - Proxy tests in `tests/proxy_unit_tests/`
 - Load tests in `tests/load_tests/`

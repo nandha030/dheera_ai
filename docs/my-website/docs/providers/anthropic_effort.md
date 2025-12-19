@@ -9,7 +9,7 @@ Control how many tokens Claude uses when responding with the `effort` parameter,
 
 The `effort` parameter allows you to control how eager Claude is about spending tokens when responding to requests. This gives you the ability to trade off between response thoroughness and token efficiency, all with a single model.
 
-**Note**: The effort parameter is currently in beta and only supported by Claude Opus 4.5. LiteLLM automatically adds the `effort-2025-11-24` beta header when:
+**Note**: The effort parameter is currently in beta and only supported by Claude Opus 4.5. Dheera AI automatically adds the `effort-2025-11-24` beta header when:
 - `reasoning_effort` parameter is provided (for Claude Opus 4.5 only)
 
 For Claude Opus 4.5, `reasoning_effort="medium"`—both are automatically mapped to the correct format.
@@ -41,15 +41,15 @@ This gives a much greater degree of control over efficiency.
 
 ## Quick Start
 
-### Using LiteLLM SDK
+### Using Dheera AI SDK
 
 <Tabs>
 <TabItem value="python" label="Python">
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-opus-4-5-20251101",
     messages=[{
         "role": "user",
@@ -89,12 +89,12 @@ console.log(response.content[0].text);
 </TabItem>
 </Tabs>
 
-### Using LiteLLM Proxy
+### Using Dheera AI Proxy
 
 ```bash
 curl http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "model": "anthropic/claude-opus-4-5-20251101",
     "messages": [{
@@ -151,9 +151,9 @@ When using tools, the effort parameter affects both the explanations around tool
 Example with tools:
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-opus-4-5-20251101",
     messages=[{
         "role": "user",
@@ -184,9 +184,9 @@ response = litellm.completion(
 The effort parameter works seamlessly with extended thinking. When both are enabled, effort controls the token budget across all response types:
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-opus-4-5-20251101",
     messages=[{
         "role": "user",
@@ -223,7 +223,7 @@ The effort parameter is supported across all Anthropic-compatible providers:
 - **Amazon Bedrock**: ✅ Supported (Claude Opus 4.5)
 - **Google Cloud Vertex AI**: ✅ Supported (Claude Opus 4.5)
 
-LiteLLM automatically handles:
+Dheera AI automatically handles:
 - Beta header injection (`effort-2025-11-24`) for all providers
 - Parameter mapping: `reasoning_effort` → `output_config={"effort": ...}` for Claude Opus 4.5
 
@@ -232,7 +232,7 @@ LiteLLM automatically handles:
 Token usage with different effort levels is tracked in the standard usage object. Lower effort levels result in fewer output tokens, which directly reduces costs:
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-opus-4-5-20251101",
     messages=[{"role": "user", "content": "Analyze this"}],
     output_config={"effort": "low"}
@@ -246,14 +246,14 @@ print(f"Total tokens: {response.usage.total_tokens}")
 
 ### Beta header not being added
 
-LiteLLM automatically adds the `effort-2025-11-24` beta header when:
+Dheera AI automatically adds the `effort-2025-11-24` beta header when:
 - `reasoning_effort` parameter is provided (for Claude Opus 4.5 only)
 
 If you're not seeing the header:
 
 1. Ensure you're using `reasoning_effort` parameter
 2. Verify the model is Claude Opus 4.5
-3. Check that LiteLLM version supports this feature
+3. Check that Dheera AI version supports this feature
 
 ### Invalid effort value error
 
@@ -281,6 +281,6 @@ Currently, only Claude Opus 4.5 supports the effort parameter. Using it with oth
 ## Additional Resources
 
 - [Anthropic Effort Documentation](https://docs.anthropic.com/en/docs/build-with-claude/effort)
-- [LiteLLM Anthropic Provider Guide](/docs/providers/anthropic)
+- [Dheera AI Anthropic Provider Guide](/docs/providers/anthropic)
 - [Cost Optimization Best Practices](/docs/guides/cost_optimization)
 

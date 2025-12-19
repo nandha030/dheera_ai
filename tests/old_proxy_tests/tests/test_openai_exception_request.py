@@ -11,7 +11,7 @@ client = openai.OpenAI(
 )
 
 try:
-    # request sent to model set on litellm proxy, `litellm --model`
+    # request sent to model set on dheera_ai proxy, `dheera_ai --model`
     response = client.chat.completions.create(
         model="azure-gpt-3.5",
         messages=[

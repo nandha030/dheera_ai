@@ -48,7 +48,7 @@ The customer ID (`customer-123`) will be automatically upserted into the databas
 
 ### Example using OpenWebUI
 
-See the [Open WebUI tutorial](../tutorials/openweb_ui.md) for detailed instructions on connecting Open WebUI to LiteLLM and tracking customer usage.
+See the [Open WebUI tutorial](../tutorials/openweb_ui.md) for detailed instructions on connecting Open WebUI to Dheera AI and tracking customer usage.
 
 ## How to View Spend
 

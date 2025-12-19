@@ -7,8 +7,8 @@ import time
 
 import pytest
 
-import litellm
-from litellm._logging import verbose_logger, verbose_proxy_logger
+import dheera_ai
+from dheera_ai._logging import verbose_logger, verbose_proxy_logger
 
 verbose_logger.setLevel(logging.DEBUG)
 
@@ -24,14 +24,14 @@ sys.path.insert(0, os.path.abspath("../.."))
 @pytest.mark.skip(reason="Breaks on ci/cd but works locally")
 @pytest.mark.parametrize("stream", [False, True])
 def test_completion_logfire_logging(stream):
-    from litellm.integrations.opentelemetry import OpenTelemetry, OpenTelemetryConfig
+    from dheera_ai.integrations.opentelemetry import OpenTelemetry, OpenTelemetryConfig
 
-    litellm.callbacks = ["logfire"]
-    litellm.set_verbose = True
+    dheera_ai.callbacks = ["logfire"]
+    dheera_ai.set_verbose = True
     messages = [{"role": "user", "content": "what llm are u"}]
     temperature = 0.3
     max_tokens = 10
-    response = litellm.completion(
+    response = dheera_ai.completion(
         model="gpt-3.5-turbo",
         messages=messages,
         max_tokens=max_tokens,
@@ -51,14 +51,14 @@ def test_completion_logfire_logging(stream):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("stream", [False, True])
 async def test_acompletion_logfire_logging(stream):
-    from litellm.integrations.opentelemetry import OpenTelemetry, OpenTelemetryConfig
+    from dheera_ai.integrations.opentelemetry import OpenTelemetry, OpenTelemetryConfig
 
-    litellm.callbacks = ["logfire"]
-    litellm.set_verbose = True
+    dheera_ai.callbacks = ["logfire"]
+    dheera_ai.set_verbose = True
     messages = [{"role": "user", "content": "what llm are u"}]
     temperature = 0.3
     max_tokens = 10
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-3.5-turbo",
         messages=messages,
         max_tokens=max_tokens,

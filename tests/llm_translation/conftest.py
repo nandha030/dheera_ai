@@ -9,7 +9,7 @@ import pytest
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
+import dheera_ai
 
 import asyncio
 
@@ -28,19 +28,19 @@ def setup_and_teardown(event_loop):  # Add event_loop as a dependency
     curr_dir = os.getcwd()
     sys.path.insert(0, os.path.abspath("../.."))
 
-    import litellm
-    from litellm import Router
+    import dheera_ai
+    from dheera_ai import Router
 
-    from litellm.litellm_core_utils.logging_worker import GLOBAL_LOGGING_WORKER
+    from dheera_ai.dheera_ai_core_utils.logging_worker import GLOBAL_LOGGING_WORKER
     # flush all logs
     asyncio.run(GLOBAL_LOGGING_WORKER.clear_queue())
 
-    importlib.reload(litellm)
+    importlib.reload(dheera_ai)
 
     # Set the event loop from the fixture
     asyncio.set_event_loop(event_loop)
 
-    print(litellm)
+    print(dheera_ai)
     yield
 
     # Clean up any pending tasks

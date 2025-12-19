@@ -4,7 +4,7 @@ import TabItem from '@theme/TabItem';
 
 # Getting Started Tutorial
 
-End-to-End tutorial for LiteLLM Proxy to:
+End-to-End tutorial for Dheera AI Proxy to:
 - Add an Azure OpenAI model 
 - Make a successful /chat/completion call 
 - Generate a virtual key 
@@ -13,24 +13,24 @@ End-to-End tutorial for LiteLLM Proxy to:
 
 ## Pre-Requisites 
 
-- Install LiteLLM Docker Image **OR** LiteLLM CLI (pip package)
+- Install Dheera AI Docker Image **OR** Dheera AI CLI (pip package)
 
 <Tabs>
 
 <TabItem value="docker" label="Docker">
 
 ```
-docker pull docker.litellm.ai/berriai/litellm:main-latest
+docker pull docker.dheera_ai.ai/berriai/dheera_ai:main-latest
 ```
 
 [**See all docker images**](https://github.com/orgs/BerriAI/packages)
 
 </TabItem>
 
-<TabItem value="pip" label="LiteLLM CLI (pip package)">
+<TabItem value="pip" label="Dheera AI CLI (pip package)">
 
 ```shell
-$ pip install 'litellm[proxy]'
+$ pip install 'dheera_ai[proxy]'
 ```
 
 </TabItem>
@@ -41,16 +41,16 @@ Use this docker compose to spin up the proxy with a postgres database running lo
 
 ```bash
 # Get the docker compose file
-curl -O https://raw.githubusercontent.com/BerriAI/litellm/main/docker-compose.yml
+curl -O https://raw.githubusercontent.com/BerriAI/dheera_ai/main/docker-compose.yml
 
 # Add the master key - you can change this after setup
-echo 'LITELLM_MASTER_KEY="sk-1234"' > .env
+echo 'DHEERA_AI_MASTER_KEY="sk-1234"' > .env
 
-# Add the litellm salt key - you cannot change this after adding a model
+# Add the dheera_ai salt key - you cannot change this after adding a model
 # It is used to encrypt / decrypt your LLM API Key credentials
 # We recommend - https://1password.com/password-generator/ 
-# password generator to get a random hash for litellm salt key
-echo 'LITELLM_SALT_KEY="sk-1234"' >> .env
+# password generator to get a random hash for dheera_ai salt key
+echo 'DHEERA_AI_SALT_KEY="sk-1234"' >> .env
 
 # Start
 docker compose up
@@ -61,7 +61,7 @@ docker compose up
 
 ## 1. Add a model 
 
-Control LiteLLM Proxy with a config.yaml file.
+Control Dheera AI Proxy with a config.yaml file.
 
 Setup your config.yaml with your azure model.
 
@@ -70,11 +70,11 @@ Note: When using the proxy with a database, you can also **just add models via U
 ```yaml
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: azure/my_azure_deployment
       api_base: os.environ/AZURE_API_BASE
       api_key: "os.environ/AZURE_API_KEY"
-      api_version: "2025-01-01-preview" # [OPTIONAL] litellm uses the latest azure api_version by default
+      api_version: "2025-01-01-preview" # [OPTIONAL] dheera_ai uses the latest azure api_version by default
 ```
 ---
 
@@ -83,8 +83,8 @@ model_list:
 You can read more about how model resolution works in the [Model Configuration](#understanding-model-configuration) section.
 
 - **`model_name`** (`str`) - This field should contain the name of the model as received.
-- **`litellm_params`** (`dict`) [See All LiteLLM Params](https://github.com/BerriAI/litellm/blob/559a6ad826b5daef41565f54f06c739c8c068b28/litellm/types/router.py#L222)
-    - **`model`** (`str`) - Specifies the model name to be sent to `litellm.acompletion` / `litellm.aembedding`, etc. This is the identifier used by LiteLLM to route to the correct model + provider logic on the backend. 
+- **`dheera_ai_params`** (`dict`) [See All Dheera AI Params](https://github.com/BerriAI/dheera_ai/blob/559a6ad826b5daef41565f54f06c739c8c068b28/dheera_ai/types/router.py#L222)
+    - **`model`** (`str`) - Specifies the model name to be sent to `dheera_ai.acompletion` / `dheera_ai.aembedding`, etc. This is the identifier used by Dheera AI to route to the correct model + provider logic on the backend. 
     - **`api_key`** (`str`) - The API key required for authentication. It can be retrieved from an environment variable using `os.environ/`.
     - **`api_base`** (`str`) - The API base for your azure deployment.
     - **`api_version`** (`str`) - The API Version to use when calling Azure's OpenAI API. Get the latest Inference API version [here](https://learn.microsoft.com/en-us/azure/ai-services/openai/api-version-deprecation?source=recommendations#latest-preview-api-releases).
@@ -102,11 +102,11 @@ You can read more about how model resolution works in the [Model Configuration](
 
 ## 2. Make a successful /chat/completion call 
 
-LiteLLM Proxy is 100% OpenAI-compatible. Test your azure model via the `/chat/completions` route.
+Dheera AI Proxy is 100% OpenAI-compatible. Test your azure model via the `/chat/completions` route.
 
 ### 2.1 Start Proxy 
 
-Save your config.yaml from step 1. as `litellm_config.yaml`.
+Save your config.yaml from step 1. as `dheera_ai_config.yaml`.
 
 <Tabs>
 
@@ -115,11 +115,11 @@ Save your config.yaml from step 1. as `litellm_config.yaml`.
 
 ```bash
 docker run \
-    -v $(pwd)/litellm_config.yaml:/app/config.yaml \
+    -v $(pwd)/dheera_ai_config.yaml:/app/config.yaml \
     -e AZURE_API_KEY=d6*********** \
     -e AZURE_API_BASE=https://openai-***********/ \
     -p 4000:4000 \
-    docker.litellm.ai/berriai/litellm:main-latest \
+    docker.dheera_ai.ai/berriai/dheera_ai:main-latest \
     --config /app/config.yaml --detailed_debug
 
 # RUNNING on http://0.0.0.0:4000
@@ -127,10 +127,10 @@ docker run \
 
 </TabItem>
 
-<TabItem value="pip" label="LiteLLM CLI (pip package)">
+<TabItem value="pip" label="Dheera AI CLI (pip package)">
 
 ```shell
-$ litellm --config /app/config.yaml --detailed_debug
+$ dheera_ai --config /app/config.yaml --detailed_debug
 ```
 
 </TabItem>
@@ -239,8 +239,8 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 
 ### Useful Links
 - [All Supported LLM API Providers (OpenAI/Bedrock/Vertex/etc.)](../providers/)
-- [Call LiteLLM Proxy via OpenAI SDK, Langchain, etc.](./user_keys.md#request-format)
-- [All API Endpoints Swagger](https://litellm-api.up.railway.app/#/chat%2Fcompletions)
+- [Call Dheera AI Proxy via OpenAI SDK, Langchain, etc.](./user_keys.md#request-format)
+- [All API Endpoints Swagger](https://dheera_ai-api.up.railway.app/#/chat%2Fcompletions)
 - [Other/Non-Chat Completion Endpoints](../embedding/supported_embedding.md)
 - [Pass-through for VertexAI, Bedrock, etc.](../pass_through/vertex_ai.md)
 
@@ -257,24 +257,24 @@ Track Spend, and control model access via virtual keys for the proxy
 ```yaml
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: azure/my_azure_deployment
       api_base: os.environ/AZURE_API_BASE
       api_key: "os.environ/AZURE_API_KEY"
-      api_version: "2025-01-01-preview" # [OPTIONAL] litellm uses the latest azure api_version by default
+      api_version: "2025-01-01-preview" # [OPTIONAL] dheera_ai uses the latest azure api_version by default
 
 general_settings: 
   master_key: sk-1234 
   database_url: "postgresql://<user>:<password>@<host>:<port>/<dbname>" # 👈 KEY CHANGE
 ```
 
-Save config.yaml as `litellm_config.yaml` (used in 3.2).
+Save config.yaml as `dheera_ai_config.yaml` (used in 3.2).
 
 ---
 
 **What is `general_settings`?**
 
-These are settings for the LiteLLM Proxy Server. 
+These are settings for the Dheera AI Proxy Server. 
 
 See All General Settings [here](http://localhost:3000/docs/proxy/configs#all-settings).
 
@@ -284,11 +284,11 @@ See All General Settings [here](http://localhost:3000/docs/proxy/configs#all-set
    - **Usage**: 
      - **Set on config.yaml** set your master key under `general_settings:master_key`, example - 
         `master_key: sk-1234`
-     - **Set env variable** set `LITELLM_MASTER_KEY`
+     - **Set env variable** set `DHEERA_AI_MASTER_KEY`
 
 2. **`database_url`** (str)
    - **Description**: 
-     - Set a `database_url`, this is the connection to your Postgres DB, which is used by litellm for generating keys, users, teams.
+     - Set a `database_url`, this is the connection to your Postgres DB, which is used by dheera_ai for generating keys, users, teams.
    - **Usage**: 
      - **Set on config.yaml** set your `database_url` under `general_settings:database_url`, example - 
         `database_url: "postgresql://..."`
@@ -298,11 +298,11 @@ See All General Settings [here](http://localhost:3000/docs/proxy/configs#all-set
 
 ```bash
 docker run \
-    -v $(pwd)/litellm_config.yaml:/app/config.yaml \
+    -v $(pwd)/dheera_ai_config.yaml:/app/config.yaml \
     -e AZURE_API_KEY=d6*********** \
     -e AZURE_API_BASE=https://openai-***********/ \
     -p 4000:4000 \
-    docker.litellm.ai/berriai/litellm:main-latest \
+    docker.dheera_ai.ai/berriai/dheera_ai:main-latest \
     --config /app/config.yaml --detailed_debug
 ```
 
@@ -320,7 +320,7 @@ curl -L -X POST 'http://0.0.0.0:4000/key/generate' \
 }'
 ```
 
-[**See full API Spec**](https://litellm-api.up.railway.app/#/key%20management/generate_key_fn_key_generate_post)
+[**See full API Spec**](https://dheera_ai-api.up.railway.app/#/key%20management/generate_key_fn_key_generate_post)
 
 **Expected Response**
 
@@ -396,7 +396,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 ```bash
 {
   "error": {
-    "message": "LiteLLM Rate Limit Handler for rate limit type = key. Crossed TPM / RPM / Max Parallel Request Limit. current rpm: 1, rpm limit: 1, current tpm: 348, tpm limit: 9223372036854775807, current max_parallel_requests: 0, max_parallel_requests: 9223372036854775807",
+    "message": "Dheera AI Rate Limit Handler for rate limit type = key. Crossed TPM / RPM / Max Parallel Request Limit. current rpm: 1, rpm limit: 1, current tpm: 348, tpm limit: 9223372036854775807, current max_parallel_requests: 0, max_parallel_requests: 9223372036854775807",
     "type": "None",
     "param": "None",
     "code": "429"
@@ -407,13 +407,13 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 ### Useful Links 
 
 - [Creating Virtual Keys](./virtual_keys.md)
-- [Key Management API Endpoints Swagger](https://litellm-api.up.railway.app/#/key%20management)
+- [Key Management API Endpoints Swagger](https://dheera_ai-api.up.railway.app/#/key%20management)
 - [Set Budgets / Rate Limits per key/user/teams](./users.md)
 - [Dynamic TPM/RPM Limits for keys](./team_budgets.md#dynamic-tpmrpm-allocation)
 
 ## Key Concepts
 
-This section explains key concepts on LiteLLM AI Gateway.
+This section explains key concepts on Dheera AI AI Gateway.
 
 ### Understanding Model Configuration
 
@@ -422,17 +422,17 @@ For this config.yaml example:
 ```yaml
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: azure/my_azure_deployment
       api_base: os.environ/AZURE_API_BASE
       api_key: "os.environ/AZURE_API_KEY"
-      api_version: "2025-01-01-preview" # [OPTIONAL] litellm uses the latest azure api_version by default
+      api_version: "2025-01-01-preview" # [OPTIONAL] dheera_ai uses the latest azure api_version by default
 ```
 
 **How Model Resolution Works:**
 
 ```
-Client Request                LiteLLM Proxy                 Provider API
+Client Request                Dheera AI Proxy                 Provider API
 ──────────────              ────────────────              ─────────────
     
 POST /chat/completions      
@@ -442,7 +442,7 @@ POST /chat/completions
 }                           2. Finds matching entry:
                                model_name: gpt-4o
                                
-                            3. Extracts litellm_params:
+                            3. Extracts dheera_ai_params:
                                model: azure/my_azure_deployment
                                api_base: https://...
                                api_key: sk-...
@@ -451,18 +451,18 @@ POST /chat/completions
                                                       POST /deployments/my_azure_deployment/...
 ```
 
-**Breaking Down the `model` Parameter under `litellm_params`:**
+**Breaking Down the `model` Parameter under `dheera_ai_params`:**
 
 ```yaml
 model_list:
   - model_name: gpt-4o                       # What the client calls
-    litellm_params:
+    dheera_ai_params:
       model: azure/my_azure_deployment       # <provider>/<model-name>
              ─────  ───────────────────
                │           │
                │           └─────▶ Model name sent to the provider API
                │
-               └─────────────────▶ Provider that LiteLLM routes to
+               └─────────────────▶ Provider that Dheera AI routes to
 ```
 
 **Visual Breakdown:**
@@ -474,7 +474,7 @@ model: azure/my_azure_deployment
          │             └────▶ The actual model identifier that gets sent to Azure
          │                   (e.g., your deployment name, or the model name)
          │
-         └──────────────────▶ Tells LiteLLM which provider to use
+         └──────────────────▶ Tells Dheera AI which provider to use
                              (azure, openai, anthropic, bedrock, etc.)
 ```
 
@@ -482,7 +482,7 @@ model: azure/my_azure_deployment
 
 - **`model_name`**: The alias your client uses to call the model. This is what you send in your API requests (e.g., `gpt-4o`).
 
-- **`model` (in litellm_params)**: Format is `<provider>/<model-identifier>`
+- **`model` (in dheera_ai_params)**: Format is `<provider>/<model-identifier>`
   - **Provider** (before `/`): Routes to the correct LLM provider (e.g., `azure`, `openai`, `anthropic`, `bedrock`)
   - **Model identifier** (after `/`): The actual model/deployment name sent to that provider's API
 
@@ -493,7 +493,7 @@ For custom OpenAI-compatible endpoints (e.g., vLLM, Ollama, custom deployments):
 ```yaml
 model_list:
   - model_name: my-custom-model
-    litellm_params:
+    dheera_ai_params:
       model: openai/nvidia/llama-3.2-nv-embedqa-1b-v2
       api_base: http://my-service.svc.cluster.local:8000/v1
       api_key: "sk-1234"
@@ -519,26 +519,26 @@ The key point: Everything after the first `/` is passed as-is to the provider's 
 model_list:
   # Azure deployment
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-4-deployment
       api_base: https://my-azure.openai.azure.com
       
   # OpenAI
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: os.environ/OPENAI_API_KEY
       
   # Custom OpenAI-compatible endpoint
   - model_name: my-llama-model
-    litellm_params:
+    dheera_ai_params:
       model: openai/meta/llama-3-8b
       api_base: http://my-vllm-server:8000/v1
       api_key: "optional-key"
       
   # Bedrock
   - model_name: claude-3
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
       aws_region_name: us-east-1
 ```
@@ -548,7 +548,7 @@ model_list:
 
 ### Non-root docker image?
 
-If you need to run the docker image as a non-root user, use [this](https://github.com/BerriAI/litellm/pkgs/container/litellm-non_root).
+If you need to run the docker image as a non-root user, use [this](https://github.com/BerriAI/dheera_ai/pkgs/container/dheera_ai-non_root).
 
 ### SSL Verification Issue / Connection Error.
 
@@ -569,13 +569,13 @@ You can disable ssl verification with:
 ```yaml
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: azure/my_azure_deployment
       api_base: os.environ/AZURE_API_BASE
       api_key: "os.environ/AZURE_API_KEY"
       api_version: "2025-01-01-preview"
 
-litellm_settings:
+dheera_ai_settings:
     ssl_verify: false # 👈 KEY CHANGE
 ```
 
@@ -589,7 +589,7 @@ If you see:
 httpx.ConnectError: All connection attempts failed                                                                        
                                                                                                                          
 ERROR:    Application startup failed. Exiting.                                                                            
-3:21:43 - LiteLLM Proxy:ERROR: utils.py:2207 - Error getting LiteLLM_SpendLogs row count: All connection attempts failed 
+3:21:43 - Dheera AI Proxy:ERROR: utils.py:2207 - Error getting Dheera AI_SpendLogs row count: All connection attempts failed 
 ```
 
 This might be a DB permission issue. 
@@ -599,7 +599,7 @@ This might be a DB permission issue.
 Try creating a new database. 
 
 ```bash
-STATEMENT: CREATE DATABASE "litellm"
+STATEMENT: CREATE DATABASE "dheera_ai"
 ```
 
 If you get:
@@ -619,28 +619,28 @@ psql -U postgres
 ```
 
 ```
-CREATE DATABASE litellm;
+CREATE DATABASE dheera_ai;
 ```
 
 On CloudSQL, this is:
 
 ```
-GRANT ALL PRIVILEGES ON DATABASE litellm TO your_username;
+GRANT ALL PRIVILEGES ON DATABASE dheera_ai TO your_username;
 ```
 
 
-**What is `litellm_settings`?**
+**What is `dheera_ai_settings`?**
 
-LiteLLM Proxy uses the [LiteLLM Python SDK](https://docs.litellm.ai/docs/routing) for handling LLM API calls. 
+Dheera AI Proxy uses the [Dheera AI Python SDK](https://docs.dheera_ai.ai/docs/routing) for handling LLM API calls. 
 
-`litellm_settings` are module-level params for the LiteLLM Python SDK (equivalent to doing `litellm.<some_param>` on the SDK). You can see all params [here](https://github.com/BerriAI/litellm/blob/208fe6cb90937f73e0def5c97ccb2359bf8a467b/litellm/__init__.py#L114)
+`dheera_ai_settings` are module-level params for the Dheera AI Python SDK (equivalent to doing `dheera_ai.<some_param>` on the SDK). You can see all params [here](https://github.com/BerriAI/dheera_ai/blob/208fe6cb90937f73e0def5c97ccb2359bf8a467b/dheera_ai/__init__.py#L114)
 
 ## Support & Talk with founders
 
-- [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-litellm-hosted-version)
+- [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-dheera_ai-hosted-version)
 
 - [Community Discord 💭](https://discord.gg/wuPM9dRgDw)
-- [Community Slack 💭](https://www.litellm.ai/support)
+- [Community Slack 💭](https://www.dheera_ai.ai/support)
 
 - Our emails ✉️ ishaan@berri.ai / krrish@berri.ai
 

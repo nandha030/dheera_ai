@@ -25,9 +25,9 @@ body:
   - type: dropdown
     id: component
     attributes:
-      label: What part of LiteLLM is this about?
+      label: What part of Dheera AI is this about?
       options:
-        - "SDK (litellm Python package)"
+        - "SDK (dheera_ai Python package)"
         - "Proxy"
         - "UI Dashboard"
         - "Docs"
@@ -37,7 +37,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: What LiteLLM version are you on ? 
+      label: What Dheera AI version are you on ? 
       placeholder: v1.53.1
     validations:
       required: true

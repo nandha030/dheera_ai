@@ -12,20 +12,20 @@ from unittest.mock import AsyncMock, MagicMock
 sys.path.insert(
     0, os.path.abspath("../../..")
 )  # Adds the parent directory to the system path
-import litellm
+import dheera_ai
 import pytest
 from dotenv import load_dotenv
-from litellm.llms.anthropic.experimental_pass_through.messages.handler import (
+from dheera_ai.llms.anthropic.experimental_pass_through.messages.handler import (
     anthropic_messages,
 )
 
 from typing import Optional
-from litellm.types.utils import StandardLoggingPayload
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
-from litellm.router import Router
+from dheera_ai.types.utils import StandardLoggingPayload
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
+from dheera_ai.router import Router
 import importlib
-from litellm.llms.bedrock.base_aws_llm import BaseAWSLLM
+from dheera_ai.llms.bedrock.base_aws_llm import BaseAWSLLM
 class TestCustomLogger(CustomLogger):
     def __init__(self):
         super().__init__()
@@ -68,7 +68,7 @@ class BaseAnthropicMessagesTest:
     @pytest.mark.asyncio
     async def test_non_streaming_base(self):
         """Base test for non-streaming requests"""
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         
         request_params = self.model_config
 
@@ -88,7 +88,7 @@ class BaseAnthropicMessagesTest:
         call_args.update(request_params)
         
         # Call the handler
-        response = await litellm.anthropic.messages.acreate(**call_args)
+        response = await dheera_ai.anthropic.messages.acreate(**call_args)
         
         print(f"Non-streaming {request_params['model']} response: ", response)
         
@@ -118,7 +118,7 @@ class BaseAnthropicMessagesTest:
         call_args.update(request_params)
         
         # Call the handler
-        response = await litellm.anthropic.messages.acreate(**call_args)
+        response = await dheera_ai.anthropic.messages.acreate(**call_args)
         
         collected_chunks = []
         if isinstance(response, AsyncIterator):
@@ -131,18 +131,18 @@ class BaseAnthropicMessagesTest:
 
 
     @pytest.mark.asyncio
-    async def test_anthropic_messages_litellm_router_streaming_with_logging(self):
+    async def test_anthropic_messages_dheera_ai_router_streaming_with_logging(self):
         """
         Test that logging and cost tracking works for anthropic_messages with streaming request
         """
         test_custom_logger = TestCustomLogger()
-        litellm.callbacks = [test_custom_logger]
-        litellm._turn_on_debug()
+        dheera_ai.callbacks = [test_custom_logger]
+        dheera_ai._turn_on_debug()
         router = Router(
             model_list=[
                 {
                     "model_name": "claude-special-alias",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         **self.model_config
                     },
                 }

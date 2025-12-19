@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 ## Supported Partner Providers
 
-| Provider | LiteLLM Route | Vertex Documentation |
+| Provider | Dheera AI Route | Vertex Documentation |
 |----------|---------------|---------------|
 | Anthropic (Claude) | `vertex_ai/claude-*` | [Vertex AI - Anthropic Models](https://cloud.google.com/vertex-ai/generative-ai/docs/partner-models/use-claude) |
 | DeepSeek | `vertex_ai/deepseek-ai/{MODEL}` | [Vertex AI - DeepSeek Models](https://cloud.google.com/vertex-ai/generative-ai/docs/maas/deepseek) |
@@ -33,7 +33,7 @@ import TabItem from '@theme/TabItem';
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""
@@ -60,12 +60,12 @@ print("\nModel Response", response)
 ```yaml
 model_list:
     - model_name: anthropic-vertex
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/claude-3-sonnet@20240229
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-east-1"
     - model_name: anthropic-vertex
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/claude-3-sonnet@20240229
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-west-1"
@@ -74,7 +74,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -108,7 +108,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 resp = completion(
     model="vertex_ai/claude-3-7-sonnet-20250219",
@@ -126,7 +126,7 @@ resp = completion(
 
 ```yaml
 - model_name: claude-3-7-sonnet-20250219
-  litellm_params:
+  dheera_ai_params:
     model: vertex_ai/claude-3-7-sonnet-20250219
     vertex_ai_project: "my-test-project"
     vertex_ai_location: "us-west-1"
@@ -135,7 +135,7 @@ resp = completion(
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -220,7 +220,7 @@ ModelResponse(
 
 #### Usage
 
-**LiteLLM Supports all Vertex AI DeepSeek Models.** Ensure you use the `vertex_ai/deepseek-ai/` prefix for all Vertex AI DeepSeek models.
+**Dheera AI Supports all Vertex AI DeepSeek Models.** Ensure you use the `vertex_ai/deepseek-ai/` prefix for all Vertex AI DeepSeek models.
 
 | Model Name       | Usage                        |
 |------------------|------------------------------|
@@ -246,7 +246,7 @@ ModelResponse(
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""
@@ -272,12 +272,12 @@ print("\nModel Response", response)
 ```yaml
 model_list:
     - model_name: anthropic-llama
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/meta/llama3-405b-instruct-maas
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-east-1"
     - model_name: anthropic-llama
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/meta/llama3-405b-instruct-maas
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-west-1"
@@ -286,7 +286,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -313,9 +313,9 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 
 ## VertexAI Mistral API
 
-[**Supported OpenAI Params**](https://github.com/BerriAI/litellm/blob/e0f3cd580cb85066f7d36241a03c30aa50a8a31d/litellm/llms/openai.py#L137)
+[**Supported OpenAI Params**](https://github.com/BerriAI/dheera_ai/blob/e0f3cd580cb85066f7d36241a03c30aa50a8a31d/dheera_ai/llms/openai.py#L137)
 
-**LiteLLM Supports all Vertex AI Mistral Models.** Ensure you use the `vertex_ai/mistral-` prefix for all Vertex AI Mistral models.
+**Dheera AI Supports all Vertex AI Mistral Models.** Ensure you use the `vertex_ai/mistral-` prefix for all Vertex AI Mistral models.
 
 Overview
 
@@ -340,7 +340,7 @@ Overview
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""
@@ -366,12 +366,12 @@ print("\nModel Response", response)
 ```yaml
 model_list:
     - model_name: vertex-mistral
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/mistral-large@2407
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-east-1"
     - model_name: vertex-mistral
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/mistral-large@2407
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-west-1"
@@ -380,7 +380,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -416,7 +416,7 @@ Note: You can also call Codestral via `/chat/completion`.
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""
@@ -451,12 +451,12 @@ print("\nModel Response", response)
 ```yaml
 model_list:
     - model_name: vertex-codestral
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/codestral@2405
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-east-1"
     - model_name: vertex-codestral
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/codestral@2405
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-west-1"
@@ -465,7 +465,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -506,7 +506,7 @@ curl -X POST 'http://0.0.0.0:4000/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""
@@ -532,12 +532,12 @@ print("\nModel Response", response)
 ```yaml
 model_list:
     - model_name: jamba-1.5-mini
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/jamba-1.5-mini@001
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-east-1"
     - model_name: jamba-1.5-large
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/jamba-1.5-large@001
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-west-1"
@@ -546,7 +546,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -579,7 +579,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 | Provider Route | `vertex_ai/qwen/{MODEL}` |
 | Vertex Documentation | [Vertex AI - Qwen Models](https://cloud.google.com/vertex-ai/generative-ai/docs/maas/qwen) |
 
-**LiteLLM Supports all Vertex AI Qwen Models.** Ensure you use the `vertex_ai/qwen/` prefix for all Vertex AI Qwen models.
+**Dheera AI Supports all Vertex AI Qwen Models.** Ensure you use the `vertex_ai/qwen/` prefix for all Vertex AI Qwen models.
 
 | Model Name       | Usage                        |
 |------------------|------------------------------|
@@ -592,7 +592,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""
@@ -618,12 +618,12 @@ print("\nModel Response", response)
 ```yaml
 model_list:
     - model_name: vertex-qwen
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/qwen/qwen3-coder-480b-a35b-instruct-maas
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-east-1"
     - model_name: vertex-qwen
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/qwen/qwen3-coder-480b-a35b-instruct-maas
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-west-1"
@@ -632,7 +632,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -665,7 +665,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 | Provider Route | `vertex_ai/openai/{MODEL}` |
 | Vertex Documentation | [Vertex AI - GPT-OSS Models](https://console.cloud.google.com/vertex-ai/publishers/openai/model-garden/) |
 
-**LiteLLM Supports all Vertex AI GPT-OSS Models.** Ensure you use the `vertex_ai/openai/` prefix for all Vertex AI GPT-OSS models.
+**Dheera AI Supports all Vertex AI GPT-OSS Models.** Ensure you use the `vertex_ai/openai/` prefix for all Vertex AI GPT-OSS models.
 
 | Model Name       | Usage                        |
 |------------------|------------------------------|
@@ -677,7 +677,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""
@@ -703,7 +703,7 @@ print("\nModel Response", response)
 ```yaml
 model_list:
     - model_name: gpt-oss
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/openai/gpt-oss-20b-maas
         vertex_ai_project: "my-test-project"
         vertex_ai_location: "us-central1"
@@ -712,7 +712,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -745,7 +745,7 @@ GPT-OSS models support the `reasoning_effort` parameter for enhanced reasoning c
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="vertex_ai/openai/gpt-oss-20b-maas",
@@ -765,7 +765,7 @@ response = completion(
 ```yaml
 model_list:
 - model_name: gpt-oss
-  litellm_params:
+  dheera_ai_params:
     model: vertex_ai/openai/gpt-oss-20b-maas
     vertex_ai_project: "my-test-project"
     vertex_ai_location: "us-central1"
@@ -774,7 +774,7 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 

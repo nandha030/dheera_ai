@@ -2,11 +2,11 @@
 
 **Get API Key:** [https://firecrawl.dev](https://firecrawl.dev)
 
-## LiteLLM Python SDK
+## Dheera AI Python SDK
 
 ```python showLineNumbers title="Firecrawl Search"
 import os
-from litellm import search
+from dheera_ai import search
 
 os.environ["FIRECRAWL_API_KEY"] = "fc-..."
 
@@ -17,20 +17,20 @@ response = search(
 )
 ```
 
-## LiteLLM AI Gateway
+## Dheera AI AI Gateway
 
 ### 1. Setup config.yaml
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
 search_tools:
   - search_tool_name: firecrawl-search
-    litellm_params:
+    dheera_ai_params:
       search_provider: firecrawl
       api_key: os.environ/FIRECRAWL_API_KEY
 ```
@@ -38,7 +38,7 @@ search_tools:
 ### 2. Start the proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -59,7 +59,7 @@ curl http://0.0.0.0:4000/v1/search/firecrawl-search \
 
 ```python showLineNumbers title="Firecrawl Search with Provider-specific Parameters"
 import os
-from litellm import search
+from dheera_ai import search
 
 os.environ["FIRECRAWL_API_KEY"] = "fc-..."
 
@@ -107,7 +107,7 @@ Use the `tbs` parameter to filter by time periods:
 - `qdr:y` - Past year
 
 ### Content Scraping
-Firecrawl automatically scrapes full page content for search results when `scrapeOptions` is specified. By default, LiteLLM requests markdown format with main content only.
+Firecrawl automatically scrapes full page content for search results when `scrapeOptions` is specified. By default, Dheera AI requests markdown format with main content only.
 
 ### Geo-Targeting
 Combine `location` and `country` parameters for geo-targeted results:

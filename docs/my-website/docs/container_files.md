@@ -26,12 +26,12 @@ Looking for how to use Code Interpreter? See the [Code Interpreter Guide](/docs/
 | `/v1/containers/{container_id}/files/{file_id}/content` | GET | Download file content |
 | `/v1/containers/{container_id}/files/{file_id}` | DELETE | Delete file |
 
-## LiteLLM Python SDK
+## Dheera AI Python SDK
 
 ### List Container Files
 
 ```python showLineNumbers title="list_container_files.py"
-from litellm import list_container_files
+from dheera_ai import list_container_files
 
 files = list_container_files(
     container_id="cntr_123...",
@@ -45,7 +45,7 @@ for file in files.data:
 **Async:**
 
 ```python showLineNumbers title="alist_container_files.py"
-from litellm import alist_container_files
+from dheera_ai import alist_container_files
 
 files = await alist_container_files(
     container_id="cntr_123...",
@@ -56,7 +56,7 @@ files = await alist_container_files(
 ### Retrieve Container File
 
 ```python showLineNumbers title="retrieve_container_file.py"
-from litellm import retrieve_container_file
+from dheera_ai import retrieve_container_file
 
 file = retrieve_container_file(
     container_id="cntr_123...",
@@ -71,7 +71,7 @@ print(f"Size: {file.bytes} bytes")
 ### Download File Content
 
 ```python showLineNumbers title="retrieve_container_file_content.py"
-from litellm import retrieve_container_file_content
+from dheera_ai import retrieve_container_file_content
 
 content = retrieve_container_file_content(
     container_id="cntr_123...",
@@ -87,7 +87,7 @@ with open("output.png", "wb") as f:
 ### Delete Container File
 
 ```python showLineNumbers title="delete_container_file.py"
-from litellm import delete_container_file
+from dheera_ai import delete_container_file
 
 result = delete_container_file(
     container_id="cntr_123...",
@@ -98,7 +98,7 @@ result = delete_container_file(
 print(f"Deleted: {result.deleted}")
 ```
 
-## LiteLLM AI Gateway (Proxy)
+## Dheera AI AI Gateway (Proxy)
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -300,4 +300,4 @@ curl -X DELETE "http://localhost:4000/v1/containers/cntr_123.../files/cfile_456.
 ## Related
 
 - [Containers API](/docs/containers) - Manage containers
-- [Code Interpreter Guide](/docs/guides/code_interpreter) - Using Code Interpreter with LiteLLM
+- [Code Interpreter Guide](/docs/guides/code_interpreter) - Using Code Interpreter with Dheera AI

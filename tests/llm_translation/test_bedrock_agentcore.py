@@ -11,7 +11,7 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )
 
-import litellm
+import dheera_ai
 from unittest.mock import MagicMock, patch
 import pytest
 
@@ -27,8 +27,8 @@ def test_bedrock_agentcore_basic(model):
     """
     Test AgentCore invocation parameterized by model
     """
-    litellm._turn_on_debug()
-    response = litellm.completion(
+    dheera_ai._turn_on_debug()
+    response = dheera_ai.completion(
         model=model,
         messages=[{"role": "user", "content": "Explain machine learning in simple terms"}],
     )
@@ -49,8 +49,8 @@ async def test_bedrock_agentcore_with_streaming(model):
     Test AgentCore with streaming
     """
     print("running streming test for model=", model)
-    #litellm._turn_on_debug()
-    response = await litellm.acompletion(
+    #dheera_ai._turn_on_debug()
+    response = await dheera_ai.acompletion(
         model="bedrock/agentcore/arn:aws:bedrock-agentcore:us-west-2:888602223428:runtime/hosted_agent_r9jvp-3ySZuRHjLC",
         messages=[
             {
@@ -71,14 +71,14 @@ def test_bedrock_agentcore_with_custom_params():
     """
     import json
     
-    litellm._turn_on_debug()
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    dheera_ai._turn_on_debug()
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
     with patch.object(client, "post", return_value=MagicMock()) as mock_post:
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="bedrock/agentcore/arn:aws:bedrock-agentcore:us-west-2:888602223428:runtime/hosted_agent_r9jvp-3ySZuRHjLC",
                 messages=[
                     {
@@ -86,7 +86,7 @@ def test_bedrock_agentcore_with_custom_params():
                         "content": "Explain machine learning in simple terms",
                     }
                 ],
-                runtimeSessionId="litellm-test-session-id-12345678901234567890",
+                runtimeSessionId="dheera_ai-test-session-id-12345678901234567890",
                 qualifier="DEFAULT",
                 client=client,
             )
@@ -109,7 +109,7 @@ def test_bedrock_agentcore_with_custom_params():
         headers = call_kwargs["headers"]
         print(f"Headers: {headers}")
         assert "X-Amzn-Bedrock-AgentCore-Runtime-Session-Id" in headers
-        assert headers["X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"] == "litellm-test-session-id-12345678901234567890"
+        assert headers["X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"] == "dheera_ai-test-session-id-12345678901234567890"
         
         # Verify the request body - should just be the payload
         assert "data" in call_kwargs or "json" in call_kwargs
@@ -133,14 +133,14 @@ def test_bedrock_agentcore_with_runtime_user_id():
     """
     import json
 
-    litellm._turn_on_debug()
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    dheera_ai._turn_on_debug()
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
     with patch.object(client, "post", return_value=MagicMock()) as mock_post:
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="bedrock/agentcore/arn:aws:bedrock-agentcore:us-west-2:888602223428:runtime/hosted_agent_r9jvp-3ySZuRHjLC",
                 messages=[
                     {
@@ -172,14 +172,14 @@ def test_bedrock_agentcore_with_session_and_user():
     """
     import json
 
-    litellm._turn_on_debug()
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    dheera_ai._turn_on_debug()
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
     with patch.object(client, "post", return_value=MagicMock()) as mock_post:
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="bedrock/agentcore/arn:aws:bedrock-agentcore:us-west-2:888602223428:runtime/hosted_agent_r9jvp-3ySZuRHjLC",
                 messages=[
                     {
@@ -214,15 +214,15 @@ def test_bedrock_agentcore_with_api_key_bearer_token():
     """
     import json
 
-    litellm._turn_on_debug()
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    dheera_ai._turn_on_debug()
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
     test_jwt_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
 
     with patch.object(client, "post", return_value=MagicMock()) as mock_post:
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="bedrock/agentcore/arn:aws:bedrock-agentcore:us-west-2:888602223428:runtime/hosted_agent_r9jvp-3ySZuRHjLC",
                 messages=[
                     {
@@ -262,15 +262,15 @@ def test_bedrock_agentcore_with_all_parameters():
     """
     import json
 
-    litellm._turn_on_debug()
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    dheera_ai._turn_on_debug()
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
     test_jwt_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test.signature"
 
     with patch.object(client, "post", return_value=MagicMock()) as mock_post:
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="bedrock/agentcore/arn:aws:bedrock-agentcore:us-west-2:888602223428:runtime/hosted_agent_r9jvp-3ySZuRHjLC",
                 messages=[
                     {
@@ -326,14 +326,14 @@ def test_bedrock_agentcore_without_api_key_uses_sigv4():
     """
     import json
 
-    litellm._turn_on_debug()
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    dheera_ai._turn_on_debug()
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
     with patch.object(client, "post", return_value=MagicMock()) as mock_post:
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="bedrock/agentcore/arn:aws:bedrock-agentcore:us-west-2:888602223428:runtime/hosted_agent_r9jvp-3ySZuRHjLC",
                 messages=[
                     {

@@ -5,21 +5,21 @@ from dotenv import load_dotenv
 load_dotenv()
 import os, io, asyncio
 
-# this file is to test litellm/proxy
+# this file is to test dheera_ai/proxy
 
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 import pytest, time
-import litellm
-from litellm import embedding, completion, completion_cost, Timeout
-from litellm import RateLimitError
+import dheera_ai
+from dheera_ai import embedding, completion, completion_cost, Timeout
+from dheera_ai import RateLimitError
 import importlib, inspect
 
 # test /chat/completion request to the proxy
 from fastapi.testclient import TestClient
 from fastapi import FastAPI
-from litellm.proxy.proxy_server import (
+from dheera_ai.proxy.proxy_server import (
     router,
     save_worker_config,
     initialize,
@@ -50,20 +50,20 @@ print("Testing proxy custom logger")
 
 def test_embedding(client):
     try:
-        litellm.set_verbose = False
-        from litellm.proxy.types_utils.utils import get_instance_fn
+        dheera_ai.set_verbose = False
+        from dheera_ai.proxy.types_utils.utils import get_instance_fn
 
         my_custom_logger = get_instance_fn(
             value="custom_callbacks.my_custom_logger", config_file_path=python_file_path
         )
         print("id of initialized custom logger", id(my_custom_logger))
-        litellm.callbacks = [my_custom_logger]
+        dheera_ai.callbacks = [my_custom_logger]
         # Your test data
         print("initialized proxy")
         # import the initialized custom logger
-        print(litellm.callbacks)
+        print(dheera_ai.callbacks)
 
-        # assert len(litellm.callbacks) == 1 # assert litellm is initialized with 1 callback
+        # assert len(dheera_ai.callbacks) == 1 # assert dheera_ai is initialized with 1 callback
         print("my_custom_logger", my_custom_logger)
         assert my_custom_logger.async_success_embedding is False
 
@@ -83,14 +83,14 @@ def test_embedding(client):
             my_custom_logger.async_embedding_kwargs["model"] == "text-embedding-ada-002"
         )  # checks if kwargs passed to async_log_success_event are correct
         kwargs = my_custom_logger.async_embedding_kwargs
-        litellm_params = kwargs.get("litellm_params")
-        metadata = litellm_params.get("metadata", None)
-        print("\n\n Metadata in custom logger kwargs", litellm_params.get("metadata"))
+        dheera_ai_params = kwargs.get("dheera_ai_params")
+        metadata = dheera_ai_params.get("metadata", None)
+        print("\n\n Metadata in custom logger kwargs", dheera_ai_params.get("metadata"))
         assert metadata is not None
         assert "user_api_key" in metadata
         assert "headers" in metadata
-        proxy_server_request = litellm_params.get("proxy_server_request")
-        model_info = litellm_params.get("model_info")
+        proxy_server_request = dheera_ai_params.get("proxy_server_request")
+        model_info = dheera_ai_params.get("model_info")
         assert proxy_server_request == {
             "url": "http://testserver/embeddings",
             "method": "POST",
@@ -115,14 +115,14 @@ def test_embedding(client):
         print(f"Received response: {result}")
         print("Passed Embedding custom logger on proxy!")
     except Exception as e:
-        pytest.fail(f"LiteLLM Proxy test failed. Exception {str(e)}")
+        pytest.fail(f"DheeraAI Proxy test failed. Exception {str(e)}")
 
 
 def test_chat_completion(client):
     try:
         # Your test data
-        litellm.set_verbose = False
-        from litellm.proxy.types_utils.utils import get_instance_fn
+        dheera_ai.set_verbose = False
+        from dheera_ai.proxy.types_utils.utils import get_instance_fn
 
         my_custom_logger = get_instance_fn(
             value="custom_callbacks.my_custom_logger", config_file_path=python_file_path
@@ -130,27 +130,27 @@ def test_chat_completion(client):
 
         print("id of initialized custom logger", id(my_custom_logger))
 
-        litellm.callbacks = [my_custom_logger]
+        dheera_ai.callbacks = [my_custom_logger]
         # import the initialized custom logger
-        print(litellm.callbacks)
+        print(dheera_ai.callbacks)
 
-        # assert len(litellm.callbacks) == 1 # assert litellm is initialized with 1 callback
+        # assert len(dheera_ai.callbacks) == 1 # assert dheera_ai is initialized with 1 callback
 
-        print("LiteLLM Callbacks", litellm.callbacks)
+        print("DheeraAI Callbacks", dheera_ai.callbacks)
         print("my_custom_logger", my_custom_logger)
         assert my_custom_logger.async_success == False
 
         test_data = {
             "model": "Azure OpenAI GPT-4 Canada",
             "messages": [
-                {"role": "user", "content": "write a litellm poem"},
+                {"role": "user", "content": "write a dheera_ai poem"},
             ],
             "max_tokens": 10,
         }
 
         response = client.post("/chat/completions", json=test_data, headers=headers)
         print("made request", response.status_code, response.text)
-        print("LiteLLM Callbacks", litellm.callbacks)
+        print("DheeraAI Callbacks", dheera_ai.callbacks)
         time.sleep(1)  # sleep while waiting for callback to run
 
         print(
@@ -170,15 +170,15 @@ def test_chat_completion(client):
             "\n\n Custom Logger Async Completion args",
             my_custom_logger.async_completion_kwargs,
         )
-        litellm_params = my_custom_logger.async_completion_kwargs.get("litellm_params")
-        metadata = litellm_params.get("metadata", None)
-        print("\n\n Metadata in custom logger kwargs", litellm_params.get("metadata"))
+        dheera_ai_params = my_custom_logger.async_completion_kwargs.get("dheera_ai_params")
+        metadata = dheera_ai_params.get("metadata", None)
+        print("\n\n Metadata in custom logger kwargs", dheera_ai_params.get("metadata"))
         assert metadata is not None
         assert "user_api_key" in metadata
         assert "user_api_key_metadata" in metadata
         assert "headers" in metadata
-        config_model_info = litellm_params.get("model_info")
-        proxy_server_request_object = litellm_params.get("proxy_server_request")
+        config_model_info = dheera_ai_params.get("model_info")
+        proxy_server_request_object = dheera_ai_params.get("proxy_server_request")
 
         assert config_model_info == {
             "id": "gm",
@@ -202,7 +202,7 @@ def test_chat_completion(client):
             },
             "body": {
                 "model": "Azure OpenAI GPT-4 Canada",
-                "messages": [{"role": "user", "content": "write a litellm poem"}],
+                "messages": [{"role": "user", "content": "write a dheera_ai poem"}],
                 "max_tokens": 10,
             },
         }
@@ -210,14 +210,14 @@ def test_chat_completion(client):
         print(f"Received response: {result}")
         print("\nPassed /chat/completions with Custom Logger!")
     except Exception as e:
-        pytest.fail(f"LiteLLM Proxy test failed. Exception {str(e)}")
+        pytest.fail(f"DheeraAI Proxy test failed. Exception {str(e)}")
 
 
 def test_chat_completion_stream(client):
     try:
         # Your test data
-        litellm.set_verbose = False
-        from litellm.proxy.types_utils.utils import get_instance_fn
+        dheera_ai.set_verbose = False
+        from dheera_ai.proxy.types_utils.utils import get_instance_fn
 
         my_custom_logger = get_instance_fn(
             value="custom_callbacks.my_custom_logger", config_file_path=python_file_path
@@ -225,14 +225,14 @@ def test_chat_completion_stream(client):
 
         print("id of initialized custom logger", id(my_custom_logger))
 
-        litellm.callbacks = [my_custom_logger]
+        dheera_ai.callbacks = [my_custom_logger]
         import json
 
         print("initialized proxy")
         # import the initialized custom logger
-        print(litellm.callbacks)
+        print(dheera_ai.callbacks)
 
-        print("LiteLLM Callbacks", litellm.callbacks)
+        print("DheeraAI Callbacks", dheera_ai.callbacks)
         print("my_custom_logger", my_custom_logger)
 
         assert (
@@ -242,7 +242,7 @@ def test_chat_completion_stream(client):
         test_data = {
             "model": "Azure OpenAI GPT-4 Canada",
             "messages": [
-                {"role": "user", "content": "write 1 line poem about LiteLLM"},
+                {"role": "user", "content": "write 1 line poem about DheeraAI"},
             ],
             "max_tokens": 40,
             "stream": True,  # streaming  call
@@ -289,4 +289,4 @@ def test_chat_completion_stream(client):
         )
 
     except Exception as e:
-        pytest.fail(f"LiteLLM Proxy test failed. Exception {str(e)}")
+        pytest.fail(f"DheeraAI Proxy test failed. Exception {str(e)}")

@@ -9,7 +9,7 @@ Opik is an open source end-to-end [LLM Evaluation Platform](https://www.comet.co
 <Image img={require('../../img/opik.png')} />
 
 :::info
-We want to learn how we can make the callbacks better! Meet the LiteLLM [founders](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-litellm-hosted-version) or
+We want to learn how we can make the callbacks better! Meet the Dheera AI [founders](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-dheera_ai-hosted-version) or
 join our [discord](https://discord.gg/wuPM9dRgDw)
 :::
 
@@ -23,8 +23,8 @@ Use just 4 lines of code, to instantly log your responses **across all providers
 Get your Opik API Key by signing up [here](https://www.comet.com/signup?utm_source=litelllm&utm_medium=docs&utm_content=api_key_cell)!
 
 ```python
-import litellm
-litellm.callbacks = ["opik"]
+import dheera_ai
+dheera_ai.callbacks = ["opik"]
 ```
 
 Full examples:
@@ -33,7 +33,7 @@ Full examples:
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
+import dheera_ai
 import os
 
 # Configure the Opik API key or call opik.configure()
@@ -43,11 +43,11 @@ os.environ["OPIK_WORKSPACE"] = ""
 # LLM provider API Keys:
 os.environ["OPENAI_API_KEY"] = ""
 
-# set "opik" as a callback, litellm will send the data to an Opik server (such as comet.com)
-litellm.callbacks = ["opik"]
+# set "opik" as a callback, dheera_ai will send the data to an Opik server (such as comet.com)
+dheera_ai.callbacks = ["opik"]
 
 # openai call
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gpt-3.5-turbo",
     messages=[
         {"role": "user", "content": "Why is tracking and evaluation of LLMs important?"}
@@ -62,14 +62,14 @@ so that the LLM call is assigned to the correct trace:
 ```python
 from opik import track
 from opik.opik_context import get_current_span_data
-import litellm
+import dheera_ai
 
-litellm.callbacks = ["opik"]
+dheera_ai.callbacks = ["opik"]
 
 @track()
 def streaming_function(input):
     messages = [{"role": "user", "content": input}]
-    response = litellm.completion(
+    response = dheera_ai.completion(
         model="gpt-3.5-turbo",
         messages=messages,
         metadata = {
@@ -93,11 +93,11 @@ chunks = list(response)
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo-testing
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["opik"]
 
 environment_variables:
@@ -108,7 +108,7 @@ environment_variables:
 2. Run proxy
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 3. Test it! 
@@ -150,12 +150,12 @@ These can be passed inside metadata with the `opik` key.
 ```python
 from opik import track
 from opik.opik_context import get_current_span_data
-import litellm
+import dheera_ai
 
-litellm.callbacks = ["opik"]
+dheera_ai.callbacks = ["opik"]
 
 messages = [{"role": "user", "content": input}]
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gpt-3.5-turbo",
     messages=messages,
     metadata = {
@@ -222,11 +222,11 @@ curl --location --request POST 'http://0.0.0.0:4000/chat/completions' \
 
 ## Automatic Metadata from API Keys
 
-In some cases, the requester may be unable or unaware of how to add Opik metadata to their requests. To ensure all Opik-related actions are properly tracked, LiteLLM Proxy can automatically associate metadata from a user-specific API key when none is provided in the request.
+In some cases, the requester may be unable or unaware of how to add Opik metadata to their requests. To ensure all Opik-related actions are properly tracked, Dheera AI Proxy can automatically associate metadata from a user-specific API key when none is provided in the request.
 
 ### How It Works
 
-When you create an API key in LiteLLM Proxy, you can attach Opik-specific metadata to the key itself. This metadata will be automatically applied to all requests made with that key, unless the request explicitly provides its own Opik metadata (which takes precedence).
+When you create an API key in Dheera AI Proxy, you can attach Opik-specific metadata to the key itself. This metadata will be automatically applied to all requests made with that key, unless the request explicitly provides its own Opik metadata (which takes precedence).
 
 
 ### Usage
@@ -259,7 +259,7 @@ All requests made with this key will automatically be tracked in the "TestProjec
 
 ## Support & Talk to Founders
 
-- [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-litellm-hosted-version)
+- [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-dheera_ai-hosted-version)
 - [Community Discord 💭](https://discord.gg/wuPM9dRgDw)
 - Our numbers 📞 +1 (770) 8783-106 / ‭+1 (412) 618-6238‬
 - Our emails ✉️ ishaan@berri.ai / krrish@berri.ai

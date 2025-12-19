@@ -8,7 +8,7 @@
 #     0, os.path.abspath("../..")
 # )  # Adds the parent directory to the system path
 # import asyncio
-# from litellm import Router, Timeout
+# from dheera_ai import Router, Timeout
 # import time
 
 
@@ -30,14 +30,14 @@
 #     model_list = [
 #         {
 #             "model_name": "gpt-3.5-turbo",
-#             "litellm_params": {
+#             "dheera_ai_params": {
 #                 "model": "gpt-3.5-turbo",
 #                 "api_key": os.getenv("OPENAI_API_KEY"),
 #             },
 #         },
 #         {
 #             "model_name": "gpt-3.5-turbo",
-#             "litellm_params": {
+#             "dheera_ai_params": {
 #                 "model": "azure/gpt-4.1-mini",
 #                 "api_key": os.getenv("AZURE_API_KEY"),
 #                 "api_base": os.getenv("AZURE_API_BASE"),

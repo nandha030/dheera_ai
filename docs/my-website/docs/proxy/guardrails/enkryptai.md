@@ -3,24 +3,24 @@ import TabItem from '@theme/TabItem';
 
 # EnkryptAI Guardrails
 
-LiteLLM supports EnkryptAI guardrails for content moderation and safety checks on LLM inputs and outputs.
+Dheera AI supports EnkryptAI guardrails for content moderation and safety checks on LLM inputs and outputs.
 
 ## Quick Start
 
-### 1. Define Guardrails on your LiteLLM config.yaml
+### 1. Define Guardrails on your Dheera AI config.yaml
 
 Define your guardrails under the `guardrails` section:
 
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "enkryptai-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: enkryptai
       mode: "pre_call"
       api_key: os.environ/ENKRYPTAI_API_KEY
@@ -62,10 +62,10 @@ EnkryptAI supports multiple content detection types:
 export ENKRYPTAI_API_KEY="your-api-key"
 ```
 
-### 3. Start LiteLLM Gateway
+### 3. Start Dheera AI Gateway
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 ### 4. Test Request
@@ -154,7 +154,7 @@ You can specify a custom EnkryptAI policy:
 ```yaml
 guardrails:
   - guardrail_name: "enkryptai-custom"
-    litellm_params:
+    dheera_ai_params:
       guardrail: enkryptai
       mode: "pre_call"
       api_key: os.environ/ENKRYPTAI_API_KEY
@@ -171,7 +171,7 @@ Specify an EnkryptAI deployment:
 ```yaml
 guardrails:
   - guardrail_name: "enkryptai-deployment"
-    litellm_params:
+    dheera_ai_params:
       guardrail: enkryptai
       mode: "pre_call"
       api_key: os.environ/ENKRYPTAI_API_KEY
@@ -188,7 +188,7 @@ Set `block_on_violation: false` to log violations without blocking requests:
 ```yaml
 guardrails:
   - guardrail_name: "enkryptai-monitor"
-    litellm_params:
+    dheera_ai_params:
       guardrail: enkryptai
       mode: "pre_call"
       api_key: os.environ/ENKRYPTAI_API_KEY
@@ -210,7 +210,7 @@ Configure separate guardrails for input and output:
 guardrails:
   # Input guardrail
   - guardrail_name: "enkryptai-input"
-    litellm_params:
+    dheera_ai_params:
       guardrail: enkryptai
       mode: "pre_call"
       api_key: os.environ/ENKRYPTAI_API_KEY
@@ -223,7 +223,7 @@ guardrails:
 
   # Output guardrail
   - guardrail_name: "enkryptai-output"
-    litellm_params:
+    dheera_ai_params:
       guardrail: enkryptai
       mode: "post_call"
       api_key: os.environ/ENKRYPTAI_API_KEY
@@ -256,7 +256,7 @@ EnkryptAI guardrail logs include:
 - **duration**: Time taken for guardrail check
 - **start_time** and **end_time**: Timestamps
 
-These logs are available through your configured LiteLLM logging callbacks.
+These logs are available through your configured Dheera AI logging callbacks.
 
 ## Error Handling
 

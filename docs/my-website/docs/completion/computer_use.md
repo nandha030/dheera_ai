@@ -16,16 +16,16 @@ Computer use allows models to interact with computer interfaces by taking screen
 - `text_editor` - Text editor tool
 - `web_search` - Web search tool
 
-LiteLLM will standardize the computer use tools across all supported providers.
+Dheera AI will standardize the computer use tools across all supported providers.
 
 ## Quick Start
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
 
@@ -68,18 +68,18 @@ print(response)
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy Server">
+<TabItem value="proxy" label="Dheera AI Proxy Server">
 
 1. Define computer use models on config.yaml
 
 ```yaml
 model_list:
   - model_name: claude-3-5-sonnet-latest # Anthropic claude-3-5-sonnet-latest
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet-latest
       api_key: os.environ/ANTHROPIC_API_KEY
   - model_name: claude-bedrock         # Bedrock Anthropic model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -91,7 +91,7 @@ model_list:
 2. Run proxy server
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 3. Test it using the OpenAI Python SDK
@@ -101,7 +101,7 @@ import os
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-1234", # your litellm proxy api key
+    api_key="sk-1234", # your dheera_ai proxy api key
     base_url="http://0.0.0.0:4000"
 )
 
@@ -144,33 +144,33 @@ print(response)
 ## Checking if a model supports `computer use`
 
 <Tabs>
-<TabItem label="LiteLLM Python SDK" value="Python">
+<TabItem label="Dheera AI Python SDK" value="Python">
 
-Use `litellm.supports_computer_use(model="")` -> returns `True` if model supports computer use and `False` if not
+Use `dheera_ai.supports_computer_use(model="")` -> returns `True` if model supports computer use and `False` if not
 
 ```python
-import litellm
+import dheera_ai
 
-assert litellm.supports_computer_use(model="anthropic/claude-3-5-sonnet-latest") == True
-assert litellm.supports_computer_use(model="anthropic/claude-3-7-sonnet-20250219") == True
-assert litellm.supports_computer_use(model="bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0") == True
-assert litellm.supports_computer_use(model="vertex_ai/claude-3-5-sonnet") == True
-assert litellm.supports_computer_use(model="openai/gpt-4") == False
+assert dheera_ai.supports_computer_use(model="anthropic/claude-3-5-sonnet-latest") == True
+assert dheera_ai.supports_computer_use(model="anthropic/claude-3-7-sonnet-20250219") == True
+assert dheera_ai.supports_computer_use(model="bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0") == True
+assert dheera_ai.supports_computer_use(model="vertex_ai/claude-3-5-sonnet") == True
+assert dheera_ai.supports_computer_use(model="openai/gpt-4") == False
 ```
 </TabItem>
 
-<TabItem label="LiteLLM Proxy Server" value="proxy">
+<TabItem label="Dheera AI Proxy Server" value="proxy">
 
 1. Define computer use models on config.yaml
 
 ```yaml
 model_list:
   - model_name: claude-3-5-sonnet-latest # Anthropic claude-3-5-sonnet-latest
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet-latest
       api_key: os.environ/ANTHROPIC_API_KEY
   - model_name: claude-bedrock         # Bedrock Anthropic model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -182,7 +182,7 @@ model_list:
 2. Run proxy server
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 3. Call `/model_group/info` to check if your model supports `computer use`
@@ -237,7 +237,7 @@ The `computer_20241022` tool provides direct screen interaction capabilities.
 
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
 
@@ -285,7 +285,7 @@ The `bash_20241022` tool provides command line interface access.
 
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
 
@@ -319,7 +319,7 @@ The `text_editor_20250124` tool provides text file editing capabilities.
 
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
 
@@ -355,7 +355,7 @@ You can combine different computer use tools in a single request:
 
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
 

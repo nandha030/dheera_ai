@@ -8,14 +8,14 @@ First, set up your guardrail policy in the Zscaler AI Guard dashboard to obtain 
 
 ## 2. Define Zscaler AI Guard in `config.yaml`
 
-You can define Zscaler AI Guard settings directly in your LiteLLM `config.yaml` file.
+You can define Zscaler AI Guard settings directly in your Dheera AI `config.yaml` file.
 
 ### Example Configuration
 
 ```yaml
 guardrails:
   - guardrail_name: "zscaler-ai-guard-during-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: zscaler_ai_guard
       mode: "during_call"
       api_key: os.environ/ZSCALER_AI_GUARD_API_KEY      # Your Zscaler AI Guard API key
@@ -26,7 +26,7 @@ guardrails:
       send_user_api_key_team_id: os.environ/SEND_USER_API_KEY_TEAM_ID # Optional
 
   - guardrail_name: "zscaler-ai-guard-post-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: zscaler_ai_guard
       mode: "post_call"
       api_key: os.environ/ZSCALER_AI_GUARD_API_KEY
@@ -44,7 +44,7 @@ Expect this to fail since if you enable prompt_injection as Block mode
 ```shell
 curl -i http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <your litellm key>" \
+  -H "Authorization: Bearer <your dheera_ai key>" \
   -d '{
     "model": "gpt-3.5-turbo",
     "messages": [
@@ -104,19 +104,19 @@ In cases where encounter other errors when apply Zscaler AI Guard, return exampl
 If you need to send end-user information to Zscaler AI Guard for analysis, you can set the configuration in the environment variables to True and include the relevant information in custom_headers on Zscaler AI Guard.
 
 - To send user_api_key_alias:
-Set SEND_USER_API_KEY_ALIAS = True in litellm (Default: False), add 'user-api-key-alias' to the custom_headers in Zscaler AI Guard
+Set SEND_USER_API_KEY_ALIAS = True in dheera_ai (Default: False), add 'user-api-key-alias' to the custom_headers in Zscaler AI Guard
 
 - To send user_api_key_user_id:
-Set SEND_USER_API_KEY_USER_ID = True in litellm  (Default: False), add 'user-api-key-user-id' to the custom_headers in Zscaler AI Guard
+Set SEND_USER_API_KEY_USER_ID = True in dheera_ai  (Default: False), add 'user-api-key-user-id' to the custom_headers in Zscaler AI Guard
 
 - To send user_api_key_team_id:
-Set SEND_USER_API_KEY_TEAM_ID = True in litellm  (Default: False), add 'user-api-key-team-id' to the custom_headers in Zscaler AI Guard
+Set SEND_USER_API_KEY_TEAM_ID = True in dheera_ai  (Default: False), add 'user-api-key-team-id' to the custom_headers in Zscaler AI Guard
 
 ## 7. Using a Custom Zscaler AI Guard Policy (Optional)
-If an end user wants to use their own custom Zscaler AI Guard policy instead of the default policy for LiteLLM, they can do so by providing metadata in their LiteLLM request. Follow the steps below to implement this functionality:
+If an end user wants to use their own custom Zscaler AI Guard policy instead of the default policy for Dheera AI, they can do so by providing metadata in their Dheera AI request. Follow the steps below to implement this functionality:
 
--  Set up the custom policy in the Zscaler AI Guard tenant designated for LiteLLM, get the custom policy id.
--  During a LiteLLM API call, include the custom policy id in the metadata section of the request payload. 
+-  Set up the custom policy in the Zscaler AI Guard tenant designated for Dheera AI, get the custom policy id.
+-  During a Dheera AI API call, include the custom policy id in the metadata section of the request payload. 
 
 Example Request with Custom Policy Metadata
 

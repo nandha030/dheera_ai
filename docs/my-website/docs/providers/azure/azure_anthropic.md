@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Azure Anthropic (Claude via Azure Foundry)
 
-LiteLLM supports Claude models deployed via Microsoft Azure Foundry, including Claude Sonnet 4.5, Claude Haiku 4.5, and Claude Opus 4.1.
+Dheera AI supports Claude models deployed via Microsoft Azure Foundry, including Claude Sonnet 4.5, Claude Haiku 4.5, and Claude Opus 4.1.
 
 ## Available Models
 
@@ -16,7 +16,7 @@ Azure Foundry supports the following Claude models:
 | Property | Details |
 |-------|-------|
 | Description | Claude models deployed via Microsoft Azure Foundry. Uses the same API as Anthropic's Messages API but with Azure authentication. |
-| Provider Route on LiteLLM | `azure_ai/` (add this prefix to Claude model names - e.g. `azure_ai/claude-sonnet-4-5`) |
+| Provider Route on Dheera AI | `azure_ai/` (add this prefix to Claude model names - e.g. `azure_ai/claude-sonnet-4-5`) |
 | Provider Doc | [Azure Foundry Claude Models ↗](https://learn.microsoft.com/en-us/azure/ai-services/foundry-models/claude) |
 | API Endpoint | `https://<resource-name>.services.ai.azure.com/anthropic/v1/messages` |
 | Supported Endpoints | `/chat/completions`, `/anthropic/v1/messages`|
@@ -55,12 +55,12 @@ os.environ["AZURE_CLIENT_SECRET"] = "your-client-secret"
 os.environ["AZURE_SCOPE"] = "https://cognitiveservices.azure.com/.default"
 ```
 
-## Usage - LiteLLM Python SDK
+## Usage - Dheera AI Python SDK
 
 ### Basic Completion
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # Set environment variables
 os.environ["AZURE_API_KEY"] = "your-azure-api-key"
@@ -82,9 +82,9 @@ print(response)
 ### Completion with API Key Parameter
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="azure_ai/claude-sonnet-4-5",
     api_base="https://<resource-name>.services.ai.azure.com/anthropic",
     api_key="your-azure-api-key",
@@ -98,9 +98,9 @@ response = litellm.completion(
 ### Completion with Azure AD Token
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="azure_ai/claude-sonnet-4-5",
     api_base="https://<resource-name>.services.ai.azure.com/anthropic",
     azure_ad_token="your-azure-ad-token",
@@ -114,7 +114,7 @@ response = litellm.completion(
 ### Streaming
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="azure_ai/claude-sonnet-4-5",
@@ -133,7 +133,7 @@ for chunk in response:
 ### Tool Calling
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="azure_ai/claude-sonnet-4-5",
@@ -166,7 +166,7 @@ response = completion(
 print(response)
 ```
 
-## Usage - LiteLLM Proxy Server
+## Usage - Dheera AI Proxy Server
 
 ### 1. Save key in your environment
 
@@ -180,7 +180,7 @@ export AZURE_API_BASE="https://<resource-name>.services.ai.azure.com/anthropic"
 ```yaml
 model_list:
   - model_name: claude-sonnet-4-5
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/claude-sonnet-4-5
       api_base: https://<resource-name>.services.ai.azure.com/anthropic
       api_key: os.environ/AZURE_API_KEY
@@ -256,7 +256,7 @@ response = client.messages.create(
 print(response)
 ```
 
-### Using LiteLLM Proxy
+### Using Dheera AI Proxy
 
 ```bash
 curl --request POST \
@@ -296,7 +296,7 @@ Azure Anthropic supports the same parameters as the main Anthropic provider:
 
 :::info
 
-Azure Anthropic API requires `max_tokens` to be passed. LiteLLM automatically passes `max_tokens=4096` when no `max_tokens` are provided.
+Azure Anthropic API requires `max_tokens` to be passed. Dheera AI automatically passes `max_tokens=4096` when no `max_tokens` are provided.
 
 :::
 
@@ -317,13 +317,13 @@ The API base URL should follow this format:
 https://<resource-name>.services.ai.azure.com/anthropic
 ```
 
-LiteLLM will automatically append `/v1/messages` if not already present in the URL.
+Dheera AI will automatically append `/v1/messages` if not already present in the URL.
 
 ## Example: Full Configuration
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # Configure Azure Anthropic
 os.environ["AZURE_API_KEY"] = "your-azure-api-key"

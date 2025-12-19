@@ -6,7 +6,7 @@ https://weave-docs.wandb.ai/quickstart-inference
 
 :::tip
 
-Litellm provides support to all models from W&B Inference service. To use a model, set `model=wandb/<any-model-on-wandb-inference-dashboard>` as a prefix for litellm requests. The full list of supported models is provided at https://docs.wandb.ai/guides/inference/models/
+Litellm provides support to all models from W&B Inference service. To use a model, set `model=wandb/<any-model-on-wandb-inference-dashboard>` as a prefix for dheera_ai requests. The full list of supported models is provided at https://docs.wandb.ai/guides/inference/models/
 
 :::
 
@@ -22,7 +22,7 @@ os.environ['WANDB_API_KEY']
 
 ## Sample Usage: Text Generation
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['WANDB_API_KEY'] = "insert-your-wandb-api-key"
@@ -45,7 +45,7 @@ print(response)
 
 ## Sample Usage - Streaming
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['WANDB_API_KEY'] = ""
@@ -75,25 +75,25 @@ The above examples may not work if the model has been taken offline. Check the f
 
 :::
 
-## Usage with LiteLLM Proxy Server
+## Usage with Dheera AI Proxy Server
 
-Here's how to call a W&B Inference model with the LiteLLM Proxy Server
+Here's how to call a W&B Inference model with the Dheera AI Proxy Server
 
 1. Modify the config.yaml 
 
   ```yaml
   model_list:
     - model_name: my-model
-      litellm_params:
+      dheera_ai_params:
         model: wandb/<your-model-name>  # add wandb/ prefix to use W&B Inference as provider
         api_key: api-key                 # api key to send your model
   ```
 2. Start the proxy 
   ```bash
-  $ litellm --config /path/to/config.yaml
+  $ dheera_ai --config /path/to/config.yaml
   ```
 
-3. Send Request to LiteLLM Proxy Server
+3. Send Request to Dheera AI Proxy Server
 
   <Tabs>
 
@@ -102,8 +102,8 @@ Here's how to call a W&B Inference model with the LiteLLM Proxy Server
   ```python
   import openai
   client = openai.OpenAI(
-      api_key="litellm-proxy-key",             # pass litellm proxy key, if you're using virtual keys
-      base_url="http://0.0.0.0:4000" # litellm-proxy-base url
+      api_key="dheera_ai-proxy-key",             # pass dheera_ai proxy key, if you're using virtual keys
+      base_url="http://0.0.0.0:4000" # dheera_ai-proxy-base url
   )
 
   response = client.chat.completions.create(
@@ -124,7 +124,7 @@ Here's how to call a W&B Inference model with the LiteLLM Proxy Server
 
   ```shell
   curl --location 'http://0.0.0.0:4000/chat/completions' \
-      --header 'Authorization: litellm-proxy-key' \
+      --header 'Authorization: dheera_ai-proxy-key' \
       --header 'Content-Type: application/json' \
       --data '{
       "model": "my-model",
@@ -165,7 +165,7 @@ The W&B Inference provider supports the following parameters:
 
 ## Error Handling
 
-The integration uses the standard LiteLLM error handling. Further, here's a list of commonly encountered errors with the W&B Inference API - 
+The integration uses the standard Dheera AI error handling. Further, here's a list of commonly encountered errors with the W&B Inference API - 
 
 | Error Code | Message | Cause | Solution |
 | ---------- | ------- | ----- | -------- |
@@ -193,4 +193,4 @@ response = completion(
 
 For more information, see [Personal entities unsupported](https://docs.wandb.ai/guides/inference/usage-limits/#personal-entities-unsupported).
 
-You can find more ways of using custom headers with LiteLLM here - https://docs.litellm.ai/docs/proxy/request_headers.
+You can find more ways of using custom headers with Dheera AI here - https://docs.dheera_ai.ai/docs/proxy/request_headers.

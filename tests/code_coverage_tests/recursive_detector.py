@@ -104,7 +104,7 @@ if __name__ == "__main__":
     # raise exception if any recursive functions are found, except for the ignored ones
     # this is used in the CI/CD pipeline to prevent recursive functions from being merged
 
-    directory_path = "./litellm"
+    directory_path = "./dheera_ai"
     recursive_functions, ignored_recursive_functions = (
         find_recursive_functions_in_directory(directory_path)
     )

@@ -1,7 +1,7 @@
 """
-Test for A2A to LiteLLM Completion Bridge.
+Test for A2A to DheeraAI Completion Bridge.
 
-Tests the SDK-level functions that route A2A requests through litellm.acompletion.
+Tests the SDK-level functions that route A2A requests through dheera_ai.acompletion.
 
 Run with:
     pytest tests/agent_tests/test_a2a_completion_bridge.py -v -s
@@ -18,7 +18,7 @@ import pytest
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-import litellm
+import dheera_ai
 from a2a.types import MessageSendParams, SendMessageRequest, SendStreamingMessageRequest
 
 
@@ -27,9 +27,9 @@ async def test_a2a_completion_bridge_non_streaming():
     """
     Test non-streaming A2A request via the completion bridge with LangGraph provider.
     """
-    from litellm.a2a_protocol import asend_message
+    from dheera_ai.a2a_protocol import asend_message
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     send_message_payload = {
         "message": {
@@ -47,10 +47,10 @@ async def test_a2a_completion_bridge_non_streaming():
     response = await asend_message(
         request=request,
         api_base="http://localhost:2024",
-        litellm_params={"custom_llm_provider": "langgraph", "model": "agent"},
+        dheera_ai_params={"custom_llm_provider": "langgraph", "model": "agent"},
     )
 
-    # Validate response is LiteLLMSendMessageResponse
+    # Validate response is DheeraAISendMessageResponse
     assert response.jsonrpc == "2.0"
     assert response.id is not None
     assert response.result is not None
@@ -78,9 +78,9 @@ async def test_a2a_completion_bridge_streaming():
     3. Artifact update (kind: "artifact-update") - Content delivery
     4. Status update (kind: "status-update") - Final "completed" status
     """
-    from litellm.a2a_protocol import asend_message_streaming
+    from dheera_ai.a2a_protocol import asend_message_streaming
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     send_message_payload = {
         "message": {
@@ -99,7 +99,7 @@ async def test_a2a_completion_bridge_streaming():
     async for chunk in asend_message_streaming(
         request=request,
         api_base="http://localhost:2024",
-        litellm_params={"custom_llm_provider": "langgraph", "model": "agent"},
+        dheera_ai_params={"custom_llm_provider": "langgraph", "model": "agent"},
     ):
         chunks.append(chunk)
         print(f"Chunk: {chunk}")
@@ -155,9 +155,9 @@ async def test_a2a_completion_bridge_bedrock_agentcore():
     
     Uses the AgentCore runtime ARN to call a hosted agent.
     """
-    from litellm.a2a_protocol import asend_message_streaming
+    from dheera_ai.a2a_protocol import asend_message_streaming
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     # Bedrock AgentCore ARN (streaming-capable runtime)
     agentcore_arn = "arn:aws:bedrock-agentcore:us-west-2:888602223428:runtime/hosted_agent_r9jvp-3ySZuRHjLC"
@@ -179,7 +179,7 @@ async def test_a2a_completion_bridge_bedrock_agentcore():
     async for chunk in asend_message_streaming(
         request=request,
         api_base=None,  # Not needed for Bedrock AgentCore
-        litellm_params={
+        dheera_ai_params={
             "custom_llm_provider": "bedrock",
             "model": f"bedrock/agentcore/{agentcore_arn}",
         },
@@ -213,15 +213,15 @@ VERTEX_AGENT_RESOURCE_NAME = "projects/1060139831167/locations/us-central1/reaso
 @pytest.mark.asyncio
 async def test_vertex_agent_engine_non_streaming():
     """
-    Test non-streaming request to Vertex AI Agent Engine via litellm.acompletion.
+    Test non-streaming request to Vertex AI Agent Engine via dheera_ai.acompletion.
     
     Uses the Reasoning Engine resource ID to call a hosted agent.
     """
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
-    # Call via litellm.acompletion with vertex_ai/agent_engine/ prefix
-    response = await litellm.acompletion(
+    # Call via dheera_ai.acompletion with vertex_ai/agent_engine/ prefix
+    response = await dheera_ai.acompletion(
         model=f"vertex_ai/agent_engine/{VERTEX_AGENT_RESOURCE_NAME}",
         messages=[{"role": "user", "content": "Hello! What can you do?"}],
         stream=False,
@@ -244,14 +244,14 @@ async def test_vertex_agent_engine_non_streaming():
 @pytest.mark.asyncio
 async def test_vertex_agent_engine_streaming():
     """
-    Test streaming request to Vertex AI Agent Engine via litellm.acompletion.
+    Test streaming request to Vertex AI Agent Engine via dheera_ai.acompletion.
     
     Uses the Reasoning Engine resource ID to call a hosted agent with streaming.
     """
-    #litellm._turn_on_debug()
+    #dheera_ai._turn_on_debug()
 
-    # Call via litellm.acompletion with streaming
-    response = await litellm.acompletion(
+    # Call via dheera_ai.acompletion with streaming
+    response = await dheera_ai.acompletion(
         model=f"vertex_ai/agent_engine/{VERTEX_AGENT_RESOURCE_NAME}",
         messages=[{"role": "user", "content": "Hello! What can you do?"}],
         stream=True,

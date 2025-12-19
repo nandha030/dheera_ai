@@ -2,8 +2,8 @@ import os
 import pytest
 from unittest.mock import Mock, patch
 
-from litellm.llms.vertex_ai.vector_stores.transformation import VertexVectorStoreConfig
-from litellm.types.vector_stores import (
+from dheera_ai.llms.vertex_ai.vector_stores.transformation import VertexVectorStoreConfig
+from dheera_ai.types.vector_stores import (
     VectorStoreCreateResponse,
     VectorStoreSearchResponse,
     VectorStoreSearchResult,

@@ -2,11 +2,11 @@
 
 **Get API Key:** [https://www.perplexity.ai/settings/api](https://www.perplexity.ai/settings/api)
 
-## LiteLLM Python SDK
+## Dheera AI Python SDK
 
 ```python showLineNumbers title="Perplexity Search"
 import os
-from litellm import search
+from dheera_ai import search
 
 os.environ["PERPLEXITYAI_API_KEY"] = "pplx-..."
 
@@ -17,20 +17,20 @@ response = search(
 )
 ```
 
-## LiteLLM AI Gateway
+## Dheera AI AI Gateway
 
 ### 1. Setup config.yaml
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
 search_tools:
   - search_tool_name: perplexity-search
-    litellm_params:
+    dheera_ai_params:
       search_provider: perplexity
       api_key: os.environ/PERPLEXITYAI_API_KEY
 ```
@@ -38,7 +38,7 @@ search_tools:
 ### 2. Start the proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```

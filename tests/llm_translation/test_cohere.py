@@ -15,13 +15,13 @@ import json
 
 import pytest
 
-import litellm
-from litellm import RateLimitError, Timeout, completion, completion_cost, embedding
+import dheera_ai
+from dheera_ai import RateLimitError, Timeout, completion, completion_cost, embedding
 from unittest.mock import AsyncMock, patch
-from litellm import RateLimitError, Timeout, completion, completion_cost, embedding
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
+from dheera_ai import RateLimitError, Timeout, completion, completion_cost, embedding
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
 
-litellm.num_retries = 3
+dheera_ai.num_retries = 3
 
 
 @pytest.mark.parametrize("stream", [True, False])
@@ -29,14 +29,14 @@ litellm.num_retries = 3
 @pytest.mark.asyncio
 async def test_chat_completion_cohere_citations(stream):
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         messages = [
             {
                 "role": "user",
                 "content": "Which penguins are the tallest?",
             },
         ]
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="cohere_chat/v1/command-r",
             messages=messages,
             documents=[
@@ -59,14 +59,14 @@ async def test_chat_completion_cohere_citations(stream):
             assert citations_chunk
         else:
             assert response.citations is not None
-    except litellm.ServiceUnavailableError:
+    except dheera_ai.ServiceUnavailableError:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
 
 
 def test_completion_cohere_command_r_plus_function_call():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     tools = [
         {
             "type": "function",
@@ -107,7 +107,7 @@ def test_completion_cohere_command_r_plus_function_call():
         assert isinstance(
             response.choices[0].message.tool_calls[0].function.arguments, str
         )
-    except litellm.Timeout:
+    except dheera_ai.Timeout:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -117,7 +117,7 @@ def test_completion_cohere_command_r_plus_function_call():
 @pytest.mark.flaky(retries=6, delay=1)
 def test_completion_cohere():
     try:
-        # litellm.set_verbose=True
+        # dheera_ai.set_verbose=True
         messages = [
             {"role": "system", "content": "You're a good bot"},
             {"role": "assistant", "content": [{"text": "2", "type": "text"}]},
@@ -142,7 +142,7 @@ def test_completion_cohere():
 @pytest.mark.flaky(retries=3, delay=1)
 async def test_chat_completion_cohere(sync_mode):
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         messages = [
             {"role": "system", "content": "You're a good bot"},
             {
@@ -151,7 +151,7 @@ async def test_chat_completion_cohere(sync_mode):
             },
         ]
         if sync_mode is False:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="cohere_chat/v1/command-r",
                 messages=messages,
                 max_tokens=10,
@@ -171,7 +171,7 @@ async def test_chat_completion_cohere(sync_mode):
 @pytest.mark.parametrize("sync_mode", [False])
 async def test_chat_completion_cohere_stream(sync_mode):
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         messages = [
             {"role": "system", "content": "You're a good bot"},
             {
@@ -180,7 +180,7 @@ async def test_chat_completion_cohere_stream(sync_mode):
             },
         ]
         if sync_mode is False:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="cohere_chat/v1/command-r",
                 messages=messages,
                 max_tokens=10,
@@ -199,7 +199,7 @@ async def test_chat_completion_cohere_stream(sync_mode):
             print(response)
             for chunk in response:
                 print(chunk)
-    except litellm.APIConnectionError as e:
+    except dheera_ai.APIConnectionError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -239,9 +239,9 @@ async def test_cohere_request_body_with_allowed_params():
     }
 
     # Mock the AsyncHTTPHandler.post method at the module level
-    with patch("litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post", return_value=mock_response) as mock_post:
+    with patch("dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post", return_value=mock_response) as mock_post:
         try:
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="cohere/v1/command",
                 messages=[{"content": "what llm are you", "role": "user"}],
                 allowed_openai_params=["tools", "response_format", "reasoning_effort"],
@@ -266,7 +266,7 @@ async def test_cohere_request_body_with_allowed_params():
 
 
 def test_cohere_embedding_outout_dimensions():
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     response = embedding(model="cohere/embed-v4.0", input="Hello, world!", dimensions=512)
     print(f"response: {response}\n")
     assert len(response.data[0]["embedding"]) == 512
@@ -287,7 +287,7 @@ async def test_cohere_embed_v4_basic_text(sync_mode):
         if sync_mode:
             response = embedding(**data)
         else:
-            response = await litellm.aembedding(**data)
+            response = await dheera_ai.aembedding(**data)
         
         # Validate response structure
         assert response.model is not None
@@ -295,7 +295,7 @@ async def test_cohere_embed_v4_basic_text(sync_mode):
         assert response.data[0]['object'] == 'embedding'
         assert len(response.data[0]['embedding']) > 0
         assert response.usage.prompt_tokens > 0
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
         
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -316,11 +316,11 @@ async def test_cohere_embed_v4_with_dimensions(sync_mode):
         if sync_mode:
             response = embedding(**data)
         else:
-            response = await litellm.aembedding(**data)
+            response = await dheera_ai.aembedding(**data)
         
         # Validate dimension
         assert len(response.data[0]['embedding']) == 512
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
         
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -346,14 +346,14 @@ async def test_cohere_embed_v4_image_embedding(sync_mode):
         if sync_mode:
             response = embedding(**data)
         else:
-            response = await litellm.aembedding(**data)
+            response = await dheera_ai.aembedding(**data)
         
         # Validate response structure for image embedding
         assert response.model is not None
         assert len(response.data) == 1
         assert response.data[0]['object'] == 'embedding'
         assert len(response.data[0]['embedding']) > 0
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
         
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -364,7 +364,7 @@ async def test_cohere_embed_v4_image_embedding(sync_mode):
 async def test_cohere_embed_v4_input_types(input_type):
     """Test Cohere Embed v4 with different input types."""
     try:
-        response = await litellm.aembedding(
+        response = await dheera_ai.aembedding(
             model="cohere/embed-v4.0",
             input=[f"Test text for {input_type}"],
             input_type=input_type
@@ -374,7 +374,7 @@ async def test_cohere_embed_v4_input_types(input_type):
         assert len(response.data) == 1
         assert response.data[0]['object'] == 'embedding'
         assert len(response.data[0]['embedding']) > 0
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
         
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -395,7 +395,7 @@ def test_cohere_embed_v4_encoding_format():
         assert len(response.data[0]['embedding']) > 0
         # Validate that embeddings are floats
         assert all(isinstance(x, float) for x in response.data[0]['embedding'])
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
         
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -449,7 +449,7 @@ async def test_cohere_embed_v4_multiple_texts(sync_mode):
         if sync_mode:
             response = embedding(**data)
         else:
-            response = await litellm.aembedding(**data)
+            response = await dheera_ai.aembedding(**data)
         
         # Validate response structure
         assert response.model is not None
@@ -461,7 +461,7 @@ async def test_cohere_embed_v4_multiple_texts(sync_mode):
             assert len(data_item['embedding']) > 0
             assert all(isinstance(x, float) for x in data_item['embedding'])
         
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
         assert response.usage.prompt_tokens > 0
         
     except Exception as e:
@@ -485,7 +485,7 @@ def test_cohere_embed_v4_with_optional_params():
         assert response.data[0]['object'] == 'embedding'
         assert len(response.data[0]['embedding']) == 256  # Custom dimensions
         assert all(isinstance(x, float) for x in response.data[0]['embedding'])
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
         
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -499,7 +499,7 @@ def test_cohere_embed_v4_with_optional_params():
 async def test_cohere_v2_chat_completion(sync_mode):
     """Test basic Cohere v2 chat completion functionality."""
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         messages = [
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": "Hello, how are you?"}
@@ -512,7 +512,7 @@ async def test_cohere_v2_chat_completion(sync_mode):
                 max_tokens=50
             )
         else:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="cohere_chat/v2/command-a-03-2025",
                 messages=messages,
                 max_tokens=50
@@ -526,7 +526,7 @@ async def test_cohere_v2_chat_completion(sync_mode):
         assert response.usage.total_tokens > 0
         print(f"Cohere v2 response: {response}")
         
-    except litellm.ServiceUnavailableError:
+    except dheera_ai.ServiceUnavailableError:
         pass  # Skip if service is unavailable
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -538,12 +538,12 @@ async def test_cohere_v2_chat_completion(sync_mode):
 async def test_cohere_v2_streaming(stream):
     """Test Cohere v2 streaming functionality."""
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         messages = [
             {"role": "user", "content": "Tell me a short story about a robot."}
         ]
         
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="cohere_chat/v2/command-a-03-2025",
             messages=messages,
             max_tokens=100,
@@ -566,7 +566,7 @@ async def test_cohere_v2_streaming(stream):
             assert response.choices[0].message.content is not None
             print(f"Non-streaming response: {response.choices[0].message.content}")
             
-    except litellm.ServiceUnavailableError:
+    except dheera_ai.ServiceUnavailableError:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -575,7 +575,7 @@ async def test_cohere_v2_streaming(stream):
 def test_cohere_v2_tool_calling():
     """Test Cohere v2 tool calling functionality."""
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         tools = [
             {
                 "type": "function",
@@ -629,7 +629,7 @@ def test_cohere_v2_tool_calling():
             assert message.content is not None
             print(f"Regular response: {message.content}")
             
-    except litellm.ServiceUnavailableError:
+    except dheera_ai.ServiceUnavailableError:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -641,7 +641,7 @@ def test_cohere_v2_tool_calling():
 async def test_cohere_v2_annotations(stream):
     """Test Cohere v2 annotations functionality (replaces citations)."""
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         messages = [
             {"role": "user", "content": "What are the benefits of renewable energy?"}
         ]
@@ -661,7 +661,7 @@ async def test_cohere_v2_annotations(stream):
             }
         ]
         
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="cohere_chat/v2/command-a-03-2025",
             messages=messages,
             documents=documents,
@@ -712,7 +712,7 @@ async def test_cohere_v2_annotations(stream):
             # Ensure citations field is NOT present (removed backward compatibility)
             assert not hasattr(response, 'citations'), "Citations field should be removed - no backward compatibility"
                 
-    except litellm.ServiceUnavailableError:
+    except dheera_ai.ServiceUnavailableError:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -721,7 +721,7 @@ async def test_cohere_v2_annotations(stream):
 def test_cohere_v2_parameter_mapping():
     """Test Cohere v2 parameter mapping and validation."""
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         messages = [
             {"role": "user", "content": "Generate a creative story."}
         ]
@@ -746,7 +746,7 @@ def test_cohere_v2_parameter_mapping():
         assert response.usage is not None
         print(f"Parameter mapping test response: {response.choices[0].message.content}")
         
-    except litellm.ServiceUnavailableError:
+    except dheera_ai.ServiceUnavailableError:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -799,7 +799,7 @@ async def test_cohere_documents_options_in_request_body():
     }
 
     # Mock the AsyncHTTPHandler.post method
-    with patch("litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post", return_value=mock_response) as mock_post:
+    with patch("dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post", return_value=mock_response) as mock_post:
         try:
             # Test documents and citation_options parameters
             test_documents = [
@@ -816,7 +816,7 @@ async def test_cohere_documents_options_in_request_body():
                     }
                 }
             ]
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="cohere_chat/command-a-03-2025",
                 messages=[{"role": "user", "content": "Test message"}],
                 documents=test_documents,
@@ -840,7 +840,7 @@ async def test_cohere_documents_options_in_request_body():
 async def test_cohere_v2_conversation_history():
     """Test Cohere v2 with conversation history."""
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         messages = [
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": "What is 2+2?"},
@@ -848,7 +848,7 @@ async def test_cohere_v2_conversation_history():
             {"role": "user", "content": "What about 3+3?"}
         ]
         
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="cohere_chat/v2/command-a-03-2025",
             messages=messages,
             max_tokens=50
@@ -860,7 +860,7 @@ async def test_cohere_v2_conversation_history():
         assert response.choices[0].message.content is not None
         print(f"Conversation history response: {response.choices[0].message.content}")
         
-    except litellm.ServiceUnavailableError:
+    except dheera_ai.ServiceUnavailableError:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")

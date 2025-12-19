@@ -3,25 +3,25 @@ import os
 
 ALLOWED_FILES = [
     # local files
-    "../../litellm/__init__.py",
-    "../../litellm/llms/custom_httpx/http_handler.py",
-    "../../litellm/router_utils/client_initalization_utils.py",
-    "../../litellm/llms/custom_httpx/http_handler.py",
-    "../../litellm/llms/huggingface_restapi.py",
-    "../../litellm/llms/base.py",
-    "../../litellm/llms/custom_httpx/httpx_handler.py",
-    "../../litellm/llms/openai/common_utils.py",
-    "../../litellm/experimental_mcp_client/client.py",
+    "../../dheera_ai/__init__.py",
+    "../../dheera_ai/llms/custom_httpx/http_handler.py",
+    "../../dheera_ai/router_utils/client_initalization_utils.py",
+    "../../dheera_ai/llms/custom_httpx/http_handler.py",
+    "../../dheera_ai/llms/huggingface_restapi.py",
+    "../../dheera_ai/llms/base.py",
+    "../../dheera_ai/llms/custom_httpx/httpx_handler.py",
+    "../../dheera_ai/llms/openai/common_utils.py",
+    "../../dheera_ai/experimental_mcp_client/client.py",
     # when running on ci/cd
-    "./litellm/__init__.py",
-    "./litellm/llms/custom_httpx/http_handler.py",
-    "./litellm/router_utils/client_initalization_utils.py",
-    "./litellm/llms/custom_httpx/http_handler.py",
-    "./litellm/llms/huggingface_restapi.py",
-    "./litellm/llms/base.py",
-    "./litellm/llms/custom_httpx/httpx_handler.py",
-    "./litellm/llms/openai/common_utils.py",
-    "./litellm/experimental_mcp_client/client.py",
+    "./dheera_ai/__init__.py",
+    "./dheera_ai/llms/custom_httpx/http_handler.py",
+    "./dheera_ai/router_utils/client_initalization_utils.py",
+    "./dheera_ai/llms/custom_httpx/http_handler.py",
+    "./dheera_ai/llms/huggingface_restapi.py",
+    "./dheera_ai/llms/base.py",
+    "./dheera_ai/llms/custom_httpx/httpx_handler.py",
+    "./dheera_ai/llms/openai/common_utils.py",
+    "./dheera_ai/experimental_mcp_client/client.py",
 ]
 
 warning_msg = "this is a serious violation that can impact latency. Creating Async clients per request can add +500ms per request"
@@ -95,9 +95,9 @@ def test_no_async_http_handler_usage():
     """
     Test to ensure AsyncHttpHandler is not used anywhere in the codebase.
     """
-    base_dir = "./litellm"  # Adjust this path as needed
+    base_dir = "./dheera_ai"  # Adjust this path as needed
 
-    # base_dir = "../../litellm"  # LOCAL TESTING
+    # base_dir = "../../dheera_ai"  # LOCAL TESTING
     violations = scan_directory_for_async_handler(base_dir)
 
     if violations:

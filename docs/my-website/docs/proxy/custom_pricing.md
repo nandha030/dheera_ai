@@ -4,7 +4,7 @@ import Image from '@theme/IdealImage';
 
 ## Overview
 
-LiteLLM provides flexible cost tracking and pricing customization for all LLM providers:
+Dheera AI provides flexible cost tracking and pricing customization for all LLM providers:
 
 - **Custom Pricing** - Override default model costs or set pricing for custom models
 - **Cost Per Token** - Track costs based on input/output tokens (most common)
@@ -16,24 +16,24 @@ By default, the response cost is accessible in the logging object via `kwargs["r
 
 :::info
 
-LiteLLM already has pricing for 100+ models in our [model cost map](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json). 
+Dheera AI already has pricing for 100+ models in our [model cost map](https://github.com/BerriAI/dheera_ai/blob/main/model_prices_and_context_window.json). 
 
 :::
 
 ## Cost Per Second (e.g. Sagemaker)
 
-#### Usage with LiteLLM Proxy Server
+#### Usage with Dheera AI Proxy Server
 
 **Step 1: Add pricing to config.yaml**
 ```yaml
 model_list:
   - model_name: sagemaker-completion-model
-    litellm_params:
+    dheera_ai_params:
       model: sagemaker/berri-benchmarking-Llama-2-70b-chat-hf-4
     model_info:
       input_cost_per_second: 0.000420
   - model_name: sagemaker-embedding-model
-    litellm_params:
+    dheera_ai_params:
       model: sagemaker/berri-benchmarking-gpt-j-6b-fp16
     model_info:
       input_cost_per_second: 0.000420 
@@ -42,7 +42,7 @@ model_list:
 **Step 2: Start proxy**
 
 ```bash
-litellm /path/to/config.yaml
+dheera_ai /path/to/config.yaml
 ```
 
 **Step 3: View Spend Logs**
@@ -51,12 +51,12 @@ litellm /path/to/config.yaml
 
 ## Cost Per Token (e.g. Azure)
 
-#### Usage with LiteLLM Proxy Server
+#### Usage with Dheera AI Proxy Server
 
 ```yaml
 model_list:
   - model_name: azure-model
-    litellm_params:
+    dheera_ai_params:
       model: azure/<your_deployment_name>
       api_key: os.environ/AZURE_API_KEY
       api_base: os.environ/AZURE_API_BASE
@@ -70,7 +70,7 @@ model_list:
 
 Apply percentage-based discounts to specific providers (e.g., negotiated enterprise pricing).
 
-#### Usage with LiteLLM Proxy Server
+#### Usage with Dheera AI Proxy Server
 
 **Step 1: Add discount config to config.yaml**
 
@@ -86,7 +86,7 @@ cost_discount_config:
 **Step 2: Start proxy**
 
 ```bash
-litellm /path/to/config.yaml
+dheera_ai /path/to/config.yaml
 ```
 
 The discount will be automatically applied to all cost calculations for the configured providers.
@@ -99,13 +99,13 @@ The discount will be automatically applied to all cost calculations for the conf
 - Discounts only apply to the configured providers
 - Original cost, discount amount, and final cost are tracked in cost breakdown logs
 - Discount information is returned in response headers:
-  - `x-litellm-response-cost` - Final cost after discount
-  - `x-litellm-response-cost-original` - Cost before discount
-  - `x-litellm-response-cost-discount-amount` - Discount amount in USD
+  - `x-dheera_ai-response-cost` - Final cost after discount
+  - `x-dheera_ai-response-cost-original` - Cost before discount
+  - `x-dheera_ai-response-cost-discount-amount` - Discount amount in USD
 
 #### Supported Providers
 
-You can apply discounts to all LiteLLM supported providers. Common examples:
+You can apply discounts to all Dheera AI supported providers. Common examples:
 
 - `vertex_ai` - Google Vertex AI
 - `gemini` - Google Gemini
@@ -116,11 +116,11 @@ You can apply discounts to all LiteLLM supported providers. Common examples:
 - `cohere` - Cohere
 - `openrouter` - OpenRouter
 
-See the full list of providers in the [LlmProviders](https://github.com/BerriAI/litellm/blob/main/litellm/types/utils.py) enum.
+See the full list of providers in the [LlmProviders](https://github.com/BerriAI/dheera_ai/blob/main/dheera_ai/types/utils.py) enum.
 
 ## Override Model Cost Map
 
-You can override [our model cost map](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) with your own custom pricing for a mapped model.
+You can override [our model cost map](https://github.com/BerriAI/dheera_ai/blob/main/model_prices_and_context_window.json) with your own custom pricing for a mapped model.
 
 Just add a `model_info` key to your model in the config, and override the desired keys.
 
@@ -129,7 +129,7 @@ Example: Override Anthropic's model cost map for the `prod/claude-3-5-sonnet-202
 ```yaml
 model_list:
   - model_name: "prod/claude-3-5-sonnet-20241022"
-    litellm_params:
+    dheera_ai_params:
       model: "anthropic/claude-3-5-sonnet-20241022"
       api_key: os.environ/ANTHROPIC_PROD_API_KEY
     model_info:
@@ -155,21 +155,21 @@ There are other keys you can use to specify costs for different scenarios and mo
 - `input_cost_per_video_per_second_above_128k_tokens` - Video cost for large contexts
 - `input_cost_per_character` - Character-based pricing for some providers
 
-These keys evolve based on how new models handle multimodality. The latest version can be found at [https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json).
+These keys evolve based on how new models handle multimodality. The latest version can be found at [https://github.com/BerriAI/dheera_ai/blob/main/model_prices_and_context_window.json](https://github.com/BerriAI/dheera_ai/blob/main/model_prices_and_context_window.json).
 
 ## Set 'base_model' for Cost Tracking (e.g. Azure deployments)
 
 **Problem**: Azure returns `gpt-4` in the response when `azure/gpt-4-1106-preview` is used. This leads to inaccurate cost tracking
 
-**Solution** ✅ :  Set `base_model` on your config so litellm uses the correct model for calculating azure cost
+**Solution** ✅ :  Set `base_model` on your config so dheera_ai uses the correct model for calculating azure cost
 
-Get the base model name from [here](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json)
+Get the base model name from [here](https://github.com/BerriAI/dheera_ai/blob/main/model_prices_and_context_window.json)
 
 Example config with `base_model`
 ```yaml
 model_list:
   - model_name: azure-gpt-3.5
-    litellm_params:
+    dheera_ai_params:
       model: azure/chatgpt-v-2
       api_base: os.environ/AZURE_API_BASE
       api_key: os.environ/AZURE_API_KEY
@@ -183,16 +183,16 @@ model_list:
 
 If you're custom pricing is not being used or you're seeing errors, please check the following:
 
-1. Run the proxy with `LITELLM_LOG="DEBUG"` or the `--detailed_debug` cli flag
+1. Run the proxy with `DHEERA_AI_LOG="DEBUG"` or the `--detailed_debug` cli flag
 
 ```bash
-litellm --config /path/to/config.yaml --detailed_debug
+dheera_ai --config /path/to/config.yaml --detailed_debug
 ```
 
 2. Check logs for this line: 
 
 ```
-LiteLLM:DEBUG: utils.py:263 - litellm.acompletion
+Dheera AI:DEBUG: utils.py:263 - dheera_ai.acompletion
 ```
 
 3. Check if 'input_cost_per_token' and 'output_cost_per_token' are top-level keys in the acompletion function. 
@@ -205,6 +205,6 @@ acompletion(
 )
 ```
 
-If these keys are not present, LiteLLM will not use your custom pricing. 
+If these keys are not present, Dheera AI will not use your custom pricing. 
 
-If the problem persists, please file an issue on [GitHub](https://github.com/BerriAI/litellm/issues). 
+If the problem persists, please file an issue on [GitHub](https://github.com/BerriAI/dheera_ai/issues). 

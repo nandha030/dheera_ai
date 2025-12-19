@@ -6,7 +6,7 @@ Anthropic, OpenAI, Qwen, xAI, Gemini and most of Open soured LLMs are Supported 
 
 | Property | Details |
 |-------|-------|
-| Description | Clarifai is a powerful AI platform that provides access to a wide range of LLMs through a unified API. LiteLLM enables seamless integration with Clarifai's models using an OpenAI-compatible interface. |
+| Description | Clarifai is a powerful AI platform that provides access to a wide range of LLMs through a unified API. Dheera AI enables seamless integration with Clarifai's models using an OpenAI-compatible interface. |
 | Provider Doc | [Clarifai ↗](https://docs.clarifai.com/) |
 |OpenAI compatible Endpoint for Provider | `https://api.clarifai.com/v2/ext/openai/v1` |
 | Supported Endpoints | `/chat/completions` |
@@ -14,7 +14,7 @@ Anthropic, OpenAI, Qwen, xAI, Gemini and most of Open soured LLMs are Supported 
 ## Pre-Requisites
 
 ```bash
-pip install litellm
+pip install dheera_ai
 ```
 
 ## Required Environment Variables
@@ -28,7 +28,7 @@ os.environ["CLARIFAI_PAT"] = "CLARIFAI_API_KEY"  # CLARIFAI_PAT
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["CLARIFAI_API_KEY"] = ""
 
@@ -39,12 +39,12 @@ response = completion(
 ```
 ## Streaming Support
 
-LiteLLM supports streaming responses with Clarifai models:
+Dheera AI supports streaming responses with Clarifai models:
 
 ```python
-import litellm
+import dheera_ai
 
-for chunk in litellm.completion(
+for chunk in dheera_ai.completion(
     model="clarifai/openai.chat-completion.gpt-oss-20b",
     api_key="CLARIFAI_API_KEY",
     messages=[
@@ -57,10 +57,10 @@ for chunk in litellm.completion(
 
 ## Tool Calling (Function Calling)
 
-Clarifai models accessed via LiteLLM support function calling:
+Clarifai models accessed via Dheera AI support function calling:
 
 ```python
-import litellm
+import dheera_ai
 
 tools = [{
     "type": "function",
@@ -82,7 +82,7 @@ tools = [{
   }
 }]
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="clarifai/openai.chat-completion.gpt-oss-20b",
     api_key="CLARIFAI_API_KEY",
     messages=[{"role": "user", "content": "What is the weather in Paris today?"}],
@@ -163,9 +163,9 @@ liteLLM supports all models on [Clarifai community](https://clarifai.com/explore
 - [DeepSeek-R1-0528-Qwen3-8B](https://clarifai.com/deepseek-ai/deepseek-chat/models/DeepSeek-R1-0528-Qwen3-8B)
 - Many more...
 
-## Usage with LiteLLM Proxy
+## Usage with Dheera AI Proxy
 
-Here's how to call Clarifai with the LiteLLM Proxy Server
+Here's how to call Clarifai with the Dheera AI Proxy Server
 
 ### 1. Save key in your environment
 
@@ -181,13 +181,13 @@ export CLARIFAI_PAT="CLARIFAI_API_KEY"
 ```yaml
 model_list:
   - model_name: clarifai-model
-    litellm_params:
+    dheera_ai_params:
       model: clarifai/openai.chat-completion.gpt-oss-20b
       api_key: os.environ/CLARIFAI_PAT
 ```
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # Server running on http://0.0.0.0:4000
 ```
@@ -251,7 +251,7 @@ print(response)
 
 | Question | Answer |
 |----------|---------|
-| Can I use all Clarifai models with LiteLLM? | Most chat-completion models are supported. Use the Clarifai model URL as the `model`. |
+| Can I use all Clarifai models with Dheera AI? | Most chat-completion models are supported. Use the Clarifai model URL as the `model`. |
 | Do I need a separate Clarifai PAT? | Yes, you must use a valid Clarifai Personal Access Token. |
 | Is tool calling supported? | Yes, provided the underlying Clarifai model supports function/tool calling. |
 | How is billing handled? | Clarifai usage is billed independently via Clarifai. |
@@ -259,5 +259,5 @@ print(response)
 ## Additional Resources
 
 - [Clarifai Documentation](https://docs.clarifai.com/)
-- [LiteLLM GitHub](https://github.com/BerriAI/litellm)
+- [Dheera AI GitHub](https://github.com/BerriAI/dheera_ai)
 - [Clarifai Runners Examples](https://github.com/Clarifai/runners-examples)

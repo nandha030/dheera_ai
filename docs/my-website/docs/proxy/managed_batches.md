@@ -1,10 +1,10 @@
-# [BETA] LiteLLM Managed Files with Batches
+# [BETA] Dheera AI Managed Files with Batches
 
 :::info
 
-This is a free LiteLLM Enterprise feature.
+This is a free Dheera AI Enterprise feature.
 
-Available via the `litellm[proxy]` package or any `litellm` docker image.
+Available via the `dheera_ai[proxy]` package or any `dheera_ai` docker image.
 
 :::
 
@@ -32,17 +32,17 @@ Here's how to give developers access to your Batch models.
 
 - specify `mode: batch` for each model: Allows developers to know this is a batch model.
 
-```yaml showLineNumbers title="litellm_config.yaml"
+```yaml showLineNumbers title="dheera_ai_config.yaml"
 model_list:
   - model_name: "gpt-4o-batch"
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-4o-mini-general-deployment
       api_base: os.environ/AZURE_API_BASE
       api_key: os.environ/AZURE_API_KEY
     model_info: 
       mode: batch # 👈 SPECIFY MODE AS BATCH, to tell user this is a batch model
   - model_name: "gpt-4o-batch"
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-4o-mini-special-deployment
       api_base: os.environ/AZURE_API_BASE_2
       api_key: os.environ/AZURE_API_KEY_2
@@ -65,7 +65,7 @@ You can now use the virtual key to access the batch models (See Developer flow).
 
 ## (Developer) Usage
 
-Here's how to create a LiteLLM managed file and execute Batch CRUD operations with the file. 
+Here's how to create a Dheera AI managed file and execute Batch CRUD operations with the file. 
 
 ### 1. Create request.jsonl 
 
@@ -80,11 +80,11 @@ Here's how to create a LiteLLM managed file and execute Batch CRUD operations wi
 
 Expectation:
 
-- LiteLLM translates this to the azure deployment specific value (e.g. `gpt-4o-mini-general-deployment`)
+- Dheera AI translates this to the azure deployment specific value (e.g. `gpt-4o-mini-general-deployment`)
 
 ### 2. Upload File 
 
-Specify `target_model_names: "<model-name>"` to enable LiteLLM managed files and request validation.
+Specify `target_model_names: "<model-name>"` to enable Dheera AI managed files and request validation.
 
 model-name should be the same as the model-name in the request.jsonl
 
@@ -168,11 +168,11 @@ from pathlib import Path
 from openai import OpenAI
 
 """
-litellm yaml: 
+dheera_ai yaml: 
 
 model_list:
     - model_name: gpt-4o-batch
-      litellm_params:
+      dheera_ai_params:
         model: azure/gpt-4o-my-special-deployment
         api_key: ..
         api_base: .. 

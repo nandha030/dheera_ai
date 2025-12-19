@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 import Image from '@theme/IdealImage';
 
 
-# LiteLLM Content Filter
+# Dheera AI Content Filter
 
 **Built-in guardrail** for detecting and filtering sensitive information using regex patterns and keyword matching. No external dependencies required.
 
@@ -11,8 +11,8 @@ import Image from '@theme/IdealImage';
 
 | Property | Details |
 |----------|---------|
-| Description | On-device guardrail for detecting and filtering sensitive information using regex patterns and keyword matching. Built into LiteLLM with no external dependencies. |
-| Guardrail Name | `litellm_content_filter` |
+| Description | On-device guardrail for detecting and filtering sensitive information using regex patterns and keyword matching. Built into Dheera AI with no external dependencies. |
+| Guardrail Name | `dheera_ai_content_filter` |
 | Detection Methods | Prebuilt regex patterns, custom regex, keyword matching |
 | Actions | `BLOCK` (reject request), `MASK` (redact content) |
 | Supported Modes | `pre_call`, `post_call`, `during_call` (streaming) |
@@ -20,13 +20,13 @@ import Image from '@theme/IdealImage';
 
 ## Quick Start
 
-## LiteLLM UI
+## Dheera AI UI
 
-### Step 1: Select LiteLLM Content Filter
+### Step 1: Select Dheera AI Content Filter
 
-Click "Add New Guardrail" and select "LiteLLM Content Filter" as your guardrail provider.
+Click "Add New Guardrail" and select "Dheera AI Content Filter" as your guardrail provider.
 
-<Image img={require('../../../img/create_guard.gif')} alt="Select LiteLLM Content Filter" />
+<Image img={require('../../../img/create_guard.gif')} alt="Select Dheera AI Content Filter" />
 
 ### Step 2: Configure Pattern Detection
 
@@ -52,21 +52,21 @@ Test examples:
 
 <Image img={require('../../../img/add_guard5.gif')} alt="Test guardrail in playground" />
 
-## LiteLLM Config.yaml Setup
+## Dheera AI Config.yaml Setup
 
 ### Step 1: Define Guardrails in config.yaml
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "content-filter-pre"
-    litellm_params:
-      guardrail: litellm_content_filter
+    dheera_ai_params:
+      guardrail: dheera_ai_content_filter
       mode: "pre_call"
       
       # Prebuilt patterns for common PII
@@ -86,10 +86,10 @@ guardrails:
           description: "Sensitive internal information"
 ```
 
-### Step 2: Start LiteLLM Gateway
+### Step 2: Start Dheera AI Gateway
 
 ```shell
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 ### Step 3: Test Request
@@ -182,8 +182,8 @@ Contact me at [EMAIL_REDACTED]
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "pii-filter"
-    litellm_params:
-      guardrail: litellm_content_filter
+    dheera_ai_params:
+      guardrail: dheera_ai_content_filter
       mode: "pre_call"
       patterns:
         - pattern_type: "prebuilt"
@@ -206,8 +206,8 @@ Define your own regex patterns for domain-specific sensitive data:
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "custom-patterns"
-    litellm_params:
-      guardrail: litellm_content_filter
+    dheera_ai_params:
+      guardrail: dheera_ai_content_filter
       mode: "pre_call"
       patterns:
         # Custom employee ID format
@@ -230,8 +230,8 @@ Block or mask specific keywords:
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "keyword-filter"
-    litellm_params:
-      guardrail: litellm_content_filter
+    dheera_ai_params:
+      guardrail: dheera_ai_content_filter
       mode: "pre_call"
       blocked_words:
         - keyword: "confidential"
@@ -253,8 +253,8 @@ For large keyword lists, use a YAML file:
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "keyword-file-filter"
-    litellm_params:
-      guardrail: litellm_content_filter
+    dheera_ai_params:
+      guardrail: dheera_ai_content_filter
       mode: "pre_call"
       blocked_words_file: "/path/to/sensitive_keywords.yaml"
 ```
@@ -281,8 +281,8 @@ Content filter works with streaming responses by checking each chunk:
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "streaming-filter"
-    litellm_params:
-      guardrail: litellm_content_filter
+    dheera_ai_params:
+      guardrail: dheera_ai_content_filter
       mode: "during_call"  # Check each streaming chunk
       patterns:
         - pattern_type: "prebuilt"
@@ -335,8 +335,8 @@ Use `pattern_redaction_format` and `keyword_redaction_tag` to change the redacti
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "custom-redaction"
-    litellm_params:
-      guardrail: litellm_content_filter
+    dheera_ai_params:
+      guardrail: dheera_ai_content_filter
       mode: "pre_call"
       pattern_redaction_format: "***{pattern_name}***"  # Use {pattern_name} placeholder
       keyword_redaction_tag: "***REDACTED***"

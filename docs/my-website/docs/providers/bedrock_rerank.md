@@ -24,7 +24,7 @@ Use Bedrock's Rerank API in the Cohere `/rerank` format.
 <TabItem label="SDK" value="sdk">
 
 ```python
-from litellm import rerank
+from dheera_ai import rerank
 import os 
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
@@ -49,7 +49,7 @@ print(response)
 ```yaml
 model_list:
     - model_name: bedrock-rerank
-      litellm_params:
+      dheera_ai_params:
         model: bedrock/arn:aws:bedrock:us-west-2::foundation-model/amazon.rerank-v1:0
         aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
         aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -59,7 +59,7 @@ model_list:
 ### 2. Start proxy server
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```

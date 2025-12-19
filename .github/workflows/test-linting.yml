@@ -1,4 +1,4 @@
-name: LiteLLM Linting
+name: Dheera AI Linting
 
 on:
   pull_request:
@@ -36,7 +36,7 @@ jobs:
 
     - name: Run Black formatting
       run: |
-        cd litellm
+        cd dheera_ai
         poetry run black .
         cd ..
 
@@ -47,11 +47,11 @@ jobs:
         echo "Last 3 commits:"
         git log --oneline -3
         echo "File content around line 43:"
-        head -50 litellm/litellm_core_utils/custom_logger_registry.py | tail -10
+        head -50 dheera_ai/dheera_ai_core_utils/custom_logger_registry.py | tail -10
         
     - name: Run Ruff linting
       run: |
-        cd litellm
+        cd dheera_ai
         poetry run ruff check .
         cd ..
 
@@ -61,16 +61,16 @@ jobs:
 
     - name: Run MyPy type checking
       run: |
-        cd litellm
+        cd dheera_ai
         poetry run mypy . 
         cd ..
 
     - name: Check for circular imports
       run: |
-        cd litellm
+        cd dheera_ai
         poetry run python ../tests/documentation_tests/test_circular_imports.py
         cd ..
 
     - name: Check import safety
       run: |
-        poetry run python -c "from litellm import *" || (echo '🚨 import failed, this means you introduced unprotected imports! 🚨'; exit 1)
+        poetry run python -c "from dheera_ai import *" || (echo '🚨 import failed, this means you introduced unprotected imports! 🚨'; exit 1)

@@ -45,11 +45,11 @@
 import pytest
 import asyncio
 import aiohttp, openai
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import json
-from litellm.proxy._types import ProxyErrorTypes
+from dheera_ai.proxy._types import ProxyErrorTypes
 from typing import Optional
-LITELLM_MASTER_KEY = "sk-1234"
+DHEERA_AI_MASTER_KEY = "sk-1234"
 
 async def create_team(session, key, member_permissions=None):
     url = "http://0.0.0.0:4000/team/new"
@@ -231,7 +231,7 @@ async def test_default_member_permissions():
     Test default permissions for members in a team - allowed to call /key/info and /key/health
     """
     async with aiohttp.ClientSession() as session:
-        master_key = LITELLM_MASTER_KEY
+        master_key = DHEERA_AI_MASTER_KEY
         
         # Create a team
         team_data = await create_team(
@@ -337,7 +337,7 @@ async def test_edit_delete_permissions():
     Test permissions - members allowed to edit, delete keys but not allowed to create keys
     """
     async with aiohttp.ClientSession() as session:
-        master_key = LITELLM_MASTER_KEY
+        master_key = DHEERA_AI_MASTER_KEY
         
         # Create a team with specific member permissions
         team_data = await create_team(
@@ -410,7 +410,7 @@ async def test_create_permissions():
     Test permissions - members allowed to create keys but not allowed to edit, delete keys
     """
     async with aiohttp.ClientSession() as session:
-        master_key = LITELLM_MASTER_KEY
+        master_key = DHEERA_AI_MASTER_KEY
         
         # Create a team with specific member permissions
         team_data = await create_team(

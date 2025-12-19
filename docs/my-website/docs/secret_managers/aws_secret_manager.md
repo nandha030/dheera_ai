@@ -7,9 +7,9 @@ import TabItem from '@theme/TabItem';
 
 ✨ **This is an Enterprise Feature**
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+[Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
@@ -36,10 +36,10 @@ os.environ["AWS_REGION_NAME"] = "" # us-east-1, us-east-2, us-west-1, us-west-2
 
 ```yaml
 general_settings:
-  master_key: os.environ/litellm_master_key 
+  master_key: os.environ/dheera_ai_master_key 
   key_management_system: "aws_secret_manager" # 👈 KEY CHANGE
   key_management_settings: 
-    hosted_keys: ["litellm_master_key"] # 👈 Specify which env keys you stored on AWS 
+    hosted_keys: ["dheera_ai_master_key"] # 👈 Specify which env keys you stored on AWS 
 
 ```
 
@@ -54,9 +54,9 @@ general_settings:
   key_management_system: "aws_secret_manager" # 👈 KEY CHANGE
   key_management_settings: 
     store_virtual_keys: true # OPTIONAL. Defaults to False, when True will store virtual keys in secret manager
-    prefix_for_stored_virtual_keys: "litellm/" # OPTIONAL. If set, this prefix will be used for stored virtual keys in the secret manager
+    prefix_for_stored_virtual_keys: "dheera_ai/" # OPTIONAL. If set, this prefix will be used for stored virtual keys in the secret manager
     access_mode: "write_only" # Literal["read_only", "write_only", "read_and_write"]
-    description: "litellm virtual key" # OPTIONAL, if set will set this as the description for all virtual keys
+    description: "dheera_ai virtual key" # OPTIONAL, if set will set this as the description for all virtual keys
     tags: # OPTIONAL, if set will set this as the tags for all virtual keys
       Environment: "Prod"
       Owner: "AI Platform team"
@@ -66,13 +66,13 @@ general_settings:
 
 ```yaml
 general_settings:
-  master_key: os.environ/litellm_master_key 
+  master_key: os.environ/dheera_ai_master_key 
   key_management_system: "aws_secret_manager" # 👈 KEY CHANGE
   key_management_settings: 
     store_virtual_keys: true # OPTIONAL. Defaults to False, when True will store virtual keys in secret manager
-    prefix_for_stored_virtual_keys: "litellm/" # OPTIONAL. If set, this prefix will be used for stored virtual keys in the secret manager
+    prefix_for_stored_virtual_keys: "dheera_ai/" # OPTIONAL. If set, this prefix will be used for stored virtual keys in the secret manager
     access_mode: "read_and_write" # Literal["read_only", "write_only", "read_and_write"]
-    hosted_keys: ["litellm_master_key"] # OPTIONAL. Specify which env keys you stored on AWS
+    hosted_keys: ["dheera_ai_master_key"] # OPTIONAL. Specify which env keys you stored on AWS
 ```
 
 </TabItem>
@@ -81,7 +81,7 @@ general_settings:
 3. Run proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 ## Using K/V pairs in 1 AWS Secret
@@ -96,10 +96,10 @@ general_settings:
       "OPENAI_API_KEY_MODEL_1",
       "OPENAI_API_KEY_MODEL_2",
     ]
-    primary_secret_name: "litellm_secrets" # 👈 Read multiple keys from one JSON secret
+    primary_secret_name: "dheera_ai_secrets" # 👈 Read multiple keys from one JSON secret
 ```
 
-The `primary_secret_name` allows you to read multiple keys from a single AWS Secret as a JSON object. For example, the "litellm_secrets" would contain:
+The `primary_secret_name` allows you to read multiple keys from a single AWS Secret as a JSON object. For example, the "dheera_ai_secrets" would contain:
 
 ```json
 {
@@ -122,8 +122,8 @@ general_settings:
   key_management_settings:
     store_virtual_keys: true
     aws_region_name: "us-east-1"
-    aws_role_name: "arn:aws:iam::123456789012:role/LiteLLMSecretManagerRole"
-    aws_session_name: "litellm-session"
+    aws_role_name: "arn:aws:iam::123456789012:role/Dheera AISecretManagerRole"
+    aws_session_name: "dheera_ai-session"
 ```
 
 ### Cross-Account Access
@@ -146,7 +146,7 @@ general_settings:
   key_management_settings:
     store_virtual_keys: true
     aws_region_name: "us-east-1"
-    aws_role_name: "arn:aws:iam::123456789012:role/LiteLLMServiceAccountRole"
+    aws_role_name: "arn:aws:iam::123456789012:role/Dheera AIServiceAccountRole"
     aws_web_identity_token: "os.environ/AWS_WEB_IDENTITY_TOKEN_FILE"
 ```
 

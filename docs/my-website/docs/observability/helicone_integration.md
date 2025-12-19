@@ -6,7 +6,7 @@ import TabItem from '@theme/TabItem';
 :::tip
 
 This is community maintained. Please make an issue if you run into a bug:
-https://github.com/BerriAI/litellm
+https://github.com/BerriAI/dheera_ai
 
 :::
 
@@ -21,7 +21,7 @@ Use just 1 line of code to instantly log your responses **across all providers**
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 ## Set env variables
 os.environ["HELICONE_API_KEY"] = "your-helicone-key"
@@ -36,19 +36,19 @@ print(response)
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
-Add Helicone to your LiteLLM proxy configuration:
+Add Helicone to your Dheera AI proxy configuration:
 
 ```yaml title="config.yaml"
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
 # Add Helicone callback
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["helicone"]
 
 # Set Helicone API key
@@ -58,7 +58,7 @@ environment_variables:
 
 Start the proxy:
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 </TabItem>
@@ -66,7 +66,7 @@ litellm --config config.yaml
 
 ## Integration Methods
 
-There are two main approaches to integrate Helicone with LiteLLM:
+There are two main approaches to integrate Helicone with Dheera AI:
 
 1. **As a Provider**: Use Helicone to log requests for [all models supported ](../providers/helicone)
 2. **Callbacks**: Log to Helicone while using any provider
@@ -95,8 +95,8 @@ Helicone's AI Gateway provides [advanced functionality](https://docs.helicone.ai
 
   ```python
   import os
-  import litellm
-  from litellm import completion
+  import dheera_ai
+  from dheera_ai import completion
 
   os.environ["HELICONE_API_KEY"] = ""  # your Helicone API key
 
@@ -116,7 +116,7 @@ Helicone's AI Gateway provides [advanced functionality](https://docs.helicone.ai
   You can add custom metadata and properties to your requests using Helicone headers. Here are some examples:
 
   ```python
-  litellm.metadata = {
+  dheera_ai.metadata = {
       "Helicone-User-Id": "user-abc",  # Specify the user making the request
       "Helicone-Property-App": "web",  # Custom property to add additional information
       "Helicone-Property-Custom": "any-value",  # Add any custom property
@@ -142,7 +142,7 @@ Helicone's AI Gateway provides [advanced functionality](https://docs.helicone.ai
   Enable caching and set up rate limiting policies:
 
   ```python
-  litellm.metadata = {
+  dheera_ai.metadata = {
       "Helicone-Cache-Enabled": "true",  # Enable caching of responses
       "Cache-Control": "max-age=3600",  # Set cache limit to 1 hour
       "Helicone-RateLimit-Policy": "100;w=3600;s=user",  # Set rate limit policy
@@ -161,8 +161,8 @@ Log requests to Helicone while using any LLM provider directly.
 
   ```python
   import os
-  import litellm
-  from litellm import completion
+  import dheera_ai
+  from dheera_ai import completion
 
   ## Set env variables
   os.environ["HELICONE_API_KEY"] = "your-helicone-key"
@@ -170,7 +170,7 @@ Log requests to Helicone while using any LLM provider directly.
   # os.environ["HELICONE_API_BASE"] = "" # [OPTIONAL] defaults to `https://api.helicone.ai`
 
   # Set callbacks
-  litellm.success_callback = ["helicone"]
+  dheera_ai.success_callback = ["helicone"]
 
   # OpenAI call
   response = completion(
@@ -182,21 +182,21 @@ Log requests to Helicone while using any LLM provider directly.
   ```
 
   </TabItem>
-  <TabItem value="proxy" label="LiteLLM Proxy">
+  <TabItem value="proxy" label="Dheera AI Proxy">
 
   ```yaml title="config.yaml"
   model_list:
     - model_name: gpt-4
-      litellm_params:
+      dheera_ai_params:
         model: gpt-4
         api_key: os.environ/OPENAI_API_KEY
     - model_name: claude-3
-      litellm_params:
+      dheera_ai_params:
         model: anthropic/claude-3-sonnet-20240229
         api_key: os.environ/ANTHROPIC_API_KEY
 
   # Add Helicone logging
-  litellm_settings:
+  dheera_ai_settings:
     success_callback: ["helicone"]
 
   # Environment variables
@@ -208,7 +208,7 @@ Log requests to Helicone while using any LLM provider directly.
 
   Start the proxy:
   ```bash
-  litellm --config config.yaml
+  dheera_ai --config config.yaml
   ```
 
   Make requests to your proxy:
@@ -238,8 +238,8 @@ Track multi-step and agentic LLM interactions using session IDs and paths:
 
   ```python
   import os
-  import litellm
-  from litellm import completion
+  import dheera_ai
+  from dheera_ai import completion
 
   os.environ["HELICONE_API_KEY"] = ""  # your Helicone API key
 
@@ -258,7 +258,7 @@ Track multi-step and agentic LLM interactions using session IDs and paths:
   ```
 
   </TabItem>
-  <TabItem value="proxy" label="LiteLLM Proxy">
+  <TabItem value="proxy" label="Dheera AI Proxy">
 
   ```python
   import openai
@@ -301,33 +301,33 @@ Track multi-step and agentic LLM interactions using session IDs and paths:
   <TabItem value="sdk" label="Python SDK">
 
   ```python
-  import litellm
+  import dheera_ai
 
-  litellm.api_base = "https://ai-gateway.helicone.ai/"
-  litellm.metadata = {
+  dheera_ai.api_base = "https://ai-gateway.helicone.ai/"
+  dheera_ai.metadata = {
       "Helicone-Retry-Enabled": "true",
       "helicone-retry-num": "3",
       "helicone-retry-factor": "2",
   }
 
-  response = litellm.completion(
+  response = dheera_ai.completion(
       model="helicone/gpt-4o-mini/openai,claude-3-5-sonnet-20241022/anthropic", # Try OpenAI first, then fallback to Anthropic, then continue with other models
       messages=[{"role": "user", "content": "Hello"}]
   )
   ```
 
   </TabItem>
-  <TabItem value="proxy" label="LiteLLM Proxy">
+  <TabItem value="proxy" label="Dheera AI Proxy">
 
   ```yaml title="config.yaml"
   model_list:
     - model_name: gpt-4
-      litellm_params:
+      dheera_ai_params:
         model: gpt-4
         api_key: os.environ/OPENAI_API_KEY
         api_base: "https://oai.hconeai.com/v1"
 
-  default_litellm_params:
+  default_dheera_ai_params:
     headers:
       Helicone-Auth: "Bearer ${HELICONE_API_KEY}"
       Helicone-Retry-Enabled: "true"
@@ -344,4 +344,4 @@ Track multi-step and agentic LLM interactions using session IDs and paths:
 </Tabs>
 
 > **Supported Headers** - For a full list of supported Helicone headers and their descriptions, please refer to the [Helicone documentation](https://docs.helicone.ai/features/advanced-usage/custom-properties).
-> By utilizing these headers and metadata options, you can gain deeper insights into your LLM usage, optimize performance, and better manage your AI workflows with Helicone and LiteLLM.
+> By utilizing these headers and metadata options, you can gain deeper insights into your LLM usage, optimize performance, and better manage your AI workflows with Helicone and Dheera AI.

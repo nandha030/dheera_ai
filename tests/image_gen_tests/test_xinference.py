@@ -10,8 +10,8 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm.types.utils import ImageObject
+import dheera_ai
+from dheera_ai.types.utils import ImageObject
 
 
 @pytest.mark.asyncio
@@ -50,8 +50,8 @@ async def test_xinference_image_generation():
     mock_client.images.generate.side_effect = capture_generate_call
     
     # Mock the _get_openai_client method to return our mock client
-    with patch.object(litellm.main.openai_chat_completions, '_get_openai_client', return_value=mock_client):
-        response = await litellm.aimage_generation(
+    with patch.object(dheera_ai.main.openai_chat_completions, '_get_openai_client', return_value=mock_client):
+        response = await dheera_ai.aimage_generation(
             model="xinference/stabilityai/stable-diffusion-3.5-large",
             prompt="A beautiful sunset over a calm ocean",
             api_base="http://mock.image.generation.api",
@@ -117,8 +117,8 @@ async def test_xinference_image_generation_with_response_format():
     mock_client.images.generate.side_effect = capture_generate_call
     
     # Mock the _get_openai_client method to return our mock client
-    with patch.object(litellm.main.openai_chat_completions, '_get_openai_client', return_value=mock_client):
-        response = await litellm.aimage_generation(
+    with patch.object(dheera_ai.main.openai_chat_completions, '_get_openai_client', return_value=mock_client):
+        response = await dheera_ai.aimage_generation(
             model="xinference/stabilityai/stable-diffusion-3.5-large",
             api_base="http://mock.image.generation.api",
             prompt="A beautiful sunset over a calm ocean",

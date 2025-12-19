@@ -14,18 +14,18 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-import litellm
-from litellm import completion
-from litellm._logging import verbose_logger
-from litellm.integrations.datadog.datadog import *
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai._logging import verbose_logger
+from dheera_ai.integrations.datadog.datadog import *
 from datetime import datetime, timedelta
-from litellm.types.utils import (
+from dheera_ai.types.utils import (
     StandardLoggingPayload,
     StandardLoggingModelInformation,
     StandardLoggingMetadata,
     StandardLoggingHiddenParams,
 )
-from litellm.integrations.azure_storage.azure_storage import AzureBlobStorageLogger
+from dheera_ai.integrations.azure_storage.azure_storage import AzureBlobStorageLogger
 
 verbose_logger.setLevel(logging.DEBUG)
 
@@ -33,9 +33,9 @@ verbose_logger.setLevel(logging.DEBUG)
 @pytest.mark.asyncio
 async def test_azure_blob_storage():
     azure_storage_logger = AzureBlobStorageLogger(flush_interval=1)
-    litellm.callbacks = [azure_storage_logger]
+    dheera_ai.callbacks = [azure_storage_logger]
 
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-4o",
         messages=[{"role": "user", "content": "Hello, world!"}],
     )

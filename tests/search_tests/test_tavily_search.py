@@ -10,7 +10,7 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )
 
-import litellm
+import dheera_ai
 
 
 class TestTavilySearch:
@@ -45,11 +45,11 @@ class TestTavilySearch:
         }
         
         # Mock the httpx AsyncClient post method
-        with patch("litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post", new_callable=AsyncMock) as mock_post:
+        with patch("dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post", new_callable=AsyncMock) as mock_post:
             mock_post.return_value = mock_response
             
             # Make the search call
-            response = await litellm.asearch(
+            response = await dheera_ai.asearch(
                 query="latest developments in AI",
                 search_provider="tavily",
                 max_results=5

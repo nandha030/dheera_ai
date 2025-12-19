@@ -4,11 +4,11 @@ import TabItem from '@theme/TabItem';
 
 # Auto Routing
 
-LiteLLM can auto select the best model for a request based on rules you define.
+Dheera AI can auto select the best model for a request based on rules you define.
 
 <Image alt="Auto Routing" img={require('../../img/auto_router.png')} style={{ borderRadius: '8px', marginBottom: '1em', maxWidth: '100%' }} />
 
-## LiteLLM Python SDK
+## Dheera AI Python SDK
 
 Auto routing allows you to define routing rules that automatically select the best model for a request based on the input content. This is useful for directing different types of queries to specialized models.
 
@@ -22,9 +22,9 @@ Auto routing allows you to define routing rules that automatically select the be
     "encoder_name": "text-embedding-3-large",
     "routes": [
         {
-            "name": "litellm-gpt-4.1",
+            "name": "dheera_ai-gpt-4.1",
             "utterances": [
-                "litellm is great"
+                "dheera_ai is great"
             ],
             "description": "positive affirmation",
             "function_schemas": null,
@@ -33,7 +33,7 @@ Auto routing allows you to define routing rules that automatically select the be
             "metadata": {}
         },
         {
-            "name": "litellm-claude-35",
+            "name": "dheera_ai-claude-35",
             "utterances": [
                 "how to code a program in [language]"
             ],
@@ -50,7 +50,7 @@ Auto routing allows you to define routing rules that automatically select the be
 2. **Configure the Router with auto routing models**:
 
 ```python
-from litellm import Router
+from dheera_ai import Router
 import os
 
 router = Router(
@@ -58,22 +58,22 @@ router = Router(
         # Embedding models for routing
         {
             "model_name": "custom-text-embedding-model",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "text-embedding-3-large",
                 "api_key": os.getenv("OPENAI_API_KEY"),
             },
         },
         # Your target models
         {
-            "model_name": "litellm-gpt-4.1",
-            "litellm_params": {
+            "model_name": "dheera_ai-gpt-4.1",
+            "dheera_ai_params": {
                 "model": "gpt-4.1",
             },
             "model_info": {"id": "openai-id"},
         },
         {
-            "model_name": "litellm-claude-35",
-            "litellm_params": {
+            "model_name": "dheera_ai-claude-35",
+            "dheera_ai_params": {
                 "model": "claude-3-5-sonnet-latest",
             },
             "model_info": {"id": "claude-id"},
@@ -81,7 +81,7 @@ router = Router(
         # Auto router configuration
         {
             "model_name": "auto_router1",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "auto_router/auto_router_1",
                 "auto_router_config_path": "router.json",
                 "auto_router_default_model": "gpt-4o-mini",
@@ -100,7 +100,7 @@ Once configured, use the auto router by calling it with your auto router model n
 # This request will be routed to gpt-4.1 based on the utterance match
 response = await router.acompletion(
     model="auto_router1",
-    messages=[{"role": "user", "content": "litellm is great"}],
+    messages=[{"role": "user", "content": "dheera_ai is great"}],
 )
 
 # This request will be routed to claude-3-5-sonnet-latest for coding queries
@@ -130,15 +130,15 @@ The `router.json` file supports the following structure:
   - **metadata**: Additional metadata for the route
 
 
-## LiteLLM Proxy Server
+## Dheera AI Proxy Server
 
 ### Setup
 
-Navigate to the LiteLLM UI and go to **Models+Endpoints** > **Add Model** > **Auto Router Tab**.
+Navigate to the Dheera AI UI and go to **Models+Endpoints** > **Add Model** > **Auto Router Tab**.
 
 Configure the following required fields:
 
-- **Auto Router Name** - The model name that developers will use when making LLM API requests to LiteLLM
+- **Auto Router Name** - The model name that developers will use when making LLM API requests to Dheera AI
 - **Default Model** - The fallback model used when no route is matched (e.g., if set to "gpt-4o-mini", unmatched requests will be routed to gpt-4o-mini)
 - **Embedding Model** - The model used to generate embeddings for input messages. These embeddings are used to semantically match input against the utterances defined in your routes
 
@@ -177,7 +177,7 @@ Once added developers need to select the model=`auto_router1` in the `model` fie
 ```python
 import openai
 client = openai.OpenAI(
-    api_key="sk-1234", # replace with your LiteLLM API key
+    api_key="sk-1234", # replace with your Dheera AI API key
     base_url="http://localhost:4000"
 )
 
@@ -201,7 +201,7 @@ print(response)
 ```shell
 curl -X POST http://localhost:4000/v1/chat/completions \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer $LITELLM_API_KEY" \
+-H "Authorization: Bearer $DHEERA_AI_API_KEY" \
 -d '{
     "model": "auto_router1",
     "messages": [{"role": "user", "content": "how to code a program in python"}]
@@ -214,7 +214,7 @@ curl -X POST http://localhost:4000/v1/chat/completions \
 
 ## How It Works
 
-1. When a request comes in, LiteLLM generates embeddings for the input message
+1. When a request comes in, Dheera AI generates embeddings for the input message
 2. It compares these embeddings against the utterances defined in your routes
 3. If a route's similarity score exceeds the threshold, the request is routed to that model
 4. If no route matches, the request goes to the default model

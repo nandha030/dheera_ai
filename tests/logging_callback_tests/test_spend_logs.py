@@ -1,7 +1,7 @@
 import os
 import sys
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 
 from dotenv import load_dotenv
 from fastapi import Request
@@ -12,7 +12,7 @@ import io
 import os
 import time
 
-# this file is to test litellm/proxy
+# this file is to test dheera_ai/proxy
 
 sys.path.insert(
     0, os.path.abspath("../..")
@@ -24,9 +24,9 @@ import logging
 from typing import Optional
 import pytest
 
-import litellm
-from litellm.proxy.spend_tracking.spend_tracking_utils import get_logging_payload, _sanitize_request_body_for_spend_logs_payload
-from litellm.proxy._types import SpendLogsMetadata, SpendLogsPayload
+import dheera_ai
+from dheera_ai.proxy.spend_tracking.spend_tracking_utils import get_logging_payload, _sanitize_request_body_for_spend_logs_payload
+from dheera_ai.proxy._types import SpendLogsMetadata, SpendLogsPayload
 
 
 @pytest.mark.parametrize(
@@ -52,7 +52,7 @@ def test_spend_logs_payload(model_id: Optional[str]):
                 "user": "116544810872468347480",
                 "extra_body": {},
             },
-            "litellm_params": {
+            "dheera_ai_params": {
                 "acompletion": True,
                 "api_key": "23c217a5b59f41b6b7a198017f4792f2",
                 "force_timeout": 600,
@@ -60,7 +60,7 @@ def test_spend_logs_payload(model_id: Optional[str]):
                 "verbose": False,
                 "custom_llm_provider": "azure",
                 "api_base": "https://openai-gpt-4-test-v-1.openai.azure.com//openai/",
-                "litellm_call_id": "b9929bf6-7b80-4c8c-b486-034e6ac0c8b7",
+                "dheera_ai_call_id": "b9929bf6-7b80-4c8c-b486-034e6ac0c8b7",
                 "model_alias_map": {},
                 "completion_call_id": None,
                 "metadata": {
@@ -68,7 +68,7 @@ def test_spend_logs_payload(model_id: Optional[str]):
                     "user_api_key": "88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",
                     "user_api_key_alias": "custom-key-alias",
                     "user_api_end_user_max_budget": None,
-                    "litellm_api_version": "0.0.0",
+                    "dheera_ai_api_version": "0.0.0",
                     "global_max_parallel_requests": None,
                     "user_api_key_user_id": "116544810872468347480",
                     "user_api_key_org_id": "custom-org-id",
@@ -99,7 +99,7 @@ def test_spend_logs_payload(model_id: Optional[str]):
                     "error_information": None,
                     "status": "success",
                     "proxy_server_request": "{}",
-                    "raw_request": "\n\nPOST Request Sent from LiteLLM:\ncurl -X POST \\\nhttps://openai-gpt-4-test-v-1.openai.azure.com//openai/ \\\n-H 'Authorization: *****' \\\n-d '{'model': 'chatgpt-v-3', 'messages': [{'role': 'system', 'content': 'you are a helpful assistant.\\n'}, {'role': 'user', 'content': 'bom dia'}], 'stream': False, 'max_tokens': 10, 'user': '116544810872468347480', 'extra_body': {}}'\n",
+                    "raw_request": "\n\nPOST Request Sent from DheeraAI:\ncurl -X POST \\\nhttps://openai-gpt-4-test-v-1.openai.azure.com//openai/ \\\n-H 'Authorization: *****' \\\n-d '{'model': 'chatgpt-v-3', 'messages': [{'role': 'system', 'content': 'you are a helpful assistant.\\n'}, {'role': 'user', 'content': 'bom dia'}], 'stream': False, 'max_tokens': 10, 'user': '116544810872468347480', 'extra_body': {}}'\n",
                 },
                 "model_info": {
                     "id": "4bad40a1eb6bebd1682800f16f44b9f06c52a6703444c99c7f9f32e9de3693b4",
@@ -142,7 +142,7 @@ def test_spend_logs_payload(model_id: Optional[str]):
             "stream": False,
             "user": "116544810872468347480",
             "call_type": "acompletion",
-            "litellm_call_id": "b9929bf6-7b80-4c8c-b486-034e6ac0c8b7",
+            "dheera_ai_call_id": "b9929bf6-7b80-4c8c-b486-034e6ac0c8b7",
             "completion_start_time": datetime.datetime(2024, 6, 7, 12, 43, 30, 954146),
             "max_tokens": 10,
             "extra_body": {},
@@ -184,13 +184,13 @@ def test_spend_logs_payload(model_id: Optional[str]):
                 },
             },
         },
-        "response_obj": litellm.ModelResponse(
+        "response_obj": dheera_ai.ModelResponse(
             id=model_id,
             choices=[
-                litellm.Choices(
+                dheera_ai.Choices(
                     finish_reason="length",
                     index=0,
-                    message=litellm.Message(
+                    message=dheera_ai.Message(
                         content="Bom dia! Como posso ajudar você", role="assistant"
                     ),
                 )
@@ -199,7 +199,7 @@ def test_spend_logs_payload(model_id: Optional[str]):
             model="gpt-35-turbo",
             object="chat.completion",
             system_fingerprint=None,
-            usage=litellm.Usage(
+            usage=dheera_ai.Usage(
                 completion_tokens=10, prompt_tokens=20, total_tokens=30
             ),
         ),
@@ -219,7 +219,7 @@ def test_spend_logs_payload(model_id: Optional[str]):
     payload["metadata"] = json.loads(payload["metadata"])
     assert set(payload["metadata"].keys()) == set(expected_metadata_keys)
 
-    # This is crucial - used in PROD, it should pass, related issue: https://github.com/BerriAI/litellm/issues/4334
+    # This is crucial - used in PROD, it should pass, related issue: https://github.com/BerriAI/dheera_ai/issues/4334
     assert (
         payload["request_tags"] == '["model-anthropic-claude-v2.1", "app-ishaan-prod"]'
     )
@@ -240,14 +240,14 @@ def test_spend_logs_payload_whisper():
         "model": "whisper-1",
         "messages": [{"role": "user", "content": "audio_file"}],
         "optional_params": {},
-        "litellm_params": {
+        "dheera_ai_params": {
             "api_base": "",
             "metadata": {
                 "user_api_key": "88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",
                 "user_api_key_alias": None,
                 "user_api_key_end_user_id": "test-user",
                 "user_api_end_user_max_budget": None,
-                "litellm_api_version": "1.40.19",
+                "dheera_ai_api_version": "1.40.19",
                 "global_max_parallel_requests": None,
                 "user_api_key_user_id": "default_user_id",
                 "user_api_key_org_id": None,
@@ -266,7 +266,7 @@ def test_spend_logs_payload_whisper():
                     "content-type": "multipart/form-data; boundary=------------------------21d518e191326d20",
                 },
                 "endpoint": "http://localhost:4000/v1/audio/transcriptions",
-                "litellm_parent_otel_span": None,
+                "dheera_ai_parent_otel_span": None,
                 "model_group": "whisper-1",
                 "deployment": "whisper-1",
                 "model_info": {
@@ -280,7 +280,7 @@ def test_spend_logs_payload_whisper():
         "stream": False,
         "user": "",
         "call_type": "atranscription",
-        "litellm_call_id": "05921cf7-33f9-421c-aad9-33310c1e2702",
+        "dheera_ai_call_id": "05921cf7-33f9-421c-aad9-33310c1e2702",
         "completion_start_time": datetime.datetime(2024, 6, 26, 14, 20, 13, 653149),
         "stream_options": None,
         "input": "tmp-requestc8640aee-7d85-49c3-b3ef-bdc9255d8e37.wav",
@@ -301,7 +301,7 @@ def test_spend_logs_payload_whisper():
         "response_cost": 0.00023398580000000003,
     }
 
-    response = litellm.utils.TranscriptionResponse(
+    response = dheera_ai.utils.TranscriptionResponse(
         text="Four score and seven years ago, our fathers brought forth on this continent a new nation, conceived in liberty and dedicated to the proposition that all men are created equal. Now we are engaged in a great civil war, testing whether that nation, or any nation so conceived and so dedicated, can long endure."
     )
 
@@ -323,7 +323,7 @@ def test_spend_logs_payload_with_prompts_enabled(monkeypatch):
     Test that messages and responses are logged in spend logs when store_prompts_in_spend_logs is enabled
     """
     # Mock general_settings
-    from litellm.proxy.proxy_server import general_settings
+    from dheera_ai.proxy.proxy_server import general_settings
 
     general_settings["store_prompts_in_spend_logs"] = True
 
@@ -331,23 +331,23 @@ def test_spend_logs_payload_with_prompts_enabled(monkeypatch):
         "kwargs": {
             "model": "gpt-3.5-turbo",
             "messages": [{"role": "user", "content": "Hello!"}],
-            "litellm_params": {
+            "dheera_ai_params": {
                 "metadata": {
                     "user_api_key": "fake_key",
                 }
             },
         },
-        "response_obj": litellm.ModelResponse(
+        "response_obj": dheera_ai.ModelResponse(
             id="chatcmpl-123",
             choices=[
-                litellm.Choices(
+                dheera_ai.Choices(
                     finish_reason="stop",
                     index=0,
-                    message=litellm.Message(content="Hi there!", role="assistant"),
+                    message=dheera_ai.Message(content="Hi there!", role="assistant"),
                 )
             ],
             model="gpt-3.5-turbo",
-            usage=litellm.Usage(completion_tokens=2, prompt_tokens=1, total_tokens=3),
+            usage=dheera_ai.Usage(completion_tokens=2, prompt_tokens=1, total_tokens=3),
         ),
         "start_time": datetime.datetime.now(),
         "end_time": datetime.datetime.now(),
@@ -366,7 +366,7 @@ def test_spend_logs_payload_with_prompts_enabled(monkeypatch):
             "rpm": 1000,
         },
     }
-    litellm_params = {
+    dheera_ai_params = {
         "proxy_server_request": {
             "body": {
                 "model": "gpt-4",
@@ -375,7 +375,7 @@ def test_spend_logs_payload_with_prompts_enabled(monkeypatch):
         }
     }
     input_args["kwargs"]["standard_logging_object"] = standard_logging_payload
-    input_args["kwargs"]["litellm_params"] = litellm_params
+    input_args["kwargs"]["dheera_ai_params"] = dheera_ai_params
 
     payload: SpendLogsPayload = get_logging_payload(**input_args)
 
@@ -403,7 +403,7 @@ def test_large_request_no_truncation_threshold():
     Test that MAX_STRING_LENGTH_PROMPT_IN_DB constant is used for request body sanitization
     and that the new truncation logic keeps beginning (35%) and end (65%) of the string
     """
-    from litellm.constants import MAX_STRING_LENGTH_PROMPT_IN_DB, LITELLM_TRUNCATED_PAYLOAD_FIELD
+    from dheera_ai.constants import MAX_STRING_LENGTH_PROMPT_IN_DB, DHEERA_AI_TRUNCATED_PAYLOAD_FIELD
     
     # Create a large string that exceeds the threshold
     # Use a pattern that allows us to verify beginning and end are preserved
@@ -435,7 +435,7 @@ def test_large_request_no_truncation_threshold():
     assert truncated_content.endswith(large_content[-expected_end_chars:])
     
     # Should have truncation marker
-    assert LITELLM_TRUNCATED_PAYLOAD_FIELD in truncated_content
+    assert DHEERA_AI_TRUNCATED_PAYLOAD_FIELD in truncated_content
     assert "skipped" in truncated_content
 
 
@@ -443,7 +443,7 @@ def test_small_request_no_truncation():
     """
     Test that small strings are not truncated by MAX_STRING_LENGTH_PROMPT_IN_DB
     """
-    from litellm.constants import MAX_STRING_LENGTH_PROMPT_IN_DB
+    from dheera_ai.constants import MAX_STRING_LENGTH_PROMPT_IN_DB
     
     # Create a small string that's under the threshold
     small_content = "x" * (MAX_STRING_LENGTH_PROMPT_IN_DB - 100)
@@ -471,13 +471,13 @@ def test_configurable_string_length_env_var(monkeypatch):
     
     # Import after setting env var to ensure it picks up the new value
     import importlib
-    import litellm.constants
-    import litellm.proxy.spend_tracking.spend_tracking_utils
-    importlib.reload(litellm.constants)
-    importlib.reload(litellm.proxy.spend_tracking.spend_tracking_utils)
+    import dheera_ai.constants
+    import dheera_ai.proxy.spend_tracking.spend_tracking_utils
+    importlib.reload(dheera_ai.constants)
+    importlib.reload(dheera_ai.proxy.spend_tracking.spend_tracking_utils)
     
-    from litellm.constants import MAX_STRING_LENGTH_PROMPT_IN_DB, LITELLM_TRUNCATED_PAYLOAD_FIELD
-    from litellm.proxy.spend_tracking.spend_tracking_utils import _sanitize_request_body_for_spend_logs_payload
+    from dheera_ai.constants import MAX_STRING_LENGTH_PROMPT_IN_DB, DHEERA_AI_TRUNCATED_PAYLOAD_FIELD
+    from dheera_ai.proxy.spend_tracking.spend_tracking_utils import _sanitize_request_body_for_spend_logs_payload
     
     # Verify the constant was set to the env var value
     assert MAX_STRING_LENGTH_PROMPT_IN_DB == 1000
@@ -501,7 +501,7 @@ def test_configurable_string_length_env_var(monkeypatch):
     
     assert truncated_content.startswith(large_content[:expected_start])
     assert truncated_content.endswith(large_content[-expected_end:])
-    assert LITELLM_TRUNCATED_PAYLOAD_FIELD in truncated_content
+    assert DHEERA_AI_TRUNCATED_PAYLOAD_FIELD in truncated_content
     assert "skipped" in truncated_content
     assert "800" in truncated_content  # Should mention skipped 800 chars
 
@@ -510,7 +510,7 @@ def test_truncation_preserves_beginning_and_end():
     """
     Test that truncation preserves the beginning (35%) and end (65%) of content for better debugging
     """
-    from litellm.constants import MAX_STRING_LENGTH_PROMPT_IN_DB, LITELLM_TRUNCATED_PAYLOAD_FIELD
+    from dheera_ai.constants import MAX_STRING_LENGTH_PROMPT_IN_DB, DHEERA_AI_TRUNCATED_PAYLOAD_FIELD
     
     # Create content with distinct beginning, middle, and end
     beginning = "BEGIN_" * 200  # 1200 chars
@@ -541,7 +541,7 @@ def test_truncation_preserves_beginning_and_end():
     assert truncated_content.endswith(expected_end)
     
     # Check truncation marker is present
-    assert LITELLM_TRUNCATED_PAYLOAD_FIELD in truncated_content
+    assert DHEERA_AI_TRUNCATED_PAYLOAD_FIELD in truncated_content
     assert "skipped" in truncated_content
     
     # Calculate expected skipped chars

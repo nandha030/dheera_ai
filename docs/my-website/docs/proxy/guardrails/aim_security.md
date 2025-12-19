@@ -24,24 +24,24 @@ In the newly created guard's page, you can find a reference to the prompt policy
 You can decide which detections will be enabled, and set the threshold for each detection.
 
 :::info 
-When using LiteLLM with virtual keys, key-specific policies can be set directly in Aim's guards page by specifying the virtual key alias when creating the guard.
+When using Dheera AI with virtual keys, key-specific policies can be set directly in Aim's guards page by specifying the virtual key alias when creating the guard.
 
 Only the aliases of your virtual keys (and not the actual key secrets) will be sent to Aim.
 :::
 
-### 3. Add Aim Guardrail on your LiteLLM config.yaml 
+### 3. Add Aim Guardrail on your Dheera AI config.yaml 
 
 Define your guardrails under the `guardrails` section
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: aim-protected-app
-    litellm_params:
+    dheera_ai_params:
       guardrail: aim
       mode: [pre_call, post_call] # "During_call" is also available
       api_key: os.environ/AIM_API_KEY
@@ -53,9 +53,9 @@ You can also set `AIM_API_KEY` as an environment variable.
 
 By default, the `api_base` is set to `https://api.aim.security`. If you are using a self-hosted Aim Outpost, you can set the `api_base` to your Outpost's URL.
 
-### 4. Start LiteLLM Gateway
+### 4. Start Dheera AI Gateway
 ```shell
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 ### 5. Make your first request
@@ -69,7 +69,7 @@ You can adjust the request content to match different guard's policies.
 <TabItem label="Successfully blocked request" value = "blocked">
 
 :::note
-When using LiteLLM with virtual keys, an `Authorization` header with the virtual key is required.
+When using Dheera AI with virtual keys, an `Authorization` header with the virtual key is required.
 :::
 
 ```shell
@@ -102,7 +102,7 @@ If configured correctly, since `ishaan@berri.ai` would be detected by the Aim Gu
 <TabItem label="Successfully permitted request" value = "allowed">
 
 :::note
-When using LiteLLM with virtual keys, an `Authorization` header with the virtual key is required.
+When using Dheera AI with virtual keys, an `Authorization` header with the virtual key is required.
 :::
 
 ```shell

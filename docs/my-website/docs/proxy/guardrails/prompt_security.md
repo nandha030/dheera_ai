@@ -8,20 +8,20 @@ Use [Prompt Security](https://prompt.security/) to protect your LLM applications
 
 ## Quick Start
 
-### 1. Define Guardrails on your LiteLLM config.yaml 
+### 1. Define Guardrails on your Dheera AI config.yaml 
 
 Define your guardrails under the `guardrails` section:
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "prompt-security-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: prompt_security
       mode: "during_call"
       api_key: os.environ/PROMPT_SECURITY_API_KEY
@@ -46,10 +46,10 @@ export PROMPT_SECURITY_USER="optional-user-id"  # Optional: for user tracking
 export PROMPT_SECURITY_SYSTEM_PROMPT="optional-system-prompt"  # Optional: for context
 ```
 
-### 3. Start LiteLLM Gateway 
+### 3. Start Dheera AI Gateway 
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 ### 4. Test request 
@@ -372,7 +372,7 @@ Track users and provide system context for better security analysis:
 ```yaml
 guardrails:
   - guardrail_name: "prompt-security-tracked"
-    litellm_params:
+    dheera_ai_params:
       guardrail: prompt_security
       mode: "during_call"
       api_key: os.environ/PROMPT_SECURITY_API_KEY
@@ -386,7 +386,7 @@ guardrails:
 You can also configure guardrails programmatically:
 
 ```python
-from litellm.proxy.guardrails.guardrail_hooks.prompt_security import PromptSecurityGuardrail
+from dheera_ai.proxy.guardrails.guardrail_hooks.prompt_security import PromptSecurityGuardrail
 
 guardrail = PromptSecurityGuardrail(
     api_key="your-api-key",
@@ -403,14 +403,14 @@ Configure separate pre-call and post-call guardrails for fine-grained control:
 ```yaml
 guardrails:
   - guardrail_name: "prompt-security-input"
-    litellm_params:
+    dheera_ai_params:
       guardrail: prompt_security
       mode: "pre_call"
       api_key: os.environ/PROMPT_SECURITY_API_KEY
       api_base: os.environ/PROMPT_SECURITY_API_BASE
       
   - guardrail_name: "prompt-security-output"
-    litellm_params:
+    dheera_ai_params:
       guardrail: prompt_security
       mode: "post_call"
       api_key: os.environ/PROMPT_SECURITY_API_KEY
@@ -511,7 +511,7 @@ Check that the guardrail is enabled in your config:
 ```yaml
 guardrails:
   - guardrail_name: "prompt-security-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: prompt_security
       default_on: true  # Ensure this is set
 ```

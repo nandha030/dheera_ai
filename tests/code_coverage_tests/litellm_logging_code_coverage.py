@@ -5,7 +5,7 @@ from typing import List
 
 def get_function_names_from_file(file_path: str) -> List[str]:
     """
-    Extracts all static method names from litellm_logging.py
+    Extracts all static method names from dheera_ai_logging.py
     """
     with open(file_path, "r") as file:
         tree = ast.parse(file.read())
@@ -64,11 +64,11 @@ ignored_function_names = [
 
 
 def main():
-    logging_file = "./litellm/litellm_core_utils/litellm_logging.py"
+    logging_file = "./dheera_ai/dheera_ai_core_utils/dheera_ai_logging.py"
     tests_dir = "./tests/"
 
     # LOCAL TESTING
-    # logging_file = "../../litellm/litellm_core_utils/litellm_logging.py"
+    # logging_file = "../../dheera_ai/dheera_ai_core_utils/dheera_ai_logging.py"
     # tests_dir = "../../tests/"
 
     logging_functions = get_function_names_from_file(logging_file)
@@ -85,10 +85,10 @@ def main():
         untested_perc = len(untested_functions) / len(logging_functions)
         print(f"untested_percentage: {untested_perc * 100:.2f}%")
         raise Exception(
-            f"{untested_perc * 100:.2f}% of functions in litellm_logging.py are not tested: {untested_functions}"
+            f"{untested_perc * 100:.2f}% of functions in dheera_ai_logging.py are not tested: {untested_functions}"
         )
     else:
-        print("All functions in litellm_logging.py are covered by tests.")
+        print("All functions in dheera_ai_logging.py are covered by tests.")
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 | Property | Details |
 |-------|-------|
 | Description | PublicAI provides large language models including essential models like the swiss-ai apertus model. |
-| Provider Route on LiteLLM | `publicai/` |
+| Provider Route on Dheera AI | `publicai/` |
 | Link to Provider Doc | [PublicAI ↗](https://platform.publicai.co/) |
 | Base URL | `https://platform.publicai.co/` |
 | Supported Operations | [`/chat/completions`](#sample-usage) |
@@ -32,14 +32,14 @@ You can overwrite the base url with:
 os.environ["PUBLICAI_API_BASE"] = "https://platform.publicai.co/v1"
 ```
 
-## Usage - LiteLLM Python SDK
+## Usage - Dheera AI Python SDK
 
 ### Non-streaming
 
 ```python showLineNumbers title="PublicAI Non-streaming Completion"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["PUBLICAI_API_KEY"] = ""  # your PublicAI API key
 
@@ -58,8 +58,8 @@ print(response)
 
 ```python showLineNumbers title="PublicAI Streaming Completion"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["PUBLICAI_API_KEY"] = ""  # your PublicAI API key
 
@@ -76,27 +76,27 @@ for chunk in response:
     print(chunk)
 ```
 
-## Usage - LiteLLM Proxy
+## Usage - Dheera AI Proxy
 
-Add the following to your LiteLLM Proxy configuration file:
+Add the following to your Dheera AI Proxy configuration file:
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: swiss-ai-apertus-8b
-    litellm_params:
+    dheera_ai_params:
       model: publicai/swiss-ai/apertus-8b-instruct
       api_key: os.environ/PUBLICAI_API_KEY
 
   - model_name: swiss-ai-apertus-70b
-    litellm_params:
+    dheera_ai_params:
       model: publicai/swiss-ai/apertus-70b-instruct
       api_key: os.environ/PUBLICAI_API_KEY
 ```
 
-Start your LiteLLM Proxy server:
+Start your Dheera AI Proxy server:
 
-```bash showLineNumbers title="Start LiteLLM Proxy"
-litellm --config config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy"
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -116,7 +116,7 @@ client = OpenAI(
 # Non-streaming response
 response = client.chat.completions.create(
     model="swiss-ai-apertus-8b",
-    messages=[{"role": "user", "content": "hello from litellm"}]
+    messages=[{"role": "user", "content": "hello from dheera_ai"}]
 )
 
 print(response.choices[0].message.content)
@@ -134,7 +134,7 @@ client = OpenAI(
 # Streaming response
 response = client.chat.completions.create(
     model="swiss-ai-apertus-8b",
-    messages=[{"role": "user", "content": "hello from litellm"}],
+    messages=[{"role": "user", "content": "hello from dheera_ai"}],
     stream=True
 )
 
@@ -145,15 +145,15 @@ for chunk in response:
 
 </TabItem>
 
-<TabItem value="litellm-sdk" label="LiteLLM SDK">
+<TabItem value="dheera_ai-sdk" label="Dheera AI SDK">
 
-```python showLineNumbers title="PublicAI via Proxy - LiteLLM SDK"
-import litellm
+```python showLineNumbers title="PublicAI via Proxy - Dheera AI SDK"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy
-response = litellm.completion(
-    model="litellm_proxy/swiss-ai-apertus-8b",
-    messages=[{"role": "user", "content": "hello from litellm"}],
+# Configure Dheera AI to use your proxy
+response = dheera_ai.completion(
+    model="dheera_ai_proxy/swiss-ai-apertus-8b",
+    messages=[{"role": "user", "content": "hello from dheera_ai"}],
     api_base="http://localhost:4000",
     api_key="your-proxy-api-key"
 )
@@ -161,13 +161,13 @@ response = litellm.completion(
 print(response.choices[0].message.content)
 ```
 
-```python showLineNumbers title="PublicAI via Proxy - LiteLLM SDK Streaming"
-import litellm
+```python showLineNumbers title="PublicAI via Proxy - Dheera AI SDK Streaming"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy with streaming
-response = litellm.completion(
-    model="litellm_proxy/swiss-ai-apertus-8b",
-    messages=[{"role": "user", "content": "hello from litellm"}],
+# Configure Dheera AI to use your proxy with streaming
+response = dheera_ai.completion(
+    model="dheera_ai_proxy/swiss-ai-apertus-8b",
+    messages=[{"role": "user", "content": "hello from dheera_ai"}],
     api_base="http://localhost:4000",
     api_key="your-proxy-api-key",
     stream=True
@@ -188,7 +188,7 @@ curl http://localhost:4000/v1/chat/completions \
   -H "Authorization: Bearer your-proxy-api-key" \
   -d '{
     "model": "swiss-ai-apertus-8b",
-    "messages": [{"role": "user", "content": "hello from litellm"}]
+    "messages": [{"role": "user", "content": "hello from dheera_ai"}]
   }'
 ```
 
@@ -198,7 +198,7 @@ curl http://localhost:4000/v1/chat/completions \
   -H "Authorization: Bearer your-proxy-api-key" \
   -d '{
     "model": "swiss-ai-apertus-8b",
-    "messages": [{"role": "user", "content": "hello from litellm"}],
+    "messages": [{"role": "user", "content": "hello from dheera_ai"}],
     "stream": true
   }'
 ```
@@ -206,4 +206,4 @@ curl http://localhost:4000/v1/chat/completions \
 </TabItem>
 </Tabs>
 
-For more detailed information on using the LiteLLM Proxy, see the [LiteLLM Proxy documentation](../providers/litellm_proxy).
+For more detailed information on using the Dheera AI Proxy, see the [Dheera AI Proxy documentation](../providers/dheera_ai_proxy).

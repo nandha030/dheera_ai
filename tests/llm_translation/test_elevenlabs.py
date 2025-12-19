@@ -10,7 +10,7 @@ import httpx
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
+import dheera_ai
 from base_audio_transcription_unit_tests import BaseLLMAudioTranscriptionTest
 
 os.environ.setdefault("ELEVENLABS_API_KEY", "test-elevenlabs-key")
@@ -22,8 +22,8 @@ class TestElevenLabsAudioTranscription(BaseLLMAudioTranscriptionTest):
             "model": "elevenlabs/scribe_v1",
         }
 
-    def get_custom_llm_provider(self) -> litellm.LlmProviders:
-        return litellm.LlmProviders.ELEVENLABS
+    def get_custom_llm_provider(self) -> dheera_ai.LlmProviders:
+        return dheera_ai.LlmProviders.ELEVENLABS
 
     def test_elevenlabs_diarize_parameter_passthrough(self):
         """
@@ -60,11 +60,11 @@ class TestElevenLabsAudioTranscription(BaseLLMAudioTranscriptionTest):
             return mock_response
         
         # Mock the HTTPHandler.post method which is what actually makes the request
-        from litellm.llms.custom_httpx.http_handler import HTTPHandler
+        from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
         
         with patch.object(HTTPHandler, 'post', side_effect=mock_post):
             try:
-                result = litellm.transcription(
+                result = dheera_ai.transcription(
                     model="elevenlabs/scribe_v1",
                     file=audio_content,
                     diarize=True,  # This should be passed through to the form data
@@ -118,7 +118,7 @@ class TestElevenLabsAudioTranscription(BaseLLMAudioTranscriptionTest):
 class TestElevenLabsTextToSpeechTransformation:
     @pytest.fixture(scope="class")
     def config(self):
-        from litellm.llms.elevenlabs.text_to_speech.transformation import (
+        from dheera_ai.llms.elevenlabs.text_to_speech.transformation import (
             ElevenLabsTextToSpeechConfig,
         )
 
@@ -159,7 +159,7 @@ class TestElevenLabsTextToSpeechTransformation:
             kwargs=kwargs,
         )
 
-        litellm_params: Dict[str, Any] = {
+        dheera_ai_params: Dict[str, Any] = {
             config.ELEVENLABS_VOICE_ID_KEY: voice_id,
             config.ELEVENLABS_QUERY_PARAMS_KEY: kwargs[
                 config.ELEVENLABS_QUERY_PARAMS_KEY
@@ -175,7 +175,7 @@ class TestElevenLabsTextToSpeechTransformation:
             input="Hello world",
             voice=voice_id,
             optional_params=optional_params,
-            litellm_params=litellm_params,
+            dheera_ai_params=dheera_ai_params,
             headers=headers,
         )
 
@@ -188,7 +188,7 @@ class TestElevenLabsTextToSpeechTransformation:
         url = config.get_complete_url(
             model="eleven_multilingual_v2",
             api_base=None,
-            litellm_params=litellm_params,
+            dheera_ai_params=dheera_ai_params,
         )
 
         assert voice_id in url

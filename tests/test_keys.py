@@ -11,8 +11,8 @@ from typing import Optional
 sys.path.insert(
     0, os.path.abspath("../")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm.proxy._types import LitellmUserRoles
+import dheera_ai
+from dheera_ai.proxy._types import LitellmUserRoles
 
 
 async def generate_team(
@@ -21,7 +21,7 @@ async def generate_team(
     url = "http://0.0.0.0:4000/team/new"
     headers = {"Authorization": "Bearer sk-1234", "Content-Type": "application/json"}
     if team_id is None:
-        team_id = "litellm-dashboard"
+        team_id = "dheera_ai-dashboard"
     data = {"team_id": team_id, "models": models}
 
     async with session.post(url, headers=headers, json=data) as response:
@@ -43,7 +43,7 @@ async def generate_user(
     headers = {"Authorization": "Bearer sk-1234", "Content-Type": "application/json"}
     data = {
         "user_role": user_role,
-        "team_id": "litellm-dashboard",
+        "team_id": "dheera_ai-dashboard",
     }
 
     async with session.post(url, headers=headers, json=data) as response:
@@ -186,7 +186,7 @@ async def update_proxy_budget(session):
         "Authorization": f"Bearer sk-1234",
         "Content-Type": "application/json",
     }
-    data = {"user_id": "litellm-proxy-budget", "spend": 0}
+    data = {"user_id": "dheera_ai-proxy-budget", "spend": 0}
 
     async with session.post(url, headers=headers, json=data) as response:
         status = response.status
@@ -274,7 +274,7 @@ async def chat_completion_streaming(session, key, model="gpt-4"):
         {"role": "system", "content": "You are a helpful assistant"},
         {"role": "user", "content": f"Hello! {time.time()}"},
     ]
-    prompt_tokens = litellm.token_counter(model="gpt-35-turbo", messages=messages)
+    prompt_tokens = dheera_ai.token_counter(model="gpt-35-turbo", messages=messages)
     data = {
         "model": model,
         "messages": messages,
@@ -288,7 +288,7 @@ async def chat_completion_streaming(session, key, model="gpt-4"):
 
     print(f"content: {content}")
 
-    completion_tokens = litellm.token_counter(
+    completion_tokens = dheera_ai.token_counter(
         model="gpt-35-turbo", text=content, count_response_tokens=True
     )
 
@@ -523,8 +523,8 @@ async def test_key_info_spend_values():
         prompt_tokens = spend_logs[0]["prompt_tokens"]
         print(f"prompt_tokens: {prompt_tokens}; completion_tokens: {completion_tokens}")
 
-        litellm.set_verbose = True
-        prompt_cost, completion_cost = litellm.cost_per_token(
+        dheera_ai.set_verbose = True
+        prompt_cost, completion_cost = dheera_ai.cost_per_token(
             model="gpt-35-turbo",
             prompt_tokens=prompt_tokens,
             completion_tokens=completion_tokens,
@@ -563,7 +563,7 @@ async def test_aaaaakey_info_spend_values_streaming():
             session=session, key=new_key
         )
         print(f"prompt_tokens: {prompt_tokens}, completion_tokens: {completion_tokens}")
-        prompt_cost, completion_cost = litellm.cost_per_token(
+        prompt_cost, completion_cost = dheera_ai.cost_per_token(
             model="azure/gpt-4o",
             prompt_tokens=prompt_tokens,
             completion_tokens=completion_tokens,
@@ -627,7 +627,7 @@ async def test_key_with_budgets():
     - wait 10min (budget reset runs every 10mins.)
     - Check if value updated
     """
-    from litellm.proxy.utils import hash_token
+    from dheera_ai.proxy.utils import hash_token
 
     async def retry_request(func, *args, _max_attempts=5, **kwargs):
         for attempt in range(_max_attempts):
@@ -674,7 +674,7 @@ async def test_key_crossing_budget():
 
     - Check if value updated
     """
-    from litellm.proxy.utils import hash_token
+    from dheera_ai.proxy.utils import hash_token
 
     async with aiohttp.ClientSession() as session:
         key_gen = await generate_key(session=session, i=0, budget=0.0000001)
@@ -785,7 +785,7 @@ async def test_key_model_list(model_access, model_access_level, model_endpoint):
     """
     async with aiohttp.ClientSession() as session:
         _models = [] if model_access == "all-team-models" else [model_access]
-        team_id = "litellm_dashboard_{}".format(uuid.uuid4())
+        team_id = "dheera_ai_dashboard_{}".format(uuid.uuid4())
         new_team = await generate_team(
             session=session,
             models=_models if model_access_level == "team" else None,

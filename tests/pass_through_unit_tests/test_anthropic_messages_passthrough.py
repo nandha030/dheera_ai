@@ -10,20 +10,20 @@ from unittest.mock import AsyncMock, MagicMock
 sys.path.insert(
     0, os.path.abspath("../../..")
 )  # Adds the parent directory to the system path
-import litellm
+import dheera_ai
 import pytest
 from dotenv import load_dotenv
-from litellm.llms.anthropic.experimental_pass_through.messages.handler import (
+from dheera_ai.llms.anthropic.experimental_pass_through.messages.handler import (
     anthropic_messages,
 )
 
 from typing import Optional
-from litellm.types.utils import StandardLoggingPayload
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
-from litellm.router import Router
+from dheera_ai.types.utils import StandardLoggingPayload
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
+from dheera_ai.router import Router
 import importlib
-from litellm.llms.bedrock.base_aws_llm import BaseAWSLLM
+from dheera_ai.llms.bedrock.base_aws_llm import BaseAWSLLM
 from base_anthropic_unified_messages_test import BaseAnthropicMessagesTest
 
 # Load environment variables
@@ -43,15 +43,15 @@ def setup_and_teardown(event_loop):  # Add event_loop as a dependency
     curr_dir = os.getcwd()
     sys.path.insert(0, os.path.abspath("../.."))
 
-    import litellm
-    from litellm import Router
+    import dheera_ai
+    from dheera_ai import Router
 
-    importlib.reload(litellm)
+    importlib.reload(dheera_ai)
 
     # Set the event loop from the fixture
     asyncio.set_event_loop(event_loop)
 
-    print(litellm)
+    print(dheera_ai)
     yield
 
     # Clean up any pending tasks
@@ -124,7 +124,7 @@ class TestAnthropicOpenAIAPI(BaseAnthropicMessagesTest):
         return "gpt-4o-mini"
 
     @pytest.mark.asyncio
-    async def test_anthropic_messages_litellm_router_streaming_with_logging(self):
+    async def test_anthropic_messages_dheera_ai_router_streaming_with_logging(self):
         """
         Test the anthropic_messages with streaming request
         """
@@ -137,7 +137,7 @@ async def test_anthropic_messages_streaming_with_bad_request():
     Test the anthropic_messages with streaming request
     """
     try:
-        response = await litellm.anthropic.messages.acreate(
+        response = await dheera_ai.anthropic.messages.acreate(
             messages=[{"role": "user", "content": "hi"}],
             api_key=os.getenv("ANTHROPIC_API_KEY"),
             model="claude-3-haiku-20240307",
@@ -167,7 +167,7 @@ async def test_anthropic_messages_router_streaming_with_bad_request():
             model_list=[
                 {
                     "model_name": "claude-special-alias",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "model": "claude-3-haiku-20240307",
                         "api_key": os.getenv("ANTHROPIC_API_KEY"),
                     },
@@ -195,16 +195,16 @@ async def test_anthropic_messages_router_streaming_with_bad_request():
 
 
 @pytest.mark.asyncio
-async def test_anthropic_messages_litellm_router_non_streaming():
+async def test_anthropic_messages_dheera_ai_router_non_streaming():
     """
     Test the anthropic_messages with non-streaming request
     """
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     router = Router(
         model_list=[
             {
                 "model_name": "claude-special-alias",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "claude-3-haiku-20240307",
                     "api_key": os.getenv("ANTHROPIC_API_KEY"),
                 },
@@ -233,16 +233,16 @@ async def test_anthropic_messages_litellm_router_non_streaming():
 
 
 @pytest.mark.asyncio
-async def test_anthropic_messages_litellm_router_routing_strategy():
+async def test_anthropic_messages_dheera_ai_router_routing_strategy():
     """
     Test the anthropic_messages with routing strategy + non-streaming request
     """
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     router = Router(
         model_list=[
             {
                 "model_name": "claude-special-alias",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "claude-3-haiku-20240307",
                     "api_key": os.getenv("ANTHROPIC_API_KEY"),
                 },
@@ -278,19 +278,19 @@ async def test_anthropic_messages_fallbacks():
     """
     E2E test the anthropic_messages fallbacks from Anthropic API to Bedrock
     """
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     router = Router(
         model_list=[
             {
                 "model_name": "anthropic/claude-opus-4-20250514",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "anthropic/claude-opus-4-20250514",
                     "api_key": "bad-key",
                 },
             },
             {
                 "model_name": "bedrock/us.anthropic.claude-sonnet-4-20250514-v1:0",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "bedrock/us.anthropic.claude-sonnet-4-20250514-v1:0",
                 },
             }
@@ -327,12 +327,12 @@ async def test_anthropic_messages_fallbacks():
 
 
 @pytest.mark.asyncio
-async def test_anthropic_messages_litellm_router_latency_metadata_tracking():
+async def test_anthropic_messages_dheera_ai_router_latency_metadata_tracking():
     """
     Test the anthropic_messages with routing strategy and verify that _latency_per_deployment
-    field is passed in litellm_metadata when calling litellm.anthropic_messages
+    field is passed in dheera_ai_metadata when calling dheera_ai.anthropic_messages
     """
-    with unittest.mock.patch("litellm.anthropic_messages") as mock_anthropic_messages:
+    with unittest.mock.patch("dheera_ai.anthropic_messages") as mock_anthropic_messages:
         # Mock the return value
         mock_response = {
             "id": "msg_123456",
@@ -352,7 +352,7 @@ async def test_anthropic_messages_litellm_router_latency_metadata_tracking():
             model_list=[
                 {
                     "model_name": MODEL_GROUP,
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "model": "claude-3-haiku-20240307",
                         "api_key": os.getenv("ANTHROPIC_API_KEY"),
                     },
@@ -377,7 +377,7 @@ async def test_anthropic_messages_litellm_router_latency_metadata_tracking():
         # Verify response
         assert response == mock_response
 
-        # Verify that litellm.anthropic_messages was called
+        # Verify that dheera_ai.anthropic_messages was called
         mock_anthropic_messages.assert_called_once()
 
         # Get the call arguments
@@ -386,35 +386,35 @@ async def test_anthropic_messages_litellm_router_latency_metadata_tracking():
 
         print("Call kwargs:", json.dumps(call_kwargs, indent=2, default=str))
 
-        # Verify that litellm_metadata was passed and contains _latency_per_deployment
+        # Verify that dheera_ai_metadata was passed and contains _latency_per_deployment
         assert (
-            "litellm_metadata" in call_kwargs
-        ), "litellm_metadata should be passed to anthropic_messages"
+            "dheera_ai_metadata" in call_kwargs
+        ), "dheera_ai_metadata should be passed to anthropic_messages"
 
-        litellm_metadata = call_kwargs["litellm_metadata"]
-        assert litellm_metadata is not None, "litellm_metadata should not be None"
+        dheera_ai_metadata = call_kwargs["dheera_ai_metadata"]
+        assert dheera_ai_metadata is not None, "dheera_ai_metadata should not be None"
         assert isinstance(
-            litellm_metadata, dict
-        ), "litellm_metadata should be a dictionary"
+            dheera_ai_metadata, dict
+        ), "dheera_ai_metadata should be a dictionary"
 
         # Verify _latency_per_deployment is present
         assert (
-            "_latency_per_deployment" in litellm_metadata
-        ), "litellm_metadata should contain _latency_per_deployment field"
+            "_latency_per_deployment" in dheera_ai_metadata
+        ), "dheera_ai_metadata should contain _latency_per_deployment field"
 
         # Verify the structure of _latency_per_deployment
-        latency_per_deployment = litellm_metadata["_latency_per_deployment"]
+        latency_per_deployment = dheera_ai_metadata["_latency_per_deployment"]
         assert isinstance(
             latency_per_deployment, dict
         ), "_latency_per_deployment should be a dictionary"
 
         print(f"✅ Latency per deployment data: {latency_per_deployment}")
 
-        # Verify other expected fields in litellm_metadata
-        assert "model_group" in litellm_metadata
-        assert litellm_metadata["model_group"] == MODEL_GROUP
-        assert "deployment" in litellm_metadata
-        assert "model_info" in litellm_metadata
+        # Verify other expected fields in dheera_ai_metadata
+        assert "model_group" in dheera_ai_metadata
+        assert dheera_ai_metadata["model_group"] == MODEL_GROUP
+        assert "deployment" in dheera_ai_metadata
+        assert "model_info" in dheera_ai_metadata
 
         # Verify other call parameters
         assert call_kwargs["model"] == "claude-3-haiku-20240307"
@@ -423,7 +423,7 @@ async def test_anthropic_messages_litellm_router_latency_metadata_tracking():
         assert call_kwargs["metadata"] == {"user_id": "hello"}
 
         print(
-            "✅ Successfully verified that _latency_per_deployment is passed in litellm_metadata to anthropic_messages"
+            "✅ Successfully verified that _latency_per_deployment is passed in dheera_ai_metadata to anthropic_messages"
         )
 
         return response
@@ -442,21 +442,21 @@ class TestCustomLogger(CustomLogger):
 
 
 @pytest.mark.asyncio
-async def test_anthropic_messages_litellm_router_non_streaming_with_logging():
+async def test_anthropic_messages_dheera_ai_router_non_streaming_with_logging():
     """
     Test the anthropic_messages with non-streaming request
 
     - Ensure Cost + Usage is tracked
     """
     test_custom_logger = TestCustomLogger()
-    litellm.callbacks = [test_custom_logger]
-    litellm._turn_on_debug()
+    dheera_ai.callbacks = [test_custom_logger]
+    dheera_ai._turn_on_debug()
     MODEL_GROUP = "claude-special-alias"
     router = Router(
         model_list=[
             {
                 "model_name": MODEL_GROUP,
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "claude-3-haiku-20240307",
                     "api_key": os.getenv("ANTHROPIC_API_KEY"),
                 },
@@ -552,7 +552,7 @@ async def test_anthropic_messages_with_extra_headers():
     mock_client.post = AsyncMock(return_value=mock_response)
 
     # Call the handler with extra_headers and our mocked client
-    response = await litellm.anthropic.messages.acreate(
+    response = await dheera_ai.anthropic.messages.acreate(
         messages=messages,
         api_key=api_key,
         model="claude-3-haiku-20240307",
@@ -589,13 +589,13 @@ async def test_bedrock_messages_api_header_forwarding():
     
     This verifies that forward_client_headers_to_llm_api works for Bedrock Invoke API (Messages API).
     
-    Issue: When calling Anthropic models via the Messages API, LiteLLM makes a call to 
+    Issue: When calling Anthropic models via the Messages API, DheeraAI makes a call to 
     Bedrock's Invoke API, and custom headers were not being forwarded, even though
     they worked correctly for Chat Completions API with Bedrock's Converse API.
     """
-    from litellm.llms.custom_httpx.llm_http_handler import BaseLLMHTTPHandler
-    from litellm.litellm_core_utils.litellm_logging import Logging as LiteLLMLoggingObj
-    from litellm.types.router import GenericLiteLLMParams
+    from dheera_ai.llms.custom_httpx.llm_http_handler import BaseLLMHTTPHandler
+    from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging as DheeraAILoggingObj
+    from dheera_ai.types.router import GenericDheeraAIParams
     
     handler = BaseLLMHTTPHandler()
     
@@ -619,7 +619,7 @@ async def test_bedrock_messages_api_header_forwarding():
     mock_provider_config.transform_anthropic_messages_response.return_value = {"id": "test"}
     
     # Mock HTTP client to prevent actual network calls
-    with unittest.mock.patch("litellm.llms.custom_httpx.llm_http_handler.get_async_httpx_client") as mock_get_client:
+    with unittest.mock.patch("dheera_ai.llms.custom_httpx.llm_http_handler.get_async_httpx_client") as mock_get_client:
         mock_http_client = AsyncMock()
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -629,7 +629,7 @@ async def test_bedrock_messages_api_header_forwarding():
         mock_get_client.return_value = mock_http_client
         
         # Mock logging object
-        mock_logging_obj = MagicMock(spec=LiteLLMLoggingObj)
+        mock_logging_obj = MagicMock(spec=DheeraAILoggingObj)
         mock_logging_obj.model_call_details = {}
         
         # Call the handler with headers in kwargs
@@ -640,7 +640,7 @@ async def test_bedrock_messages_api_header_forwarding():
                 anthropic_messages_provider_config=mock_provider_config,
                 anthropic_messages_optional_request_params={"max_tokens": 100},
                 custom_llm_provider="bedrock",
-                litellm_params=GenericLiteLLMParams(
+                dheera_ai_params=GenericDheeraAIParams(
                     api_key="test-key",
                     aws_region_name="us-east-1"
                 ),
@@ -698,7 +698,7 @@ async def test_anthropic_messages_with_thinking():
     mock_client.post = AsyncMock(return_value=mock_response)
 
     # Call the handler with extra_headers and our mocked client
-    response = await litellm.anthropic.messages.acreate(
+    response = await dheera_ai.anthropic.messages.acreate(
         messages=messages,
         api_key=api_key,
         model="claude-3-haiku-20240307",
@@ -747,7 +747,7 @@ async def test_anthropic_messages_bedrock_credentials_passthrough():
         with unittest.mock.patch("botocore.auth.SigV4Auth.add_auth"):
             # Set up mock for AsyncHTTPHandler.post to avoid actual API calls
             with unittest.mock.patch(
-                "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post"
+                "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post"
             ) as mock_post:
                 # Configure mock response
                 mock_response = unittest.mock.MagicMock()
@@ -777,7 +777,7 @@ async def test_anthropic_messages_bedrock_credentials_passthrough():
                 }
 
                 # Call the function with AWS credentials
-                await litellm.anthropic.messages.acreate(
+                await dheera_ai.anthropic.messages.acreate(
                     messages=[{"role": "user", "content": "Hello, test credentials"}],
                     model="bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
                     max_tokens=100,
@@ -835,7 +835,7 @@ async def test_anthropic_messages_bedrock_dynamic_region():
         test_region = "us-east-1"
 
         # Call anthropic.messages.acreate with aws_region_name
-        response = await litellm.anthropic.messages.acreate(
+        response = await dheera_ai.anthropic.messages.acreate(
             messages=[{"role": "user", "content": "Hello, test region"}],
             model="bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
             max_tokens=100,
@@ -866,8 +866,8 @@ def test_sync_openai_messages():
     """
     Test the anthropic_messages with sync request
     """
-    litellm._turn_on_debug()
-    response = litellm.anthropic.messages.create(
+    dheera_ai._turn_on_debug()
+    response = dheera_ai.anthropic.messages.create(
         messages=[{"role": "user", "content": "Hello, can you tell me a short joke?"}],
         model="openai/gpt-4o-mini",
         max_tokens=100,

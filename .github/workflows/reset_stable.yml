@@ -1,4 +1,4 @@
-name: Reset litellm_stable branch
+name: Reset dheera_ai_stable branch
 
 on:
   release:
@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Reset litellm_stable_release_branch branch to the release commit
+      - name: Reset dheera_ai_stable_release_branch branch to the release commit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -23,17 +23,17 @@ jobs:
           # Fetch all branches and tags
           git fetch --all
 
-          # Check if the litellm_stable_release_branch branch exists
-          if git show-ref --verify --quiet refs/remotes/origin/litellm_stable_release_branch; then
-            echo "litellm_stable_release_branch branch exists."
-            git checkout litellm_stable_release_branch
+          # Check if the dheera_ai_stable_release_branch branch exists
+          if git show-ref --verify --quiet refs/remotes/origin/dheera_ai_stable_release_branch; then
+            echo "dheera_ai_stable_release_branch branch exists."
+            git checkout dheera_ai_stable_release_branch
           else
-            echo "litellm_stable_release_branch branch does not exist. Creating it."
-            git checkout -b litellm_stable_release_branch
+            echo "dheera_ai_stable_release_branch branch does not exist. Creating it."
+            git checkout -b dheera_ai_stable_release_branch
           fi
 
-          # Reset litellm_stable_release_branch branch to the release commit
+          # Reset dheera_ai_stable_release_branch branch to the release commit
           git reset --hard $GITHUB_SHA
 
-          # Push the updated litellm_stable_release_branch branch
-          git push origin litellm_stable_release_branch --force
+          # Push the updated dheera_ai_stable_release_branch branch
+          git push origin dheera_ai_stable_release_branch --force

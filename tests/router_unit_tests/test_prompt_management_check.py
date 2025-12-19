@@ -9,7 +9,7 @@ import os
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-from litellm import Router
+from dheera_ai import Router
 
 
 def test_is_prompt_management_model_optimization():
@@ -22,18 +22,18 @@ def test_is_prompt_management_model_optimization():
     
     Tests both negative (early exit) and positive (actual detection) cases.
     """
-    import litellm
+    import dheera_ai
     
     # Test 1: Standard models without "/" -> early exit returns False
     router = Router(
         model_list=[
             {
                 "model_name": "gpt-4",
-                "litellm_params": {"model": "gpt-4"},
+                "dheera_ai_params": {"model": "gpt-4"},
             },
             {
                 "model_name": "claude-3",
-                "litellm_params": {"model": "anthropic/claude-3-sonnet-20240229"},
+                "dheera_ai_params": {"model": "anthropic/claude-3-sonnet-20240229"},
             },
         ]
     )
@@ -45,16 +45,16 @@ def test_is_prompt_management_model_optimization():
     assert router._is_prompt_management_model("unknown/model") is False
     
     # Test 3: Actual prompt management models ARE detected (critical positive case)
-    original_callbacks = litellm._known_custom_logger_compatible_callbacks.copy()
-    if "langfuse_prompt" not in litellm._known_custom_logger_compatible_callbacks:
-        litellm._known_custom_logger_compatible_callbacks.append("langfuse_prompt")
+    original_callbacks = dheera_ai._known_custom_logger_compatible_callbacks.copy()
+    if "langfuse_prompt" not in dheera_ai._known_custom_logger_compatible_callbacks:
+        dheera_ai._known_custom_logger_compatible_callbacks.append("langfuse_prompt")
     
     try:
         router_with_prompt = Router(
             model_list=[
                 {
                     "model_name": "my-langfuse-prompt/test_id",
-                    "litellm_params": {"model": "langfuse_prompt/actual_prompt_id"},
+                    "dheera_ai_params": {"model": "langfuse_prompt/actual_prompt_id"},
                 },
             ]
         )
@@ -63,5 +63,5 @@ def test_is_prompt_management_model_optimization():
         assert router_with_prompt._is_prompt_management_model("my-langfuse-prompt/test_id") is True
         
     finally:
-        litellm._known_custom_logger_compatible_callbacks = original_callbacks
+        dheera_ai._known_custom_logger_compatible_callbacks = original_callbacks
 

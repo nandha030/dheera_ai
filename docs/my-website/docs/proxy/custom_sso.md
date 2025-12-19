@@ -1,32 +1,32 @@
 # ✨ Event Hooks for SSO Login
 
 :::info
-✨ SSO is free for up to 5 users. After that, an enterprise license is required. [Get Started with Enterprise here](https://www.litellm.ai/enterprise)
+✨ SSO is free for up to 5 users. After that, an enterprise license is required. [Get Started with Enterprise here](https://www.dheera_ai.ai/enterprise)
 :::
 
 ## Overview
 
-LiteLLM provides two different SSO hooks depending on your authentication setup:
+Dheera AI provides two different SSO hooks depending on your authentication setup:
 
 | Hook Type | When to Use | What It Does |
 |-----------|-------------|--------------|
-| **Custom UI SSO Sign-in Handler** | You have an OAuth proxy (oauth2-proxy, Gatekeeper, Vouch, etc.) in front of LiteLLM | Parses user info from request headers and signs user into UI |
+| **Custom UI SSO Sign-in Handler** | You have an OAuth proxy (oauth2-proxy, Gatekeeper, Vouch, etc.) in front of Dheera AI | Parses user info from request headers and signs user into UI |
 | **Custom SSO Handler** | You use direct SSO providers (Google, Microsoft, SAML) and want custom post-auth logic | Runs custom code after standard OAuth flow to set user permissions/teams |
 
 **Quick Decision Guide:**
-- ✅ **Use Custom UI SSO Sign-in Handler** if user authentication happens outside LiteLLM (via headers)
-- ✅ **Use Custom SSO Handler** if you want LiteLLM to handle OAuth flow + run custom logic afterward
+- ✅ **Use Custom UI SSO Sign-in Handler** if user authentication happens outside Dheera AI (via headers)
+- ✅ **Use Custom SSO Handler** if you want Dheera AI to handle OAuth flow + run custom logic afterward
 
 ---
 
 ## Option 1: Custom UI SSO Sign-in Handler
 
-Use this when you have an **OAuth proxy in front of LiteLLM** that has already authenticated the user and passes user information via request headers.
+Use this when you have an **OAuth proxy in front of Dheera AI** that has already authenticated the user and passes user information via request headers.
 
 ### How it works
 - User lands on Admin UI  
 - 👉 **Your custom SSO sign-in handler is called to parse request headers and return user info**
-- LiteLLM has retrieved user information from your custom handler
+- Dheera AI has retrieved user information from your custom handler
 - User signed in to UI
 
 ### Usage
@@ -38,7 +38,7 @@ This handler parses request headers and returns user information as an OpenID ob
 ```python
 from fastapi import Request
 from fastapi_sso.sso.base import OpenID
-from litellm.integrations.custom_sso_handler import CustomSSOLoginHandler
+from dheera_ai.integrations.custom_sso_handler import CustomSSOLoginHandler
 
 
 class MyCustomSSOLoginHandler(CustomSSOLoginHandler):
@@ -46,7 +46,7 @@ class MyCustomSSOLoginHandler(CustomSSOLoginHandler):
     Custom handler for parsing OAuth proxy headers
     
     Use this when you have an OAuth proxy (like oauth2-proxy, Vouch, etc.) 
-    in front of LiteLLM that adds user info to request headers
+    in front of Dheera AI that adds user info to request headers
     """
     async def handle_custom_ui_sso_sign_in(
         self,
@@ -71,7 +71,7 @@ class MyCustomSSOLoginHandler(CustomSSOLoginHandler):
             provider="oauth-proxy",
         )
 
-# Create an instance to be used by LiteLLM
+# Create an instance to be used by Dheera AI
 custom_ui_sso_sign_in_handler = MyCustomSSOLoginHandler()
 ```
 
@@ -80,37 +80,37 @@ custom_ui_sso_sign_in_handler = MyCustomSSOLoginHandler()
 ```yaml
 model_list: 
   - model_name: "openai-model"
-    litellm_params: 
+    dheera_ai_params: 
       model: "gpt-3.5-turbo"
 
 general_settings:
   custom_ui_sso_sign_in_handler: custom_sso_handler.custom_ui_sso_sign_in_handler
 
-litellm_settings:
+dheera_ai_settings:
   drop_params: True
   set_verbose: True
 ```
 
 #### 3. Start the proxy
 ```shell
-$ litellm --config /path/to/config.yaml 
+$ dheera_ai --config /path/to/config.yaml 
 ```
 
 #### 4. Navigate to the Admin UI
 
-When a user attempts navigating to the LiteLLM Admin UI, the request will be routed to your custom UI SSO sign-in handler. 
+When a user attempts navigating to the Dheera AI Admin UI, the request will be routed to your custom UI SSO sign-in handler. 
 
 ---
 
 ## Option 2: Custom SSO Handler (Post-Authentication)
 
-Use this if you want to run your own code **after** a user signs on to the LiteLLM UI using standard SSO providers (Google, Microsoft, etc.)
+Use this if you want to run your own code **after** a user signs on to the Dheera AI UI using standard SSO providers (Google, Microsoft, etc.)
 
 ### How it works
 - User lands on Admin UI
-- LiteLLM redirects user to your SSO provider (Google, Microsoft, etc.)
-- Your SSO provider redirects user back to LiteLLM  
-- LiteLLM has retrieved user information from your IDP
+- Dheera AI redirects user to your SSO provider (Google, Microsoft, etc.)
+- Your SSO provider redirects user back to Dheera AI  
+- Dheera AI has retrieved user information from your IDP
 - 👉 **Your custom SSO handler is called and returns an object of type SSOUserDefinedValues**
 - User signed in to UI
 
@@ -124,12 +124,12 @@ Make sure the response type follows the `SSOUserDefinedValues` pydantic object. 
 from fastapi import Request
 from fastapi_sso.sso.base import OpenID
 
-from litellm.proxy._types import LitellmUserRoles, SSOUserDefinedValues
-from litellm.proxy.management_endpoints.internal_user_endpoints import (
+from dheera_ai.proxy._types import LitellmUserRoles, SSOUserDefinedValues
+from dheera_ai.proxy.management_endpoints.internal_user_endpoints import (
     new_user,
     user_info,
 )
-from litellm.proxy.management_endpoints.team_endpoints import add_new_member
+from dheera_ai.proxy.management_endpoints.team_endpoints import add_new_member
 
 
 async def custom_sso_handler(userIDPInfo: OpenID) -> SSOUserDefinedValues:
@@ -145,15 +145,15 @@ async def custom_sso_handler(userIDPInfo: OpenID) -> SSOUserDefinedValues:
 
         #################################################
         # Run your custom code / logic here
-        # check if user exists in litellm proxy DB
+        # check if user exists in dheera_ai proxy DB
         _user_info = await user_info(user_id=userIDPInfo.id)
-        print("_user_info from litellm DB ", _user_info)  # noqa
+        print("_user_info from dheera_ai DB ", _user_info)  # noqa
         #################################################
 
         return SSOUserDefinedValues(
             models=[],                                      # models user has access to
-            user_id=userIDPInfo.id,                         # user id to use in the LiteLLM DB
-            user_email=userIDPInfo.email,                   # user email to use in the LiteLLM DB
+            user_id=userIDPInfo.id,                         # user id to use in the Dheera AI DB
+            user_email=userIDPInfo.email,                   # user email to use in the Dheera AI DB
             user_role=LitellmUserRoles.INTERNAL_USER.value, # role to use for the user 
             max_budget=0.01,                                # Max budget for this UI login Session
             budget_duration="1d",                           # Duration of the budget for this UI login Session, 1d, 2d, 30d ...
@@ -171,18 +171,18 @@ e.g. if they're both in the same dir - `./config.yaml` and `./custom_sso.py`, th
 ```yaml 
 model_list: 
   - model_name: "openai-model"
-    litellm_params: 
+    dheera_ai_params: 
       model: "gpt-3.5-turbo"
 
 general_settings:
   custom_sso: custom_sso.custom_sso_handler
 
-litellm_settings:
+dheera_ai_settings:
   drop_params: True
   set_verbose: True
 ```
 
 #### 3. Start the proxy
 ```shell
-$ litellm --config /path/to/config.yaml 
+$ dheera_ai --config /path/to/config.yaml 
 ```

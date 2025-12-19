@@ -8,15 +8,15 @@ from datetime import datetime
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-from litellm import Router
+from dheera_ai import Router
 import pytest
-import litellm
+import dheera_ai
 from unittest.mock import patch, MagicMock, AsyncMock
 
 import json
 from io import BytesIO
 from typing import Dict, List
-from litellm.router_utils.batch_utils import (
+from dheera_ai.router_utils.batch_utils import (
     replace_model_in_jsonl,
     _get_router_metadata_variable_name,
     InMemoryFile,
@@ -91,19 +91,19 @@ def test_router_metadata_variable_name():
     """Test that the variable name is correct"""
     assert _get_router_metadata_variable_name(function_name="completion") == "metadata"
     assert (
-        _get_router_metadata_variable_name(function_name="batch") == "litellm_metadata"
+        _get_router_metadata_variable_name(function_name="batch") == "dheera_ai_metadata"
     )
     assert (
-        _get_router_metadata_variable_name(function_name="acreate_file") == "litellm_metadata"
+        _get_router_metadata_variable_name(function_name="acreate_file") == "dheera_ai_metadata"
     )
     assert (
-        _get_router_metadata_variable_name(function_name="aget_file") == "litellm_metadata"
+        _get_router_metadata_variable_name(function_name="aget_file") == "dheera_ai_metadata"
     )
 
 
 def test_non_json_input():
     """Test that replace_model_in_jsonl returns original content for non-JSON input"""
-    from litellm.router_utils.batch_utils import replace_model_in_jsonl
+    from dheera_ai.router_utils.batch_utils import replace_model_in_jsonl
     
     # Test with non-JSON string
     non_json_str = "This is not a JSON string"
@@ -124,7 +124,7 @@ def test_non_json_input():
 
 def test_should_replace_model_in_jsonl():
     """Test that should_replace_model_in_jsonl returns the correct value"""
-    from litellm.router_utils.batch_utils import should_replace_model_in_jsonl
+    from dheera_ai.router_utils.batch_utils import should_replace_model_in_jsonl
     assert should_replace_model_in_jsonl(purpose="batch") == True
     assert should_replace_model_in_jsonl(purpose="test") == False
     assert should_replace_model_in_jsonl(purpose="user_data") == False

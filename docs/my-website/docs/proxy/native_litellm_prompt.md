@@ -1,9 +1,9 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# LiteLLM Prompt Management (GitOps)
+# Dheera AI Prompt Management (GitOps)
 
-Store prompts as `.prompt` files in your repository and use them directly with LiteLLM. No external services required.
+Store prompts as `.prompt` files in your repository and use them directly with Dheera AI. No external services required.
 
 ## Supported Integrations
 
@@ -30,15 +30,15 @@ System: You are a helpful assistant.
 User: {{user_message}}
 ```
 
-**2. Use with LiteLLM**
+**2. Use with Dheera AI**
 
 ```python
-import litellm
+import dheera_ai
 
 # Set the global prompt directory
-litellm.global_prompt_directory = "prompts/"
+dheera_ai.global_prompt_directory = "prompts/"
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="dotprompt/gpt-4",
     prompt_id="hello",
     prompt_variables={"user_message": "What is the capital of France?"}
@@ -65,7 +65,7 @@ User: {{user_message}}
 **2. Configure BitBucket access**
 
 ```python
-import litellm
+import dheera_ai
 
 # Configure BitBucket access
 bitbucket_config = {
@@ -76,13 +76,13 @@ bitbucket_config = {
 }
 
 # Set global BitBucket configuration
-litellm.set_global_bitbucket_config(bitbucket_config)
+dheera_ai.set_global_bitbucket_config(bitbucket_config)
 ```
 
-**3. Use with LiteLLM**
+**3. Use with Dheera AI**
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
     model="bitbucket/gpt-4",
     prompt_id="hello",
     prompt_variables={"user_message": "What is the capital of France?"}
@@ -109,7 +109,7 @@ User: {{user_message}}
 **2. Configure Gitlab access**
 
 ```python
-import litellm
+import dheera_ai
 
 # Configure gitlab access
 gitlab_config = {
@@ -120,13 +120,13 @@ gitlab_config = {
 }
 
 # Set global gitlab configuration
-litellm.set_global_gitlab_config(gitlab_config)
+dheera_ai.set_global_gitlab_config(gitlab_config)
 ```
 
-**3. Use with LiteLLM**
+**3. Use with Dheera AI**
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gitlab/gpt-4",
     prompt_id="hello",
     prompt_variables={"user_message": "What is the capital of France?"}
@@ -156,12 +156,12 @@ User: {{user_message}}
 ```yaml
 model_list:
   - model_name: my-dotprompt-model
-    litellm_params:
+    dheera_ai_params:
       model: dotprompt/gpt-4
       prompt_id: "hello"
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   global_prompt_directory: "./prompts"
   # Or use BitBucket for team-based prompt management
   global_bitbucket_config:
@@ -180,7 +180,7 @@ litellm_settings:
 **3. Start the proxy**
 
 ```bash
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 **4. Test it!**
@@ -276,7 +276,7 @@ gitlab_config: Optional[dict]     # optional - Gitlab configuration (if not set 
 
 ```python
 # File system integration
-response = litellm.completion(
+response = dheera_ai.completion(
     model="dotprompt/gpt-4",
     prompt_id="hello",
     prompt_variables={"user_message": "Hello world"},
@@ -284,7 +284,7 @@ response = litellm.completion(
 )
 
 # BitBucket integration
-response = litellm.completion(
+response = dheera_ai.completion(
     model="bitbucket/gpt-4",
     prompt_id="hello",
     prompt_variables={"user_message": "Hello world"},
@@ -296,7 +296,7 @@ response = litellm.completion(
 )
 
 # Gitlab integration
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gitlab/gpt-4",
     prompt_id="hello",
     prompt_variables={"user_message": "Hello world"},

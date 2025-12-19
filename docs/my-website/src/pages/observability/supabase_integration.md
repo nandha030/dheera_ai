@@ -34,13 +34,13 @@ create table
 Use just 2 lines of code, to instantly see costs and log your responses **across all providers** with Supabase: 
 
 ```
-litellm.success_callback=["supabase"]
-litellm.failure_callback=["supabase"]
+dheera_ai.success_callback=["supabase"]
+dheera_ai.failure_callback=["supabase"]
 ```
 
 Complete code
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 ## set env variables
 ### SUPABASE
@@ -51,8 +51,8 @@ os.environ["SUPABASE_KEY"] = "your-supabase-key"
 os.environ["OPENAI_API_KEY"] = ""
 
 # set callbacks
-litellm.success_callback=["supabase"]
-litellm.failure_callback=["supabase"]
+dheera_ai.success_callback=["supabase"]
+dheera_ai.failure_callback=["supabase"]
 
 #openai call
 response = completion(model="gpt-3.5-turbo", messages=[{"role": "user", "content": "Hi 👋 - i'm openai"}]) 
@@ -68,7 +68,7 @@ response = completion(model="chatgpt-test", messages=[{"role": "user", "content"
 If you modified your table name, here's how to pass the new name.
 
 ```python 
-litellm.modify_integration("supabase",{"table_name": "litellm_logs"})
+dheera_ai.modify_integration("supabase",{"table_name": "dheera_ai_logs"})
 ```
 
 **Identify end-user**
@@ -76,5 +76,5 @@ litellm.modify_integration("supabase",{"table_name": "litellm_logs"})
 Here's how to map your llm call to an end-user 
 
 ```python
-litellm.identify({"end_user": "krrish@berri.ai"})
+dheera_ai.identify({"end_user": "krrish@berri.ai"})
 ```

@@ -3,22 +3,22 @@ import TabItem from '@theme/TabItem';
 
 # Pydantic AI Agents
 
-Call Pydantic AI Agents via LiteLLM's A2A Gateway.
+Call Pydantic AI Agents via Dheera AI's A2A Gateway.
 
 | Property | Details |
 |----------|---------|
-| Description | Pydantic AI agents with native A2A support via the `to_a2a()` method. LiteLLM provides fake streaming support for agents that don't natively stream. |
-| Provider Route on LiteLLM | A2A Gateway |
+| Description | Pydantic AI agents with native A2A support via the `to_a2a()` method. Dheera AI provides fake streaming support for agents that don't natively stream. |
+| Provider Route on Dheera AI | A2A Gateway |
 | Supported Endpoints | `/v1/a2a/message/send` |
 | Provider Doc | [Pydantic AI Agents ↗](https://ai.pydantic.dev/agents/) |
 
-## LiteLLM A2A Gateway
+## Dheera AI A2A Gateway
 
-All Pydantic AI agents need to be exposed as A2A agents using the `to_a2a()` method. Once your agent server is running, you can add it to the LiteLLM Gateway.
+All Pydantic AI agents need to be exposed as A2A agents using the `to_a2a()` method. Once your agent server is running, you can add it to the Dheera AI Gateway.
 
 ### 1. Setup Pydantic AI Agent Server
 
-LiteLLM requires Pydantic AI agents to follow the [A2A (Agent-to-Agent) protocol](https://github.com/google/A2A). Pydantic AI has native A2A support via the `to_a2a()` method, which exposes your agent as an A2A-compliant server.
+Dheera AI requires Pydantic AI agents to follow the [A2A (Agent-to-Agent) protocol](https://github.com/google/A2A). Pydantic AI has native A2A support via the `to_a2a()` method, which exposes your agent as an A2A-compliant server.
 
 #### Install Dependencies
 

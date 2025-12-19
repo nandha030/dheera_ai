@@ -2,7 +2,7 @@
 
 ## Supported Embedding Models
 
-| Provider | LiteLLM Route | AWS Documentation | Cost Tracking |
+| Provider | Dheera AI Route | AWS Documentation | Cost Tracking |
 |----------|---------------|-------------------|---------------|
 | Amazon Titan | `bedrock/amazon.titan-*` | [Amazon Titan Embeddings](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html) | ✅ |
 | Amazon Nova | `bedrock/amazon.nova-*` | [Amazon Nova Embeddings](https://docs.aws.amazon.com/bedrock/latest/userguide/nova-embed.html) | ✅ |
@@ -11,7 +11,7 @@
 
 ## Async Invoke Support
 
-LiteLLM supports AWS Bedrock's async-invoke feature for embedding models that require asynchronous processing, particularly useful for large media files (video, audio) or when you need to process embeddings in the background.
+Dheera AI supports AWS Bedrock's async-invoke feature for embedding models that require asynchronous processing, particularly useful for large media files (video, audio) or when you need to process embeddings in the background.
 
 ### Supported Models
 
@@ -35,12 +35,12 @@ When using async-invoke, you must provide:
 #### Basic Async Invoke
 
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 
 # Text embedding with async-invoke
 response = embedding(
     model="bedrock/async_invoke/us.twelvelabs.marengo-embed-2-7-v1:0",
-    input=["Hello world from LiteLLM async invoke!"],
+    input=["Hello world from Dheera AI async invoke!"],
     aws_region_name="us-east-1",
     input_type="text",
     output_s3_uri="s3://your-bucket/async-invoke-output/"
@@ -109,13 +109,13 @@ print(f"Job ID: {job_id}")
 
 #### Checking Job Status
 
-Use LiteLLM's `retrieve_batch` function to check if your job is still processing:
+Use Dheera AI's `retrieve_batch` function to check if your job is still processing:
 
 ```python
-from litellm import retrieve_batch
+from dheera_ai import retrieve_batch
 
 def check_async_job_status(invocation_arn, aws_region_name="us-east-1"):
-    """Check the status of an async invoke job using LiteLLM batch API"""
+    """Check the status of an async invoke job using Dheera AI batch API"""
     try:
         response = retrieve_batch(
             batch_id=invocation_arn,  # Pass the invocation ARN here
@@ -209,7 +209,7 @@ except Exception as e:
 ### Best Practices
 
 1. **Use async-invoke for large files**: Video and audio files are better processed asynchronously
-2. **Use LiteLLM batch API**: Use `retrieve_batch()` instead of direct Bedrock API calls for status checking
+2. **Use Dheera AI batch API**: Use `retrieve_batch()` instead of direct Bedrock API calls for status checking
 3. **Monitor job status**: Check job status periodically using the batch API to know when results are ready
 4. **Handle errors gracefully**: Implement proper error handling for network issues and job failures
 5. **Set appropriate timeouts**: Consider the processing time for large files
@@ -219,11 +219,11 @@ except Exception as e:
 
 - Async-invoke is supported for TwelveLabs Marengo and Amazon Nova models
 - Results are stored in S3 and must be retrieved separately using the output file ID
-- Job status checking requires using LiteLLM's `retrieve_batch()` function
-- No built-in polling mechanism in LiteLLM (must implement your own status checking loop)
+- Job status checking requires using Dheera AI's `retrieve_batch()` function
+- No built-in polling mechanism in Dheera AI (must implement your own status checking loop)
 
 ### API keys
-This can be set as env variables or passed as **params to litellm.embedding()**
+This can be set as env variables or passed as **params to dheera_ai.embedding()**
 ```python
 import os
 os.environ["AWS_ACCESS_KEY_ID"] = ""        # Access key
@@ -232,29 +232,29 @@ os.environ["AWS_REGION_NAME"] = ""           # us-east-1, us-east-2, us-west-1, 
 ```
 
 ## Usage
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 response = embedding(
     model="bedrock/amazon.titan-embed-text-v1",
-    input=["good morning from litellm"],
+    input=["good morning from dheera_ai"],
 )
 print(response)
 ```
 
-### LiteLLM Proxy Server
+### Dheera AI Proxy Server
 
 #### 1. Setup config.yaml
 ```yaml
 model_list:
   - model_name: titan-embed-v1
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/amazon.titan-embed-text-v1
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
       aws_region_name: us-east-1
   - model_name: titan-embed-v2
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/amazon.titan-embed-text-v2:0
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -263,7 +263,7 @@ model_list:
 
 #### 2. Start Proxy 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 #### 3. Use with OpenAI Python SDK
@@ -275,18 +275,18 @@ client = openai.OpenAI(
 )
 
 response = client.embeddings.create(
-    input=["good morning from litellm"],
+    input=["good morning from dheera_ai"],
     model="titan-embed-v1"
 )
 print(response)
 ```
 
-#### 4. Use with LiteLLM Python SDK
+#### 4. Use with Dheera AI Python SDK
 ```python
-import litellm
-response = litellm.embedding(
+import dheera_ai
+response = dheera_ai.embedding(
     model="titan-embed-v1", # model alias from config.yaml
-    input=["good morning from litellm"],
+    input=["good morning from dheera_ai"],
     api_base="http://0.0.0.0:4000",
     api_key="anything"
 )
@@ -298,14 +298,14 @@ print(response)
 | Model Name           | Usage                               | Supported Additional OpenAI params |
 |----------------------|---------------------------------------------|-----|
 | **Amazon Nova Multimodal Embeddings** | `embedding(model="bedrock/amazon.nova-2-multimodal-embeddings-v1:0", input=input)` | Supports multimodal input (text, image, video, audio), multiple purposes, dimensions (256, 384, 1024, 3072) |
-| Titan Embeddings V2 | `embedding(model="bedrock/amazon.titan-embed-text-v2:0", input=input)` | [here](https://github.com/BerriAI/litellm/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/litellm/llms/bedrock/embed/amazon_titan_v2_transformation.py#L59) |
-| Titan Embeddings - V1 | `embedding(model="bedrock/amazon.titan-embed-text-v1", input=input)` | [here](https://github.com/BerriAI/litellm/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/litellm/llms/bedrock/embed/amazon_titan_g1_transformation.py#L53)
-| Titan Multimodal Embeddings | `embedding(model="bedrock/amazon.titan-embed-image-v1", input=input)` | [here](https://github.com/BerriAI/litellm/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/litellm/llms/bedrock/embed/amazon_titan_multimodal_transformation.py#L28) |
+| Titan Embeddings V2 | `embedding(model="bedrock/amazon.titan-embed-text-v2:0", input=input)` | [here](https://github.com/BerriAI/dheera_ai/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/dheera_ai/llms/bedrock/embed/amazon_titan_v2_transformation.py#L59) |
+| Titan Embeddings - V1 | `embedding(model="bedrock/amazon.titan-embed-text-v1", input=input)` | [here](https://github.com/BerriAI/dheera_ai/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/dheera_ai/llms/bedrock/embed/amazon_titan_g1_transformation.py#L53)
+| Titan Multimodal Embeddings | `embedding(model="bedrock/amazon.titan-embed-image-v1", input=input)` | [here](https://github.com/BerriAI/dheera_ai/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/dheera_ai/llms/bedrock/embed/amazon_titan_multimodal_transformation.py#L28) |
 | TwelveLabs Marengo Embed 2.7 | `embedding(model="bedrock/us.twelvelabs.marengo-embed-2-7-v1:0", input=input)` | Supports multimodal input (text, video, audio, image) |
-| Cohere Embeddings - English | `embedding(model="bedrock/cohere.embed-english-v3", input=input)` | [here](https://github.com/BerriAI/litellm/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/litellm/llms/bedrock/embed/cohere_transformation.py#L18)
-| Cohere Embeddings - Multilingual | `embedding(model="bedrock/cohere.embed-multilingual-v3", input=input)` | [here](https://github.com/BerriAI/litellm/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/litellm/llms/bedrock/embed/cohere_transformation.py#L18)
+| Cohere Embeddings - English | `embedding(model="bedrock/cohere.embed-english-v3", input=input)` | [here](https://github.com/BerriAI/dheera_ai/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/dheera_ai/llms/bedrock/embed/cohere_transformation.py#L18)
+| Cohere Embeddings - Multilingual | `embedding(model="bedrock/cohere.embed-multilingual-v3", input=input)` | [here](https://github.com/BerriAI/dheera_ai/blob/f5905e100068e7a4d61441d7453d7cf5609c2121/dheera_ai/llms/bedrock/embed/cohere_transformation.py#L18)
 | Cohere Embed v4 | `embedding(model="bedrock/cohere.embed-v4:0", input=input)` | Supports text and image input, configurable dimensions (256, 512, 1024, 1536), 128k context length |
 
-### Advanced - [Drop Unsupported Params](https://docs.litellm.ai/docs/completion/drop_params#openai-proxy-usage)
+### Advanced - [Drop Unsupported Params](https://docs.dheera_ai.ai/docs/completion/drop_params#openai-proxy-usage)
 
-### Advanced - [Pass model/provider-specific Params](https://docs.litellm.ai/docs/completion/provider_specific_params#proxy-usage)
+### Advanced - [Pass model/provider-specific Params](https://docs.dheera_ai.ai/docs/completion/provider_specific_params#proxy-usage)

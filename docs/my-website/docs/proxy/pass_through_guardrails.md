@@ -6,8 +6,8 @@ import Image from '@theme/IdealImage';
 
 | Property | Details |
 |----------|---------|
-| Description | Enable guardrail execution on LiteLLM pass-through endpoints with opt-in activation and automatic inheritance from org/team/key levels |
-| Supported Guardrails | All LiteLLM guardrails (Bedrock, Aporia, Lakera, etc.) |
+| Description | Enable guardrail execution on Dheera AI pass-through endpoints with opt-in activation and automatic inheritance from org/team/key levels |
+| Supported Guardrails | All Dheera AI guardrails (Bedrock, Aporia, Lakera, etc.) |
 | Default Behavior | Guardrails are **disabled** on pass-through endpoints unless explicitly enabled |
 
 ## Quick Start
@@ -25,7 +25,7 @@ Go to **Models + Endpoints** → Click **+ Add Pass-Through Endpoint**
 Scroll to the **Guardrails** section and select which guardrails to enforce.
 
 :::tip Default Behavior
-By default, you don't need to specify fields - LiteLLM will JSON dump the entire request/response payload and send it to the guardrail.
+By default, you don't need to specify fields - Dheera AI will JSON dump the entire request/response payload and send it to the guardrail.
 :::
 
 #### 2. Target Specific Fields (Optional)
@@ -51,7 +51,7 @@ To check only specific fields instead of the entire payload:
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "pii-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: bedrock
       mode: pre_call
       guardrailIdentifier: "your-guardrail-id"
@@ -70,7 +70,7 @@ general_settings:
 #### 2. Start proxy
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 #### 3. Test request
@@ -122,7 +122,7 @@ If the `guardrails` block is omitted or empty in your pass-through endpoint conf
 ```mermaid
 sequenceDiagram
     participant Client
-    box rgb(200, 220, 255) LiteLLM Proxy
+    box rgb(200, 220, 255) Dheera AI Proxy
         participant PassThrough as Pass-through Endpoint
         participant Guardrails
     end
@@ -148,14 +148,14 @@ Target specific JSON fields instead of the entire request/response payload.
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "pii-detection"
-    litellm_params:
+    dheera_ai_params:
       guardrail: bedrock
       mode: pre_call
       guardrailIdentifier: "pii-guard-id"
       guardrailVersion: "1"
 
   - guardrail_name: "content-moderation"
-    litellm_params:
+    dheera_ai_params:
       guardrail: bedrock
       mode: post_call
       guardrailIdentifier: "content-guard-id"
@@ -199,7 +199,7 @@ general_settings:
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "pii-detection"
-    litellm_params:
+    dheera_ai_params:
       guardrail: bedrock
       mode: pre_call
       guardrailIdentifier: "your-id"
@@ -218,21 +218,21 @@ general_settings:
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "pii-detection"
-    litellm_params:
+    dheera_ai_params:
       guardrail: bedrock
       mode: pre_call
       guardrailIdentifier: "pii-id"
       guardrailVersion: "1"
 
   - guardrail_name: "content-moderation"
-    litellm_params:
+    dheera_ai_params:
       guardrail: bedrock
       mode: post_call
       guardrailIdentifier: "content-id"
       guardrailVersion: "1"
 
   - guardrail_name: "prompt-injection"
-    litellm_params:
+    dheera_ai_params:
       guardrail: lakera
       mode: pre_call
       api_key: os.environ/LAKERA_API_KEY

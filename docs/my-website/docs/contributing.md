@@ -1,10 +1,10 @@
 # Contributing - UI
 
-Here's how to run the LiteLLM UI locally for making changes: 
+Here's how to run the Dheera AI UI locally for making changes: 
 
 ## 1. Clone the repo 
 ```bash
-git clone https://github.com/BerriAI/litellm.git
+git clone https://github.com/BerriAI/dheera_ai.git
 ```
 
 ## 2. Start the UI + Proxy 
@@ -14,12 +14,12 @@ git clone https://github.com/BerriAI/litellm.git
 Tell the proxy where the UI is located
 ```bash
 DATABASE_URL = "postgresql://<user>:<password>@<host>:<port>/<dbname>"
-LITELLM_MASTER_KEY = "sk-1234"
+DHEERA_AI_MASTER_KEY = "sk-1234"
 STORE_MODEL_IN_DB = "True"
 ```
 
 ```bash
-cd litellm/litellm/proxy
+cd dheera_ai/dheera_ai/proxy
 python3 proxy_cli.py --config /path/to/config.yaml --port 4000
 ```
 
@@ -31,7 +31,7 @@ npm install # install dependencies
 ```
 
 ```bash
-cd litellm/ui/litellm-dashboard
+cd dheera_ai/ui/dheera_ai-dashboard
 
 npm run dev
 

@@ -12,26 +12,26 @@ sys.path.insert(
 )  # Adds the parent directory to the system path
 
 
-def test_using_litellm():
+def test_using_dheera_ai():
     try:
-        import litellm
+        import dheera_ai
 
-        print("litellm imported successfully")
+        print("dheera_ai imported successfully")
     except Exception as e:
         pytest.fail(
-            f"Error occurred: {e}. Installing litellm on python3.8 failed please retry"
+            f"Error occurred: {e}. Installing dheera_ai on python3.8 failed please retry"
         )
 
 
-def test_litellm_proxy_server():
-    # Install the local litellm[proxy] package in development mode
+def test_dheera_ai_proxy_server():
+    # Install the local dheera_ai[proxy] package in development mode
     subprocess.run(["pip", "install", "-e", ".[proxy]"])
 
     # Import the proxy_server module
     try:
-        import litellm.proxy.proxy_server
+        import dheera_ai.proxy.proxy_server
     except ImportError:
-        pytest.fail("Failed to import litellm.proxy_server")
+        pytest.fail("Failed to import dheera_ai.proxy_server")
 
     # Assertion to satisfy the test, you can add other checks as needed
     assert True
@@ -43,7 +43,7 @@ def test_package_dependencies():
     """
     try:
         import pathlib
-        import litellm
+        import dheera_ai
         
         # Try to import tomllib (Python 3.11+) or tomli (older versions)
         try:
@@ -54,9 +54,9 @@ def test_package_dependencies():
             except ImportError:
                 pytest.skip("tomli/tomllib not available - skipping dependency check")
 
-        # Get the litellm package root path
-        litellm_path = pathlib.Path(litellm.__file__).parent.parent
-        pyproject_path = litellm_path / "pyproject.toml"
+        # Get the dheera_ai package root path
+        dheera_ai_path = pathlib.Path(dheera_ai.__file__).parent.parent
+        pyproject_path = dheera_ai_path / "pyproject.toml"
 
         # Read and parse pyproject.toml
         with open(pyproject_path, "rb") as f:
@@ -101,8 +101,8 @@ import pytest
 import requests
 
 
-def test_litellm_proxy_server_config_no_general_settings():
-    # Install the local litellm packages in development mode
+def test_dheera_ai_proxy_server_config_no_general_settings():
+    # Install the local dheera_ai packages in development mode
     server_process = None
     try:
         subprocess.run(["pip", "install", "-e", ".[proxy]"])
@@ -132,7 +132,7 @@ def test_litellm_proxy_server_config_no_general_settings():
             [
                 "python",
                 "-m",
-                "litellm.proxy.proxy_cli",
+                "dheera_ai.proxy.proxy_cli",
                 "--config",
                 config_fp,
             ]
@@ -161,7 +161,7 @@ def test_litellm_proxy_server_config_no_general_settings():
         assert response.status_code == 200
 
     except ImportError:
-        pytest.fail("Failed to import litellm.proxy_server")
+        pytest.fail("Failed to import dheera_ai.proxy_server")
     except requests.ConnectionError:
         pytest.fail("Failed to connect to the server")
     finally:

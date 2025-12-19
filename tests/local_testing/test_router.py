@@ -1,5 +1,5 @@
 #### What this tests ####
-# This tests litellm router
+# This tests dheera_ai router
 
 import asyncio
 import os
@@ -10,8 +10,8 @@ import traceback
 import openai
 import pytest
 
-import litellm.types
-import litellm.types.router
+import dheera_ai.types
+import dheera_ai.types.router
 
 sys.path.insert(
     0, os.path.abspath("../..")
@@ -25,22 +25,22 @@ import httpx
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-import litellm
-from litellm import Router
-from litellm.router import Deployment, LiteLLM_Params
-from litellm.types.router import ModelInfo
-from litellm.router_utils.cooldown_handlers import (
+import dheera_ai
+from dheera_ai import Router
+from dheera_ai.router import Deployment, DheeraAI_Params
+from dheera_ai.types.router import ModelInfo
+from dheera_ai.router_utils.cooldown_handlers import (
     _async_get_cooldown_deployments,
     _get_cooldown_deployments,
 )
-from litellm.types.router import DeploymentTypedDict
+from dheera_ai.types.router import DeploymentTypedDict
 
 load_dotenv()
 
 
 def test_router_deployment_typing():
     deployment_typed_dict = DeploymentTypedDict(
-        model_name="hi", litellm_params={"model": "hello-world"}
+        model_name="hi", dheera_ai_params={"model": "hello-world"}
     )
     for value in deployment_typed_dict.items():
         assert not isinstance(value, BaseModel)
@@ -51,11 +51,11 @@ def test_router_multi_org_list():
     Pass list of orgs in 1 model definition,
     expect a unique deployment for each to be created
     """
-    router = litellm.Router(
+    router = dheera_ai.Router(
         model_list=[
             {
                 "model_name": "*",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/*",
                     "api_key": "my-key",
                     "api_base": "https://api.openai.com/v1",
@@ -74,12 +74,12 @@ async def test_router_provider_wildcard_routing():
     Pass list of orgs in 1 model definition,
     expect a unique deployment for each to be created
     """
-    litellm.set_verbose = True
-    router = litellm.Router(
+    dheera_ai.set_verbose = True
+    router = dheera_ai.Router(
         model_list=[
             {
                 "model_name": "openai/*",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/*",
                     "api_key": os.environ["OPENAI_API_KEY"],
                     "api_base": "https://api.openai.com/v1",
@@ -87,14 +87,14 @@ async def test_router_provider_wildcard_routing():
             },
             {
                 "model_name": "anthropic/*",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "anthropic/*",
                     "api_key": os.environ["ANTHROPIC_API_KEY"],
                 },
             },
             {
                 "model_name": "groq/*",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "groq/*",
                     "api_key": os.environ["GROQ_API_KEY"],
                 },
@@ -137,18 +137,18 @@ async def test_router_provider_wildcard_routing_regex():
     Pass list of orgs in 1 model definition,
     expect a unique deployment for each to be created
     """
-    router = litellm.Router(
+    router = dheera_ai.Router(
         model_list=[
             {
                 "model_name": "openai/fo::*:static::*",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/fo::*:static::*",
                     "api_base": "https://exampleopenaiendpoint-production.up.railway.app/",
                 },
             },
             {
                 "model_name": "openai/foo3::hello::*",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/foo3::hello::*",
                     "api_base": "https://exampleopenaiendpoint-production.up.railway.app/",
                 },
@@ -181,7 +181,7 @@ def test_router_specific_model_via_id():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_key": "my-fake-key",
                     "mock_response": "Hello world",
@@ -201,7 +201,7 @@ def test_router_azure_ai_client_init():
 
     _deployment = {
         "model_name": "meta-llama-3-70b",
-        "litellm_params": {
+        "dheera_ai_params": {
             "model": "azure_ai/Meta-Llama-3-70B-instruct",
             "api_base": "my-fake-route",
             "api_key": "my-fake-key",
@@ -228,7 +228,7 @@ def test_router_azure_ai_client_init():
 def test_router_azure_ad_token_provider():
     _deployment = {
         "model_name": "gpt-4o_2024-05-13",
-        "litellm_params": {
+        "dheera_ai_params": {
             "model": "azure/gpt-4o_2024-05-13",
             "api_base": "my-fake-route",
             "api_version": "2024-08-01-preview",
@@ -237,7 +237,7 @@ def test_router_azure_ad_token_provider():
     }
     for azure_cred in ["DefaultAzureCredential", "AzureCliCredential"]:
         os.environ["AZURE_CREDENTIAL"] = azure_cred
-        litellm.enable_azure_ad_token_refresh = True
+        dheera_ai.enable_azure_ad_token_refresh = True
         router = Router(model_list=[_deployment])
 
         _client = router._get_client(
@@ -265,7 +265,7 @@ def test_router_sensitive_keys():
             model_list=[
                 {
                     "model_name": "gpt-3.5-turbo",  # openai model name
-                    "litellm_params": {  # params for litellm completion/embedding call
+                    "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                         "model": "azure/gpt-4.1-mini",
                         "api_key": "special-key",
                     },
@@ -286,7 +286,7 @@ def test_router_order():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4o",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                     "mock_response": "Hello world",
@@ -296,7 +296,7 @@ def test_router_order():
             },
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4o",
                     "api_key": "bad-key",
                     "mock_response": Exception("this is a bad key"),
@@ -316,7 +316,7 @@ def test_router_order():
             messages=[{"role": "user", "content": "Hey, how's it going?"}],
         )
 
-        assert isinstance(response, litellm.ModelResponse)
+        assert isinstance(response, dheera_ai.ModelResponse)
         assert response._hidden_params["model_id"] == "1"
 
 
@@ -329,11 +329,11 @@ async def test_router_retries(sync_mode):
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {"model": "gpt-3.5-turbo", "api_key": "bad-key"},
+            "dheera_ai_params": {"model": "gpt-3.5-turbo", "api_key": "bad-key"},
         },
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-4.1-nano",
                 "api_key": os.getenv("OPENAI_API_KEY"),
             },
@@ -374,7 +374,7 @@ def test_router_azure_ai_studio_init(mistral_api_base):
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "azure/mistral-large-latest",
                     "api_key": "os.environ/AZURE_MISTRAL_API_KEY",
                     "api_base": mistral_api_base,
@@ -404,7 +404,7 @@ def test_router_azure_ai_studio_init(mistral_api_base):
 def test_exception_raising():
     # this tests if the router raises an exception when invalid params are set
     # in this test both deployments have bad keys - Keep this test. It validates if the router raises the most recent exception
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     import openai
 
     try:
@@ -414,7 +414,7 @@ def test_exception_raising():
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "azure/gpt-4.1-mini",
                     "api_key": "bad-key",
                     "api_version": os.getenv("AZURE_API_VERSION"),
@@ -425,7 +425,7 @@ def test_exception_raising():
             },
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {  #
+                "dheera_ai_params": {  #
                     "model": "gpt-3.5-turbo",
                     "api_key": "bad-key",
                 },
@@ -466,7 +466,7 @@ def test_reading_key_from_model_list():
     # [PROD TEST CASE]
     # this tests if the router can read key from model list and make completion call, and completion + stream call. This is 90% of the router use case
     # DO NOT REMOVE THIS TEST. It's an IMP ONE. Speak to Ishaan, if you are tring to remove this
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
     import openai
 
     try:
@@ -474,7 +474,7 @@ def test_reading_key_from_model_list():
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "gpt-4.1-nano",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
@@ -535,7 +535,7 @@ def test_call_one_endpoint():
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "azure/gpt-4.1-mini",
                     "api_key": old_api_key,
                     "api_version": os.getenv("AZURE_API_VERSION"),
@@ -546,7 +546,7 @@ def test_call_one_endpoint():
             },
             {
                 "model_name": "text-embedding-ada-002",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "azure/text-embedding-ada-002",
                     "api_key": os.environ["AZURE_API_KEY"],
                     "api_base": os.environ["AZURE_API_BASE"],
@@ -555,7 +555,7 @@ def test_call_one_endpoint():
                 "rpm": 10000,
             },
         ]
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         router = Router(
             model_list=model_list,
             routing_strategy="simple-shuffle",
@@ -575,7 +575,7 @@ def test_call_one_endpoint():
         async def call_azure_embedding():
             response = await router.aembedding(
                 model="azure/text-embedding-ada-002",
-                input=["good morning from litellm"],
+                input=["good morning from dheera_ai"],
                 specific_deployment=True,
             )
 
@@ -598,7 +598,7 @@ def test_router_azure_acompletion():
     # [PROD TEST CASE]
     # This is 90% of the router use case, makes an acompletion call, acompletion + stream call and verifies it got a response
     # DO NOT REMOVE THIS TEST. It's an IMP ONE. Speak to Ishaan, if you are tring to remove this
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
     import openai
 
     try:
@@ -611,7 +611,7 @@ def test_router_azure_acompletion():
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "azure/gpt-4.1-mini",
                     "api_key": old_api_key,
                     "api_version": os.getenv("AZURE_API_VERSION"),
@@ -621,7 +621,7 @@ def test_router_azure_acompletion():
             },
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "azure/gpt-turbo",
                     "api_key": os.getenv("AZURE_FRANCE_API_KEY"),
                     "api_version": os.getenv("AZURE_API_VERSION"),
@@ -685,15 +685,15 @@ async def test_async_router_context_window_fallback(sync_mode):
 
     from large_text import text
 
-    litellm.set_verbose = False
-    litellm._turn_on_debug()
+    dheera_ai.set_verbose = False
+    dheera_ai._turn_on_debug()
 
     print(f"len(text): {len(text)}")
     try:
         model_list = [
             {
                 "model_name": "gpt-4",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "gpt-4",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                     "api_base": os.getenv("OPENAI_API_BASE"),
@@ -701,7 +701,7 @@ async def test_async_router_context_window_fallback(sync_mode):
             },
             {
                 "model_name": "gpt-4-turbo",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "gpt-4-turbo",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
@@ -743,7 +743,7 @@ def test_router_rpm_pre_call_check():
         model_list = [
             {
                 "model_name": "fake-openai-endpoint",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "openai/my-fake-model",
                     "api_key": "my-fake-key",
                     "api_base": "https://openai-function-calling-workers.tasslexyz.workers.dev/",
@@ -777,14 +777,14 @@ def test_router_context_window_check_pre_call_check_in_group_custom_model_info()
 
     from large_text import text
 
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
 
     print(f"len(text): {len(text)}")
     try:
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "azure/gpt-4.1-mini",
                     "api_key": os.getenv("AZURE_API_KEY"),
                     "api_version": os.getenv("AZURE_API_VERSION"),
@@ -796,7 +796,7 @@ def test_router_context_window_check_pre_call_check_in_group_custom_model_info()
             },
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "gpt-3.5-turbo-1106",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                     "mock_response": "Hello world 2!",
@@ -831,14 +831,14 @@ def test_router_context_window_check_pre_call_check():
 
     from large_text import text
 
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
 
     print(f"len(text): {len(text)}")
     try:
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "azure/gpt-4.1-mini",
                     "api_key": os.getenv("AZURE_API_KEY"),
                     "api_version": os.getenv("AZURE_API_VERSION"),
@@ -850,7 +850,7 @@ def test_router_context_window_check_pre_call_check():
             },
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "gpt-3.5-turbo-1106",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                     "mock_response": "Hello world 2!",
@@ -885,14 +885,14 @@ def test_router_context_window_check_pre_call_check_out_group():
 
     from large_text import text
 
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
 
     print(f"len(text): {len(text)}")
     try:
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo-small",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "azure/gpt-4.1-mini",
                     "api_key": os.getenv("AZURE_API_KEY"),
                     "api_version": os.getenv("AZURE_API_VERSION"),
@@ -902,7 +902,7 @@ def test_router_context_window_check_pre_call_check_out_group():
             },
             {
                 "model_name": "gpt-3.5-turbo-large",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "gpt-3.5-turbo-1106",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
@@ -935,14 +935,14 @@ def test_filter_invalid_params_pre_call_check():
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",  # openai model name
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "gpt-3.5-turbo",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
             },
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo-16k",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
@@ -971,7 +971,7 @@ def test_router_region_pre_call_check(allowed_model_region):
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",  # openai model name
-            "litellm_params": {  # params for litellm completion/embedding call
+            "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                 "model": "azure/gpt-4.1-mini",
                 "api_key": os.getenv("AZURE_API_KEY"),
                 "api_version": os.getenv("AZURE_API_VERSION"),
@@ -983,7 +983,7 @@ def test_router_region_pre_call_check(allowed_model_region):
         },
         {
             "model_name": "gpt-3.5-turbo-large",  # openai model name
-            "litellm_params": {  # params for litellm completion/embedding call
+            "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                 "model": "gpt-3.5-turbo-1106",
                 "api_key": os.getenv("OPENAI_API_KEY"),
             },
@@ -1020,7 +1020,7 @@ def test_function_calling():
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-3.5-turbo",
                 "api_key": os.getenv("OPENAI_API_KEY"),
             },
@@ -1061,11 +1061,11 @@ def test_function_calling():
 
 def test_function_calling_on_router():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
@@ -1111,12 +1111,12 @@ def test_function_calling_on_router():
 ### IMAGE GENERATION
 @pytest.mark.asyncio
 async def test_aimg_gen_on_router():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     try:
         model_list = [
             {
                 "model_name": "dall-e-3",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "dall-e-3",
                 },
             }
@@ -1128,7 +1128,7 @@ async def test_aimg_gen_on_router():
         print(response)
         assert len(response.data) > 0
         router.reset()
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         pass
     except Exception as e:
         if "Your task failed as a result of our safety system." in str(e):
@@ -1146,12 +1146,12 @@ async def test_aimg_gen_on_router():
 
 
 def test_img_gen_on_router():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     try:
         model_list = [
             {
                 "model_name": "dall-e-3",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "dall-e-3",
                 },
             }
@@ -1163,7 +1163,7 @@ def test_img_gen_on_router():
         print(response)
         assert len(response.data) > 0
         router.reset()
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         traceback.print_exc()
@@ -1175,12 +1175,12 @@ def test_img_gen_on_router():
 
 
 def test_aembedding_on_router():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     try:
         model_list = [
             {
                 "model_name": "text-embedding-ada-002",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "text-embedding-ada-002",
                 },
                 "tpm": 100000,
@@ -1193,14 +1193,14 @@ def test_aembedding_on_router():
             ## Test 1: user facing function
             response = await router.aembedding(
                 model="text-embedding-ada-002",
-                input=["good morning from litellm", "this is another item"],
+                input=["good morning from dheera_ai", "this is another item"],
             )
             print(response)
 
             ## Test 2: underlying function
             response = await router._aembedding(
                 model="text-embedding-ada-002",
-                input=["good morning from litellm 2"],
+                input=["good morning from dheera_ai 2"],
             )
             print(response)
             router.reset()
@@ -1211,7 +1211,7 @@ def test_aembedding_on_router():
         ## Test 1: user facing function
         response = router.embedding(
             model="text-embedding-ada-002",
-            input=["good morning from litellm 2"],
+            input=["good morning from dheera_ai 2"],
         )
         print(response)
         router.reset()
@@ -1219,7 +1219,7 @@ def test_aembedding_on_router():
         ## Test 2: underlying function
         response = router._embedding(
             model="text-embedding-ada-002",
-            input=["good morning from litellm 2"],
+            input=["good morning from dheera_ai 2"],
         )
         print(response)
         router.reset()
@@ -1242,12 +1242,12 @@ def test_azure_embedding_on_router():
     """
     [PROD Use Case] - Makes an aembedding call + embedding call
     """
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     try:
         model_list = [
             {
                 "model_name": "text-embedding-ada-002",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "azure/text-embedding-ada-002",
                     "api_key": os.environ["AZURE_API_KEY"],
                     "api_base": os.environ["AZURE_API_BASE"],
@@ -1260,7 +1260,7 @@ def test_azure_embedding_on_router():
 
         async def embedding_call():
             response = await router.aembedding(
-                model="text-embedding-ada-002", input=["good morning from litellm"]
+                model="text-embedding-ada-002", input=["good morning from dheera_ai"]
             )
             print(response)
 
@@ -1270,7 +1270,7 @@ def test_azure_embedding_on_router():
 
         response = router.embedding(
             model="text-embedding-ada-002",
-            input=["test 2 from litellm. async embedding"],
+            input=["test 2 from dheera_ai. async embedding"],
         )
         print(response)
         router.reset()
@@ -1288,11 +1288,11 @@ def test_azure_embedding_on_router():
 # test openai-compatible endpoint
 @pytest.mark.asyncio
 async def test_mistral_on_router():
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "mistral/mistral-small-latest",
             },
         },
@@ -1303,7 +1303,7 @@ async def test_mistral_on_router():
         messages=[
             {
                 "role": "user",
-                "content": "hello from litellm test",
+                "content": "hello from dheera_ai test",
             }
         ],
     )
@@ -1316,13 +1316,13 @@ async def test_mistral_on_router():
 def test_openai_completion_on_router():
     # [PROD Use Case] - Makes an acompletion call + async acompletion call, and sync acompletion call, sync completion + stream
     # 4 LLM API calls made here. If it fails, add retries. Do not remove this test.
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     print("\n Testing OpenAI on router\n")
     try:
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                 },
             },
@@ -1335,7 +1335,7 @@ def test_openai_completion_on_router():
                 messages=[
                     {
                         "role": "user",
-                        "content": "hello from litellm test",
+                        "content": "hello from dheera_ai test",
                     }
                 ],
             )
@@ -1348,7 +1348,7 @@ def test_openai_completion_on_router():
                 messages=[
                     {
                         "role": "user",
-                        "content": f"hello from litellm test {time.time()}",
+                        "content": f"hello from dheera_ai test {time.time()}",
                     }
                 ],
                 stream=True,
@@ -1369,7 +1369,7 @@ def test_openai_completion_on_router():
             messages=[
                 {
                     "role": "user",
-                    "content": "hello from litellm test2",
+                    "content": "hello from dheera_ai test2",
                 }
             ],
         )
@@ -1382,7 +1382,7 @@ def test_openai_completion_on_router():
             messages=[
                 {
                     "role": "user",
-                    "content": "hello from litellm test3",
+                    "content": "hello from dheera_ai test3",
                 }
             ],
             stream=True,
@@ -1408,7 +1408,7 @@ def test_model_group_info():
         model_list=[
             {
                 "model_name": "command-r-plus",
-                "litellm_params": {"model": "cohere.command-r-plus-v1:0"},
+                "dheera_ai_params": {"model": "cohere.command-r-plus-v1:0"},
             }
         ]
     )
@@ -1420,7 +1420,7 @@ def test_model_group_info():
 
 def test_consistent_model_id():
     """
-    - For a given model group + litellm params, assert the model id is always the same
+    - For a given model group + dheera_ai params, assert the model id is always the same
 
     Test on `_generate_model_id`
 
@@ -1429,7 +1429,7 @@ def test_consistent_model_id():
     Test on `_add_deployment`
     """
     model_group = "gpt-3.5-turbo"
-    litellm_params = {
+    dheera_ai_params = {
         "model": "openai/my-fake-model",
         "api_key": "my-fake-key",
         "api_base": "https://openai-function-calling-workers.tasslexyz.workers.dev/",
@@ -1437,11 +1437,11 @@ def test_consistent_model_id():
     }
 
     id1 = Router()._generate_model_id(
-        model_group=model_group, litellm_params=litellm_params
+        model_group=model_group, dheera_ai_params=dheera_ai_params
     )
 
     id2 = Router()._generate_model_id(
-        model_group=model_group, litellm_params=litellm_params
+        model_group=model_group, dheera_ai_params=dheera_ai_params
     )
 
     assert id1 == id2
@@ -1455,7 +1455,7 @@ def test_reading_keys_os_environ():
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_key": "os.environ/AZURE_API_KEY",
                     "api_base": "os.environ/AZURE_API_BASE",
@@ -1470,24 +1470,24 @@ def test_reading_keys_os_environ():
         router = Router(model_list=model_list)
         for model in router.model_list:
             assert (
-                model["litellm_params"]["api_key"] == os.environ["AZURE_API_KEY"]
-            ), f"{model['litellm_params']['api_key']} vs {os.environ['AZURE_API_KEY']}"
+                model["dheera_ai_params"]["api_key"] == os.environ["AZURE_API_KEY"]
+            ), f"{model['dheera_ai_params']['api_key']} vs {os.environ['AZURE_API_KEY']}"
             assert (
-                model["litellm_params"]["api_base"] == os.environ["AZURE_API_BASE"]
-            ), f"{model['litellm_params']['api_base']} vs {os.environ['AZURE_API_BASE']}"
+                model["dheera_ai_params"]["api_base"] == os.environ["AZURE_API_BASE"]
+            ), f"{model['dheera_ai_params']['api_base']} vs {os.environ['AZURE_API_BASE']}"
             assert (
-                model["litellm_params"]["api_version"]
+                model["dheera_ai_params"]["api_version"]
                 == os.environ["AZURE_API_VERSION"]
-            ), f"{model['litellm_params']['api_version']} vs {os.environ['AZURE_API_VERSION']}"
-            assert float(model["litellm_params"]["timeout"]) == float(
+            ), f"{model['dheera_ai_params']['api_version']} vs {os.environ['AZURE_API_VERSION']}"
+            assert float(model["dheera_ai_params"]["timeout"]) == float(
                 os.environ["AZURE_TIMEOUT"]
-            ), f"{model['litellm_params']['timeout']} vs {os.environ['AZURE_TIMEOUT']}"
-            assert float(model["litellm_params"]["stream_timeout"]) == float(
+            ), f"{model['dheera_ai_params']['timeout']} vs {os.environ['AZURE_TIMEOUT']}"
+            assert float(model["dheera_ai_params"]["stream_timeout"]) == float(
                 os.environ["AZURE_STREAM_TIMEOUT"]
-            ), f"{model['litellm_params']['stream_timeout']} vs {os.environ['AZURE_STREAM_TIMEOUT']}"
-            assert int(model["litellm_params"]["max_retries"]) == int(
+            ), f"{model['dheera_ai_params']['stream_timeout']} vs {os.environ['AZURE_STREAM_TIMEOUT']}"
+            assert int(model["dheera_ai_params"]["max_retries"]) == int(
                 os.environ["AZURE_MAX_RETRIES"]
-            ), f"{model['litellm_params']['max_retries']} vs {os.environ['AZURE_MAX_RETRIES']}"
+            ), f"{model['dheera_ai_params']['max_retries']} vs {os.environ['AZURE_MAX_RETRIES']}"
             print("passed testing of reading keys from os.environ")
             model_id = model["model_info"]["id"]
             async_client: openai.AsyncAzureOpenAI = router.cache.get_cache(f"{model_id}_async_client")  # type: ignore
@@ -1555,7 +1555,7 @@ def test_reading_openai_keys_os_environ():
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_key": "os.environ/OPENAI_API_KEY",
                     "timeout": "os.environ/AZURE_TIMEOUT",
@@ -1565,7 +1565,7 @@ def test_reading_openai_keys_os_environ():
             },
             {
                 "model_name": "text-embedding-ada-002",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "text-embedding-ada-002",
                     "api_key": "os.environ/OPENAI_API_KEY",
                     "timeout": "os.environ/AZURE_TIMEOUT",
@@ -1578,17 +1578,17 @@ def test_reading_openai_keys_os_environ():
         router = Router(model_list=model_list)
         for model in router.model_list:
             assert (
-                model["litellm_params"]["api_key"] == os.environ["OPENAI_API_KEY"]
-            ), f"{model['litellm_params']['api_key']} vs {os.environ['AZURE_API_KEY']}"
-            assert float(model["litellm_params"]["timeout"]) == float(
+                model["dheera_ai_params"]["api_key"] == os.environ["OPENAI_API_KEY"]
+            ), f"{model['dheera_ai_params']['api_key']} vs {os.environ['AZURE_API_KEY']}"
+            assert float(model["dheera_ai_params"]["timeout"]) == float(
                 os.environ["AZURE_TIMEOUT"]
-            ), f"{model['litellm_params']['timeout']} vs {os.environ['AZURE_TIMEOUT']}"
-            assert float(model["litellm_params"]["stream_timeout"]) == float(
+            ), f"{model['dheera_ai_params']['timeout']} vs {os.environ['AZURE_TIMEOUT']}"
+            assert float(model["dheera_ai_params"]["stream_timeout"]) == float(
                 os.environ["AZURE_STREAM_TIMEOUT"]
-            ), f"{model['litellm_params']['stream_timeout']} vs {os.environ['AZURE_STREAM_TIMEOUT']}"
-            assert int(model["litellm_params"]["max_retries"]) == int(
+            ), f"{model['dheera_ai_params']['stream_timeout']} vs {os.environ['AZURE_STREAM_TIMEOUT']}"
+            assert int(model["dheera_ai_params"]["max_retries"]) == int(
                 os.environ["AZURE_MAX_RETRIES"]
-            ), f"{model['litellm_params']['max_retries']} vs {os.environ['AZURE_MAX_RETRIES']}"
+            ), f"{model['dheera_ai_params']['max_retries']} vs {os.environ['AZURE_MAX_RETRIES']}"
             print("passed testing of reading keys from os.environ")
             model_id = model["model_info"]["id"]
             async_client: openai.AsyncOpenAI = router.cache.get_cache(key=f"{model_id}_async_client")  # type: ignore
@@ -1649,7 +1649,7 @@ def test_router_anthropic_key_dynamic():
     model_list = [
         {
             "model_name": "anthropic-claude",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "claude-3-5-haiku-20241022",
                 "api_key": anthropic_api_key,
             },
@@ -1663,16 +1663,16 @@ def test_router_anthropic_key_dynamic():
 
 
 def test_router_timeout():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     import logging
 
-    from litellm._logging import verbose_logger
+    from dheera_ai._logging import verbose_logger
 
     verbose_logger.setLevel(logging.DEBUG)
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-3.5-turbo",
                 "api_key": "os.environ/OPENAI_API_KEY",
             },
@@ -1687,7 +1687,7 @@ def test_router_timeout():
         )
         print(res)
         pytest.fail("this should have timed out")
-    except litellm.exceptions.Timeout as e:
+    except dheera_ai.exceptions.Timeout as e:
         print("got timeout exception")
         print(e)
         print(vars(e))
@@ -1699,7 +1699,7 @@ async def test_router_amoderation():
     model_list = [
         {
             "model_name": "openai-moderations",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "omni-moderation-latest",
                 "api_key": os.getenv("OPENAI_API_KEY", None),
             },
@@ -1717,7 +1717,7 @@ def test_router_add_deployment():
     initial_model_list = [
         {
             "model_name": "fake-openai-endpoint",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "openai/my-fake-model",
                 "api_key": "my-fake-key",
                 "api_base": "https://openai-function-calling-workers.tasslexyz.workers.dev/",
@@ -1733,7 +1733,7 @@ def test_router_add_deployment():
     router.add_deployment(
         deployment=Deployment(
             model_name="gpt-instruct",
-            litellm_params=LiteLLM_Params(model="gpt-3.5-turbo-instruct"),
+            dheera_ai_params=DheeraAI_Params(model="gpt-3.5-turbo-instruct"),
             model_info=ModelInfo(),
         )
     )
@@ -1755,7 +1755,7 @@ async def test_router_text_completion_client():
         model_list = [
             {
                 "model_name": "fake-openai-endpoint",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "text-completion-openai/gpt-3.5-turbo-instruct",
                     "api_key": os.getenv("OPENAI_API_KEY", None),
                     "api_base": "https://exampleopenaiendpoint-production.up.railway.app/",
@@ -1768,7 +1768,7 @@ async def test_router_text_completion_client():
             tasks.append(
                 router.atext_completion(
                     model="fake-openai-endpoint",
-                    prompt="hello from litellm test",
+                    prompt="hello from dheera_ai test",
                 )
             )
 
@@ -1780,8 +1780,8 @@ async def test_router_text_completion_client():
 
 
 @pytest.fixture
-def mock_response() -> litellm.ModelResponse:
-    return litellm.ModelResponse(
+def mock_response() -> dheera_ai.ModelResponse:
+    return dheera_ai.ModelResponse(
         **{
             "id": "chatcmpl-abc123",
             "object": "chat.completion",
@@ -1823,7 +1823,7 @@ async def test_router_model_usage(mock_response):
     setattr(
         mock_response,
         "usage",
-        litellm.Usage(prompt_tokens=5, completion_tokens=5, total_tokens=10),
+        dheera_ai.Usage(prompt_tokens=5, completion_tokens=5, total_tokens=10),
     )
 
     print(f"mock_response: {mock_response}")
@@ -1832,7 +1832,7 @@ async def test_router_model_usage(mock_response):
         model_list=[
             {
                 "model_name": model,
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_key": "my-key",
                     "api_base": "my-base",
@@ -1905,7 +1905,7 @@ async def test_is_proxy_set():
         model_list=[
             {
                 "model_name": "gpt-4",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "azure/gpt-3.5-turbo",
                     "api_key": "my-key",
                     "api_base": "my-base",
@@ -1943,7 +1943,7 @@ def test_router_get_model_info(model, base_model, llm_provider):
         model_list=[
             {
                 "model_name": "gpt-4",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": model,
                     "api_key": "my-fake-key",
                     "api_base": "my-fake-base",
@@ -1989,7 +1989,7 @@ def test_router_context_window_pre_call_check(model, base_model, llm_provider):
         model_list = [
             {
                 "model_name": "gpt-4",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": model,
                     "api_key": "my-fake-key",
                     "api_base": "my-fake-base",
@@ -2004,13 +2004,13 @@ def test_router_context_window_pre_call_check(model, base_model, llm_provider):
             num_retries=0,
         )
 
-        litellm.token_counter = MagicMock()
+        dheera_ai.token_counter = MagicMock()
 
         def token_counter_side_effect(*args, **kwargs):
             # Process args and kwargs if needed
             return 1000000
 
-        litellm.token_counter.side_effect = token_counter_side_effect
+        dheera_ai.token_counter.side_effect = token_counter_side_effect
         try:
             updated_list = router._pre_call_checks(
                 model="gpt-4",
@@ -2031,17 +2031,17 @@ def test_router_context_window_pre_call_check(model, base_model, llm_provider):
 
 
 def test_router_cooldown_api_connection_error():
-    from litellm.router_utils.cooldown_handlers import _is_cooldown_required
+    from dheera_ai.router_utils.cooldown_handlers import _is_cooldown_required
 
     try:
-        _ = litellm.completion(
+        _ = dheera_ai.completion(
             model="vertex_ai/gemini-1.5-pro",
             messages=[{"role": "admin", "content": "Fail on this!"}],
         )
-    except litellm.APIConnectionError as e:
+    except dheera_ai.APIConnectionError as e:
         assert (
             _is_cooldown_required(
-                litellm_router_instance=Router(),
+                dheera_ai_router_instance=Router(),
                 model_id="",
                 exception_status=e.code,
                 exception_str=str(e),
@@ -2053,7 +2053,7 @@ def test_router_cooldown_api_connection_error():
         model_list=[
             {
                 "model_name": "gemini-1.5-pro",
-                "litellm_params": {"model": "vertex_ai/gemini-1.5-pro"},
+                "dheera_ai_params": {"model": "vertex_ai/gemini-1.5-pro"},
             }
         ]
     )
@@ -2063,7 +2063,7 @@ def test_router_cooldown_api_connection_error():
             model="gemini-1.5-pro",
             messages=[{"role": "admin", "content": "Fail on this!"}],
         )
-    except litellm.APIConnectionError:
+    except dheera_ai.APIConnectionError:
         pass
 
 
@@ -2079,9 +2079,9 @@ def test_router_correctly_reraise_error():
         model_list=[
             {
                 "model_name": "gemini-1.5-pro",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "vertex_ai/gemini-1.5-pro",
-                    "mock_response": "litellm.RateLimitError",
+                    "mock_response": "dheera_ai.RateLimitError",
                 },
             }
         ]
@@ -2092,24 +2092,24 @@ def test_router_correctly_reraise_error():
             model="gemini-1.5-pro",
             messages=[{"role": "admin", "content": "Fail on this!"}],
         )
-    except litellm.RateLimitError:
+    except dheera_ai.RateLimitError:
         pass
 
 
 def test_router_dynamic_cooldown_correct_retry_after_time():
     """
-    User feedback: litellm says "No deployments available for selected model, Try again in 60 seconds"
+    User feedback: dheera_ai says "No deployments available for selected model, Try again in 60 seconds"
     but Azure says to retry in at most 9s
 
     ```
-    {"message": "litellm.proxy.proxy_server.embeddings(): Exception occured - No deployments available for selected model, Try again in 60 seconds. Passed model=text-embedding-ada-002. pre-call-checks=False, allowed_model_region=n/a, cooldown_list=[('b49cbc9314273db7181fe69b1b19993f04efb88f2c1819947c538bac08097e4c', {'Exception Received': 'litellm.RateLimitError: AzureException RateLimitError - Requests to the Embeddings_Create Operation under Azure OpenAI API version 2023-09-01-preview have exceeded call rate limit of your current OpenAI S0 pricing tier. Please retry after 9 seconds. Please go here: https://aka.ms/oai/quotaincrease if you would like to further increase the default rate limit.', 'Status Code': '429'})]", "level": "ERROR", "timestamp": "2024-08-22T03:25:36.900476"}
+    {"message": "dheera_ai.proxy.proxy_server.embeddings(): Exception occured - No deployments available for selected model, Try again in 60 seconds. Passed model=text-embedding-ada-002. pre-call-checks=False, allowed_model_region=n/a, cooldown_list=[('b49cbc9314273db7181fe69b1b19993f04efb88f2c1819947c538bac08097e4c', {'Exception Received': 'dheera_ai.RateLimitError: AzureException RateLimitError - Requests to the Embeddings_Create Operation under Azure OpenAI API version 2023-09-01-preview have exceeded call rate limit of your current OpenAI S0 pricing tier. Please retry after 9 seconds. Please go here: https://aka.ms/oai/quotaincrease if you would like to further increase the default rate limit.', 'Status Code': '429'})]", "level": "ERROR", "timestamp": "2024-08-22T03:25:36.900476"}
     ```
     """
     router = Router(
         model_list=[
             {
                 "model_name": "text-embedding-ada-002",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/text-embedding-ada-002",
                 },
             }
@@ -2159,7 +2159,7 @@ def test_router_dynamic_cooldown_correct_retry_after_time():
     ):
         new_retry_after_mock_client = MagicMock(return_value=-1)
 
-        litellm.utils._get_retry_after_from_exception_header = (
+        dheera_ai.utils._get_retry_after_from_exception_header = (
             new_retry_after_mock_client
         )
 
@@ -2169,7 +2169,7 @@ def test_router_dynamic_cooldown_correct_retry_after_time():
                 input="Hello world!",
                 client=openai_client,
             )
-        except litellm.RateLimitError:
+        except dheera_ai.RateLimitError:
             pass
 
         new_retry_after_mock_client.assert_called()
@@ -2182,26 +2182,26 @@ def test_router_dynamic_cooldown_correct_retry_after_time():
 @pytest.mark.asyncio
 async def test_aaarouter_dynamic_cooldown_message_retry_time(sync_mode):
     """
-    User feedback: litellm says "No deployments available for selected model, Try again in 60 seconds"
+    User feedback: dheera_ai says "No deployments available for selected model, Try again in 60 seconds"
     but Azure says to retry in at most 9s
 
     ```
-    {"message": "litellm.proxy.proxy_server.embeddings(): Exception occured - No deployments available for selected model, Try again in 60 seconds. Passed model=text-embedding-ada-002. pre-call-checks=False, allowed_model_region=n/a, cooldown_list=[('b49cbc9314273db7181fe69b1b19993f04efb88f2c1819947c538bac08097e4c', {'Exception Received': 'litellm.RateLimitError: AzureException RateLimitError - Requests to the Embeddings_Create Operation under Azure OpenAI API version 2023-09-01-preview have exceeded call rate limit of your current OpenAI S0 pricing tier. Please retry after 9 seconds. Please go here: https://aka.ms/oai/quotaincrease if you would like to further increase the default rate limit.', 'Status Code': '429'})]", "level": "ERROR", "timestamp": "2024-08-22T03:25:36.900476"}
+    {"message": "dheera_ai.proxy.proxy_server.embeddings(): Exception occured - No deployments available for selected model, Try again in 60 seconds. Passed model=text-embedding-ada-002. pre-call-checks=False, allowed_model_region=n/a, cooldown_list=[('b49cbc9314273db7181fe69b1b19993f04efb88f2c1819947c538bac08097e4c', {'Exception Received': 'dheera_ai.RateLimitError: AzureException RateLimitError - Requests to the Embeddings_Create Operation under Azure OpenAI API version 2023-09-01-preview have exceeded call rate limit of your current OpenAI S0 pricing tier. Please retry after 9 seconds. Please go here: https://aka.ms/oai/quotaincrease if you would like to further increase the default rate limit.', 'Status Code': '429'})]", "level": "ERROR", "timestamp": "2024-08-22T03:25:36.900476"}
     ```
     """
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     cooldown_time = 30.0
     router = Router(
         model_list=[
             {
                 "model_name": "text-embedding-ada-002",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/text-embedding-ada-002",
                 },
             },
             {
                 "model_name": "text-embedding-ada-002",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/text-embedding-ada-002",
                 },
             },
@@ -2264,18 +2264,18 @@ async def test_aaarouter_dynamic_cooldown_message_retry_time(sync_mode):
                         input="Hello world!",
                         client=openai_client,
                     )
-            except litellm.RateLimitError:
+            except dheera_ai.RateLimitError:
                 pass
 
         await asyncio.sleep(5)
 
         if sync_mode:
             cooldown_deployments = _get_cooldown_deployments(
-                litellm_router_instance=router, parent_otel_span=None
+                dheera_ai_router_instance=router, parent_otel_span=None
             )
         else:
             cooldown_deployments = await _async_get_cooldown_deployments(
-                litellm_router_instance=router, parent_otel_span=None
+                dheera_ai_router_instance=router, parent_otel_span=None
             )
         print(
             "Cooldown deployments - {}\n{}".format(
@@ -2298,7 +2298,7 @@ async def test_aaarouter_dynamic_cooldown_message_retry_time(sync_mode):
                     input="Hello world!",
                     client=openai_client,
                 )
-        except litellm.types.router.RouterRateLimitError as e:
+        except dheera_ai.types.router.RouterRateLimitError as e:
             print(e)
             exception_raised = True
             assert e.cooldown_time == cooldown_time
@@ -2314,7 +2314,7 @@ async def test_router_weighted_pick(sync_mode):
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "weight": 2,
                     "mock_response": "Hello world 1!",
@@ -2323,7 +2323,7 @@ async def test_router_weighted_pick(sync_mode):
             },
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "weight": 1,
                     "mock_response": "Hello world 2!",
@@ -2374,7 +2374,7 @@ async def test_router_batch_endpoints(provider):
         model_list=[
             {
                 "model_name": "my-custom-name",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "azure/gpt-4o-mini",
                     "api_base": os.getenv("AZURE_API_BASE"),
                     "api_key": os.getenv("AZURE_API_KEY"),
@@ -2463,9 +2463,9 @@ def test_model_group_alias(hidden):
     _model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {"model": "gpt-3.5-turbo"},
+            "dheera_ai_params": {"model": "gpt-3.5-turbo"},
         },
-        {"model_name": "gpt-4", "litellm_params": {"model": "gpt-4"}},
+        {"model_name": "gpt-4", "dheera_ai_params": {"model": "gpt-4"}},
     ]
     router = Router(
         model_list=_model_list,
@@ -2498,7 +2498,7 @@ def test_get_team_specific_model():
     # Test 1: Matching team_id
     deployment = DeploymentTypedDict(
         model_name="model-x",
-        litellm_params={},
+        dheera_ai_params={},
         model_info=ModelInfo(team_id="team1", team_public_model_name="public-model-x"),
     )
     assert router._get_team_specific_model(deployment, "team1") == "public-model-x"
@@ -2509,14 +2509,14 @@ def test_get_team_specific_model():
     # Test 3: No team_id in model_info
     deployment = DeploymentTypedDict(
         model_name="model-y",
-        litellm_params={},
+        dheera_ai_params={},
         model_info=ModelInfo(team_public_model_name="public-model-y"),
     )
     assert router._get_team_specific_model(deployment, "team1") is None
 
     # Test 4: No model_info
     deployment = DeploymentTypedDict(
-        model_name="model-z", litellm_params={}, model_info=ModelInfo()
+        model_name="model-z", dheera_ai_params={}, model_info=ModelInfo()
     )
     assert router._get_team_specific_model(deployment, "team1") is None
 
@@ -2553,7 +2553,7 @@ def test_is_team_specific_model():
 #         model_list=[
 #             {
 #                 "model_name": "gpt-3.5-turbo",
-#                 "litellm_params": {
+#                 "dheera_ai_params": {
 #                     "model": "azure/gpt-4.1-mini",
 #                     "api_key": os.getenv("AZURE_API_KEY"),
 #                     "api_base": os.getenv("AZURE_API_BASE"),
@@ -2563,7 +2563,7 @@ def test_is_team_specific_model():
 #             },
 #             {
 #                 "model_name": "gpt-3.5-turbo",
-#                 "litellm_params": {
+#                 "dheera_ai_params": {
 #                     "model": "azure/gpt-4.1-mini",
 #                     "api_key": os.getenv("AZURE_API_KEY"),
 #                     "api_base": os.getenv("AZURE_API_BASE"),
@@ -2595,7 +2595,7 @@ def test_router_completion_with_model_id():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {"model": "gpt-3.5-turbo"},
+                "dheera_ai_params": {"model": "gpt-3.5-turbo"},
                 "model_info": {"id": "123"},
             }
         ]
@@ -2613,11 +2613,11 @@ def test_router_prompt_management_factory():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {"model": "gpt-3.5-turbo"},
+                "dheera_ai_params": {"model": "gpt-3.5-turbo"},
             },
             {
                 "model_name": "chatbot_actions",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "langfuse/openai-gpt-3.5-turbo",
                     "tpm": 1000000,
                     "prompt_id": "jokes",
@@ -2625,7 +2625,7 @@ def test_router_prompt_management_factory():
             },
             {
                 "model_name": "openai-gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-3.5-turbo",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
@@ -2650,7 +2650,7 @@ def test_router_get_model_list_from_model_alias():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {"model": "gpt-3.5-turbo"},
+                "dheera_ai_params": {"model": "gpt-3.5-turbo"},
             }
         ],
         model_group_alias={
@@ -2674,7 +2674,7 @@ def test_router_dynamic_credentials():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-3.5-turbo",
                     "api_key": original_api_key,
                     "mock_response": "fake_response",
@@ -2686,7 +2686,7 @@ def test_router_dynamic_credentials():
 
     deployment = router.get_deployment(model_id=original_model_id)
     assert deployment is not None
-    assert deployment.litellm_params.api_key == original_api_key
+    assert deployment.dheera_ai_params.api_key == original_api_key
 
     response = router.completion(
         model="gpt-3.5-turbo",
@@ -2704,7 +2704,7 @@ def test_router_dynamic_credentials():
 
     deployment = router.get_deployment(model_id=original_model_id)
     assert deployment is not None
-    assert deployment.litellm_params.api_key == original_api_key
+    assert deployment.dheera_ai_params.api_key == original_api_key
 
 
 def test_router_get_model_group_info():
@@ -2712,11 +2712,11 @@ def test_router_get_model_group_info():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {"model": "gpt-3.5-turbo"},
+                "dheera_ai_params": {"model": "gpt-3.5-turbo"},
             },
             {
                 "model_name": "gpt-4",
-                "litellm_params": {"model": "gpt-4"},
+                "dheera_ai_params": {"model": "gpt-4"},
             },
         ],
     )

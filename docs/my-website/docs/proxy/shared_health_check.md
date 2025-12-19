@@ -1,10 +1,10 @@
 # Shared Health Check State Across Pods
 
-This feature enables coordination of health checks across multiple LiteLLM proxy pods to avoid duplicate health checks and reduce costs.
+This feature enables coordination of health checks across multiple Dheera AI proxy pods to avoid duplicate health checks and reduce costs.
 
 ## Overview
 
-When running multiple LiteLLM proxy pods (e.g., in Kubernetes), each pod typically runs its own independent health checks on every model. This can result in:
+When running multiple Dheera AI proxy pods (e.g., in Kubernetes), each pod typically runs its own independent health checks on every model. This can result in:
 
 - **Duplicate health checks** across pods
 - **Increased costs** for expensive models (e.g., Gemini 2.5-pro)
@@ -55,7 +55,7 @@ general_settings:
   health_check_interval: 300  # 5 minutes
 
 # Redis configuration (required for shared health check)
-litellm_settings:
+dheera_ai_settings:
   cache: true
   cache_params:
     type: redis
@@ -225,7 +225,7 @@ general_settings:
 # proxy_config.yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4
       api_key: os.environ/OPENAI_API_KEY
     model_info:
@@ -244,7 +244,7 @@ general_settings:
   # Health check details
   health_check_details: true
 
-litellm_settings:
+dheera_ai_settings:
   # Redis configuration
   cache: true
   cache_params:
@@ -262,14 +262,14 @@ litellm_settings:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: litellm-proxy
+  name: dheera_ai-proxy
 spec:
   replicas: 3  # Multiple pods for coordination
   template:
     spec:
       containers:
-      - name: litellm-proxy
-        image: docker.litellm.ai/berriai/litellm:latest
+      - name: dheera_ai-proxy
+        image: docker.dheera_ai.ai/berriai/dheera_ai:latest
         env:
         - name: USE_SHARED_HEALTH_CHECK
           value: "true"

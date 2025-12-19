@@ -3,11 +3,11 @@ import TabItem from '@theme/TabItem';
 
 # Image Generation in Chat Completions, Responses API
 
-This guide covers how to generate images when using the `chat/completions`. Note - if you want this on Responses API please file a Feature Request [here](https://github.com/BerriAI/litellm/issues/new).
+This guide covers how to generate images when using the `chat/completions`. Note - if you want this on Responses API please file a Feature Request [here](https://github.com/BerriAI/dheera_ai/issues/new).
 
 :::info
 
-Requires LiteLLM v1.76.1+
+Requires Dheera AI v1.76.1+
 
 :::
 
@@ -15,9 +15,9 @@ Supported Providers:
 - Google AI Studio (`gemini`)
 - Vertex AI (`vertex_ai/`)
 
-LiteLLM will standardize the `images` response in the assistant message for models that support image generation during chat completions.
+Dheera AI will standardize the `images` response in the assistant message for models that support image generation during chat completions.
 
-```python title="Example response from litellm"
+```python title="Example response from dheera_ai"
 "message": {
     ...
     "content": "Here's the image you requested:",
@@ -40,7 +40,7 @@ LiteLLM will standardize the `images` response in the assistant message for mode
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers title="Image generation with chat completion"
-from litellm import completion
+from dheera_ai import completion
 import os 
 
 os.environ["GEMINI_API_KEY"] = "your-api-key"
@@ -48,7 +48,7 @@ os.environ["GEMINI_API_KEY"] = "your-api-key"
 response = completion(
     model="gemini/gemini-2.5-flash-image-preview",
     messages=[
-        {"role": "user", "content": "Generate an image of a banana wearing a costume that says LiteLLM"}
+        {"role": "user", "content": "Generate an image of a banana wearing a costume that says Dheera AI"}
     ],
 )
 
@@ -64,7 +64,7 @@ print(response.choices[0].message.images)   # List of image objects
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gemini-image-gen
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.5-flash-image-preview
       api_key: os.environ/GEMINI_API_KEY
 ```
@@ -72,7 +72,7 @@ model_list:
 2. Run proxy server
 
 ```bash showLineNumbers title="Start the proxy"
-litellm --config config.yaml
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -82,13 +82,13 @@ litellm --config config.yaml
 ```bash showLineNumbers title="Make request"
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "gemini-image-gen",
     "messages": [
       {
         "role": "user",
-        "content": "Generate an image of a banana wearing a costume that says LiteLLM"
+        "content": "Generate an image of a banana wearing a costume that says Dheera AI"
       }
     ]
   }'
@@ -139,7 +139,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers title="Streaming image generation"
-from litellm import completion
+from dheera_ai import completion
 import os 
 
 os.environ["GEMINI_API_KEY"] = "your-api-key"
@@ -147,7 +147,7 @@ os.environ["GEMINI_API_KEY"] = "your-api-key"
 response = completion(
     model="gemini/gemini-2.5-flash-image-preview",
     messages=[
-        {"role": "user", "content": "Generate an image of a banana wearing a costume that says LiteLLM"}
+        {"role": "user", "content": "Generate an image of a banana wearing a costume that says Dheera AI"}
     ],
     stream=True,
 )
@@ -164,13 +164,13 @@ for chunk in response:
 ```bash showLineNumbers title="Streaming request"
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "gemini-image-gen",
     "messages": [
       {
         "role": "user",
-        "content": "Generate an image of a banana wearing a costume that says LiteLLM"
+        "content": "Generate an image of a banana wearing a costume that says Dheera AI"
       }
     ],
     "stream": true
@@ -197,7 +197,7 @@ data: [DONE]
 ## Async Support
 
 ```python showLineNumbers title="Async image generation"
-from litellm import acompletion
+from dheera_ai import acompletion
 import asyncio
 import os 
 
@@ -207,7 +207,7 @@ async def generate_image():
     response = await acompletion(
         model="gemini/gemini-2.5-flash-image-preview",
         messages=[
-            {"role": "user", "content": "Generate an image of a banana wearing a costume that says LiteLLM"}
+            {"role": "user", "content": "Generate an image of a banana wearing a costume that says Dheera AI"}
         ],
     )
     

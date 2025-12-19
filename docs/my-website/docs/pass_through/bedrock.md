@@ -6,14 +6,14 @@ Pass-through endpoints for Bedrock - call provider-specific endpoint, in native 
 |-------|-------|-------|
 | Cost Tracking | ✅ | For `/invoke` and `/converse` endpoints |
 | Load Balancing | ✅ | You can load balance `/invoke`, `/converse` routes across multiple deployments| Logging | ✅ | works across all integrations |
-| End-user Tracking | ❌ | [Tell us if you need this](https://github.com/BerriAI/litellm/issues/new) |
+| End-user Tracking | ❌ | [Tell us if you need this](https://github.com/BerriAI/dheera_ai/issues/new) |
 | Streaming | ✅ | |
 
-Just replace `https://bedrock-runtime.{aws_region_name}.amazonaws.com` with `LITELLM_PROXY_BASE_URL/bedrock` 🚀
+Just replace `https://bedrock-runtime.{aws_region_name}.amazonaws.com` with `DHEERA_AI_PROXY_BASE_URL/bedrock` 🚀
 
 ## Overview
 
-LiteLLM supports two ways to call Bedrock endpoints:
+Dheera AI supports two ways to call Bedrock endpoints:
 
 ### 1. **Using config.yaml** (Recommended for model endpoints)
 
@@ -24,7 +24,7 @@ Define your Bedrock models in `config.yaml` and reference them by name. The prox
 ```yaml showLineNumbers
 model_list:
   - model_name: my-bedrock-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_region_name: us-west-2
       custom_llm_provider: bedrock
@@ -69,7 +69,7 @@ Let's call the Bedrock [`/converse` endpoint](https://docs.aws.amazon.com/bedroc
 ```yaml showLineNumbers
 model_list:
   - model_name: my-bedrock-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_region_name: us-west-2
       custom_llm_provider: bedrock
@@ -82,10 +82,10 @@ export AWS_ACCESS_KEY_ID=""  # Access key
 export AWS_SECRET_ACCESS_KEY="" # Secret access key
 ```
 
-2. Start LiteLLM Proxy 
+2. Start Dheera AI Proxy 
 
 ```bash showLineNumbers
-litellm --config config.yaml
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -120,13 +120,13 @@ Use config.yaml to define Bedrock models and use them via passthrough endpoints.
 ```yaml showLineNumbers
 model_list:
   - model_name: my-claude-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_region_name: us-west-2
       custom_llm_provider: bedrock
   
   - model_name: my-cohere-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/cohere.command-r-v1:0
       aws_region_name: us-east-1
       custom_llm_provider: bedrock
@@ -135,7 +135,7 @@ model_list:
 ### 2. Start proxy with config
 
 ```bash showLineNumbers
-litellm --config config.yaml
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -207,14 +207,14 @@ Define multiple Bedrock deployments with the same `model_name` to enable automat
 model_list:
   # First deployment - us-west-2
   - model_name: my-claude-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_region_name: us-west-2
       custom_llm_provider: bedrock
   
   # Second deployment - us-east-1 (load balanced)
   - model_name: my-claude-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_region_name: us-east-1
       custom_llm_provider: bedrock
@@ -223,7 +223,7 @@ model_list:
 #### 2. Start proxy with config
 
 ```bash showLineNumbers
-litellm --config config.yaml
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -257,12 +257,12 @@ import boto3
 import json
 import os
 
-# Set dummy AWS credentials (required by boto3, but not used by LiteLLM proxy)
+# Set dummy AWS credentials (required by boto3, but not used by Dheera AI proxy)
 os.environ['AWS_ACCESS_KEY_ID'] = 'dummy'
 os.environ['AWS_SECRET_ACCESS_KEY'] = 'dummy'
-os.environ['AWS_BEARER_TOKEN_BEDROCK'] = "sk-1234"  # your litellm proxy api key
+os.environ['AWS_BEARER_TOKEN_BEDROCK'] = "sk-1234"  # your dheera_ai proxy api key
 
-# Point boto3 to the LiteLLM proxy
+# Point boto3 to the Dheera AI proxy
 bedrock_runtime = boto3.client(
     service_name='bedrock-runtime',
     region_name='us-west-2',
@@ -302,14 +302,14 @@ Key Changes:
 
 | **Original Endpoint**                                | **Replace With**                  |
 |------------------------------------------------------|-----------------------------------|
-| `https://bedrock-runtime.{aws_region_name}.amazonaws.com`          | `http://0.0.0.0:4000/bedrock` (LITELLM_PROXY_BASE_URL="http://0.0.0.0:4000")      |
-| `AWS4-HMAC-SHA256..`                                 | `Bearer anything` (use `Bearer LITELLM_VIRTUAL_KEY` if Virtual Keys are setup on proxy)                    |
+| `https://bedrock-runtime.{aws_region_name}.amazonaws.com`          | `http://0.0.0.0:4000/bedrock` (DHEERA_AI_PROXY_BASE_URL="http://0.0.0.0:4000")      |
+| `AWS4-HMAC-SHA256..`                                 | `Bearer anything` (use `Bearer DHEERA_AI_VIRTUAL_KEY` if Virtual Keys are setup on proxy)                    |
 
 
 
 ### **Example 1: Converse API**
 
-#### LiteLLM Proxy Call 
+#### Dheera AI Proxy Call 
 
 ```bash showLineNumbers
 curl -X POST 'http://0.0.0.0:4000/bedrock/model/cohere.command-r-v1:0/converse' \
@@ -352,12 +352,12 @@ export AWS_REGION_NAME="us-west-2"
 Start proxy:
 
 ```bash showLineNumbers
-litellm
+dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```
 
-#### LiteLLM Proxy Call 
+#### Dheera AI Proxy Call 
 
 ```bash showLineNumbers
 curl "http://0.0.0.0:4000/bedrock/guardrail/guardrailIdentifier/version/guardrailVersion/apply" \
@@ -396,12 +396,12 @@ export AWS_REGION_NAME="us-west-2"
 Start proxy:
 
 ```bash showLineNumbers
-litellm
+dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```
 
-#### LiteLLM Proxy Call
+#### Dheera AI Proxy Call
 
 ```bash showLineNumbers
 curl -X POST "http://0.0.0.0:4000/bedrock/knowledgebases/{knowledgeBaseId}/retrieve" \
@@ -457,14 +457,14 @@ Use this, to avoid giving developers the raw AWS Keys, but still letting them us
 
 ```bash showLineNumbers
 export DATABASE_URL=""
-export LITELLM_MASTER_KEY=""
+export DHEERA_AI_MASTER_KEY=""
 export AWS_ACCESS_KEY_ID=""  # Access key
 export AWS_SECRET_ACCESS_KEY="" # Secret access key
 export AWS_REGION_NAME="" # us-east-1, us-east-2, us-west-1, us-west-2
 ```
 
 ```bash showLineNumbers
-litellm
+dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -505,9 +505,9 @@ curl -X POST 'http://0.0.0.0:4000/bedrock/model/cohere.command-r-v1:0/converse' 
 
 ## Advanced - Bedrock Agents 
 
-Call Bedrock Agents via LiteLLM proxy
+Call Bedrock Agents via Dheera AI proxy
 
-**Setup**: Set AWS credentials on your LiteLLM proxy server
+**Setup**: Set AWS credentials on your Dheera AI proxy server
 
 ```bash showLineNumbers
 export AWS_ACCESS_KEY_ID="your-access-key"
@@ -518,7 +518,7 @@ export AWS_REGION_NAME="us-west-2"
 Start proxy:
 
 ```bash showLineNumbers
-litellm
+dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -529,10 +529,10 @@ litellm
 import os 
 import boto3
 
-# Set dummy AWS credentials (required by boto3, but not used by LiteLLM proxy)
+# Set dummy AWS credentials (required by boto3, but not used by Dheera AI proxy)
 os.environ["AWS_ACCESS_KEY_ID"] = "dummy"
 os.environ["AWS_SECRET_ACCESS_KEY"] = "dummy"
-os.environ["AWS_BEARER_TOKEN_BEDROCK"] = "sk-1234"  # your litellm proxy api key
+os.environ["AWS_BEARER_TOKEN_BEDROCK"] = "sk-1234"  # your dheera_ai proxy api key
 
 # Create the client
 runtime_client = boto3.client(

@@ -4,14 +4,14 @@
 
 # sys.path.insert(0, os.path.abspath("../.."))
 
-# import litellm
+# import dheera_ai
 # from memory_profiler import profile
-# from litellm.utils import (
+# from dheera_ai.utils import (
 #     ModelResponseIterator,
 #     ModelResponseListIterator,
 #     CustomStreamWrapper,
 # )
-# from litellm.types.utils import ModelResponse, Choices, Message
+# from dheera_ai.types.utils import ModelResponse, Choices, Message
 # import time
 # import pytest
 
@@ -155,14 +155,14 @@
 
 #     chunk_list = []
 #     for chunk in chunks:
-#         new_chunk = litellm.ModelResponse(stream=True, id=chunk["id"])
+#         new_chunk = dheera_ai.ModelResponse(stream=True, id=chunk["id"])
 #         if "choices" in chunk and isinstance(chunk["choices"], list):
 #             new_choices = []
 #             for choice in chunk["choices"]:
-#                 if isinstance(choice, litellm.utils.StreamingChoices):
+#                 if isinstance(choice, dheera_ai.utils.StreamingChoices):
 #                     _new_choice = choice
 #                 elif isinstance(choice, dict):
-#                     _new_choice = litellm.utils.StreamingChoices(**choice)
+#                     _new_choice = dheera_ai.utils.StreamingChoices(**choice)
 #                 new_choices.append(_new_choice)
 #             new_chunk.choices = new_choices
 #         chunk_list.append(new_chunk)
@@ -172,17 +172,17 @@
 
 # async def mock_completion(*args, **kwargs):
 #     completion_stream = model_response_list_factory()
-#     return litellm.CustomStreamWrapper(
+#     return dheera_ai.CustomStreamWrapper(
 #         completion_stream=completion_stream,
 #         model="gpt-4-0613",
 #         custom_llm_provider="cached_response",
-#         logging_obj=litellm.Logging(
+#         logging_obj=dheera_ai.Logging(
 #             model="gpt-4-0613",
 #             messages=[{"role": "user", "content": "Hey"}],
 #             stream=True,
 #             call_type="completion",
 #             start_time=time.time(),
-#             litellm_call_id="12345",
+#             dheera_ai_call_id="12345",
 #             function_id="1245",
 #         ),
 #     )

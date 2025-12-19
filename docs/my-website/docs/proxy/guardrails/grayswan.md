@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 Use [Gray Swan Cygnal](https://docs.grayswan.ai/cygnal/monitor-requests) to continuously monitor conversations for policy violations, indirect prompt injection (IPI), jailbreak attempts, and other safety risks.
 
-Cygnal returns a `violation` score between `0` and `1` (higher means more likely to violate policy), plus metadata such as violated rule indices, mutation detection, and IPI flags. LiteLLM can automatically block or monitor requests based on this signal.
+Cygnal returns a `violation` score between `0` and `1` (higher means more likely to violate policy), plus metadata such as violated rule indices, mutation detection, and IPI flags. Dheera AI can automatically block or monitor requests based on this signal.
 
 ---
 
@@ -14,7 +14,7 @@ Cygnal returns a `violation` score between `0` and `1` (higher means more likely
 ### 1. Obtain Credentials
 
 1. Create a Gray Swan account and generate a Cygnal API key.
-2. Configure environment variables for the LiteLLM proxy host:
+2. Configure environment variables for the Dheera AI proxy host:
 
 ```bash
 export GRAYSWAN_API_KEY="your-grayswan-key"
@@ -28,13 +28,13 @@ Add a guardrail entry that references the Gray Swan integration. Below is a bala
 ```yaml
 model_list:
   - model_name: openai/gpt-4.1-mini
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1-mini
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "cygnal-monitor"
-    litellm_params:
+    dheera_ai_params:
       guardrail: grayswan
       mode: [pre_call, post_call]            # monitor both input and output
       api_key: os.environ/GRAYSWAN_API_KEY
@@ -49,16 +49,16 @@ guardrails:
       default_on: true
 
 general_settings:
-  master_key: "your-litellm-master-key"
+  master_key: "your-dheera_ai-master-key"
 
-litellm_settings:
+dheera_ai_settings:
   set_verbose: true
 ```
 
 ### 3. Launch the Proxy
 
 ```bash
-litellm --config config.yaml --port 4000
+dheera_ai --config config.yaml --port 4000
 ```
 
 ---
@@ -90,7 +90,7 @@ When using `during_call` with `on_flagged_action: block` or `on_flagged_action: 
 ```yaml
 guardrails:
   - guardrail_name: "cygnal-monitor-only"
-    litellm_params:
+    dheera_ai_params:
       guardrail: grayswan
       mode: "during_call"
       api_key: os.environ/GRAYSWAN_API_KEY
@@ -100,7 +100,7 @@ guardrails:
       default_on: true
 ```
 
-Best for visibility without blocking. Alerts are logged via LiteLLM’s standard logging callbacks.
+Best for visibility without blocking. Alerts are logged via Dheera AI’s standard logging callbacks.
 
 </TabItem>
 <TabItem value="block-input" label="Block Input">
@@ -108,7 +108,7 @@ Best for visibility without blocking. Alerts are logged via LiteLLM’s standard
 ```yaml
 guardrails:
   - guardrail_name: "cygnal-block-input"
-    litellm_params:
+    dheera_ai_params:
       guardrail: grayswan
       mode: "pre_call"
       api_key: os.environ/GRAYSWAN_API_KEY
@@ -128,7 +128,7 @@ Stops malicious or sensitive prompts before any tokens are generated.
 ```yaml
 guardrails:
   - guardrail_name: "cygnal-full-coverage"
-    litellm_params:
+    dheera_ai_params:
       guardrail: grayswan
       mode: [pre_call, post_call]
       api_key: os.environ/GRAYSWAN_API_KEY
@@ -148,7 +148,7 @@ Provides the strongest enforcement by inspecting both prompts and responses.
 ```yaml
 guardrails:
   - guardrail_name: "cygnal-passthrough"
-    litellm_params:
+    dheera_ai_params:
       guardrail: grayswan
       mode: [pre_call, post_call]
       api_key: os.environ/GRAYSWAN_API_KEY

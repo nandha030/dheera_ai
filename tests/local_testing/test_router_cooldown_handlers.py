@@ -19,17 +19,17 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import httpx
 import openai
 
-import litellm
-from litellm import Router
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.router_utils.cooldown_handlers import (
+import dheera_ai
+from dheera_ai import Router
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.router_utils.cooldown_handlers import (
     _async_get_cooldown_deployments,
     _should_run_cooldown_logic,
 )
-from litellm.types.router import (
+from dheera_ai.types.router import (
     AllowedFailsPolicy,
     DeploymentTypedDict,
-    LiteLLMParamsTypedDict,
+    DheeraAIParamsTypedDict,
 )
 
 
@@ -39,11 +39,11 @@ async def test_cooldown_badrequest_error():
     Test 1. It SHOULD NOT cooldown a deployment on a BadRequestError
     """
 
-    router = litellm.Router(
+    router = dheera_ai.Router(
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "azure/gpt-4.1-mini",
                     "api_key": os.getenv("AZURE_API_KEY"),
                     "api_version": os.getenv("AZURE_API_VERSION"),
@@ -85,18 +85,18 @@ async def test_cooldown_badrequest_error():
 @pytest.mark.asyncio
 async def test_dynamic_cooldowns():
     """
-    Assert kwargs for completion/embedding have 'cooldown_time' as a litellm_param
+    Assert kwargs for completion/embedding have 'cooldown_time' as a dheera_ai_param
     """
-    # litellm.set_verbose = True
+    # dheera_ai.set_verbose = True
     tmp_mock = MagicMock()
 
-    litellm.failure_callback = [tmp_mock]
+    dheera_ai.failure_callback = [tmp_mock]
 
     router = Router(
         model_list=[
             {
                 "model_name": "my-fake-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-1",
                     "api_key": "my-key",
                     "mock_response": Exception("this is an error"),
@@ -120,8 +120,8 @@ async def test_dynamic_cooldowns():
 
     print(tmp_mock.call_count)
 
-    assert "cooldown_time" in tmp_mock.call_args[0][0]["litellm_params"]
-    assert tmp_mock.call_args[0][0]["litellm_params"]["cooldown_time"] == 0
+    assert "cooldown_time" in tmp_mock.call_args[0][0]["dheera_ai_params"]
+    assert tmp_mock.call_args[0][0]["dheera_ai_params"]["cooldown_time"] == 0
 
 
 @pytest.mark.asyncio
@@ -134,14 +134,14 @@ async def test_cooldown_time_zero_uses_zero_not_default():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "cooldown_time": 0,
                 },
             },
             {
                 "model_name": "gpt-4",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4",
                 },
             },
@@ -158,9 +158,9 @@ async def test_cooldown_time_zero_uses_zero_not_default():
             await router.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
-                mock_response="litellm.RateLimitError",
+                mock_response="dheera_ai.RateLimitError",
             )
-        except litellm.RateLimitError:
+        except dheera_ai.RateLimitError:
             pass
 
         # Verify that add_deployment_to_cooldown was NOT called due to early exit
@@ -168,7 +168,7 @@ async def test_cooldown_time_zero_uses_zero_not_default():
 
     # Also verify the deployment is not in cooldown
     cooldown_list = await _async_get_cooldown_deployments(
-        litellm_router_instance=router, parent_otel_span=None
+        dheera_ai_router_instance=router, parent_otel_span=None
     )
     assert len(cooldown_list) == 0
 
@@ -187,7 +187,7 @@ def test_should_run_cooldown_logic_early_exit_on_zero_cooldown():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                 },
                 "model_info": {
@@ -200,10 +200,10 @@ def test_should_run_cooldown_logic_early_exit_on_zero_cooldown():
 
     # Test with time_to_cooldown = 0 - should return False (don't run cooldown logic)
     result = _should_run_cooldown_logic(
-        litellm_router_instance=router,
+        dheera_ai_router_instance=router,
         deployment="test-deployment-id",
         exception_status=429,
-        original_exception=litellm.RateLimitError(
+        original_exception=dheera_ai.RateLimitError(
             "test error", "openai", "gpt-3.5-turbo"
         ),
         time_to_cooldown=0.0,
@@ -212,10 +212,10 @@ def test_should_run_cooldown_logic_early_exit_on_zero_cooldown():
 
     # Test with very small time_to_cooldown (effectively 0) - should return False
     result = _should_run_cooldown_logic(
-        litellm_router_instance=router,
+        dheera_ai_router_instance=router,
         deployment="test-deployment-id",
         exception_status=429,
-        original_exception=litellm.RateLimitError(
+        original_exception=dheera_ai.RateLimitError(
             "test error", "openai", "gpt-3.5-turbo"
         ),
         time_to_cooldown=1e-10,
@@ -226,10 +226,10 @@ def test_should_run_cooldown_logic_early_exit_on_zero_cooldown():
 
     # Test with None time_to_cooldown - should return True (use default cooldown logic)
     result = _should_run_cooldown_logic(
-        litellm_router_instance=router,
+        dheera_ai_router_instance=router,
         deployment="test-deployment-id",
         exception_status=429,
-        original_exception=litellm.RateLimitError(
+        original_exception=dheera_ai.RateLimitError(
             "test error", "openai", "gpt-3.5-turbo"
         ),
         time_to_cooldown=None,
@@ -238,10 +238,10 @@ def test_should_run_cooldown_logic_early_exit_on_zero_cooldown():
 
     # Test with positive time_to_cooldown - should return True
     result = _should_run_cooldown_logic(
-        litellm_router_instance=router,
+        dheera_ai_router_instance=router,
         deployment="test-deployment-id",
         exception_status=429,
-        original_exception=litellm.RateLimitError(
+        original_exception=dheera_ai.RateLimitError(
             "test error", "openai", "gpt-3.5-turbo"
         ),
         time_to_cooldown=60.0,
@@ -260,7 +260,7 @@ def test_single_deployment_no_cooldowns(num_deployments):
     for i in range(num_deployments):
         model = DeploymentTypedDict(
             model_name="gpt-3.5-turbo",
-            litellm_params=LiteLLMParamsTypedDict(
+            dheera_ai_params=DheeraAIParamsTypedDict(
                 model="gpt-3.5-turbo",
             ),
         )
@@ -275,9 +275,9 @@ def test_single_deployment_no_cooldowns(num_deployments):
             router.completion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
-                mock_response="litellm.RateLimitError",
+                mock_response="dheera_ai.RateLimitError",
             )
-        except litellm.RateLimitError:
+        except dheera_ai.RateLimitError:
             pass
 
         if num_deployments == 1:
@@ -296,19 +296,19 @@ async def test_single_deployment_no_cooldowns_test_prod():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                 },
             },
             {
                 "model_name": "gpt-5",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-5",
                 },
             },
             {
                 "model_name": "gpt-12",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-12",
                 },
             },
@@ -323,9 +323,9 @@ async def test_single_deployment_no_cooldowns_test_prod():
             await router.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
-                mock_response="litellm.RateLimitError",
+                mock_response="dheera_ai.RateLimitError",
             )
-        except litellm.RateLimitError:
+        except dheera_ai.RateLimitError:
             pass
 
         await asyncio.sleep(2)
@@ -342,19 +342,19 @@ async def test_single_deployment_cooldown_with_allowed_fails():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                 },
             },
             {
                 "model_name": "gpt-5",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-5",
                 },
             },
             {
                 "model_name": "gpt-12",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-12",
                 },
             },
@@ -373,7 +373,7 @@ async def test_single_deployment_cooldown_with_allowed_fails():
                     messages=[{"role": "user", "content": "Hey, how's it going?"}],
                     timeout=0.0001,
                 )
-            except litellm.Timeout:
+            except dheera_ai.Timeout:
                 pass
 
         await asyncio.sleep(2)
@@ -390,19 +390,19 @@ async def test_single_deployment_cooldown_with_allowed_fail_policy():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                 },
             },
             {
                 "model_name": "gpt-5",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-5",
                 },
             },
             {
                 "model_name": "gpt-12",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-12",
                 },
             },
@@ -423,7 +423,7 @@ async def test_single_deployment_cooldown_with_allowed_fail_policy():
                     messages=[{"role": "user", "content": "Hey, how's it going?"}],
                     timeout=0.0001,
                 )
-            except litellm.Timeout:
+            except dheera_ai.Timeout:
                 pass
 
         await asyncio.sleep(2)
@@ -441,19 +441,19 @@ async def test_single_deployment_no_cooldowns_test_prod_mock_completion_calls():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                 },
             },
             {
                 "model_name": "gpt-5",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-5",
                 },
             },
             {
                 "model_name": "gpt-12",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-12",
                 },
             },
@@ -465,13 +465,13 @@ async def test_single_deployment_no_cooldowns_test_prod_mock_completion_calls():
             await router.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
-                mock_response="litellm.RateLimitError",
+                mock_response="dheera_ai.RateLimitError",
             )
-        except litellm.RateLimitError:
+        except dheera_ai.RateLimitError:
             pass
 
     cooldown_list = await _async_get_cooldown_deployments(
-        litellm_router_instance=router, parent_otel_span=None
+        dheera_ai_router_instance=router, parent_otel_span=None
     )
     assert len(cooldown_list) == 0
 
@@ -502,21 +502,21 @@ async def test_high_traffic_cooldowns_all_healthy_deployments():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_base": "https://api.openai.com",
                 },
             },
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_base": "https://api.openai.com-2",
                 },
             },
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_base": "https://api.openai.com-3",
                 },
@@ -534,7 +534,7 @@ async def test_high_traffic_cooldowns_all_healthy_deployments():
     # Create a defaultdict to track successes and failures for each model ID
     model_stats = defaultdict(lambda: {"successes": 0, "failures": 0})
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     for _ in range(100):
         try:
             model_id = random.choice(all_deployment_ids)
@@ -559,7 +559,7 @@ async def test_high_traffic_cooldowns_all_healthy_deployments():
                 if random.random() < 0.5:
                     mock_response = "hi"
                 else:
-                    mock_response = "litellm.InternalServerError"
+                    mock_response = "dheera_ai.InternalServerError"
             else:
                 mock_response = "hi"
 
@@ -571,7 +571,7 @@ async def test_high_traffic_cooldowns_all_healthy_deployments():
             model_stats[model_id]["successes"] += 1
 
             await asyncio.sleep(0.0001)
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             model_stats[model_id]["failures"] += 1
             pass
         except Exception as e:
@@ -580,7 +580,7 @@ async def test_high_traffic_cooldowns_all_healthy_deployments():
     print("model_stats: ", model_stats)
 
     cooldown_list = await _async_get_cooldown_deployments(
-        litellm_router_instance=router, parent_otel_span=None
+        dheera_ai_router_instance=router, parent_otel_span=None
     )
     assert len(cooldown_list) == 0
 
@@ -595,21 +595,21 @@ async def test_high_traffic_cooldowns_one_bad_deployment():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_base": "https://api.openai.com",
                 },
             },
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_base": "https://api.openai.com-2",
                 },
             },
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_base": "https://api.openai.com-3",
                 },
@@ -627,7 +627,7 @@ async def test_high_traffic_cooldowns_one_bad_deployment():
     # Create a defaultdict to track successes and failures for each model ID
     model_stats = defaultdict(lambda: {"successes": 0, "failures": 0})
     bad_deployment_id = random.choice(all_deployment_ids)
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     for _ in range(100):
         try:
             model_id = random.choice(all_deployment_ids)
@@ -650,14 +650,14 @@ async def test_high_traffic_cooldowns_one_bad_deployment():
             elif bad_deployment_id == model_id:
                 if num_failures / total_requests <= 0.6:
 
-                    mock_response = "litellm.InternalServerError"
+                    mock_response = "dheera_ai.InternalServerError"
 
             elif num_failures / total_requests <= 0.25:
                 # Randomly decide between fail and succeed
                 if random.random() < 0.5:
                     mock_response = "hi"
                 else:
-                    mock_response = "litellm.InternalServerError"
+                    mock_response = "dheera_ai.InternalServerError"
             else:
                 mock_response = "hi"
 
@@ -669,7 +669,7 @@ async def test_high_traffic_cooldowns_one_bad_deployment():
             model_stats[model_id]["successes"] += 1
 
             await asyncio.sleep(0.0001)
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             model_stats[model_id]["failures"] += 1
             pass
         except Exception as e:
@@ -678,7 +678,7 @@ async def test_high_traffic_cooldowns_one_bad_deployment():
     print("model_stats: ", model_stats)
 
     cooldown_list = await _async_get_cooldown_deployments(
-        litellm_router_instance=router, parent_otel_span=None
+        dheera_ai_router_instance=router, parent_otel_span=None
     )
     assert len(cooldown_list) == 1
 
@@ -693,21 +693,21 @@ async def test_high_traffic_cooldowns_one_rate_limited_deployment():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_base": "https://api.openai.com",
                 },
             },
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_base": "https://api.openai.com-2",
                 },
             },
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_base": "https://api.openai.com-3",
                 },
@@ -725,7 +725,7 @@ async def test_high_traffic_cooldowns_one_rate_limited_deployment():
     # Create a defaultdict to track successes and failures for each model ID
     model_stats = defaultdict(lambda: {"successes": 0, "failures": 0})
     bad_deployment_id = random.choice(all_deployment_ids)
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     for _ in range(100):
         try:
             model_id = random.choice(all_deployment_ids)
@@ -748,14 +748,14 @@ async def test_high_traffic_cooldowns_one_rate_limited_deployment():
             elif bad_deployment_id == model_id:
                 if num_failures / total_requests <= 0.6:
 
-                    mock_response = "litellm.RateLimitError"
+                    mock_response = "dheera_ai.RateLimitError"
 
             elif num_failures / total_requests <= 0.25:
                 # Randomly decide between fail and succeed
                 if random.random() < 0.5:
                     mock_response = "hi"
                 else:
-                    mock_response = "litellm.InternalServerError"
+                    mock_response = "dheera_ai.InternalServerError"
             else:
                 mock_response = "hi"
 
@@ -767,10 +767,10 @@ async def test_high_traffic_cooldowns_one_rate_limited_deployment():
             model_stats[model_id]["successes"] += 1
 
             await asyncio.sleep(0.0001)
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             model_stats[model_id]["failures"] += 1
             pass
-        except litellm.RateLimitError:
+        except dheera_ai.RateLimitError:
             model_stats[bad_deployment_id]["failures"] += 1
             pass
         except Exception as e:
@@ -779,7 +779,7 @@ async def test_high_traffic_cooldowns_one_rate_limited_deployment():
     print("model_stats: ", model_stats)
 
     cooldown_list = await _async_get_cooldown_deployments(
-        litellm_router_instance=router, parent_otel_span=None
+        dheera_ai_router_instance=router, parent_otel_span=None
     )
     assert len(cooldown_list) == 1
 
@@ -796,7 +796,7 @@ def test_router_fallbacks_with_cooldowns_and_model_id():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {"model": "gpt-3.5-turbo", "rpm": 1},
+                "dheera_ai_params": {"model": "gpt-3.5-turbo", "rpm": 1},
                 "model_info": {
                     "id": "123",
                 },
@@ -811,9 +811,9 @@ def test_router_fallbacks_with_cooldowns_and_model_id():
         router.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "hi"}],
-            mock_response="litellm.RateLimitError",
+            mock_response="dheera_ai.RateLimitError",
         )
-    except litellm.RateLimitError:
+    except dheera_ai.RateLimitError:
         pass
 
     router.completion(
@@ -827,14 +827,14 @@ async def test_router_fallbacks_with_cooldowns_and_dynamic_credentials():
     """
     Ensure cooldown on credential 1 does not affect credential 2
     """
-    from litellm.router_utils.cooldown_handlers import _async_get_cooldown_deployments
+    from dheera_ai.router_utils.cooldown_handlers import _async_get_cooldown_deployments
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     router = Router(
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {"model": "gpt-3.5-turbo", "rpm": 1},
+                "dheera_ai_params": {"model": "gpt-3.5-turbo", "rpm": 1},
                 "model_info": {
                     "id": "123",
                 },
@@ -848,16 +848,16 @@ async def test_router_fallbacks_with_cooldowns_and_dynamic_credentials():
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "hi"}],
             api_key="my-bad-key-1",
-            mock_response="litellm.RateLimitError",
+            mock_response="dheera_ai.RateLimitError",
         )
         pytest.fail("Expected RateLimitError")
-    except litellm.RateLimitError:
+    except dheera_ai.RateLimitError:
         pass
 
     await asyncio.sleep(1)
 
     cooldown_list = await _async_get_cooldown_deployments(
-        litellm_router_instance=router, parent_otel_span=None
+        dheera_ai_router_instance=router, parent_otel_span=None
     )
     print("cooldown_list: ", cooldown_list)
     assert len(cooldown_list) == 1

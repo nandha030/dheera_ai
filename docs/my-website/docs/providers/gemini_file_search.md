@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Gemini File Search
 
-Use Google Gemini's File Search for Retrieval Augmented Generation (RAG) with LiteLLM.
+Use Google Gemini's File Search for Retrieval Augmented Generation (RAG) with Dheera AI.
 
 Gemini File Search imports, chunks, and indexes your data to enable fast retrieval of relevant information based on user prompts. This information is then provided as context to the model for more accurate and relevant answers.
 
@@ -39,10 +39,10 @@ export GOOGLE_API_KEY="your-api-key"
 <TabItem value="python" label="Python SDK">
 
 ```python
-import litellm
+import dheera_ai
 
 # Ingest a document
-response = await litellm.aingest(
+response = await dheera_ai.aingest(
     ingest_options={
         "name": "my-document-store",
         "vector_store": {
@@ -58,7 +58,7 @@ print(f"File ID: {response['file_id']}")
 
 </TabItem>
 
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 ```bash
 curl -X POST "http://localhost:4000/v1/rag/ingest" \
@@ -88,10 +88,10 @@ curl -X POST "http://localhost:4000/v1/rag/ingest" \
 <TabItem value="python" label="Python SDK">
 
 ```python
-import litellm
+import dheera_ai
 
 # Search the vector store
-response = await litellm.vector_stores.asearch(
+response = await dheera_ai.vector_stores.asearch(
     vector_store_id="fileSearchStores/your-store-id",
     query="What is the main topic?",
     custom_llm_provider="gemini",
@@ -105,7 +105,7 @@ for result in response["data"]:
 
 </TabItem>
 
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 ```bash
 curl -X POST "http://localhost:4000/v1/vector_stores/fileSearchStores/your-store-id/search" \
@@ -128,9 +128,9 @@ curl -X POST "http://localhost:4000/v1/vector_stores/fileSearchStores/your-store
 Control how documents are split into chunks:
 
 ```python
-import litellm
+import dheera_ai
 
-response = await litellm.aingest(
+response = await dheera_ai.aingest(
     ingest_options={
         "name": "custom-chunking-store",
         "vector_store": {
@@ -158,9 +158,9 @@ Attach custom metadata to files and filter searches:
 #### Attach Metadata During Ingest
 
 ```python
-import litellm
+import dheera_ai
 
-response = await litellm.aingest(
+response = await dheera_ai.aingest(
     ingest_options={
         "name": "metadata-store",
         "vector_store": {
@@ -179,11 +179,11 @@ response = await litellm.aingest(
 #### Search with Metadata Filter
 
 ```python
-import litellm
+import dheera_ai
 
-response = await litellm.vector_stores.asearch(
+response = await dheera_ai.vector_stores.asearch(
     vector_store_id="fileSearchStores/your-store-id",
-    query="What is LiteLLM?",
+    query="What is Dheera AI?",
     custom_llm_provider="gemini",
     filters={"author": "John Doe", "category": "documentation"}
 )
@@ -199,10 +199,10 @@ response = await litellm.vector_stores.asearch(
 Ingest into an existing File Search store:
 
 ```python
-import litellm
+import dheera_ai
 
 # First, create a store
-create_response = await litellm.vector_stores.acreate(
+create_response = await dheera_ai.vector_stores.acreate(
     name="My Persistent Store",
     custom_llm_provider="gemini"
 )
@@ -210,7 +210,7 @@ store_id = create_response["id"]
 
 # Then ingest multiple documents into it
 for doc in documents:
-    await litellm.aingest(
+    await dheera_ai.aingest(
         ingest_options={
             "vector_store": {
                 "custom_llm_provider": "gemini",
@@ -226,9 +226,9 @@ for doc in documents:
 Gemini provides grounding metadata with citations:
 
 ```python
-import litellm
+import dheera_ai
 
-response = await litellm.vector_stores.asearch(
+response = await dheera_ai.vector_stores.asearch(
     vector_store_id="fileSearchStores/your-store-id",
     query="Explain the concept",
     custom_llm_provider="gemini"
@@ -250,10 +250,10 @@ for result in response["data"]:
 End-to-end workflow:
 
 ```python
-import litellm
+import dheera_ai
 
 # 1. Create a File Search store
-store_response = await litellm.vector_stores.acreate(
+store_response = await dheera_ai.vector_stores.acreate(
     name="Knowledge Base",
     custom_llm_provider="gemini"
 )
@@ -264,7 +264,7 @@ print(f"Created store: {store_id}")
 documents = [
     {
         "name": "intro.txt",
-        "content": b"Introduction to LiteLLM...",
+        "content": b"Introduction to Dheera AI...",
         "metadata": [
             {"key": "section", "string_value": "intro"},
             {"key": "priority", "numeric_value": 1}
@@ -281,7 +281,7 @@ documents = [
 ]
 
 for doc in documents:
-    ingest_response = await litellm.aingest(
+    ingest_response = await dheera_ai.aingest(
         ingest_options={
             "name": f"ingest-{doc['name']}",
             "vector_store": {
@@ -301,7 +301,7 @@ for doc in documents:
     print(f"Ingested: {doc['name']}")
 
 # 3. Search with filters
-search_response = await litellm.vector_stores.asearch(
+search_response = await dheera_ai.vector_stores.asearch(
     vector_store_id=store_id,
     query="How do I get started?",
     custom_llm_provider="gemini",
@@ -367,7 +367,7 @@ import os
 os.environ["GEMINI_API_KEY"] = "your-api-key"
 
 # Or pass explicitly
-response = await litellm.aingest(
+response = await dheera_ai.aingest(
     ingest_options={
         "vector_store": {
             "custom_llm_provider": "gemini",
@@ -396,19 +396,19 @@ After ingestion, Gemini may need time to index documents. Wait a few seconds bef
 import time
 
 # After ingest
-await litellm.aingest(...)
+await dheera_ai.aingest(...)
 
 # Wait for indexing
 time.sleep(5)
 
 # Then search
-await litellm.vector_stores.asearch(...)
+await dheera_ai.vector_stores.asearch(...)
 ```
 
 ## Related Resources
 
 - [Gemini File Search Official Docs](https://ai.google.dev/gemini-api/docs/file-search)
-- [LiteLLM RAG Ingest API](/docs/rag_ingest)
-- [LiteLLM Vector Store Search](/docs/vector_stores/search)
+- [Dheera AI RAG Ingest API](/docs/rag_ingest)
+- [Dheera AI Vector Store Search](/docs/vector_stores/search)
 - [Using Vector Stores with Chat](/docs/completion/knowledgebase)
 

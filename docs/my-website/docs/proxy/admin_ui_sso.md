@@ -10,11 +10,11 @@ From v1.76.0, SSO is now Free for up to 5 users.
 
 :::info
 
-✨ SSO is on LiteLLM Enterprise
+✨ SSO is on Dheera AI Enterprise
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Get free 7-day trial key](https://www.litellm.ai/enterprise#trial)
+[Get free 7-day trial key](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
@@ -59,7 +59,7 @@ GOOGLE_CLIENT_SECRET=
 - Set Redirect URL on your Oauth 2.0 Client on https://console.cloud.google.com/ 
     - Set a redirect url = `<your proxy base url>/sso/callback`
     ```shell
-    https://litellm-production-7002.up.railway.app/sso/callback
+    https://dheera_ai-production-7002.up.railway.app/sso/callback
     ```
 
 </TabItem>
@@ -83,7 +83,7 @@ MICROSOFT_TENANT="5a39737
 
 **Using App Roles for User Permissions**
 
-You can assign user roles directly from Entra ID using App Roles. LiteLLM will automatically read the app roles from the JWT token and assign the corresponding role to the user.
+You can assign user roles directly from Entra ID using App Roles. Dheera AI will automatically read the app roles from the JWT token and assign the corresponding role to the user.
 
 Supported roles:
 - `proxy_admin` - Admin over the platform
@@ -96,7 +96,7 @@ To set up app roles:
 2. Go to "App roles" and create a new app role
 3. Use one of the supported role names above (e.g., `proxy_admin`)
 4. Assign users to these roles in your Enterprise Application
-5. When users sign in via SSO, LiteLLM will automatically assign them the corresponding role
+5. When users sign in via SSO, Dheera AI will automatically assign them the corresponding role
 
 </TabItem>
 
@@ -132,14 +132,14 @@ GENERIC_SCOPE = "openid profile email" # default scope openid is sometimes not e
 
 **Assigning User Roles via SSO**
 
-Use `GENERIC_USER_ROLE_ATTRIBUTE` to specify which attribute in the SSO token contains the user's role. The role value must be one of the following supported LiteLLM roles:
+Use `GENERIC_USER_ROLE_ATTRIBUTE` to specify which attribute in the SSO token contains the user's role. The role value must be one of the following supported Dheera AI roles:
 
 - `proxy_admin` - Admin over the platform
 - `proxy_admin_viewer` - Can login, view all keys, view all spend (read-only)
 - `internal_user` - Can login, view/create/delete their own keys, view their spend
 - `internal_user_view_only` - Can login, view their own keys, view their own spend
 
-Nested attribute paths are supported (e.g., `claims.role` or `attributes.litellm_role`).
+Nested attribute paths are supported (e.g., `claims.role` or `attributes.dheera_ai_role`).
 
 - Set Redirect URI, if your provider requires it
     - Set a redirect url = `<your proxy base url>/sso/callback`
@@ -167,11 +167,11 @@ PROXY_LOGOUT_URL="https://www.google.com"
 
 Set this in your .env (so the proxy can set the correct redirect url)
 ```shell
-PROXY_BASE_URL=https://litellm-api.up.railway.app
+PROXY_BASE_URL=https://dheera_ai-api.up.railway.app
 ```
 
 #### Step 4. Test flow
-<Image img={require('../../img/litellm_ui_3.gif')} />
+<Image img={require('../../img/dheera_ai_ui_3.gif')} />
 
 ### Restrict Email Subdomains w/ SSO
 
@@ -189,7 +189,7 @@ Set a Proxy Admin when SSO is enabled. Once SSO is enabled, the `user_id` for us
 
 #### Step 1: Copy your ID from the UI 
 
-<Image img={require('../../img/litellm_ui_copy_id.png')} />
+<Image img={require('../../img/dheera_ai_ui_copy_id.png')} />
 
 #### Step 2: Set it in your .env as the PROXY_ADMIN_ID 
 
@@ -197,13 +197,13 @@ Set a Proxy Admin when SSO is enabled. Once SSO is enabled, the `user_id` for us
 export PROXY_ADMIN_ID="116544810872468347480"
 ```
 
-This will update the user role in the `LiteLLM_UserTable` to `proxy_admin`. 
+This will update the user role in the `Dheera AI_UserTable` to `proxy_admin`. 
 
 If you plan to change this ID, please update the user role via API `/user/update` or UI (Internal Users page). 
 
 #### Step 3: See all proxy keys
 
-<Image img={require('../../img/litellm_ui_admin.png')} />
+<Image img={require('../../img/dheera_ai_ui_admin.png')} />
 
 :::info
 
@@ -219,7 +219,7 @@ The following logic will apply
 - If team assigned don't show `Default Team`
 - If no team assigned then they should see `Default Team`
 
-Set `default_team_disabled: true` on your litellm config.yaml
+Set `default_team_disabled: true` on your dheera_ai config.yaml
 
 ```yaml
 general_settings:
@@ -247,11 +247,11 @@ general_settings:
 
 ### Custom Branding Admin UI
 
-Use your companies custom branding on the LiteLLM Admin UI
+Use your companies custom branding on the Dheera AI Admin UI
 We allow you to 
 - Customize the UI Logo
 - Customize the UI color scheme
-<Image img={require('../../img/litellm_custom_ai.png')} />
+<Image img={require('../../img/dheera_ai_custom_ai.png')} />
 
 #### Set Custom Logo
 We allow you to pass a local image or a an http/https url of your image
@@ -260,7 +260,7 @@ Set `UI_LOGO_PATH` on your env. We recommend using a hosted image, it's a lot ea
 
 Example setting Hosted image
 ```shell
-UI_LOGO_PATH="https://litellm-logo-aws-marketplace.s3.us-west-2.amazonaws.com/berriai-logo-github.png"
+UI_LOGO_PATH="https://dheera_ai-logo-aws-marketplace.s3.us-west-2.amazonaws.com/berriai-logo-github.png"
 ```
 
 Example setting a local image (on your container)
@@ -275,7 +275,7 @@ UI_LOGO_PATH="ui_images/logo.jpg"
 </div>
 
 #### Set Custom Color Theme
-- Navigate to [/enterprise/enterprise_ui](https://github.com/BerriAI/litellm/blob/main/enterprise/enterprise_ui/_enterprise_colors.json)
+- Navigate to [/enterprise/enterprise_ui](https://github.com/BerriAI/dheera_ai/blob/main/enterprise/enterprise_ui/_enterprise_colors.json)
 - Inside the `enterprise_ui` directory, rename `_enterprise_colors.json` to `enterprise_colors.json`
 - Set your companies custom color scheme in `enterprise_colors.json`
 Example contents of `enterprise_colors.json` 
@@ -293,7 +293,7 @@ Set your colors to any of the following colors: https://www.tremor.so/docs/layou
 }
 
 ```
-- Deploy LiteLLM Proxy Server
+- Deploy Dheera AI Proxy Server
 
 ## Troubleshooting
 
@@ -314,13 +314,13 @@ Make sure your `PROXY_BASE_URL` includes the complete URL with protocol (`http:/
 
 ```bash
 # ✅ Correct - includes https://
-PROXY_BASE_URL=https://litellm.platform.com
+PROXY_BASE_URL=https://dheera_ai.platform.com
 
 # ✅ Correct - includes http://
-PROXY_BASE_URL=http://litellm.platform.com
+PROXY_BASE_URL=http://dheera_ai.platform.com
 
 # ❌ Incorrect - missing protocol
-PROXY_BASE_URL=litellm.platform.com
+PROXY_BASE_URL=dheera_ai.platform.com
 ```
 
 **2. For Okta specifically, ensure GENERIC_CLIENT_STATE is set**
@@ -339,7 +339,7 @@ If your Okta application is configured to require PKCE (Proof Key for Code Excha
 GENERIC_CLIENT_USE_PKCE="true"
 ```
 
-This is required when your Okta app settings enforce PKCE for enhanced security. LiteLLM will automatically handle PKCE parameter generation and verification during the OAuth flow.
+This is required when your Okta app settings enforce PKCE for enhanced security. Dheera AI will automatically handle PKCE parameter generation and verification during the OAuth flow.
 
 ### Common Configuration Issues
 
@@ -361,7 +361,7 @@ If you need to access the UI via username/password when SSO is on navigate to `/
 
 ### Debugging SSO JWT fields 
 
-If you need to inspect the JWT fields received from your SSO provider by LiteLLM, follow these instructions. This guide walks you through setting up a debug callback to view the JWT data during the SSO process.
+If you need to inspect the JWT fields received from your SSO provider by Dheera AI, follow these instructions. This guide walks you through setting up a debug callback to view the JWT data during the SSO process.
 
 
 <Image img={require('../../img/debug_sso.png')}  style={{ width: '500px', height: 'auto' }} />
@@ -384,7 +384,7 @@ If you need to inspect the JWT fields received from your SSO provider by LiteLLM
     https://<proxy_base_url>/sso/debug/login
     ```
 
-    This will initiate the standard SSO flow. You will be redirected to your SSO provider's login screen, and after successful authentication, you will be redirected back to LiteLLM's debug callback route.
+    This will initiate the standard SSO flow. You will be redirected to your SSO provider's login screen, and after successful authentication, you will be redirected back to Dheera AI's debug callback route.
 
 
 3. View the JWT fields 
@@ -396,20 +396,20 @@ Once redirected, you should see a page called "SSO Debug Information". This page
 
 ### Manage User Roles via Azure App Roles
 
-Centralize role management by defining user permissions in Azure Entra ID. LiteLLM will automatically assign roles based on your Azure configuration when users sign in—no need to manually manage roles in LiteLLM.
+Centralize role management by defining user permissions in Azure Entra ID. Dheera AI will automatically assign roles based on your Azure configuration when users sign in—no need to manually manage roles in Dheera AI.
 
 #### Step 1: Create App Roles on Azure App Registration
 
 1. Navigate to your App Registration on https://portal.azure.com/
 2. Go to **App roles** > **Create app role**
-3. Configure the app role using one of the [supported LiteLLM roles](./access_control.md#global-proxy-roles):
+3. Configure the app role using one of the [supported Dheera AI roles](./access_control.md#global-proxy-roles):
    - **Display name**: Admin Viewer (or your preferred display name)
-   - **Value**: `proxy_admin_viewer` (must match one of the LiteLLM role values exactly)
+   - **Value**: `proxy_admin_viewer` (must match one of the Dheera AI role values exactly)
 4. Click **Apply** to save the role
-5. Repeat for each LiteLLM role you want to use
+5. Repeat for each Dheera AI role you want to use
 
 
-**Supported LiteLLM role values** (see [full role documentation](./access_control.md#global-proxy-roles)):
+**Supported Dheera AI role values** (see [full role documentation](./access_control.md#global-proxy-roles)):
 - `proxy_admin` - Full admin access
 - `proxy_admin_viewer` - Read-only admin access
 - `internal_user` - Can create/view/delete own keys
@@ -422,7 +422,7 @@ Centralize role management by defining user permissions in Azure Entra ID. LiteL
 #### Step 2: Assign Users to App Roles
 
 1. Navigate to **Enterprise Applications** on https://portal.azure.com/
-2. Select your LiteLLM application
+2. Select your Dheera AI application
 3. Go to **Users and groups** > **Add user/group**
 4. Select the user
 5. Under **Select a role**, choose the app role you created (e.g., `proxy_admin_viewer`)
@@ -434,11 +434,11 @@ Centralize role management by defining user permissions in Azure Entra ID. LiteL
 
 #### Step 3: Sign in and verify
 
-1. Sign in to the LiteLLM UI via SSO
-2. LiteLLM will automatically extract the app role from the JWT token
+1. Sign in to the Dheera AI UI via SSO
+2. Dheera AI will automatically extract the app role from the JWT token
 3. The user will be assigned the corresponding role (you can verify this in the UI by checking the user profile dropdown)
 
 <Image img={require('../../img/app_role3.png')} style={{ width: '900px', height: 'auto' }} />
 
-**Note:** The role from Entra ID will take precedence over any existing role in the LiteLLM database. This ensures your SSO provider is the authoritative source for user roles.
+**Note:** The role from Entra ID will take precedence over any existing role in the Dheera AI database. This ensures your SSO provider is the authoritative source for user roles.
 

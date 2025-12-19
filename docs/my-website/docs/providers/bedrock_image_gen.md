@@ -25,7 +25,7 @@ Use Bedrock for image generation with Stable Diffusion, Amazon Titan Image Gener
 
 ```python
 import os
-from litellm import image_generation
+from dheera_ai import image_generation
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
 os.environ["AWS_SECRET_ACCESS_KEY"] = ""
@@ -42,7 +42,7 @@ print(f"response: {response}")
 
 ```python
 import os
-from litellm import image_generation
+from dheera_ai import image_generation
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
 os.environ["AWS_SECRET_ACCESS_KEY"] = ""
@@ -67,7 +67,7 @@ print(f"response: {response}")
 ```yaml
 model_list:
   - model_name: amazon.nova-canvas-v1:0
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/amazon.nova-canvas-v1:0
       aws_region_name: "us-east-1"
       aws_secret_access_key: my-key # OPTIONAL - all boto3 auth params supported
@@ -77,7 +77,7 @@ model_list:
 ### 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 ### 3. Test it! 
@@ -87,7 +87,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl -L -X POST 'http://0.0.0.0:4000/v1/images/generations' \
 -H 'Content-Type: application/json' \
--H 'Authorization: Bearer $LITELLM_VIRTUAL_KEY' \
+-H 'Authorization: Bearer $DHEERA_AI_VIRTUAL_KEY' \
 -d '{
     "model": "amazon.nova-canvas-v1:0",
     "prompt": "A cute baby sea otter"
@@ -99,7 +99,7 @@ curl -L -X POST 'http://0.0.0.0:4000/v1/images/generations' \
 ```bash
 curl -L -X POST 'http://0.0.0.0:4000/v1/images/generations' \
 -H 'Content-Type: application/json' \
--H 'Authorization: Bearer $LITELLM_VIRTUAL_KEY' \
+-H 'Authorization: Bearer $DHEERA_AI_VIRTUAL_KEY' \
 -d '{
     "model": "amazon.nova-canvas-v1:0",
     "prompt": "A cute baby sea otter",
@@ -119,7 +119,7 @@ For AWS Bedrock Application Inference Profiles with image generation, use the `m
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import image_generation
+from dheera_ai import image_generation
 
 response = image_generation(
     model="bedrock/amazon.nova-canvas-v1:0",
@@ -135,7 +135,7 @@ print(f"response: {response}")
 ```yaml
 model_list:
   - model_name: nova-canvas-inference-profile
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/amazon.nova-canvas-v1:0
       model_id: arn:aws:bedrock:eu-west-1:000000000000:application-inference-profile/a0a0a0a0a0a0
       aws_region_name: "eu-west-1"

@@ -5,7 +5,7 @@
 | Property | Details |
 |-------|-------|
 | Description | Vertex AI OCR provides document intelligence capabilities powered by Mistral, enabling text extraction from PDFs and images |
-| Provider Route on LiteLLM | `vertex_ai/` |
+| Provider Route on Dheera AI | `vertex_ai/` |
 | Supported Operations | `/ocr` |
 | Link to Provider Doc | [Vertex AI ↗](https://cloud.google.com/vertex-ai)
 
@@ -13,10 +13,10 @@ Extract text from documents and images using Vertex AI's OCR models, powered by 
 
 ## Quick Start
 
-### **LiteLLM SDK**
+### **Dheera AI SDK**
 
 ```python showLineNumbers title="SDK Usage"
-import litellm
+import dheera_ai
 import os
 
 # Set environment variables
@@ -24,7 +24,7 @@ os.environ["VERTEXAI_PROJECT"] = "your-project-id"
 os.environ["VERTEXAI_LOCATION"] = "us-central1"
 
 # OCR with PDF URL
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="vertex_ai/mistral-ocr-2505",
     document={
         "type": "document_url",
@@ -37,12 +37,12 @@ for page in response.pages:
     print(page.text)
 ```
 
-### **LiteLLM PROXY**
+### **Dheera AI PROXY**
 
 ```yaml showLineNumbers title="proxy_config.yaml"
 model_list:
   - model_name: vertex-ocr
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/mistral-ocr-2505
       vertex_project: os.environ/VERTEXAI_PROJECT
       vertex_location: os.environ/VERTEXAI_LOCATION
@@ -53,7 +53,7 @@ model_list:
 
 **Start Proxy**
 ```bash
-litellm --config proxy_config.yaml
+dheera_ai --config proxy_config.yaml
 ```
 
 **Call OCR via Proxy**
@@ -77,7 +77,7 @@ Vertex AI OCR supports multiple authentication methods:
 ### Service Account JSON
 
 ```python showLineNumbers title="Service Account Auth"
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="vertex_ai/mistral-ocr-2505",
     document={"type": "document_url", "document_url": "https://..."},
     vertex_project="your-project-id",
@@ -90,7 +90,7 @@ response = litellm.ocr(
 
 ```python showLineNumbers title="Default Credentials"
 # Relies on GOOGLE_APPLICATION_CREDENTIALS environment variable
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="vertex_ai/mistral-ocr-2505",
     document={"type": "document_url", "document_url": "https://..."},
     vertex_project="your-project-id",
@@ -105,7 +105,7 @@ Vertex AI OCR supports both PDFs and images.
 ### PDF Documents
 
 ```python showLineNumbers title="PDF OCR"
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="vertex_ai/mistral-ocr-2505",
     document={
         "type": "document_url",
@@ -119,7 +119,7 @@ response = litellm.ocr(
 ### Image Documents
 
 ```python showLineNumbers title="Image OCR"
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="vertex_ai/mistral-ocr-2505",
     document={
         "type": "image_url",
@@ -139,7 +139,7 @@ import base64
 with open("document.pdf", "rb") as f:
     pdf_base64 = base64.b64encode(f.read()).decode()
 
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="vertex_ai/mistral-ocr-2505",
     document={
         "type": "document_url",
@@ -153,7 +153,7 @@ response = litellm.ocr(
 ## Supported Parameters
 
 ```python showLineNumbers title="All Parameters"
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="vertex_ai/mistral-ocr-2505",
     document={                           # Required: Document to process
         "type": "document_url",
@@ -186,9 +186,9 @@ for page in response.pages:
 ## Async Support
 
 ```python showLineNumbers title="Async Usage"
-import litellm
+import dheera_ai
 
-response = await litellm.aocr(
+response = await dheera_ai.aocr(
     model="vertex_ai/mistral-ocr-2505",
     document={
         "type": "document_url",
@@ -201,12 +201,12 @@ response = await litellm.aocr(
 
 ## Cost Tracking
 
-LiteLLM automatically tracks costs for Vertex AI OCR:
+Dheera AI automatically tracks costs for Vertex AI OCR:
 
 - **Cost per page**: $0.0005 (based on $1.50 per 1,000 pages)
 
 ```python showLineNumbers title="View Cost"
-response = litellm.ocr(
+response = dheera_ai.ocr(
     model="vertex_ai/mistral-ocr-2505",
     document={"type": "document_url", "document_url": "https://..."},
     vertex_project="your-project-id"
@@ -219,7 +219,7 @@ print(f"Cost: ${response._hidden_params.get('response_cost', 0)}")
 ## Important Notes
 
 :::info URL Conversion
-Vertex AI OCR endpoints don't have internet access. LiteLLM automatically converts public URLs to base64 data URIs before sending requests to Vertex AI.
+Vertex AI OCR endpoints don't have internet access. Dheera AI automatically converts public URLs to base64 data URIs before sending requests to Vertex AI.
 :::
 
 :::tip Regional Availability

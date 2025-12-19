@@ -31,8 +31,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import httpx
 from dotenv import load_dotenv
 
-import litellm
-from litellm import (
+import dheera_ai
+from dheera_ai import (
     ChatCompletionDeltaChunk,
     ChatCompletionUsageBlock,
     CustomLLM,
@@ -43,9 +43,9 @@ from litellm import (
     get_llm_provider,
     image_generation,
 )
-from litellm.utils import ModelResponseIterator
-from litellm.types.utils import ImageResponse, ImageObject, EmbeddingResponse
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
+from dheera_ai.utils import ModelResponseIterator
+from dheera_ai.types.utils import ImageResponse, ImageObject, EmbeddingResponse
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
 
 
 class CustomModelResponseIterator:
@@ -118,13 +118,13 @@ class MyCustomLLM(CustomLLM):
         logging_obj,
         optional_params: dict,
         acompletion=None,
-        litellm_params=None,
+        dheera_ai_params=None,
         logger_fn=None,
         headers={},
         timeout: Optional[Union[float, openai.Timeout]] = None,
-        client: Optional[litellm.HTTPHandler] = None,
+        client: Optional[dheera_ai.HTTPHandler] = None,
     ) -> ModelResponse:
-        return litellm.completion(
+        return dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hello world"}],
             mock_response="Hi!",
@@ -143,13 +143,13 @@ class MyCustomLLM(CustomLLM):
         logging_obj,
         optional_params: dict,
         acompletion=None,
-        litellm_params=None,
+        dheera_ai_params=None,
         logger_fn=None,
         headers={},
         timeout: Optional[Union[float, openai.Timeout]] = None,
-        client: Optional[litellm.AsyncHTTPHandler] = None,
-    ) -> litellm.ModelResponse:
-        return litellm.completion(
+        client: Optional[dheera_ai.AsyncHTTPHandler] = None,
+    ) -> dheera_ai.ModelResponse:
+        return dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hello world"}],
             mock_response="Hi!",
@@ -168,11 +168,11 @@ class MyCustomLLM(CustomLLM):
         logging_obj,
         optional_params: dict,
         acompletion=None,
-        litellm_params=None,
+        dheera_ai_params=None,
         logger_fn=None,
         headers={},
         timeout: Optional[Union[float, openai.Timeout]] = None,
-        client: Optional[litellm.HTTPHandler] = None,
+        client: Optional[dheera_ai.HTTPHandler] = None,
     ) -> Iterator[GenericStreamingChunk]:
         generic_streaming_chunk: GenericStreamingChunk = {
             "finish_reason": "stop",
@@ -204,11 +204,11 @@ class MyCustomLLM(CustomLLM):
         logging_obj,
         optional_params: dict,
         acompletion=None,
-        litellm_params=None,
+        dheera_ai_params=None,
         logger_fn=None,
         headers={},
         timeout: Optional[Union[float, openai.Timeout]] = None,
-        client: Optional[litellm.AsyncHTTPHandler] = None,
+        client: Optional[dheera_ai.AsyncHTTPHandler] = None,
     ) -> AsyncIterator[GenericStreamingChunk]:  # type: ignore
         generic_streaming_chunk: GenericStreamingChunk = {
             "finish_reason": "stop",
@@ -268,7 +268,7 @@ class MyCustomLLM(CustomLLM):
         api_key: Optional[str] = None,
         api_base: Optional[str] = None,
         timeout: Optional[Union[float, httpx.Timeout]] = None,
-        litellm_params=None,
+        dheera_ai_params=None,
     ) -> EmbeddingResponse:
         model_response.model = model
 
@@ -294,7 +294,7 @@ class MyCustomLLM(CustomLLM):
         api_key: Optional[str] = None,
         api_base: Optional[str] = None,
         timeout: Optional[Union[float, httpx.Timeout]] = None,
-        litellm_params=None,
+        dheera_ai_params=None,
     ) -> EmbeddingResponse:
         model_response.model = model
 
@@ -350,10 +350,10 @@ class MyCustomLLM(CustomLLM):
 
 def test_get_llm_provider():
     """"""
-    from litellm.utils import custom_llm_setup
+    from dheera_ai.utils import custom_llm_setup
 
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
 
@@ -366,7 +366,7 @@ def test_get_llm_provider():
 
 def test_simple_completion():
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
     resp = completion(
@@ -380,7 +380,7 @@ def test_simple_completion():
 @pytest.mark.asyncio
 async def test_simple_acompletion():
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
     resp = await acompletion(
@@ -393,7 +393,7 @@ async def test_simple_acompletion():
 
 def test_simple_completion_streaming():
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
     resp = completion(
@@ -413,10 +413,10 @@ def test_simple_completion_streaming():
 @pytest.mark.asyncio
 async def test_simple_completion_async_streaming():
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
-    resp = await litellm.acompletion(
+    resp = await dheera_ai.acompletion(
         model="custom_llm/my-fake-model",
         messages=[{"role": "user", "content": "Hello world!"}],
         stream=True,
@@ -432,7 +432,7 @@ async def test_simple_completion_async_streaming():
 
 def test_simple_image_generation():
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
     resp = image_generation(
@@ -446,10 +446,10 @@ def test_simple_image_generation():
 @pytest.mark.asyncio
 async def test_simple_image_generation_async():
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
-    resp = await litellm.aimage_generation(
+    resp = await dheera_ai.aimage_generation(
         model="custom_llm/my-fake-model",
         prompt="Hello world",
     )
@@ -460,7 +460,7 @@ async def test_simple_image_generation_async():
 @pytest.mark.asyncio
 async def test_image_generation_async_additional_params():
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
 
@@ -468,7 +468,7 @@ async def test_image_generation_async_additional_params():
         my_custom_llm, "aimage_generation", new=AsyncMock()
     ) as mock_client:
         try:
-            resp = await litellm.aimage_generation(
+            resp = await dheera_ai.aimage_generation(
                 model="custom_llm/my-fake-model",
                 prompt="Hello world",
                 api_key="my-api-key",
@@ -492,10 +492,10 @@ async def test_image_generation_async_additional_params():
 def test_simple_image_edit():
     """Test sync image_edit with custom handler"""
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
-    resp = litellm.image_edit(
+    resp = dheera_ai.image_edit(
         model="custom_llm/my-fake-model",
         image=b"fake_image_bytes",
         prompt="Edit this image",
@@ -509,10 +509,10 @@ def test_simple_image_edit():
 async def test_simple_image_edit_async():
     """Test async image_edit with custom handler"""
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
-    resp = await litellm.aimage_edit(
+    resp = await dheera_ai.aimage_edit(
         model="custom_llm/my-fake-model",
         image=b"fake_image_bytes",
         prompt="Edit this image",
@@ -526,7 +526,7 @@ async def test_simple_image_edit_async():
 async def test_image_edit_async_additional_params():
     """Test that additional params are passed to custom handler"""
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
 
@@ -536,7 +536,7 @@ async def test_image_edit_async_additional_params():
             data=[ImageObject(url="https://example.com/edited-image.png")],
         ))
     ) as mock_client:
-        resp = await litellm.aimage_edit(
+        resp = await dheera_ai.aimage_edit(
             model="custom_llm/my-fake-model",
             image=b"fake_image_bytes",
             prompt="Edit this image",
@@ -580,8 +580,8 @@ def test_get_supported_openai_params():
                 "logit_bias",
             ]
 
-        def completion(self, *args, **kwargs) -> litellm.ModelResponse:
-            return litellm.completion(
+        def completion(self, *args, **kwargs) -> dheera_ai.ModelResponse:
+            return dheera_ai.completion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hello world"}],
                 mock_response="Hi!",
@@ -589,7 +589,7 @@ def test_get_supported_openai_params():
 
     my_custom_llm = MyCustomLLM()
 
-    litellm.custom_provider_map = [  # 👈 KEY STEP - REGISTER HANDLER
+    dheera_ai.custom_provider_map = [  # 👈 KEY STEP - REGISTER HANDLER
         {"provider": "my-custom-llm", "custom_handler": my_custom_llm}
     ]
 
@@ -601,19 +601,19 @@ def test_get_supported_openai_params():
     assert resp.choices[0].message.content == "Hi!"
 
     # Get supported openai params
-    from litellm import get_supported_openai_params
+    from dheera_ai import get_supported_openai_params
 
     response = get_supported_openai_params(model="my-custom-llm/my-fake-model")
     assert response is not None
 
 def test_simple_embedding():
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
-    resp = litellm.embedding(
+    resp = dheera_ai.embedding(
         model="custom_llm/my-fake-model",
-        input=["good morning from litellm", "good night from litellm"]
+        input=["good morning from dheera_ai", "good night from dheera_ai"]
     )
 
     assert resp.data[1] == {
@@ -625,12 +625,12 @@ def test_simple_embedding():
 @pytest.mark.asyncio
 async def test_simple_aembedding():
     my_custom_llm = MyCustomLLM()
-    litellm.custom_provider_map = [
+    dheera_ai.custom_provider_map = [
         {"provider": "custom_llm", "custom_handler": my_custom_llm}
     ]
-    resp = await litellm.aembedding(
+    resp = await dheera_ai.aembedding(
         model="custom_llm/my-fake-model",
-        input=["good morning from litellm", "good night from litellm"]
+        input=["good morning from dheera_ai", "good night from dheera_ai"]
     )
 
     assert resp.data[1] == {

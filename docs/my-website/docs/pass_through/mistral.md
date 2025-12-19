@@ -6,10 +6,10 @@ Pass-through endpoints for Mistral - call provider-specific endpoint, in native 
 |-------|-------|-------|
 | Cost Tracking | ❌ | Not supported |
 | Logging | ✅ | works across all integrations |
-| End-user Tracking | ❌ | [Tell us if you need this](https://github.com/BerriAI/litellm/issues/new) |
+| End-user Tracking | ❌ | [Tell us if you need this](https://github.com/BerriAI/dheera_ai/issues/new) |
 | Streaming | ✅ | |
 
-Just replace `https://api.mistral.ai/v1` with `LITELLM_PROXY_BASE_URL/mistral` 🚀
+Just replace `https://api.mistral.ai/v1` with `DHEERA_AI_PROXY_BASE_URL/mistral` 🚀
 
 #### **Example Usage**
 
@@ -39,10 +39,10 @@ Let's call the Mistral [`/chat/completions` endpoint](https://docs.mistral.ai/ap
 export MISTRAL_API_KEY="sk-1234"
 ```
 
-2. Start LiteLLM Proxy 
+2. Start Dheera AI Proxy 
 
 ```bash
-litellm
+dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -74,18 +74,18 @@ Key Changes:
 
 | **Original Endpoint**                                | **Replace With**                  |
 |------------------------------------------------------|-----------------------------------|
-| `https://api.mistral.ai/v1`          | `http://0.0.0.0:4000/mistral` (LITELLM_PROXY_BASE_URL="http://0.0.0.0:4000")      |
-| `bearer $MISTRAL_API_KEY`                                 | `bearer anything` (use `bearer LITELLM_VIRTUAL_KEY` if Virtual Keys are setup on proxy)                    |
+| `https://api.mistral.ai/v1`          | `http://0.0.0.0:4000/mistral` (DHEERA_AI_PROXY_BASE_URL="http://0.0.0.0:4000")      |
+| `bearer $MISTRAL_API_KEY`                                 | `bearer anything` (use `bearer DHEERA_AI_VIRTUAL_KEY` if Virtual Keys are setup on proxy)                    |
 
 
 ### **Example 1: OCR endpoint**
 
-#### LiteLLM Proxy Call 
+#### Dheera AI Proxy Call 
 
 ```bash
 curl -L -X POST 'http://0.0.0.0:4000/mistral/v1/ocr' \
 -H 'Content-Type: application/json' \
--H 'Authorization: Bearer $LITELLM_API_KEY' \
+-H 'Authorization: Bearer $DHEERA_AI_API_KEY' \
 -d '{
     "model": "mistral-ocr-latest",
     "document": {
@@ -114,12 +114,12 @@ curl https://api.mistral.ai/v1/ocr \
 
 ### **Example 2: Chat API**
 
-#### LiteLLM Proxy Call 
+#### Dheera AI Proxy Call 
 
 ```bash
 curl -L -X POST 'http://0.0.0.0:4000/mistral/v1/chat/completions' \
 -H 'Content-Type: application/json' \
--H 'Authorization: Bearer $LITELLM_VIRTUAL_KEY' \
+-H 'Authorization: Bearer $DHEERA_AI_VIRTUAL_KEY' \
 -d '{
     "messages": [
         {
@@ -167,12 +167,12 @@ Use this, to avoid giving developers the raw Mistral API key, but still letting 
 
 ```bash
 export DATABASE_URL=""
-export LITELLM_MASTER_KEY=""
+export DHEERA_AI_MASTER_KEY=""
 export MISTRAL_API_BASE=""
 ```
 
 ```bash
-litellm
+dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```

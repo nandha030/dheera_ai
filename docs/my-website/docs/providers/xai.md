@@ -7,7 +7,7 @@ https://docs.x.ai/docs
 
 :::tip
 
-**We support ALL xAI models, just set `model=xai/<any-model-on-xai>` as a prefix when sending litellm requests**
+**We support ALL xAI models, just set `model=xai/<any-model-on-xai>` as a prefix when sending dheera_ai requests**
 
 :::
 
@@ -28,7 +28,7 @@ https://docs.x.ai/docs
 
 **Example:**
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # With reasoning
 response = completion(
@@ -81,8 +81,8 @@ os.environ['XAI_API_KEY']
 
 ## Sample Usage
 
-```python showLineNumbers title="LiteLLM python sdk usage - Non-streaming"
-from litellm import completion
+```python showLineNumbers title="Dheera AI python sdk usage - Non-streaming"
+from dheera_ai import completion
 import os
 
 os.environ['XAI_API_KEY'] = ""
@@ -109,8 +109,8 @@ print(response)
 
 ## Sample Usage - Streaming
 
-```python showLineNumbers title="LiteLLM python sdk usage - Streaming"
-from litellm import completion
+```python showLineNumbers title="Dheera AI python sdk usage - Streaming"
+from dheera_ai import completion
 import os
 
 os.environ['XAI_API_KEY'] = ""
@@ -140,9 +140,9 @@ for chunk in response:
 
 ## Sample Usage - Vision
 
-```python showLineNumbers title="LiteLLM python sdk usage - Vision"
+```python showLineNumbers title="Dheera AI python sdk usage - Vision"
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["XAI_API_KEY"] = "your-api-key"
 
@@ -169,16 +169,16 @@ response = completion(
 )
 ```
 
-## Usage with LiteLLM Proxy Server
+## Usage with Dheera AI Proxy Server
 
-Here's how to call a XAI model with the LiteLLM Proxy Server
+Here's how to call a XAI model with the Dheera AI Proxy Server
 
 1. Modify the config.yaml 
 
   ```yaml showLineNumbers
   model_list:
     - model_name: my-model
-      litellm_params:
+      dheera_ai_params:
         model: xai/<your-model-name>  # add xai/ prefix to route as XAI provider
         api_key: api-key                 # api key to send your model
   ```
@@ -187,10 +187,10 @@ Here's how to call a XAI model with the LiteLLM Proxy Server
 2. Start the proxy 
 
   ```bash
-  $ litellm --config /path/to/config.yaml
+  $ dheera_ai --config /path/to/config.yaml
   ```
 
-3. Send Request to LiteLLM Proxy Server
+3. Send Request to Dheera AI Proxy Server
 
   <Tabs>
 
@@ -199,8 +199,8 @@ Here's how to call a XAI model with the LiteLLM Proxy Server
   ```python showLineNumbers
   import openai
   client = openai.OpenAI(
-      api_key="sk-1234",             # pass litellm proxy key, if you're using virtual keys
-      base_url="http://0.0.0.0:4000" # litellm-proxy-base url
+      api_key="sk-1234",             # pass dheera_ai proxy key, if you're using virtual keys
+      base_url="http://0.0.0.0:4000" # dheera_ai-proxy-base url
   )
 
   response = client.chat.completions.create(
@@ -240,15 +240,15 @@ Here's how to call a XAI model with the LiteLLM Proxy Server
 
 ## Reasoning Usage
 
-LiteLLM supports reasoning usage for xAI models.
+Dheera AI supports reasoning usage for xAI models.
 
 <Tabs>
 
-<TabItem value="python" label="LiteLLM Python SDK">
+<TabItem value="python" label="Dheera AI Python SDK">
 
 ```python showLineNumbers title="reasoning with xai/grok-3-mini-beta"
-import litellm
-response = litellm.completion(
+import dheera_ai
+response = dheera_ai.completion(
     model="xai/grok-3-mini-beta",
     messages=[{"role": "user", "content": "What is 101*3?"}],
     reasoning_effort="low",
@@ -268,13 +268,13 @@ print(completion.usage.completion_tokens_details.reasoning_tokens)
 ```
 </TabItem>
 
-<TabItem value="curl" label="LiteLLM Proxy - OpenAI SDK Usage">
+<TabItem value="curl" label="Dheera AI Proxy - OpenAI SDK Usage">
 
 ```python showLineNumbers title="reasoning with xai/grok-3-mini-beta"
 import openai
 client = openai.OpenAI(
-    api_key="sk-1234",             # pass litellm proxy key, if you're using virtual keys
-    base_url="http://0.0.0.0:4000" # litellm-proxy-base url
+    api_key="sk-1234",             # pass dheera_ai proxy key, if you're using virtual keys
+    base_url="http://0.0.0.0:4000" # dheera_ai-proxy-base url
 )
 
 response = client.chat.completions.create(

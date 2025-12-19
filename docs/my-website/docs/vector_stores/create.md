@@ -18,16 +18,16 @@ Create a vector store which can be used to store and search document chunks for 
 
 ## Usage
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 <Tabs>
 <TabItem value="basic" label="Basic Usage">
 
 #### Async example
 ```python showLineNumbers title="Create Vector Store - Basic"
-import litellm
+import dheera_ai
 
-response = await litellm.vector_stores.acreate(
+response = await dheera_ai.vector_stores.acreate(
     name="My Document Store",
     file_ids=["file-abc123", "file-def456"]
 )
@@ -36,9 +36,9 @@ print(response)
 
 #### Sync example
 ```python showLineNumbers title="Create Vector Store - Sync"
-import litellm
+import dheera_ai
 
-response = litellm.vector_stores.create(
+response = dheera_ai.vector_stores.create(
     name="My Document Store", 
     file_ids=["file-abc123", "file-def456"]
 )
@@ -51,9 +51,9 @@ print(response)
 
 #### With expiration and chunking strategy
 ```python showLineNumbers title="Create Vector Store - Advanced"
-import litellm
+import dheera_ai
 
-response = await litellm.vector_stores.acreate(
+response = await dheera_ai.vector_stores.acreate(
     name="My Document Store",
     file_ids=["file-abc123", "file-def456"],
     expires_after={
@@ -81,13 +81,13 @@ print(response)
 
 #### Using OpenAI provider explicitly
 ```python showLineNumbers title="Create Vector Store - OpenAI Provider"
-import litellm
+import dheera_ai
 import os
 
 # Set API key
 os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
 
-response = await litellm.vector_stores.acreate(
+response = await dheera_ai.vector_stores.acreate(
     name="My Document Store",
     file_ids=["file-abc123", "file-def456"],
     custom_llm_provider="openai"
@@ -98,7 +98,7 @@ print(response)
 </TabItem>
 </Tabs>
 
-### LiteLLM Proxy Server
+### Dheera AI Proxy Server
 
 <Tabs>
 <TabItem value="proxy-setup" label="Setup & Usage">
@@ -108,7 +108,7 @@ print(response)
 ```yaml
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
 
@@ -119,18 +119,18 @@ general_settings:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it with OpenAI SDK!
 
-```python showLineNumbers title="OpenAI SDK via LiteLLM Proxy"
+```python showLineNumbers title="OpenAI SDK via Dheera AI Proxy"
 from openai import OpenAI
 
-# Point OpenAI SDK to LiteLLM proxy
+# Point OpenAI SDK to Dheera AI proxy
 client = OpenAI(
     base_url="http://0.0.0.0:4000",
-    api_key="sk-1234",  # Your LiteLLM API key
+    api_key="sk-1234",  # Your Dheera AI API key
 )
 
 vector_store = client.beta.vector_stores.create(
@@ -289,7 +289,7 @@ The request body follows OpenAI's vector stores API format.
 For testing purposes, you can use mock responses:
 
 ```python showLineNumbers title="Mock Response Example"
-import litellm
+import dheera_ai
 
 # Mock response for testing
 mock_response = {
@@ -308,7 +308,7 @@ mock_response = {
     "status": "completed"
 }
 
-response = await litellm.vector_stores.acreate(
+response = await dheera_ai.vector_stores.acreate(
     name="Test Store",
     mock_response=mock_response
 )

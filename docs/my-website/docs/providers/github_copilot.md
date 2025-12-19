@@ -14,7 +14,7 @@ https://docs.github.com/en/copilot
 | Property | Details |
 |-------|-------|
 | Description | GitHub Copilot Chat API provides access to GitHub's AI-powered coding assistant. |
-| Provider Route on LiteLLM | `github_copilot/` |
+| Provider Route on Dheera AI | `github_copilot/` |
 | Supported Endpoints | `/chat/completions`, `/embeddings` |
 | API Reference | [GitHub Copilot docs](https://docs.github.com/en/copilot) |
 
@@ -22,16 +22,16 @@ https://docs.github.com/en/copilot
 
 GitHub Copilot uses OAuth device flow for authentication. On first use, you'll be prompted to authenticate via GitHub:
 
-1. LiteLLM will display a device code and verification URL
+1. Dheera AI will display a device code and verification URL
 2. Visit the URL and enter the code to authenticate
 3. Your credentials will be stored locally for future use
 
-## Usage - LiteLLM Python SDK
+## Usage - Dheera AI Python SDK
 
 ### Chat Completion
 
 ```python showLineNumbers title="GitHub Copilot Chat Completion"
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="github_copilot/gpt-4",
@@ -45,7 +45,7 @@ print(response)
 ```
 
 ```python showLineNumbers title="GitHub Copilot Chat Completion - Streaming"
-from litellm import completion
+from dheera_ai import completion
 
 stream = completion(
     model="github_copilot/gpt-4",
@@ -67,9 +67,9 @@ for chunk in stream:
 For GPT Codex models, only responses API is supported.
 
 ```python showLineNumbers title="GitHub Copilot Responses"
-import litellm
+import dheera_ai
 
-response = await litellm.aresponses(
+response = await dheera_ai.aresponses(
     model="github_copilot/gpt-5.1-codex",
     input="Write a Python hello world",
     max_output_tokens=500
@@ -81,40 +81,40 @@ print(response)
 ### Embedding
 
 ```python showLineNumbers title="GitHub Copilot Embedding"
-import litellm
+import dheera_ai
 
-response = litellm.embedding(
+response = dheera_ai.embedding(
     model="github_copilot/text-embedding-3-small",
-    input=["good morning from litellm"]
+    input=["good morning from dheera_ai"]
 )
 print(response)
 ```
 
-## Usage - LiteLLM Proxy
+## Usage - Dheera AI Proxy
 
-Add the following to your LiteLLM Proxy configuration file:
+Add the following to your Dheera AI Proxy configuration file:
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: github_copilot/gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: github_copilot/gpt-4
   - model_name: github_copilot/gpt-5.1-codex
     model_info:
       mode: responses
-    litellm_params:
+    dheera_ai_params:
       model: github_copilot/gpt-5.1-codex
   - model_name: github_copilot/text-embedding-ada-002
     model_info:
       mode: embedding
-    litellm_params:
+    dheera_ai_params:
       model: github_copilot/text-embedding-ada-002
 ```
 
-Start your LiteLLM Proxy server:
+Start your Dheera AI Proxy server:
 
-```bash showLineNumbers title="Start LiteLLM Proxy"
-litellm --config config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy"
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -146,14 +146,14 @@ print(response.choices[0].message.content)
 
 </TabItem>
 
-<TabItem value="litellm-sdk" label="LiteLLM SDK">
+<TabItem value="dheera_ai-sdk" label="Dheera AI SDK">
 
-```python showLineNumbers title="GitHub Copilot via Proxy - LiteLLM SDK"
-import litellm
+```python showLineNumbers title="GitHub Copilot via Proxy - Dheera AI SDK"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy
-response = litellm.completion(
-    model="litellm_proxy/github_copilot/gpt-4",
+# Configure Dheera AI to use your proxy
+response = dheera_ai.completion(
+    model="dheera_ai_proxy/github_copilot/gpt-4",
     messages=[{"role": "user", "content": "Review this code for bugs"}],
     api_base="http://localhost:4000",
     api_key="your-proxy-api-key",
@@ -188,9 +188,9 @@ curl http://localhost:4000/v1/chat/completions \
 ## Getting Started
 
 1. Ensure you have GitHub Copilot access (paid GitHub subscription required)
-2. Run your first LiteLLM request - you'll be prompted to authenticate
+2. Run your first Dheera AI request - you'll be prompted to authenticate
 3. Follow the device flow authentication process
-4. Start making requests to GitHub Copilot through LiteLLM
+4. Start making requests to GitHub Copilot through Dheera AI
 
 ## Configuration
 
@@ -200,7 +200,7 @@ You can customize token storage locations:
 
 ```bash showLineNumbers title="Environment Variables"
 # Optional: Custom token directory
-export GITHUB_COPILOT_TOKEN_DIR="~/.config/litellm/github_copilot"
+export GITHUB_COPILOT_TOKEN_DIR="~/.config/dheera_ai/github_copilot"
 
 # Optional: Custom access token file name
 export GITHUB_COPILOT_ACCESS_TOKEN_FILE="access-token"

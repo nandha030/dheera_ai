@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 :::info
 
-Requires LiteLLM v1.63.0+
+Requires Dheera AI v1.63.0+
 
 :::
 
@@ -22,9 +22,9 @@ Supported Providers:
 - Mistral AI (Magistral models) (`mistral/`)
 - Groq (`groq/`)
 
-LiteLLM will standardize the `reasoning_content` in the response and `thinking_blocks` in the assistant message.
+Dheera AI will standardize the `reasoning_content` in the response and `thinking_blocks` in the assistant message.
 
-```python title="Example response from litellm"
+```python title="Example response from dheera_ai"
 "message": {
     ...
     "reasoning_content": "The capital of France is Paris.",
@@ -44,7 +44,7 @@ LiteLLM will standardize the `reasoning_content` in the response and `thinking_b
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers
-from litellm import completion
+from dheera_ai import completion
 import os 
 
 os.environ["ANTHROPIC_API_KEY"] = ""
@@ -65,7 +65,7 @@ print(response.choices[0].message.content)
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "anthropic/claude-3-7-sonnet-20250219",
     "messages": [
@@ -137,32 +137,32 @@ When using Anthropic models with `thinking` enabled and tool calling, you **must
 3. When these clients reconstruct the assistant message for the next turn, the thinking blocks are lost
 4. Anthropic rejects the request because the assistant message doesn't start with a thinking block
 
-:::tip LiteLLM supports thinking_blocks
-LiteLLM's `completion()` API **does support** sending `thinking_blocks` in assistant messages. If you're using LiteLLM directly (not through an OpenAI-compatible client), you can preserve and resend `thinking_blocks` and everything will work correctly.
+:::tip Dheera AI supports thinking_blocks
+Dheera AI's `completion()` API **does support** sending `thinking_blocks` in assistant messages. If you're using Dheera AI directly (not through an OpenAI-compatible client), you can preserve and resend `thinking_blocks` and everything will work correctly.
 :::
 
 **Solutions:**
 
-1. **Use LiteLLM's built-in workaround** (recommended): Set `litellm.modify_params = True` and LiteLLM will automatically handle this incompatibility by dropping the `thinking` param when `thinking_blocks` are missing (see below)
+1. **Use Dheera AI's built-in workaround** (recommended): Set `dheera_ai.modify_params = True` and Dheera AI will automatically handle this incompatibility by dropping the `thinking` param when `thinking_blocks` are missing (see below)
 2. **For client developers**: Explicitly handle and resend the `thinking_blocks` field (see example below)
 3. **Disable extended thinking** when using tools with OpenAI-compatible clients that don't support `thinking_blocks`
 4. **Use Anthropic's native API** directly instead of OpenAI-compatible endpoints
 
-### LiteLLM Built-in Workaround
+### Dheera AI Built-in Workaround
 
-LiteLLM can automatically handle this incompatibility when `modify_params=True` is set. If the client sends a request with `thinking` enabled but the assistant message with `tool_calls` is missing `thinking_blocks`, LiteLLM will automatically drop the `thinking` param for that turn to avoid the error.
+Dheera AI can automatically handle this incompatibility when `modify_params=True` is set. If the client sends a request with `thinking` enabled but the assistant message with `tool_calls` is missing `thinking_blocks`, Dheera AI will automatically drop the `thinking` param for that turn to avoid the error.
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers
-import litellm
+import dheera_ai
 
 # Enable automatic parameter modification
-litellm.modify_params = True
+dheera_ai.modify_params = True
 
 # Now this will work even if thinking_blocks are missing from the assistant message
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-20250514",
     thinking={"type": "enabled", "budget_tokens": 1024},
     tools=[...],
@@ -171,7 +171,7 @@ response = litellm.completion(
         {
             "role": "assistant",
             "tool_calls": [{"id": "call_123", "type": "function", "function": {"name": "get_weather", "arguments": '{"city": "Madrid"}'}}]
-            # Note: thinking_blocks is missing here - LiteLLM will handle it
+            # Note: thinking_blocks is missing here - Dheera AI will handle it
         },
         {"role": "tool", "tool_call_id": "call_123", "content": "22°C sunny"}
     ]
@@ -182,12 +182,12 @@ response = litellm.completion(
 <TabItem value="proxy" label="PROXY">
 
 ```yaml showLineNumbers title="config.yaml"
-litellm_settings:
+dheera_ai_settings:
   modify_params: true  # Enable automatic parameter modification
 
 model_list:
   - model_name: claude-thinking
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-sonnet-4-20250514
       thinking:
         type: enabled
@@ -198,7 +198,7 @@ model_list:
 </Tabs>
 
 :::info
-When `modify_params=True` and LiteLLM drops the `thinking` param, the model will **not** use extended thinking for that specific turn. The conversation will continue normally, but without reasoning for that response.
+When `modify_params=True` and Dheera AI drops the `thinking` param, the model will **not** use extended thinking for that specific turn. The conversation will continue normally, but without reasoning for that response.
 :::
 
 **Correct way to include `thinking_blocks`:**
@@ -219,8 +219,8 @@ assistant_message = {
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers
-litellm._turn_on_debug()
-litellm.modify_params = True
+dheera_ai._turn_on_debug()
+dheera_ai.modify_params = True
 model = "anthropic/claude-3-7-sonnet-20250219" # works across Anthropic, Bedrock, Vertex AI
 # Step 1: send the conversation and available functions to the model
 messages = [
@@ -252,7 +252,7 @@ tools = [
         },
     }
 ]
-response = litellm.completion(
+response = dheera_ai.completion(
     model=model,
     messages=messages,
     tools=tools,
@@ -301,7 +301,7 @@ if tool_calls:
             }
         )  # extend conversation with function response
     print(f"messages: {messages}")
-    second_response = litellm.completion(
+    second_response = dheera_ai.completion(
         model=model,
         messages=messages,
         seed=22,
@@ -320,7 +320,7 @@ if tool_calls:
 ```yaml showLineNumbers
 model_list:
   - model_name: claude-3-7-sonnet-thinking
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-7-sonnet-20250219
       api_key: os.environ/ANTHROPIC_API_KEY
       thinking: {
@@ -332,7 +332,7 @@ model_list:
 2. Run proxy
 
 ```bash showLineNumbers
-litellm --config config.yaml
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -342,7 +342,7 @@ litellm --config config.yaml
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "claude-3-7-sonnet-thinking",
     "messages": [
@@ -380,7 +380,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "claude-3-7-sonnet-thinking",
     "messages": [
@@ -437,14 +437,14 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 
 ## Switching between Anthropic + Deepseek models 
 
-Set `drop_params=True` to drop the 'thinking' blocks when swapping from Anthropic to Deepseek models. Suggest improvements to this approach [here](https://github.com/BerriAI/litellm/discussions/8927).
+Set `drop_params=True` to drop the 'thinking' blocks when swapping from Anthropic to Deepseek models. Suggest improvements to this approach [here](https://github.com/BerriAI/dheera_ai/discussions/8927).
 
 ```python showLineNumbers
-litellm.drop_params = True # 👈 EITHER GLOBALLY or per request
+dheera_ai.drop_params = True # 👈 EITHER GLOBALLY or per request
 
 # or per request
 ## Anthropic
-response = litellm.completion(
+response = dheera_ai.completion(
   model="anthropic/claude-3-7-sonnet-20250219",
   messages=[{"role": "user", "content": "What is the capital of France?"}],
   reasoning_effort="low",
@@ -452,7 +452,7 @@ response = litellm.completion(
 )
 
 ## Deepseek
-response = litellm.completion(
+response = dheera_ai.completion(
   model="deepseek/deepseek-chat",
   messages=[{"role": "user", "content": "What is the capital of France?"}],
   reasoning_effort="low",
@@ -481,7 +481,7 @@ You can also pass the `thinking` parameter to Anthropic models.
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers
-response = litellm.completion(
+response = dheera_ai.completion(
   model="anthropic/claude-3-7-sonnet-20250219",
   messages=[{"role": "user", "content": "What is the capital of France?"}],
   thinking={"type": "enabled", "budget_tokens": 1024},
@@ -494,7 +494,7 @@ response = litellm.completion(
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "anthropic/claude-3-7-sonnet-20250219",
     "messages": [{"role": "user", "content": "What is the capital of France?"}],
@@ -508,39 +508,39 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 ## Checking if a model supports reasoning
 
 <Tabs>
-<TabItem label="LiteLLM Python SDK" value="Python">
+<TabItem label="Dheera AI Python SDK" value="Python">
 
-Use `litellm.supports_reasoning(model="")` -> returns `True` if model supports reasoning and `False` if not.
+Use `dheera_ai.supports_reasoning(model="")` -> returns `True` if model supports reasoning and `False` if not.
 
-```python showLineNumbers title="litellm.supports_reasoning() usage"
-import litellm 
+```python showLineNumbers title="dheera_ai.supports_reasoning() usage"
+import dheera_ai 
 
 # Example models that support reasoning
-assert litellm.supports_reasoning(model="anthropic/claude-3-7-sonnet-20250219") == True
-assert litellm.supports_reasoning(model="deepseek/deepseek-chat") == True 
+assert dheera_ai.supports_reasoning(model="anthropic/claude-3-7-sonnet-20250219") == True
+assert dheera_ai.supports_reasoning(model="deepseek/deepseek-chat") == True 
 
 # Example models that do not support reasoning
-assert litellm.supports_reasoning(model="openai/gpt-3.5-turbo") == False 
+assert dheera_ai.supports_reasoning(model="openai/gpt-3.5-turbo") == False 
 ```
 </TabItem>
 
-<TabItem label="LiteLLM Proxy Server" value="proxy">
+<TabItem label="Dheera AI Proxy Server" value="proxy">
 
-1. Define models that support reasoning in your `config.yaml`. You can optionally add `supports_reasoning: True` to the `model_info` if LiteLLM does not automatically detect it for your custom model.
+1. Define models that support reasoning in your `config.yaml`. You can optionally add `supports_reasoning: True` to the `model_info` if Dheera AI does not automatically detect it for your custom model.
 
-```yaml showLineNumbers title="litellm proxy config.yaml"
+```yaml showLineNumbers title="dheera_ai proxy config.yaml"
 model_list:
   - model_name: claude-3-sonnet-reasoning
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-7-sonnet-20250219
       api_key: os.environ/ANTHROPIC_API_KEY
   - model_name: deepseek-reasoning
-    litellm_params:
+    dheera_ai_params:
       model: deepseek/deepseek-chat
       api_key: os.environ/DEEPSEEK_API_KEY
   # Example for a custom model where detection might be needed
   - model_name: my-custom-reasoning-model 
-    litellm_params:
+    dheera_ai_params:
       model: openai/my-custom-model # Assuming it's OpenAI compatible
       api_base: http://localhost:8000
       api_key: fake-key
@@ -550,8 +550,8 @@ model_list:
 
 2. Run the proxy server:
 
-```bash showLineNumbers title="litellm --config config.yaml"
-litellm --config config.yaml
+```bash showLineNumbers title="dheera_ai --config config.yaml"
+dheera_ai --config config.yaml
 ```
 
 3. Call `/model_group/info` to check if your model supports `reasoning`

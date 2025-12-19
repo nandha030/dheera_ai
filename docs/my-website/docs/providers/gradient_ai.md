@@ -5,8 +5,8 @@ import TabItem from '@theme/TabItem';
 https://digitalocean.com/products/gradientai
 
 
-LiteLLM provides native support for GradientAI models.
-To use a GradientAI model, specify it as `gradient_ai/<model-name>` in your LiteLLM requests.
+Dheera AI provides native support for GradientAI models.
+To use a GradientAI model, specify it as `gradient_ai/<model-name>` in your Dheera AI requests.
 
 
 ## API Key & Endpoint
@@ -22,7 +22,7 @@ os.environ['GRADIENT_AI_AGENT_ENDPOINT'] = "https://api.gradient_ai.com/api/v1/c
 ## Sample Usage
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['GRADIENT_AI_API_KEY'] = "your-api-key"
@@ -38,7 +38,7 @@ print(response.choices[0].message.content)
 ## Streaming Example
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['GRADIENT_AI_API_KEY'] = "your-api-key"

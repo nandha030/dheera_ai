@@ -2,7 +2,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 # Anthropic
-LiteLLM supports all anthropic models.
+Dheera AI supports all anthropic models.
 
 - `claude-sonnet-4-5-20250929`
 - `claude-opus-4-5-20251101`
@@ -19,7 +19,7 @@ LiteLLM supports all anthropic models.
 | Property | Details |
 |-------|-------|
 | Description | Claude is a highly performant, trustworthy, and intelligent AI platform built by Anthropic. Claude excels at tasks involving language, reasoning, analysis, coding, and more. Also available via Azure Foundry. |
-| Provider Route on LiteLLM | `anthropic/` (add this prefix to the model name, to route any requests to Anthropic - e.g. `anthropic/claude-3-5-sonnet-20240620`). For Azure Foundry deployments, use `azure/claude-*` (see [Azure Anthropic documentation](../providers/azure/azure_anthropic)) |
+| Provider Route on Dheera AI | `anthropic/` (add this prefix to the model name, to route any requests to Anthropic - e.g. `anthropic/claude-3-5-sonnet-20240620`). For Azure Foundry deployments, use `azure/claude-*` (see [Azure Anthropic documentation](../providers/azure/azure_anthropic)) |
 | Provider Doc | [Anthropic ↗](https://docs.anthropic.com/en/docs/build-with-claude/overview), [Azure Foundry Claude ↗](https://learn.microsoft.com/en-us/azure/ai-services/foundry-models/claude) |
 | API Endpoint for Provider | https://api.anthropic.com (or Azure Foundry endpoint: `https://<resource-name>.services.ai.azure.com/anthropic`) |
 | Supported Endpoints | `/chat/completions`, `/v1/messages` (passthrough) |
@@ -48,7 +48,7 @@ Check this in code, [here](../completion/input.md#translated-openai-params)
 :::info
 
 **Notes:**
-- Anthropic API fails requests when `max_tokens` are not passed. Due to this litellm passes `max_tokens=4096` when no `max_tokens` are passed.
+- Anthropic API fails requests when `max_tokens` are not passed. Due to this dheera_ai passes `max_tokens=4096` when no `max_tokens` are passed.
 - `response_format` is fully supported for Claude Sonnet 4.5 and Opus 4.1 models (see [Structured Outputs](#structured-outputs) section)
 - `reasoning_effort` is automatically mapped to `output_config={"effort": ...}` for Claude Opus 4.5 models (see [Effort Parameter](./anthropic_effort.md))
 
@@ -56,7 +56,7 @@ Check this in code, [here](../completion/input.md#translated-openai-params)
 
 ## **Structured Outputs**
 
-LiteLLM supports Anthropic's [structured outputs feature](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) for Claude Sonnet 4.5 and Opus 4.1 models. When you use `response_format` with these models, LiteLLM automatically:
+Dheera AI supports Anthropic's [structured outputs feature](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) for Claude Sonnet 4.5 and Opus 4.1 models. When you use `response_format` with these models, Dheera AI automatically:
 - Adds the required `structured-outputs-2025-11-13` beta header
 - Transforms OpenAI's `response_format` to Anthropic's `output_format` format
 
@@ -68,10 +68,10 @@ LiteLLM supports Anthropic's [structured outputs feature](https://platform.claud
 ### Example Usage
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM SDK">
+<TabItem value="sdk" label="Dheera AI SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="claude-sonnet-4-5-20250929",
@@ -99,14 +99,14 @@ print(response.choices[0].message.content)
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 1. Setup config.yaml
 
 ```yaml
 model_list:
   - model_name: claude-sonnet-4-5
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-sonnet-4-5-20250929
       api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -114,7 +114,7 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -122,7 +122,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "claude-sonnet-4-5",
     "messages": [{"role": "user", "content": "What is the capital of France?"}],
@@ -149,7 +149,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 </Tabs>
 
 :::info
-When using structured outputs with supported models, LiteLLM automatically:
+When using structured outputs with supported models, Dheera AI automatically:
 - Converts OpenAI's `response_format` to Anthropic's `output_schema`
 - Adds the `anthropic-beta: structured-outputs-2025-11-13` header
 - Creates a tool with the schema and forces the model to use it
@@ -162,7 +162,7 @@ import os
 
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
 # os.environ["ANTHROPIC_API_BASE"] = "" # [OPTIONAL] or 'ANTHROPIC_BASE_URL'
-# os.environ["LITELLM_ANTHROPIC_DISABLE_URL_SUFFIX"] = "true" # [OPTIONAL] Disable automatic URL suffix appending
+# os.environ["DHEERA_AI_ANTHROPIC_DISABLE_URL_SUFFIX"] = "true" # [OPTIONAL] Disable automatic URL suffix appending
 ```
 
 :::tip Azure Foundry Support
@@ -183,7 +183,7 @@ response = completion(
 
 ### Custom API Base
 
-When using a custom API base for Anthropic (e.g., a proxy or custom endpoint), LiteLLM automatically appends the appropriate suffix (`/v1/messages` or `/v1/complete`) to your base URL.
+When using a custom API base for Anthropic (e.g., a proxy or custom endpoint), Dheera AI automatically appends the appropriate suffix (`/v1/messages` or `/v1/complete`) to your base URL.
 
 If your custom endpoint already includes the full path or doesn't follow Anthropic's standard URL structure, you can disable this automatic suffix appending:
 
@@ -191,14 +191,14 @@ If your custom endpoint already includes the full path or doesn't follow Anthrop
 import os
 
 os.environ["ANTHROPIC_API_BASE"] = "https://my-custom-endpoint.com/custom/path"
-os.environ["LITELLM_ANTHROPIC_DISABLE_URL_SUFFIX"] = "true"  # Prevents automatic suffix
+os.environ["DHEERA_AI_ANTHROPIC_DISABLE_URL_SUFFIX"] = "true"  # Prevents automatic suffix
 ```
 
-Without `LITELLM_ANTHROPIC_DISABLE_URL_SUFFIX`:
+Without `DHEERA_AI_ANTHROPIC_DISABLE_URL_SUFFIX`:
 - Base URL `https://my-proxy.com` → `https://my-proxy.com/v1/messages`
 - Base URL `https://my-proxy.com/api` → `https://my-proxy.com/api/v1/messages`
 
-With `LITELLM_ANTHROPIC_DISABLE_URL_SUFFIX=true`:
+With `DHEERA_AI_ANTHROPIC_DISABLE_URL_SUFFIX=true`:
 - Base URL `https://my-proxy.com/custom/path` → `https://my-proxy.com/custom/path` (unchanged)
 
 ### Azure AI Foundry (Alternative Method)
@@ -210,7 +210,7 @@ For full Azure support including Azure AD authentication, use the dedicated [Azu
 As an alternative, you can use the `anthropic/` provider directly with your Azure endpoint since Azure exposes Claude using Anthropic's native API.
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="anthropic/claude-sonnet-4-5",
@@ -229,7 +229,7 @@ print(response)
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # set env - [OPTIONAL] replace with your anthropic key
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
@@ -245,7 +245,7 @@ Just set `stream=True` when calling completion.
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # set env
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
@@ -256,9 +256,9 @@ for chunk in response:
     print(chunk["choices"][0]["delta"]["content"])  # same as openai format
 ```
 
-## Usage with LiteLLM Proxy 
+## Usage with Dheera AI Proxy 
 
-Here's how to call Anthropic with the LiteLLM Proxy Server
+Here's how to call Anthropic with the Dheera AI Proxy Server
 
 ### 1. Save key in your environment
 
@@ -274,13 +274,13 @@ export ANTHROPIC_API_KEY="your-api-key"
 ```yaml
 model_list:
   - model_name: claude-4 ### RECEIVED MODEL NAME ###
-    litellm_params: # all params accepted by litellm.completion() - https://docs.litellm.ai/docs/completion/input
-      model: claude-opus-4-20250514 ### MODEL NAME sent to `litellm.completion()` ###
+    dheera_ai_params: # all params accepted by dheera_ai.completion() - https://docs.dheera_ai.ai/docs/completion/input
+      model: claude-opus-4-20250514 ### MODEL NAME sent to `dheera_ai.completion()` ###
       api_key: "os.environ/ANTHROPIC_API_KEY" # does os.getenv("ANTHROPIC_API_KEY")
 ```
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 </TabItem>
 <TabItem value="config-all" label="config - default all Anthropic Model">
@@ -295,12 +295,12 @@ ANTHROPIC_API_KEY=sk-ant****
 ```yaml
 model_list:
   - model_name: "*" 
-    litellm_params:
+    dheera_ai_params:
       model: "*"
 ```
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 Example Request for this config.yaml
@@ -327,7 +327,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="cli" label="cli">
 
 ```bash
-$ litellm --model claude-opus-4-20250514
+$ dheera_ai --model claude-opus-4-20250514
 
 # Server running on http://0.0.0.0:4000
 ```
@@ -364,7 +364,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(model="claude-3", messages = [
     {
         "role": "user",
@@ -388,7 +388,7 @@ from langchain.prompts.chat import (
 from langchain.schema import HumanMessage, SystemMessage
 
 chat = ChatOpenAI(
-    openai_api_base="http://0.0.0.0:4000", # set openai_api_base to the LiteLLM Proxy
+    openai_api_base="http://0.0.0.0:4000", # set openai_api_base to the Dheera AI Proxy
     model = "claude-3",
     temperature=0.1
 )
@@ -398,7 +398,7 @@ messages = [
         content="You are a helpful assistant that im using to make a test request to."
     ),
     HumanMessage(
-        content="test from litellm. tell me why it's amazing in 1 sentence"
+        content="test from dheera_ai. tell me why it's amazing in 1 sentence"
     ),
 ]
 response = chat(messages)
@@ -411,7 +411,7 @@ print(response)
 ## Supported Models
 
 `Model Name` 👉 Human-friendly name.  
-`Function Call` 👉 How to call the model in LiteLLM.
+`Function Call` 👉 How to call the model in Dheera AI.
 
 | Model Name       | Function Call                              |
 |------------------|--------------------------------------------|
@@ -438,10 +438,10 @@ Use Anthropic Prompt Caching
 
 :::note
 
-Here's what a sample Raw Request from LiteLLM for Anthropic Context Caching looks like: 
+Here's what a sample Raw Request from Dheera AI for Anthropic Context Caching looks like: 
 
 ```bash
-POST Request Sent from LiteLLM:
+POST Request Sent from Dheera AI:
 curl -X POST \
 https://api.anthropic.com/v1/messages \
 -H 'accept: application/json' -H 'anthropic-version: 2023-06-01' -H 'content-type: application/json' -H 'x-api-key: sk-...' -H 'anthropic-beta: prompt-caching-2024-07-31' \
@@ -481,10 +481,10 @@ This example demonstrates basic Prompt Caching usage, caching the full text of t
 
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM SDK">
+<TabItem value="sdk" label="Dheera AI SDK">
 
 ```python 
-response = await litellm.acompletion(
+response = await dheera_ai.acompletion(
     model="anthropic/claude-3-5-sonnet-20240620",
     messages=[
         {
@@ -510,23 +510,23 @@ response = await litellm.acompletion(
 
 ```
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 :::info
 
-LiteLLM Proxy is OpenAI compatible
+Dheera AI Proxy is OpenAI compatible
 
-This is an example using the OpenAI Python SDK sending a request to LiteLLM Proxy
+This is an example using the OpenAI Python SDK sending a request to Dheera AI Proxy
 
-Assuming you have a model=`anthropic/claude-3-5-sonnet-20240620` on the [litellm proxy config.yaml](#usage-with-litellm-proxy)
+Assuming you have a model=`anthropic/claude-3-5-sonnet-20240620` on the [dheera_ai proxy config.yaml](#usage-with-dheera_ai-proxy)
 
 :::
 
 ```python 
 import openai
 client = openai.AsyncOpenAI(
-    api_key="anything",            # litellm proxy api key
-    base_url="http://0.0.0.0:4000" # litellm proxy base url
+    api_key="anything",            # dheera_ai proxy api key
+    base_url="http://0.0.0.0:4000" # dheera_ai proxy base url
 )
 
 
@@ -566,12 +566,12 @@ In this example, we demonstrate caching tool definitions.
 The cache_control parameter is placed on the final tool
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM SDK">
+<TabItem value="sdk" label="Dheera AI SDK">
 
 ```python 
-import litellm
+import dheera_ai
 
-response = await litellm.acompletion(
+response = await dheera_ai.acompletion(
     model="anthropic/claude-3-5-sonnet-20240620",
     messages = [{"role": "user", "content": "What's the weather like in Boston today?"}]
     tools = [
@@ -598,23 +598,23 @@ response = await litellm.acompletion(
 )
 ```
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 :::info
 
-LiteLLM Proxy is OpenAI compatible
+Dheera AI Proxy is OpenAI compatible
 
-This is an example using the OpenAI Python SDK sending a request to LiteLLM Proxy
+This is an example using the OpenAI Python SDK sending a request to Dheera AI Proxy
 
-Assuming you have a model=`anthropic/claude-3-5-sonnet-20240620` on the [litellm proxy config.yaml](#usage-with-litellm-proxy)
+Assuming you have a model=`anthropic/claude-3-5-sonnet-20240620` on the [dheera_ai proxy config.yaml](#usage-with-dheera_ai-proxy)
 
 :::
 
 ```python 
 import openai
 client = openai.AsyncOpenAI(
-    api_key="anything",            # litellm proxy api key
-    base_url="http://0.0.0.0:4000" # litellm proxy base url
+    api_key="anything",            # dheera_ai proxy api key
+    base_url="http://0.0.0.0:4000" # dheera_ai proxy base url
 )
 
 response = await client.chat.completions.create(
@@ -657,12 +657,12 @@ The cache_control parameter is placed on the system message to designate it as p
 The conversation history (previous messages) is included in the messages array. The final turn is marked with cache-control, for continuing in followups. The second-to-last user message is marked for caching with the cache_control parameter, so that this checkpoint can read from the previous cache.
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM SDK">
+<TabItem value="sdk" label="Dheera AI SDK">
 
 ```python 
-import litellm
+import dheera_ai
 
-response = await litellm.acompletion(
+response = await dheera_ai.acompletion(
     model="anthropic/claude-3-5-sonnet-20240620",
     messages=[
         # System Message
@@ -707,23 +707,23 @@ response = await litellm.acompletion(
 )
 ```
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 :::info
 
-LiteLLM Proxy is OpenAI compatible
+Dheera AI Proxy is OpenAI compatible
 
-This is an example using the OpenAI Python SDK sending a request to LiteLLM Proxy
+This is an example using the OpenAI Python SDK sending a request to Dheera AI Proxy
 
-Assuming you have a model=`anthropic/claude-3-5-sonnet-20240620` on the [litellm proxy config.yaml](#usage-with-litellm-proxy)
+Assuming you have a model=`anthropic/claude-3-5-sonnet-20240620` on the [dheera_ai proxy config.yaml](#usage-with-dheera_ai-proxy)
 
 :::
 
 ```python 
 import openai
 client = openai.AsyncOpenAI(
-    api_key="anything",            # litellm proxy api key
-    base_url="http://0.0.0.0:4000" # litellm proxy base url
+    api_key="anything",            # dheera_ai proxy api key
+    base_url="http://0.0.0.0:4000" # dheera_ai proxy base url
 )
 
 response = await client.chat.completions.create(
@@ -777,7 +777,7 @@ response = await client.chat.completions.create(
 ## **Function/Tool Calling**
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # set env
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
@@ -842,7 +842,7 @@ You can disable tool calling by setting the `tool_choice` to `"none"`.
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="anthropic/claude-3-opus-20240229",
@@ -860,7 +860,7 @@ response = completion(
 ```yaml
 model_list:
   - model_name: anthropic-claude-model
-    litellm_params:
+    dheera_ai_params:
         model: anthropic/claude-3-opus-20240229
         api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -868,12 +868,12 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
 
-Replace `anything` with your LiteLLM Proxy Virtual Key, if [setup](../proxy/virtual_keys).
+Replace `anything` with your Dheera AI Proxy Virtual Key, if [setup](../proxy/virtual_keys).
 
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
@@ -896,9 +896,9 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 Here's how to use MCP tool calling with Anthropic:
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM SDK">
+<TabItem value="sdk" label="Dheera AI SDK">
 
-LiteLLM supports MCP tool calling with Anthropic in the OpenAI Responses API format.
+Dheera AI supports MCP tool calling with Anthropic in the OpenAI Responses API format.
 
 <Tabs>
 <TabItem value="openai_format" label="OpenAI Format">
@@ -906,7 +906,7 @@ LiteLLM supports MCP tool calling with Anthropic in the OpenAI Responses API for
 
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["ANTHROPIC_API_KEY"] = "sk-ant-..."
 
@@ -931,7 +931,7 @@ response = completion(
 
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["ANTHROPIC_API_KEY"] = "sk-ant-..."
 
@@ -955,14 +955,14 @@ print(response)
 </Tabs>
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 1. Setup config.yaml
 
 ```yaml
 model_list:
   - model_name: claude-4-sonnet
-    litellm_params:
+    dheera_ai_params:
         model: anthropic/claude-sonnet-4-20250514
         api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -970,7 +970,7 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -981,7 +981,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "claude-4-sonnet",
     "messages": [{"role": "user", "content": "Who won the World Cup in 2022?"}],
@@ -995,7 +995,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "claude-4-sonnet",
     "messages": [{"role": "user", "content": "Who won the World Cup in 2022?"}],
@@ -1019,13 +1019,13 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 Here's how to pass the result of a function call back to an anthropic model: 
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os 
 
 os.environ["ANTHROPIC_API_KEY"] = "sk-ant.."
 
 
-litellm.set_verbose = True
+dheera_ai.set_verbose = True
 
 ### 1ST FUNCTION CALL ###
 tools = [
@@ -1101,10 +1101,10 @@ s/o @[Shekhar Patnaik](https://www.linkedin.com/in/patnaikshekhar) for requestin
 
 ### Context Management (Beta)
 
-Anthropic’s [context editing](https://docs.claude.com/en/docs/build-with-claude/context-editing) API lets you automatically clear older tool results or thinking blocks. LiteLLM now forwards the native `context_management` payload when you call Anthropic models, and automatically attaches the required `context-management-2025-06-27` beta header.
+Anthropic’s [context editing](https://docs.claude.com/en/docs/build-with-claude/context-editing) API lets you automatically clear older tool results or thinking blocks. Dheera AI now forwards the native `context_management` payload when you call Anthropic models, and automatically attaches the required `context-management-2025-06-27` beta header.
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="anthropic/claude-sonnet-4-20250514",
@@ -1130,7 +1130,7 @@ response = completion(
 <TabItem value="computer" label="Computer">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 tools = [
     {
@@ -1165,7 +1165,7 @@ print(resp)
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 tools = [{
     "type": "text_editor_20250124",
@@ -1190,7 +1190,7 @@ print(resp)
 
 ```yaml
 - model_name: claude-3-5-sonnet-latest
-  litellm_params:
+  dheera_ai_params:
     model: anthropic/claude-3-5-sonnet-latest
     api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -1198,7 +1198,7 @@ print(resp)
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -1206,7 +1206,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "claude-3-5-sonnet-latest",
     "messages": [{"role": "user", "content": "There's a syntax error in my primes.py file. Can you help me fix it?"}],
@@ -1223,7 +1223,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 Live from v1.70.1+
 :::
 
-LiteLLM maps OpenAI's `search_context_size` param to Anthropic's `max_uses` param.
+Dheera AI maps OpenAI's `search_context_size` param to Anthropic's `max_uses` param.
 
 | OpenAI | Anthropic |
 | --- | --- |
@@ -1240,7 +1240,7 @@ LiteLLM maps OpenAI's `search_context_size` param to Anthropic's `max_uses` para
 <TabItem value="openai" label="OpenAI Format">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 model = "claude-3-5-sonnet-20241022"
 messages = [{"role": "user", "content": "What's the weather like today?"}]
@@ -1265,7 +1265,7 @@ print(resp)
 <TabItem value="anthropic" label="Anthropic Format">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 tools = [{
     "type": "web_search_20250305",
@@ -1294,7 +1294,7 @@ print(resp)
 
 ```yaml
 - model_name: claude-3-5-sonnet-latest
-  litellm_params:
+  dheera_ai_params:
     model: anthropic/claude-3-5-sonnet-latest
     api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -1302,7 +1302,7 @@ print(resp)
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -1314,7 +1314,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "claude-3-5-sonnet-latest",
     "messages": [{"role": "user", "content": "What's the weather like today?"}],
@@ -1335,7 +1335,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "claude-3-5-sonnet-latest",
     "messages": [{"role": "user", "content": "What's the weather like today?"}],
@@ -1364,7 +1364,7 @@ The Anthropic Memory tool is currently in beta.
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 tools = [{
     "type": "memory_20250818",
@@ -1391,7 +1391,7 @@ print(response)
 ```yaml
 model_list:
     - model_name: claude-memory-model
-    litellm_params:
+    dheera_ai_params:
         model: anthropic/claude-sonnet-4-5-20250929
         api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -1399,7 +1399,7 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -1407,7 +1407,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
     -H "Content-Type: application/json" \
-    -H "Authorization: Bearer $LITELLM_KEY" \
+    -H "Authorization: Bearer $DHEERA_AI_KEY" \
     -d '{
     "model": "claude-memory-model",
     "messages": [{"role": "user", "content": "Please remember that my favorite color is blue."}],
@@ -1426,7 +1426,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 ## Usage - Vision 
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # set env
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
@@ -1441,7 +1441,7 @@ def encode_image(image_path):
 image_path = "../proxy/cached_logo.jpg"
 # Getting the base64 string
 base64_image = encode_image(image_path)
-resp = litellm.completion(
+resp = dheera_ai.completion(
     model="anthropic/claude-3-opus-20240229",
     messages=[
         {
@@ -1463,7 +1463,7 @@ print(f"\nResponse: {resp}")
 
 ## Usage - Thinking / `reasoning_content`
 
-LiteLLM translates OpenAI's `reasoning_effort` to Anthropic's `thinking` parameter. [Code](https://github.com/BerriAI/litellm/blob/23051d89dd3611a81617d84277059cd88b2df511/litellm/llms/anthropic/chat/transformation.py#L298)
+Dheera AI translates OpenAI's `reasoning_effort` to Anthropic's `thinking` parameter. [Code](https://github.com/BerriAI/dheera_ai/blob/23051d89dd3611a81617d84277059cd88b2df511/dheera_ai/llms/anthropic/chat/transformation.py#L298)
 
 | reasoning_effort | thinking |
 | ---------------- | -------- |
@@ -1475,7 +1475,7 @@ LiteLLM translates OpenAI's `reasoning_effort` to Anthropic's `thinking` paramet
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 resp = completion(
     model="anthropic/claude-3-7-sonnet-20250219",
@@ -1493,7 +1493,7 @@ resp = completion(
 
 ```yaml
 - model_name: claude-3-7-sonnet-20250219
-  litellm_params:
+  dheera_ai_params:
     model: anthropic/claude-3-7-sonnet-20250219
     api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -1501,7 +1501,7 @@ resp = completion(
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -1588,7 +1588,7 @@ You can also pass the `thinking` parameter to Anthropic models.
 <TabItem value="sdk" label="SDK">
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
   model="anthropic/claude-3-7-sonnet-20250219",
   messages=[{"role": "user", "content": "What is the capital of France?"}],
   thinking={"type": "enabled", "budget_tokens": 1024},
@@ -1601,7 +1601,7 @@ response = litellm.completion(
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "anthropic/claude-3-7-sonnet-20250219",
     "messages": [{"role": "user", "content": "What is the capital of France?"}],
@@ -1617,10 +1617,10 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 
 ## **Passing Extra Headers to Anthropic API**
 
-Pass `extra_headers: dict` to `litellm.completion`
+Pass `extra_headers: dict` to `dheera_ai.completion`
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 messages = [{"role": "user", "content": "What is Anthropic?"}]
 response = completion(
     model="claude-3-5-sonnet-20240620", 
@@ -1638,7 +1638,7 @@ You can "put words in Claude's mouth" by including an `assistant` role message a
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # set env - [OPTIONAL] replace with your anthropic key
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
@@ -1667,7 +1667,7 @@ If you're using Anthropic's Claude 2.1, `system` role messages are properly form
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # set env - [OPTIONAL] replace with your anthropic key
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
@@ -1699,7 +1699,7 @@ Pass base64 encoded PDF files to Anthropic models using the `image_url` field.
 
 ### **using base64**
 ```python
-from litellm import completion, supports_pdf_input
+from dheera_ai import completion, supports_pdf_input
 import base64
 import requests
 
@@ -1743,7 +1743,7 @@ print(response.choices[0])
 
 ```yaml
 - model_name: claude-3-5-haiku-20241022
-  litellm_params:
+  dheera_ai_params:
     model: anthropic/claude-3-5-haiku-20241022
     api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -1751,7 +1751,7 @@ print(response.choices[0])
 2. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -1791,13 +1791,13 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 
 Pass `citations: {"enabled": true}` to Anthropic, to get citations on your document responses. 
 
-Note: This interface is in BETA. If you have feedback on how citations should be returned, please [tell us here](https://github.com/BerriAI/litellm/issues/7970#issuecomment-2644437943)
+Note: This interface is in BETA. If you have feedback on how citations should be returned, please [tell us here](https://github.com/BerriAI/dheera_ai/issues/7970#issuecomment-2644437943)
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 resp = completion(
     model="claude-3-5-sonnet-20241022",
@@ -1838,7 +1838,7 @@ assert citations is not None
 ```yaml
 model_list:
     - model_name: anthropic-claude
-      litellm_params:
+      dheera_ai_params:
         model: anthropic/claude-3-5-sonnet-20241022
         api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -1846,7 +1846,7 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -1889,7 +1889,7 @@ curl -L -X POST 'http://0.0.0.0:4000/v1/chat/completions' \
 
 ## Usage - passing 'user_id' to Anthropic
 
-LiteLLM translates the OpenAI `user` param to Anthropic's `metadata[user_id]` param.
+Dheera AI translates the OpenAI `user` param to Anthropic's `metadata[user_id]` param.
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
@@ -1909,7 +1909,7 @@ response = completion(
 ```yaml
 model_list:
     - model_name: claude-3-5-sonnet-20240620
-      litellm_params:
+      dheera_ai_params:
         model: anthropic/claude-3-5-sonnet-20240620
         api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -1917,7 +1917,7 @@ model_list:
 2. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -1939,7 +1939,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 
 ## Usage - Agent Skills
 
-LiteLLM supports using Agent Skills with the API
+Dheera AI supports using Agent Skills with the API
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
@@ -1973,7 +1973,7 @@ response = completion(
 ```yaml
 model_list:
     - model_name: claude-sonnet-4-5-20250929
-        litellm_params:
+        dheera_ai_params:
         model: anthropic/claude-sonnet-4-5-20250929
         api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -1981,7 +1981,7 @@ model_list:
 2. Start Proxy
 
 ```
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 

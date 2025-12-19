@@ -11,8 +11,8 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
+import dheera_ai
+from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
 
 titan_embedding_response = {"embedding": [0.1, 0.2, 0.3], "inputTextTokenCount": 10}
 
@@ -53,7 +53,7 @@ img_base_64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkBAMAAACCzIh
 )
 def test_bedrock_embedding_models(model, input_type, embed_response):
     """Test embedding functionality for all Bedrock models with different input types"""
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     client = HTTPHandler()
 
     with patch.object(client, "post") as mock_post:
@@ -65,11 +65,11 @@ def test_bedrock_embedding_models(model, input_type, embed_response):
 
         # Prepare input based on type
         input_data = (
-            img_base_64 if input_type == "image" else "Hello world from litellm"
+            img_base_64 if input_type == "image" else "Hello world from dheera_ai"
         )
 
         try:
-            response = litellm.embedding(
+            response = dheera_ai.embedding(
                 model=model,
                 input=input_data,
                 client=client,
@@ -78,7 +78,7 @@ def test_bedrock_embedding_models(model, input_type, embed_response):
             )
 
             # Verify response structure
-            assert isinstance(response, litellm.EmbeddingResponse)
+            assert isinstance(response, dheera_ai.EmbeddingResponse)
             print(response.data)
             assert isinstance(response.data[0]["embedding"], list)
             assert len(response.data[0]["embedding"]) == 3  # Based on mock response
@@ -107,15 +107,15 @@ def test_e2e_bedrock_embedding():
 
     os.environ["AWS_REGION_NAME"] = "us-east-1"
 
-    litellm._turn_on_debug()
-    response = litellm.embedding(
+    dheera_ai._turn_on_debug()
+    response = dheera_ai.embedding(
         model="bedrock/us.twelvelabs.marengo-embed-2-7-v1:0",
-        input=["Hello world from LiteLLM with TwelveLabs Marengo!"],
+        input=["Hello world from DheeraAI with TwelveLabs Marengo!"],
     )
 
     # Validate response structure
     assert isinstance(
-        response, litellm.EmbeddingResponse
+        response, dheera_ai.EmbeddingResponse
     ), "Response should be EmbeddingResponse type"
     assert hasattr(response, "data"), "Response should have 'data' attribute"
     assert len(response.data) > 0, "Response data should not be empty"
@@ -161,7 +161,7 @@ def test_e2e_bedrock_embedding_image_twelvelabs_marengo():
     print("Testing image embedding...")
     original_region_name = os.environ.get("AWS_REGION_NAME")
     os.environ["AWS_REGION_NAME"] = "us-east-1"
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     # Load duck.png and convert to base64
     duck_img_path = os.path.join(os.path.dirname(__file__), "duck.png")
@@ -169,7 +169,7 @@ def test_e2e_bedrock_embedding_image_twelvelabs_marengo():
         duck_img_data = base64.b64encode(img_file.read()).decode("utf-8")
         duck_img_base64 = f"data:image/png;base64,{duck_img_data}"
 
-        response = litellm.embedding(
+        response = dheera_ai.embedding(
             model="bedrock/us.twelvelabs.marengo-embed-2-7-v1:0",
             input=[duck_img_base64],
             aws_region_name="us-east-1",
@@ -178,7 +178,7 @@ def test_e2e_bedrock_embedding_image_twelvelabs_marengo():
 
         # Validate response structure
         assert isinstance(
-            response, litellm.EmbeddingResponse
+            response, dheera_ai.EmbeddingResponse
         ), "Response should be EmbeddingResponse type"
         assert hasattr(response, "data"), "Response should have 'data' attribute"
         assert len(response.data) > 0, "Response data should not be empty"
@@ -230,19 +230,19 @@ def test_e2e_bedrock_async_invoke_embedding_twelvelabs_marengo():
     print("Testing async invoke embedding...")
     original_region_name = os.environ.get("AWS_REGION_NAME")
     os.environ["AWS_REGION_NAME"] = "us-east-1"
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     # Mock the HTTP call to return async invoke response
     with patch(
-        "litellm.llms.bedrock.embed.embedding.BedrockEmbedding._make_sync_call"
+        "dheera_ai.llms.bedrock.embed.embedding.BedrockEmbedding._make_sync_call"
     ) as mock_call:
         mock_call.return_value = {
             "invocationArn": "arn:aws:bedrock:us-east-1:123456789012:async-invoke/test-job-123"
         }
 
-        response = litellm.embedding(
+        response = dheera_ai.embedding(
             model="bedrock/async_invoke/us.twelvelabs.marengo-embed-2-7-v1:0",
-            input=["Hello world from LiteLLM async invoke!"],
+            input=["Hello world from DheeraAI async invoke!"],
             aws_region_name="us-east-1",
             inputType="text",
             output_s3_uri="s3://test-bucket/async-invoke-output/",
@@ -250,7 +250,7 @@ def test_e2e_bedrock_async_invoke_embedding_twelvelabs_marengo():
 
         # Validate response structure
         assert isinstance(
-            response, litellm.EmbeddingResponse
+            response, dheera_ai.EmbeddingResponse
         ), "Response should be EmbeddingResponse type"
         assert hasattr(
             response, "_hidden_params"
@@ -293,19 +293,19 @@ async def test_e2e_bedrock_async_invoke_embedding_async_twelvelabs_marengo():
     print("Testing async invoke embedding with async calls...")
     original_region_name = os.environ.get("AWS_REGION_NAME")
     os.environ["AWS_REGION_NAME"] = "us-east-1"
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     # Mock the async HTTP call to return async invoke response
     with patch(
-        "litellm.llms.bedrock.embed.embedding.BedrockEmbedding._make_async_call"
+        "dheera_ai.llms.bedrock.embed.embedding.BedrockEmbedding._make_async_call"
     ) as mock_call:
         mock_call.return_value = {
             "invocationArn": "arn:aws:bedrock:us-east-1:123456789012:async-invoke/test-async-job-456"
         }
 
-        response = await litellm.aembedding(
+        response = await dheera_ai.aembedding(
             model="bedrock/async_invoke/us.twelvelabs.marengo-embed-2-7-v1:0",
-            input=["Hello world from LiteLLM async invoke async!"],
+            input=["Hello world from DheeraAI async invoke async!"],
             aws_region_name="us-east-1",
             inputType="text",
             output_s3_uri="s3://test-bucket/async-invoke-output/",
@@ -313,7 +313,7 @@ async def test_e2e_bedrock_async_invoke_embedding_async_twelvelabs_marengo():
 
         # Validate response structure
         assert isinstance(
-            response, litellm.EmbeddingResponse
+            response, dheera_ai.EmbeddingResponse
         ), "Response should be EmbeddingResponse type"
         assert hasattr(
             response, "_hidden_params"
@@ -346,7 +346,7 @@ def test_bedrock_embedding_uses_correct_region_when_specified():
     Test that when aws_region_name is explicitly passed, it's used correctly
     even if AWS_REGION_NAME env var is set to a different region.
 
-    relevant issue: https://github.com/BerriAI/litellm/issues/16517
+    relevant issue: https://github.com/BerriAI/dheera_ai/issues/16517
     """
     # Save original env var
     original_region_name = os.environ.get("AWS_REGION_NAME")
@@ -365,7 +365,7 @@ def test_bedrock_embedding_uses_correct_region_when_specified():
             mock_post.return_value = mock_response
             
             # Call with explicit region
-            response = litellm.embedding(
+            response = dheera_ai.embedding(
                 model="bedrock/amazon.titan-embed-image-v1",
                 input=["test input"],
                 client=client,
@@ -397,7 +397,7 @@ def test_bedrock_embedding_region_bug_reproduction():
     """
     Reproduces the bug where aws_region_name is ignored when passed explicitly.
     
-    relevant issue: https://github.com/BerriAI/litellm/issues/16517
+    relevant issue: https://github.com/BerriAI/dheera_ai/issues/16517
     """
     # Save original env var
     original_region_name = os.environ.get("AWS_REGION_NAME")
@@ -416,7 +416,7 @@ def test_bedrock_embedding_region_bug_reproduction():
             mock_post.return_value = mock_response
             
             # Call with explicit region (as in the bug report)
-            response = litellm.embedding(
+            response = dheera_ai.embedding(
                 model="bedrock/amazon.titan-embed-image-v1",
                 input=["test input"],
                 client=client,

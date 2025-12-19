@@ -2,9 +2,9 @@ import os
 import sys
 import traceback
 from dotenv import load_dotenv
-import litellm.types
+import dheera_ai.types
 import pytest
-from litellm import AmazonInvokeConfig
+from dheera_ai import AmazonInvokeConfig
 import json
 
 load_dotenv()
@@ -29,7 +29,7 @@ def test_get_complete_url_basic(bedrock_transformer):
         model="anthropic.claude-v2",
         optional_params={},
         stream=False,
-        litellm_params={},
+        dheera_ai_params={},
     )
 
     assert (
@@ -46,7 +46,7 @@ def test_get_complete_url_streaming(bedrock_transformer):
         model="anthropic.claude-v2",
         optional_params={},
         stream=True,
-        litellm_params={},
+        dheera_ai_params={},
     )
 
     assert (
@@ -64,7 +64,7 @@ def test_transform_request_invalid_provider(bedrock_transformer):
             model="invalid.model",
             messages=messages,
             optional_params={},
-            litellm_params={},
+            dheera_ai_params={},
             headers={},
         )
 
@@ -126,7 +126,7 @@ def test_transform_request_cohere_command(bedrock_transformer):
         model="cohere.command-r",
         messages=messages,
         optional_params={"max_tokens": 2048},
-        litellm_params={},
+        dheera_ai_params={},
         headers={},
     )
 
@@ -145,7 +145,7 @@ def test_transform_request_ai21(bedrock_transformer):
         model="ai21.j2-ultra",
         messages=messages,
         optional_params={"max_tokens": 2048},
-        litellm_params={},
+        dheera_ai_params={},
         headers={},
     )
 
@@ -166,7 +166,7 @@ def test_transform_request_mistral(bedrock_transformer):
         model="mistral.mistral-7b",
         messages=messages,
         optional_params={"max_tokens": 2048},
-        litellm_params={},
+        dheera_ai_params={},
         headers={},
     )
 
@@ -187,7 +187,7 @@ def test_transform_request_amazon_titan(bedrock_transformer):
         model="amazon.titan-text-express-v1",
         messages=messages,
         optional_params={"maxTokenCount": 2048},
-        litellm_params={},
+        dheera_ai_params={},
         headers={},
     )
     print("transformed request for invoke amazon titan=", json.dumps(result, indent=4))
@@ -209,7 +209,7 @@ def test_transform_request_meta_llama(bedrock_transformer):
         model="meta.llama2-70b",
         messages=messages,
         optional_params={"max_gen_len": 2048},
-        litellm_params={},
+        dheera_ai_params={},
         headers={},
     )
 
@@ -220,7 +220,7 @@ def test_transform_request_meta_llama(bedrock_transformer):
 
 def test_filter_headers_for_aws_signature():
     """Test that header filtering works correctly for AWS signature calculation"""
-    from litellm.llms.bedrock.base_aws_llm import BaseAWSLLM
+    from dheera_ai.llms.bedrock.base_aws_llm import BaseAWSLLM
     
     # Create a test instance
     aws_llm = BaseAWSLLM()
@@ -232,7 +232,7 @@ def test_filter_headers_for_aws_signature():
         "x-amz-date": "20240101T120000Z",
         "x-amz-security-token": "test-token",
         "x-custom-header": "custom-value",
-        "x-litellm-user-id": "user123",
+        "x-dheera_ai-user-id": "user123",
         "x-forwarded-for": "192.168.1.1",
         "authorization": "Bearer test-token",
         "user-agent": "test-agent",
@@ -254,7 +254,7 @@ def test_filter_headers_for_aws_signature():
     assert filtered_headers == expected_aws_headers, f"Expected {expected_aws_headers}, got {filtered_headers}"
     
     # Verify that non-AWS headers are excluded
-    excluded_headers = ["x-custom-header", "x-litellm-user-id", "x-forwarded-for", "user-agent", 
+    excluded_headers = ["x-custom-header", "x-dheera_ai-user-id", "x-forwarded-for", "user-agent", 
                        "x-envoy-expected-rq-timeout-ms", "x-envoy-external-address"]
     for header in excluded_headers:
         assert header not in filtered_headers, f"Header {header} should not be in filtered headers"

@@ -3,7 +3,7 @@
 
 Prevent projects from gobbling too much tpm/rpm.
 
-Dynamically allocate TPM/RPM quota to api keys, based on active keys in that minute. [**See Code**](https://github.com/BerriAI/litellm/blob/9bffa9a48e610cc6886fc2dce5c1815aeae2ad46/litellm/proxy/hooks/dynamic_rate_limiter.py#L125)
+Dynamically allocate TPM/RPM quota to api keys, based on active keys in that minute. [**See Code**](https://github.com/BerriAI/dheera_ai/blob/9bffa9a48e610cc6886fc2dce5c1815aeae2ad46/dheera_ai/proxy/hooks/dynamic_rate_limiter.py#L125)
 
 ## Quick Start Usage
 
@@ -12,24 +12,24 @@ Dynamically allocate TPM/RPM quota to api keys, based on active keys in that min
 ```yaml showLineNumbers title="config.yaml"
 model_list: 
   - model_name: my-fake-model
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
       api_key: my-fake-key
       mock_response: hello-world
       tpm: 60
 
-litellm_settings: 
+dheera_ai_settings: 
   callbacks: ["dynamic_rate_limiter_v3"]
 
 general_settings:
-  master_key: sk-1234 # OR set `LITELLM_MASTER_KEY=".."` in your .env
+  master_key: sk-1234 # OR set `DHEERA_AI_MASTER_KEY=".."` in your .env
   database_url: postgres://.. # OR set `DATABASE_URL=".."` in your .env
 ```
 
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -129,12 +129,12 @@ Priority reservation allocates a percentage of your model's total TPM/RPM to spe
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-3.5-turbo             
-    litellm_params:
+    dheera_ai_params:
       model: "gpt-3.5-turbo"       
       api_key: os.environ/OPENAI_API_KEY 
       rpm: 10   # Total model capacity
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["dynamic_rate_limiter_v3"]
   priority_reservation:
     "prod": 0.9 # 90% reserved for production (9 RPM)
@@ -152,7 +152,7 @@ litellm_settings:
     saturation_check_cache_ttl: 60 # How long (seconds) saturation values are cached locally
 
 general_settings:
-  master_key: sk-1234 # OR set `LITELLM_MASTER_KEY=".."` in your .env
+  master_key: sk-1234 # OR set `DHEERA_AI_MASTER_KEY=".."` in your .env
   database_url: postgres://.. # OR set `DATABASE_URL=".."` in your.env
 ```
 
@@ -175,7 +175,7 @@ general_settings:
 **Start Proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 ### Set priority on either a team or a key

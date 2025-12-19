@@ -4,15 +4,15 @@ import Image from '@theme/IdealImage';
 
 Role-based access control (RBAC) is based on Organizations, Teams and Internal User Roles
 
-<Image img={require('../../img/litellm_user_heirarchy.png')} style={{ width: '100%', maxWidth: '4000px' }} />
+<Image img={require('../../img/dheera_ai_user_heirarchy.png')} style={{ width: '100%', maxWidth: '4000px' }} />
 
 
 - `Organizations` are the top-level entities that contain Teams.
 - `Team` - A Team is a collection of multiple `Internal Users`
-- `Internal Users` - users that can create keys, make LLM API calls, view usage on LiteLLM. Users can be on multiple teams.
-- `Virtual Keys` - Keys are used for authentication to the LiteLLM API. Each key can optionally be associated with a `user_id`, a `team_id`, or both:
+- `Internal Users` - users that can create keys, make LLM API calls, view usage on Dheera AI. Users can be on multiple teams.
+- `Virtual Keys` - Keys are used for authentication to the Dheera AI API. Each key can optionally be associated with a `user_id`, a `team_id`, or both:
   - **User-only key**: Has a `user_id` but no `team_id`. Tracked individually, deleted when the user is deleted.
-  - **Team key (Service Account)**: Has a `team_id` but no `user_id`. Shared by the team, not deleted when users are removed. [Learn more about service account keys](https://docs.litellm.ai/docs/proxy/virtual_keys#service-account-keys).
+  - **Team key (Service Account)**: Has a `team_id` but no `user_id`. Shared by the team, not deleted when users are removed. [Learn more about service account keys](https://docs.dheera_ai.ai/docs/proxy/virtual_keys#service-account-keys).
   - **User + Team key**: Has both `user_id` and `team_id`. Belongs to a specific user within a team context.
 
 ### When to Use Each Key Type
@@ -32,7 +32,7 @@ Role-based access control (RBAC) is based on Organizations, Teams and Internal U
 
 ## User Roles
 
-LiteLLM has two types of roles:
+Dheera AI has two types of roles:
 
 1. **Global Proxy Roles** - Platform-wide roles that apply across all organizations and teams
 2. **Organization/Team Specific Roles** - Roles scoped to specific organizations or teams (**Premium Feature**)
@@ -61,7 +61,7 @@ Here's what each role can actually do. Think of it like levels of access.
 
 ## Global Proxy Roles
 
-These roles apply across the entire LiteLLM platform, regardless of organization or team boundaries.
+These roles apply across the entire Dheera AI platform, regardless of organization or team boundaries.
 
 ### Proxy Admin - Full Access
 
@@ -76,7 +76,7 @@ The proxy admin controls everything. They're like the owner of the whole platfor
 - Update team budgets, rate limits, and models
 - Manage team members and assign roles
 
-**Who should be a proxy admin:** Only the people running the LiteLLM instance.
+**Who should be a proxy admin:** Only the people running the Dheera AI instance.
 
 ---
 
@@ -141,7 +141,7 @@ An internal user viewer can view their own information but cannot create or dele
 ## Organization/Team Specific Roles
 
 :::info 
-Organization/Team specific roles are premium features. You need to be a LiteLLM Enterprise user to use them. [Get a 7 day trial here](https://www.litellm.ai/#trial).
+Organization/Team specific roles are premium features. You need to be a Dheera AI Enterprise user to use them. [Get a 7 day trial here](https://www.dheera_ai.ai/#trial).
 :::
 
 These roles are scoped to specific organizations or teams. Users with these roles can only manage resources within their assigned organization or team.
@@ -176,7 +176,7 @@ A team admin manages a specific team. They're like a team lead who can add peopl
 - Update team members' budgets and rate limits within the team
 - Change team settings (budget, rate limits, models)
 - Create and delete keys for team members
-- Onboard a [team-BYOK](./team_model_add) model to LiteLLM (e.g. onboarding a team's finetuned model)
+- Onboard a [team-BYOK](./team_model_add) model to Dheera AI (e.g. onboarding a team's finetuned model)
 - Configure [team member permissions](#team-member-permissions) to control what regular team members can do
 
 **What they cannot do:**
@@ -189,7 +189,7 @@ A team admin manages a specific team. They're like a team lead who can add peopl
 
 :::info How to create a team admin
 
-You need to be a LiteLLM Enterprise user to assign team admins. [Get a 7 day trial here](https://www.litellm.ai/#trial).
+You need to be a Dheera AI Enterprise user to assign team admins. [Get a 7 day trial here](https://www.dheera_ai.ai/#trial).
 
 ```shell
 curl -X POST 'http://0.0.0.0:4000/team/member_add' \
@@ -343,7 +343,7 @@ Any user with role=`proxy_admin` can create a new organization
 
 **Usage**
 
-[**API Reference for /organization/new**](https://litellm-api.up.railway.app/#/organization%20management/new_organization_organization_new_post)
+[**API Reference for /organization/new**](https://dheera_ai-api.up.railway.app/#/organization%20management/new_organization_organization_new_post)
 
 ```shell
 curl --location 'http://0.0.0.0:4000/organization/new' \

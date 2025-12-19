@@ -4,8 +4,8 @@ import pytest
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-from litellm import Router
-from litellm.router import Deployment, LiteLLM_Params
+from dheera_ai import Router
+from dheera_ai.router import Deployment, DheeraAI_Params
 from unittest.mock import patch
 import json
 
@@ -14,15 +14,15 @@ def test_initialize_deployment_for_pass_through_success(reusable_credentials):
     """
     Test successful initialization of a Vertex AI pass-through deployment
     """
-    from litellm.litellm_core_utils.credential_accessor import CredentialAccessor
-    from litellm.types.utils import CredentialItem
+    from dheera_ai.dheera_ai_core_utils.credential_accessor import CredentialAccessor
+    from dheera_ai.types.utils import CredentialItem
 
     vertex_project="test-project"
     vertex_location="us-central1"
     vertex_credentials=json.dumps({"type": "service_account", "project_id": "test"})
 
     if not reusable_credentials:
-        litellm_params = LiteLLM_Params(
+        dheera_ai_params = DheeraAI_Params(
             model="vertex_ai/test-model",
             vertex_project=vertex_project,
             vertex_location=vertex_location,
@@ -42,15 +42,15 @@ def test_initialize_deployment_for_pass_through_success(reusable_credentials):
                 credential_info={}
             )
         ])
-        litellm_params = LiteLLM_Params(
+        dheera_ai_params = DheeraAI_Params(
             model="vertex_ai/test-model",
-            litellm_credential_name="vertex_credentials",
+            dheera_ai_credential_name="vertex_credentials",
             use_in_pass_through=True,
         )
     router = Router(model_list=[])
     deployment = Deployment(
         model_name="vertex-test",
-        litellm_params=litellm_params,
+        dheera_ai_params=dheera_ai_params,
     )
 
     # Test the initialization
@@ -61,7 +61,7 @@ def test_initialize_deployment_for_pass_through_success(reusable_credentials):
     )
 
     # Verify the credentials were properly set
-    from litellm.proxy.pass_through_endpoints.llm_passthrough_endpoints import (
+    from dheera_ai.proxy.pass_through_endpoints.llm_passthrough_endpoints import (
         passthrough_endpoint_router,
     )
 
@@ -82,7 +82,7 @@ def test_initialize_deployment_for_pass_through_missing_params():
     router = Router(model_list=[])
     deployment = Deployment(
         model_name="vertex-test",
-        litellm_params=LiteLLM_Params(
+        dheera_ai_params=DheeraAI_Params(
             model="vertex_ai/test-model",
             # Missing required parameters
             use_in_pass_through=True,
@@ -92,7 +92,7 @@ def test_initialize_deployment_for_pass_through_missing_params():
     # Test that initialization raises ValueError
     with pytest.raises(
         ValueError,
-        match="vertex_project, and vertex_location must be set in litellm_params for pass-through endpoints",
+        match="vertex_project, and vertex_location must be set in dheera_ai_params for pass-through endpoints",
     ):
         router._initialize_deployment_for_pass_through(
             deployment=deployment,
@@ -108,7 +108,7 @@ def test_initialize_deployment_when_pass_through_disabled():
     router = Router(model_list=[])
     deployment = Deployment(
         model_name="vertex-test",
-        litellm_params=LiteLLM_Params(
+        dheera_ai_params=DheeraAI_Params(
             model="vertex_ai/test-model",
         ),
     )
@@ -133,7 +133,7 @@ def test_add_vertex_pass_through_deployment():
     # Create a deployment with Vertex AI pass-through settings
     deployment = Deployment(
         model_name="vertex-test",
-        litellm_params=LiteLLM_Params(
+        dheera_ai_params=DheeraAI_Params(
             model="vertex_ai/test-model",
             vertex_project="test-project",
             vertex_location="us-central1",
@@ -148,7 +148,7 @@ def test_add_vertex_pass_through_deployment():
     router.add_deployment(deployment)
 
     # Get the vertex credentials from the router
-    from litellm.proxy.pass_through_endpoints.llm_passthrough_endpoints import (
+    from dheera_ai.proxy.pass_through_endpoints.llm_passthrough_endpoints import (
         passthrough_endpoint_router,
     )
 

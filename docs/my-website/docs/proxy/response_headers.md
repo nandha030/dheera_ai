@@ -18,11 +18,11 @@ When you make a request to the proxy, the proxy will return the following header
 
 **If key has rate limits set**
 
-The proxy will return the [remaining rate limits for that key](https://github.com/BerriAI/litellm/blob/bfa95538190575f7f317db2d9598fc9a82275492/litellm/proxy/hooks/parallel_request_limiter.py#L778).
+The proxy will return the [remaining rate limits for that key](https://github.com/BerriAI/dheera_ai/blob/bfa95538190575f7f317db2d9598fc9a82275492/dheera_ai/proxy/hooks/parallel_request_limiter.py#L778).
 
 **If key does not have rate limits set**
 
-The proxy returns the remaining requests/tokens returned by the backend provider. (LiteLLM will standardize the backend provider's response headers to match the OpenAI format)
+The proxy returns the remaining requests/tokens returned by the backend provider. (Dheera AI will standardize the backend provider's response headers to match the OpenAI format)
 
 If the backend provider does not return these headers, the value will be `None`.
 
@@ -32,34 +32,34 @@ These headers are useful for clients to understand the current rate limit status
 ## Latency Headers
 | Header | Type | Description |
 |--------|------|-------------|
-| `x-litellm-response-duration-ms` | float | Total duration from the moment that a request gets to LiteLLM Proxy to the moment it gets returned to the client. |
-| `x-litellm-overhead-duration-ms` | float | LiteLLM processing overhead in milliseconds |
+| `x-dheera_ai-response-duration-ms` | float | Total duration from the moment that a request gets to Dheera AI Proxy to the moment it gets returned to the client. |
+| `x-dheera_ai-overhead-duration-ms` | float | Dheera AI processing overhead in milliseconds |
 
 ## Retry, Fallback Headers
 | Header | Type | Description |
 |--------|------|-------------|
-| `x-litellm-attempted-retries` | int | Number of retry attempts made |
-| `x-litellm-attempted-fallbacks` | int | Number of fallback attempts made |
-| `x-litellm-max-fallbacks` | int | Maximum number of fallback attempts allowed |
+| `x-dheera_ai-attempted-retries` | int | Number of retry attempts made |
+| `x-dheera_ai-attempted-fallbacks` | int | Number of fallback attempts made |
+| `x-dheera_ai-max-fallbacks` | int | Maximum number of fallback attempts allowed |
 
 ## Cost Tracking Headers
 | Header | Type | Description | Available on Pass-Through Endpoints |
 |--------|------|-------------|-------------|
-| `x-litellm-response-cost` | float | Cost of the API call | |
-| `x-litellm-key-spend` | float | Total spend for the API key | ✅ |
+| `x-dheera_ai-response-cost` | float | Cost of the API call | |
+| `x-dheera_ai-key-spend` | float | Total spend for the API key | ✅ |
 
-## LiteLLM Specific Headers
+## Dheera AI Specific Headers
 | Header | Type | Description | Available on Pass-Through Endpoints |
 |--------|------|-------------|-------------|
-| `x-litellm-call-id` | string | Unique identifier for the API call | ✅ |
-| `x-litellm-model-id` | string | Unique identifier for the model used | |
-| `x-litellm-model-api-base` | string | Base URL of the API endpoint | ✅ |
-| `x-litellm-version` | string | Version of LiteLLM being used | |
-| `x-litellm-model-group` | string | Model group identifier | |
+| `x-dheera_ai-call-id` | string | Unique identifier for the API call | ✅ |
+| `x-dheera_ai-model-id` | string | Unique identifier for the model used | |
+| `x-dheera_ai-model-api-base` | string | Base URL of the API endpoint | ✅ |
+| `x-dheera_ai-version` | string | Version of Dheera AI being used | |
+| `x-dheera_ai-model-group` | string | Model group identifier | |
 
 ## Response headers from LLM providers
 
-LiteLLM also returns the original response headers from the LLM provider. These headers are prefixed with `llm_provider-` to distinguish them from LiteLLM's headers.
+Dheera AI also returns the original response headers from the LLM provider. These headers are prefixed with `llm_provider-` to distinguish them from Dheera AI's headers.
 
 Example response headers:
 ```

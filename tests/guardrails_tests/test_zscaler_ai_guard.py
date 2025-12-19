@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, Mock, patch
 from fastapi import HTTPException
-from litellm.proxy.guardrails.guardrail_hooks.zscaler_ai_guard import ZscalerAIGuard
+from dheera_ai.proxy.guardrails.guardrail_hooks.zscaler_ai_guard import ZscalerAIGuard
 import asyncio
 
 

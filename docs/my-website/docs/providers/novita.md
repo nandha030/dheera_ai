@@ -6,8 +6,8 @@ import TabItem from '@theme/TabItem';
 
 | Property | Details |
 |-------|-------|
-| Description | Novita AI is an AI cloud platform that helps developers easily deploy AI models through a simple API, backed by affordable and reliable GPU cloud infrastructure. LiteLLM supports all models from [Novita AI](https://novita.ai/models/llm?utm_source=github_litellm&utm_medium=github_readme&utm_campaign=github_link) |
-| Provider Route on LiteLLM | `novita/` |
+| Description | Novita AI is an AI cloud platform that helps developers easily deploy AI models through a simple API, backed by affordable and reliable GPU cloud infrastructure. Dheera AI supports all models from [Novita AI](https://novita.ai/models/llm?utm_source=github_dheera_ai&utm_medium=github_readme&utm_campaign=github_link) |
+| Provider Route on Dheera AI | `novita/` |
 | Provider Doc | [Novita AI Docs ↗](https://novita.ai/docs/guides/introduction) |
 | API Endpoint for Provider | https://api.novita.ai/v3/openai |
 | Supported OpenAI Endpoints | `/chat/completions`, `/completions` |
@@ -51,7 +51,7 @@ os.environ["NOVITA_API_KEY"] = "your-api-key"
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 os.environ["NOVITA_API_KEY"] = ""
 
 response = completion(
@@ -70,7 +70,7 @@ print(content)
 ```yaml
 model_list:
   - model_name: deepseek-r1-turbo
-    litellm_params:
+    dheera_ai_params:
       model: novita/deepseek/deepseek-r1-turbo
       api_key: os.environ/NOVITA_API_KEY
 ```
@@ -78,7 +78,7 @@ model_list:
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -103,7 +103,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 ## Tool Calling
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 # set env
 os.environ["NOVITA_API_KEY"] = ""
@@ -150,7 +150,7 @@ assert isinstance(
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 import json 
 import os 
 
@@ -179,7 +179,7 @@ print(json.loads(completion.choices[0].message.content))
 ```yaml
 model_list:
   - model_name: deepseek-r1-turbo
-    litellm_params:
+    dheera_ai_params:
       model: novita/deepseek/deepseek-r1-turbo
       api_key: os.environ/NOVITA_API_KEY
 ```
@@ -187,7 +187,7 @@ model_list:
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -212,7 +212,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 
 ## Chat Models
 
-🚨 LiteLLM supports ALL Novita AI models, send `model=novita/<your-novita-model>` to send it to Novita AI. See all Novita AI models [here](https://novita.ai/models/llm?utm_source=github_litellm&utm_medium=github_readme&utm_campaign=github_link)
+🚨 Dheera AI supports ALL Novita AI models, send `model=novita/<your-novita-model>` to send it to Novita AI. See all Novita AI models [here](https://novita.ai/models/llm?utm_source=github_dheera_ai&utm_medium=github_readme&utm_campaign=github_link)
 
 | Model Name                | Function Call                                       |
 |---------------------------|-----------------------------------------------------|

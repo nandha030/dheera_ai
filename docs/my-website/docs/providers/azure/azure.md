@@ -10,12 +10,12 @@ import TabItem from '@theme/TabItem';
 | Property | Details |
 |-------|-------|
 | Description | Azure OpenAI Service provides REST API access to OpenAI's powerful language models including o1, o1-mini, GPT-5, GPT-4o, GPT-4o mini, GPT-4 Turbo with Vision, GPT-4, GPT-3.5-Turbo, and Embeddings model series. Also supports Claude models via Azure Foundry. |
-| Provider Route on LiteLLM | `azure/`, [`azure/o_series/`](#o-series-models), [`azure/gpt5_series/`](#gpt-5-models), [`azure/claude-*`](./azure_anthropic) (Claude models via Azure Foundry) |
+| Provider Route on Dheera AI | `azure/`, [`azure/o_series/`](#o-series-models), [`azure/gpt5_series/`](#gpt-5-models), [`azure/claude-*`](./azure_anthropic) (Claude models via Azure Foundry) |
 | Supported Operations | [`/chat/completions`](#azure-openai-chat-completion-models), [`/responses`](./azure_responses), [`/completions`](#azure-instruct-models), [`/embeddings`](./azure_embedding), [`/audio/speech`](azure_speech), [`/audio/transcriptions`](../audio_transcription), `/fine_tuning`, [`/batches`](#azure-batches-api), `/files`, [`/images`](../image_generation#azure-openai-image-generation-models), [`/anthropic/v1/messages`](./azure_anthropic) |
 | Link to Provider Doc | [Azure OpenAI ↗](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview), [Azure Foundry Claude ↗](https://learn.microsoft.com/en-us/azure/ai-services/foundry-models/claude)
 
 ## API Keys, Params
-api_key, api_base, api_version etc can be passed directly to `litellm.completion` - see here or set as `litellm.api_key` params see here
+api_key, api_base, api_version etc can be passed directly to `dheera_ai.completion` - see here or set as `dheera_ai.api_key` params see here
 ```python
 import os
 os.environ["AZURE_API_KEY"] = "" # "my-azure-api-key"
@@ -33,15 +33,15 @@ Azure also supports Claude models via Azure Foundry. Use `azure/claude-*` model 
 
 :::
 
-## **Usage - LiteLLM Python SDK**
-<a target="_blank" href="https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/LiteLLM_Azure_OpenAI.ipynb">
+## **Usage - Dheera AI Python SDK**
+<a target="_blank" href="https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/Dheera AI_Azure_OpenAI.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 
 ### Completion - using .env variables
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 ## set ENV variables
 os.environ["AZURE_API_KEY"] = ""
@@ -58,10 +58,10 @@ response = completion(
 ### Completion - using api_key, api_base, api_version
 
 ```python
-import litellm
+import dheera_ai
 
 # azure call
-response = litellm.completion(
+response = dheera_ai.completion(
     model = "azure/<your deployment name>",             # model = azure/<your deployment name> 
     api_base = "",                                      # azure api base
     api_version = "",                                   # azure api version
@@ -73,10 +73,10 @@ response = litellm.completion(
 ### Completion - using azure_ad_token, api_base, api_version
 
 ```python
-import litellm
+import dheera_ai
 
 # azure call
-response = litellm.completion(
+response = dheera_ai.completion(
     model = "azure/<your deployment name>",             # model = azure/<your deployment name> 
     api_base = "",                                      # azure api base
     api_version = "",                                   # azure api version
@@ -86,9 +86,9 @@ response = litellm.completion(
 ```
 
 
-## **Usage - LiteLLM Proxy Server**
+## **Usage - Dheera AI Proxy Server**
 
-Here's how to call Azure OpenAI models with the LiteLLM Proxy Server
+Here's how to call Azure OpenAI models with the Dheera AI Proxy Server
 
 ### 1. Save key in your environment
 
@@ -101,11 +101,11 @@ export AZURE_API_KEY=""
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/chatgpt-v-2
       api_base: https://openai-gpt-4-test-v-1.openai.azure.com/
       api_version: "2023-05-15"
-      api_key: os.environ/AZURE_API_KEY # The `os.environ/` prefix tells litellm to read this from the env.
+      api_key: os.environ/AZURE_API_KEY # The `os.environ/` prefix tells dheera_ai to read this from the env.
 ```
 
 ### 3. Test it
@@ -160,7 +160,7 @@ from langchain.prompts.chat import (
 from langchain.schema import HumanMessage, SystemMessage
 
 chat = ChatOpenAI(
-    openai_api_base="http://0.0.0.0:4000", # set openai_api_base to the LiteLLM Proxy
+    openai_api_base="http://0.0.0.0:4000", # set openai_api_base to the Dheera AI Proxy
     model = "gpt-3.5-turbo",
     temperature=0.1
 )
@@ -170,7 +170,7 @@ messages = [
         content="You are a helpful assistant that im using to make a test request to."
     ),
     HumanMessage(
-        content="test from litellm. tell me why it's amazing in 1 sentence"
+        content="test from dheera_ai. tell me why it's amazing in 1 sentence"
     ),
 ]
 response = chat(messages)
@@ -190,7 +190,7 @@ You can set the `api_version` for Azure OpenAI in your proxy config.yaml in the 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: azure/my-gpt4-deployment
       api_base: https://your-resource.openai.azure.com/
       api_version: "2024-08-01-preview"  # Set version per model
@@ -205,7 +205,7 @@ model_list:
 
 :::tip
 
-**We support ALL Azure models, just set `model=azure/<your deployment name>` as a prefix when sending litellm requests**
+**We support ALL Azure models, just set `model=azure/<your deployment name>` as a prefix when sending dheera_ai requests**
 
 :::
 
@@ -239,7 +239,7 @@ model_list:
 #### Usage
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AZURE_API_KEY"] = "your-api-key"
 
@@ -280,7 +280,7 @@ base_url=https://gpt-4-vision-resource.openai.azure.com/openai/deployments/gpt-4
 **Usage**
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["AZURE_API_KEY"] = "your-api-key"
 
@@ -319,9 +319,9 @@ response = completion(
 
 ## O-Series Models
 
-Azure OpenAI O-Series models are supported on LiteLLM. 
+Azure OpenAI O-Series models are supported on Dheera AI. 
 
-LiteLLM routes any deployment name with `o1` or `o3` in the model name, to the O-Series [transformation](https://github.com/BerriAI/litellm/blob/91ed05df2962b8eee8492374b048d27cc144d08c/litellm/llms/azure/chat/o1_transformation.py#L4) logic.
+Dheera AI routes any deployment name with `o1` or `o3` in the model name, to the O-Series [transformation](https://github.com/BerriAI/dheera_ai/blob/91ed05df2962b8eee8492374b048d27cc144d08c/dheera_ai/llms/azure/chat/o1_transformation.py#L4) logic.
 
 To set this explicitly, set `model` to `azure/o_series/<your-deployment-name>`.
 
@@ -331,9 +331,9 @@ To set this explicitly, set `model` to `azure/o_series/<your-deployment-name>`.
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
+import dheera_ai
 
-litellm.completion(model="azure/my-o3-deployment", messages=[{"role": "user", "content": "Hello, world!"}]) # 👈 Note: 'o3' in the deployment name
+dheera_ai.completion(model="azure/my-o3-deployment", messages=[{"role": "user", "content": "Hello, world!"}]) # 👈 Note: 'o3' in the deployment name
 ```
 </TabItem>
 <TabItem value="proxy" label="PROXY">
@@ -341,7 +341,7 @@ litellm.completion(model="azure/my-o3-deployment", messages=[{"role": "user", "c
 ```yaml
 model_list:
   - model_name: o3-mini
-    litellm_params:
+    dheera_ai_params:
       model: azure/o3-model
       api_base: os.environ/AZURE_API_BASE
       api_key: os.environ/AZURE_API_KEY
@@ -356,9 +356,9 @@ model_list:
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
+import dheera_ai
 
-litellm.completion(model="azure/o_series/my-random-deployment-name", messages=[{"role": "user", "content": "Hello, world!"}]) # 👈 Note: 'o_series/' in the deployment name
+dheera_ai.completion(model="azure/o_series/my-random-deployment-name", messages=[{"role": "user", "content": "Hello, world!"}]) # 👈 Note: 'o_series/' in the deployment name
 ```
 </TabItem>
 <TabItem value="proxy" label="PROXY">
@@ -366,7 +366,7 @@ litellm.completion(model="azure/o_series/my-random-deployment-name", messages=[{
 ```yaml
 model_list:
   - model_name: o3-mini
-    litellm_params:
+    dheera_ai_params:
       model: azure/o_series/my-random-deployment-name
       api_base: os.environ/AZURE_API_BASE
       api_key: os.environ/AZURE_API_KEY
@@ -380,11 +380,11 @@ model_list:
 | Property | Details |
 |-------|-------|
 | Description | Azure OpenAI GPT-5 models |
-| Provider Route on LiteLLM | `azure/gpt5_series/<custom-name>` or `azure/gpt-5-deployment-name` |
+| Provider Route on Dheera AI | `azure/gpt5_series/<custom-name>` or `azure/gpt-5-deployment-name` |
 
-LiteLLM supports using Azure GPT-5 models in one of the two ways:
-1. Explicit Routing: `model = azure/gpt5_series/<deployment-name>`. In this scenario the model onboarded to litellm follows the format `model=azure/gpt5_series/<deployment-name>`.
-2. Inferred Routing (If the azure deployment name contains `gpt-5` in the name): `model = azure/gpt-5-mini`. In this scenario the model onboarded to litellm follows the format `model=azure/gpt-5-mini`.
+Dheera AI supports using Azure GPT-5 models in one of the two ways:
+1. Explicit Routing: `model = azure/gpt5_series/<deployment-name>`. In this scenario the model onboarded to dheera_ai follows the format `model=azure/gpt5_series/<deployment-name>`.
+2. Inferred Routing (If the azure deployment name contains `gpt-5` in the name): `model = azure/gpt-5-mini`. In this scenario the model onboarded to dheera_ai follows the format `model=azure/gpt-5-mini`.
 
 #### Explicit Routing
 Use `azure/gpt5_series/<deployment-name>` for explicit GPT-5 model routing. 
@@ -393,9 +393,9 @@ Use `azure/gpt5_series/<deployment-name>` for explicit GPT-5 model routing.
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="azure/gpt5_series/my-gpt-5-deployment",
     messages=[{"role": "user", "content": "Hello, world!"}]
 )
@@ -406,7 +406,7 @@ response = litellm.completion(
 ```yaml
 model_list:
   - model_name: gpt-5
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt5_series/my-gpt-5-deployment
       api_base: os.environ/AZURE_API_BASE
       api_key: os.environ/AZURE_API_KEY
@@ -416,16 +416,16 @@ model_list:
 </Tabs>
 
 #### Inferred Routing (gpt-5 in the deployment name)
-If your Azure deployment name contains `gpt-5`, LiteLLM automatically recognizes it as a GPT-5 model.
+If your Azure deployment name contains `gpt-5`, Dheera AI automatically recognizes it as a GPT-5 model.
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
+import dheera_ai
 
 # Deployment name contains 'gpt-5' - automatically inferred
-response = litellm.completion(
+response = dheera_ai.completion(
     model="azure/my-gpt-5-deployment", 
     messages=[{"role": "user", "content": "Hello, world!"}]
 )
@@ -437,7 +437,7 @@ response = litellm.completion(
 ```yaml
 model_list:
   - model_name: gpt-5-mini
-    litellm_params:
+    dheera_ai_params:
       model: azure/my-gpt-5-deployment  # deployment name contains 'gpt-5'
       api_base: os.environ/AZURE_API_BASE
       api_key: os.environ/AZURE_API_KEY
@@ -457,7 +457,7 @@ model_list:
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["AZURE_API_KEY"] = ""
@@ -486,7 +486,7 @@ print(response)
 ```yaml
 model_list:
   - model_name: azure-openai-4o-audio
-    litellm_params:
+    dheera_ai_params:
       model: azure/azure-openai-4o-audio
       api_base: os.environ/AZURE_API_BASE
       api_key: os.environ/AZURE_API_KEY
@@ -496,7 +496,7 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -504,7 +504,7 @@ litellm --config /path/to/config.yaml
 
 ```bash
 curl http://localhost:4000/v1/chat/completions \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "azure-openai-4o-audio",
@@ -529,14 +529,14 @@ Use `model="azure_text/<your-deployment>"`
 
 
 ```python
-import litellm
+import dheera_ai
 
 ## set ENV variables
 os.environ["AZURE_API_KEY"] = ""
 os.environ["AZURE_API_BASE"] = ""
 os.environ["AZURE_API_VERSION"] = ""
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="azure_text/<your-deployment-name",
     messages=[{"role": "user", "content": "What is the weather like in Boston?"}]
 )
@@ -549,8 +549,8 @@ print(response)
 
 ### Entra ID - use `azure_ad_token`
 
-This is a walkthrough on how to use Azure Active Directory Tokens - Microsoft Entra ID to make `litellm.completion()` calls.  
-> **Note:** You can follow the same process below to use Azure Active Directory Tokens for all other Azure endpoints (e.g., chat, embeddings, image, audio, etc.) with LiteLLM.
+This is a walkthrough on how to use Azure Active Directory Tokens - Microsoft Entra ID to make `dheera_ai.completion()` calls.  
+> **Note:** You can follow the same process below to use Azure Active Directory Tokens for all other Azure endpoints (e.g., chat, embeddings, image, audio, etc.) with Dheera AI.
 
 Step 1 - Download Azure CLI 
 Installation instructions: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli
@@ -579,7 +579,7 @@ In this step you should see an `accessToken` generated
 }
 ```
 
-Step 4 - Make litellm.completion call with Azure AD token
+Step 4 - Make dheera_ai.completion call with Azure AD token
 
 Set `azure_ad_token` = `accessToken` from step 3 or set `os.environ['AZURE_AD_TOKEN']`
 
@@ -589,7 +589,7 @@ Set `azure_ad_token` = `accessToken` from step 3 or set `os.environ['AZURE_AD_TO
 
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
     model = "azure/<your deployment name>",             # model = azure/<your deployment name> 
     api_base = "",                                      # azure api base
     api_version = "",                                   # azure api version
@@ -605,7 +605,7 @@ response = litellm.completion(
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/chatgpt-v-2
       api_base: https://openai-gpt-4-test-v-1.openai.azure.com/
       api_version: "2023-05-15"
@@ -617,11 +617,11 @@ model_list:
 
 ### Entra ID - use tenant_id, client_id, client_secret
 
-Here is an example of setting up `tenant_id`, `client_id`, `client_secret` in your litellm proxy `config.yaml`
+Here is an example of setting up `tenant_id`, `client_id`, `client_secret` in your dheera_ai proxy `config.yaml`
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/chatgpt-v-2
       api_base: https://openai-gpt-4-test-v-1.openai.azure.com/
       api_version: "2023-05-15"
@@ -648,17 +648,17 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 '
 ```
 
-Example video of using `tenant_id`, `client_id`, `client_secret` with LiteLLM Proxy Server
+Example video of using `tenant_id`, `client_id`, `client_secret` with Dheera AI Proxy Server
 
 <iframe width="840" height="500" src="https://www.loom.com/embed/70d3f219ee7f4e5d84778b7f17bba506?sid=04b8ff29-485f-4cb8-929e-6b392722f36d" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
 ### Entra ID - use client_id, username, password
 
-Here is an example of setting up `client_id`, `azure_username`, `azure_password` in your litellm proxy `config.yaml`
+Here is an example of setting up `client_id`, `azure_username`, `azure_password` in your dheera_ai proxy `config.yaml`
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/chatgpt-v-2
       api_base: https://openai-gpt-4-test-v-1.openai.azure.com/
       api_version: "2023-05-15"
@@ -695,7 +695,7 @@ Use this if you want to use Azure `DefaultAzureCredential` for Authentication on
 
 **Option 1: Explicit DefaultAzureCredential (Recommended)**
 ```python
-from litellm import completion
+from dheera_ai import completion
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 
 # DefaultAzureCredential automatically discovers credentials from:
@@ -714,14 +714,14 @@ response = completion(
 )
 ```
 
-**Option 2: LiteLLM Auto-Fallback to DefaultAzureCredential**
+**Option 2: Dheera AI Auto-Fallback to DefaultAzureCredential**
 ```python
-import litellm
+import dheera_ai
 
 # Enable automatic fallback to DefaultAzureCredential
-litellm.enable_azure_ad_token_refresh = True
+dheera_ai.enable_azure_ad_token_refresh = True
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model = "azure/<your deployment name>",
     api_base = "",
     api_version = "",
@@ -747,11 +747,11 @@ export AZURE_CLIENT_SECRET=""
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/your-deployment-name
       api_base: https://openai-gpt-4-test-v-1.openai.azure.com/
 
-litellm_settings:
+dheera_ai_settings:
     enable_azure_ad_token_refresh: true # 👈 KEY CHANGE
 ```
 
@@ -762,11 +762,11 @@ Perfect for AKS clusters, Azure VMs, or other managed environments where Azure a
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/your-deployment-name
       api_base: https://openai-gpt-4-test-v-1.openai.azure.com/
 
-litellm_settings:
+dheera_ai_settings:
     enable_azure_ad_token_refresh: true # 👈 KEY CHANGE
 ```
 
@@ -777,22 +777,22 @@ If you're authenticated via `az login`, no additional configuration needed:
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/your-deployment-name
       api_base: https://openai-gpt-4-test-v-1.openai.azure.com/
 
-litellm_settings:
+dheera_ai_settings:
     enable_azure_ad_token_refresh: true # 👈 KEY CHANGE
 ```
 
 3. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 **How it works**: 
-- LiteLLM first tries Service Principal authentication (if environment variables are available)
+- Dheera AI first tries Service Principal authentication (if environment variables are available)
 - If that fails, it automatically falls back to `DefaultAzureCredential`
 - `DefaultAzureCredential` will use Managed Identity, Azure CLI credentials, or other available Azure identity sources
 - This eliminates the need for hard-coded credentials in managed environments like AKS
@@ -806,10 +806,10 @@ litellm --config /path/to/config.yaml
 | Property | Details |
 |-------|-------|
 | Description | Azure OpenAI Batches API |
-| `custom_llm_provider` on LiteLLM | `azure/` |
+| `custom_llm_provider` on Dheera AI | `azure/` |
 | Supported Operations | `/v1/batches`, `/v1/files` |
 | Azure OpenAI Batches API | [Azure OpenAI Batches API ↗](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/batch) |
-| Cost Tracking, Logging Support | ✅ LiteLLM will log, track cost for Batch API Requests |
+| Cost Tracking, Logging Support | ✅ Dheera AI will log, track cost for Batch API Requests |
 
 
 ### Quick Start
@@ -822,7 +822,7 @@ export AZURE_API_BASE=""
 ```
 
 <Tabs>
-<TabItem value="proxy" label="LiteLLM PROXY Server">
+<TabItem value="proxy" label="Dheera AI PROXY Server">
 
 **1. Upload a File**
 
@@ -886,7 +886,7 @@ batch = client.batches.create( # re use client from above
 
 ```bash
 curl http://localhost:4000/v1/batches \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "input_file_id": "file-abc123",
@@ -914,7 +914,7 @@ retrieved_batch = client.batches.retrieve(
 
 ```bash
 curl http://localhost:4000/v1/batches/batch_abc123 \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -H "Content-Type: application/json" \
 ```
 
@@ -938,7 +938,7 @@ cancelled_batch = client.batches.cancel(
 
 ```bash
 curl http://localhost:4000/v1/batches/batch_abc123/cancel \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -H "Content-Type: application/json" \
   -X POST
 ```
@@ -960,18 +960,18 @@ client.batches.list(extra_headers={"custom-llm-provider": "azure"})
 
 ```bash
 curl http://localhost:4000/v1/batches?limit=2 \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -H "Content-Type: application/json"
 ```
 </TabItem>
 </Tabs>
 </TabItem>
-<TabItem value="sdk" label="LiteLLM SDK">
+<TabItem value="sdk" label="Dheera AI SDK">
 
 **1. Create File for Batch Completion**
 
 ```python
-from litellm
+from dheera_ai
 import os 
 
 os.environ["AZURE_API_KEY"] = ""
@@ -980,7 +980,7 @@ os.environ["AZURE_API_BASE"] = ""
 file_name = "azure_batch_completions.jsonl"
 _current_dir = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(_current_dir, file_name)
-file_obj = await litellm.acreate_file(
+file_obj = await dheera_ai.acreate_file(
     file=open(file_path, "rb"),
     purpose="batch",
     custom_llm_provider="azure",
@@ -991,7 +991,7 @@ print("Response from creating file=", file_obj)
 **2. Create Batch Request**
 
 ```python
-create_batch_response = await litellm.acreate_batch(
+create_batch_response = await dheera_ai.acreate_batch(
     completion_window="24h",
     endpoint="/v1/chat/completions",
     input_file_id=batch_input_file_id,
@@ -999,20 +999,20 @@ create_batch_response = await litellm.acreate_batch(
     metadata={"key1": "value1", "key2": "value2"},
 )
 
-print("response from litellm.create_batch=", create_batch_response)
+print("response from dheera_ai.create_batch=", create_batch_response)
 ```
 
 **3. Retrieve Batch and File Content**
 
 ```python
-retrieved_batch = await litellm.aretrieve_batch(
+retrieved_batch = await dheera_ai.aretrieve_batch(
     batch_id=create_batch_response.id, 
     custom_llm_provider="azure"
 )
 print("retrieved batch=", retrieved_batch)
 
 # Get file content
-file_content = await litellm.afile_content(
+file_content = await dheera_ai.afile_content(
     file_id=batch_input_file_id, 
     custom_llm_provider="azure"
 )
@@ -1022,7 +1022,7 @@ print("file content = ", file_content)
 **4. List Batches**
 
 ```python
-list_batches_response = litellm.list_batches(
+list_batches_response = dheera_ai.list_batches(
     custom_llm_provider="azure", 
     limit=2
 )
@@ -1041,14 +1041,14 @@ In your config.yaml, set `enable_loadbalancing_on_batch_endpoints: true`
 ```yaml
 model_list:
   - model_name: "batch-gpt-4o-mini"
-    litellm_params:
+    dheera_ai_params:
       model: "azure/gpt-4o-mini"
       api_key: os.environ/AZURE_API_KEY
       api_base: os.environ/AZURE_API_BASE
     model_info:
       mode: batch
 
-litellm_settings:
+dheera_ai_settings:
   enable_loadbalancing_on_batch_endpoints: true # 👈 KEY CHANGE
 ```
 
@@ -1086,7 +1086,7 @@ Expected Response (OpenAI-compatible)
 
 ```bash
 curl http://0.0.0.0:4000/v1/batches \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "input_file_id": "file-f0be81f654454113a922da60acb0eea6",
@@ -1106,7 +1106,7 @@ Expected Response:
 
 ```bash
 curl http://0.0.0.0:4000/v1/batches/batch_94e43f0a-d805-477d-adf9-bbb9c50910ed \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -H "Content-Type: application/json" \
 ```
 
@@ -1121,7 +1121,7 @@ Expected Response:
 
 ```bash
 curl http://0.0.0.0:4000/v1/batches?limit=2 \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -1143,15 +1143,15 @@ In production, [Router connects to a Redis Cache](#redis-queue) to track usage a
 #### Quick Start
 
 ```python
-pip install litellm
+pip install dheera_ai
 ```
 
 ```python
-from litellm import Router
+from dheera_ai import Router
 
 model_list = [{ # list of model deployments 
 	"model_name": "gpt-3.5-turbo", # openai model name 
-	"litellm_params": { # params for litellm completion/embedding call 
+	"dheera_ai_params": { # params for dheera_ai completion/embedding call 
 		"model": "azure/chatgpt-v-2", 
 		"api_key": os.getenv("AZURE_API_KEY"),
 		"api_version": os.getenv("AZURE_API_VERSION"),
@@ -1161,7 +1161,7 @@ model_list = [{ # list of model deployments
 	"rpm": 1800
 }, {
     "model_name": "gpt-3.5-turbo", # openai model name 
-	"litellm_params": { # params for litellm completion/embedding call 
+	"dheera_ai_params": { # params for dheera_ai completion/embedding call 
 		"model": "azure/chatgpt-functioncalling", 
 		"api_key": os.getenv("AZURE_API_KEY"),
 		"api_version": os.getenv("AZURE_API_VERSION"),
@@ -1171,7 +1171,7 @@ model_list = [{ # list of model deployments
 	"rpm": 1800
 }, {
     "model_name": "gpt-3.5-turbo", # openai model name 
-	"litellm_params": { # params for litellm completion/embedding call 
+	"dheera_ai_params": { # params for dheera_ai completion/embedding call 
 		"model": "gpt-3.5-turbo", 
 		"api_key": os.getenv("OPENAI_API_KEY"),
 	},
@@ -1202,7 +1202,7 @@ print(response)
 
 ### Tool Calling / Function Calling
 
-See a detailed walthrough of parallel function calling with litellm [here](https://docs.litellm.ai/docs/completion/function_call)
+See a detailed walthrough of parallel function calling with dheera_ai [here](https://docs.dheera_ai.ai/docs/completion/function_call)
 
 
 <Tabs>
@@ -1211,10 +1211,10 @@ See a detailed walthrough of parallel function calling with litellm [here](https
 ```python
 # set Azure env variables
 import os
-import litellm
+import dheera_ai
 import json
 
-os.environ['AZURE_API_KEY'] = "" # litellm reads AZURE_API_KEY from .env and sends the request
+os.environ['AZURE_API_KEY'] = "" # dheera_ai reads AZURE_API_KEY from .env and sends the request
 os.environ['AZURE_API_BASE'] = "https://openai-gpt-4-test-v-1.openai.azure.com/"
 os.environ['AZURE_API_VERSION'] = "2023-07-01-preview"
 
@@ -1239,7 +1239,7 @@ tools = [
     }
 ]
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="azure/chatgpt-functioncalling", # model = azure/<your-azure-deployment-name>
     messages=[{"role": "user", "content": "What's the weather like in San Francisco, Tokyo, and Paris?"}],
     tools=tools,
@@ -1258,7 +1258,7 @@ print("\nTool Choice:\n", tool_calls)
 ```yaml
 model_list:
   - model_name: azure-gpt-3.5
-    litellm_params:
+    dheera_ai_params:
       model: azure/chatgpt-functioncalling
       api_base: os.environ/AZURE_API_BASE
       api_key: os.environ/AZURE_API_KEY
@@ -1268,7 +1268,7 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 3. Test it
@@ -1302,7 +1302,7 @@ Set base model for cost tracking azure image-gen call
 ```yaml
 model_list: 
   - model_name: dall-e-3
-    litellm_params:
+    dheera_ai_params:
         model: azure/dall-e-3-test
         api_version: 2023-06-01-preview
         api_base: https://openai-gpt-4-test-v-1.openai.azure.com/
@@ -1316,15 +1316,15 @@ model_list:
 
 **Problem**: Azure returns `gpt-4` in the response when `azure/gpt-4-1106-preview` is used. This leads to inaccurate cost tracking
 
-**Solution** ✅ :  Set `base_model` on your config so litellm uses the correct model for calculating azure cost
+**Solution** ✅ :  Set `base_model` on your config so dheera_ai uses the correct model for calculating azure cost
 
-Get the base model name from [here](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json)
+Get the base model name from [here](https://github.com/BerriAI/dheera_ai/blob/main/model_prices_and_context_window.json)
 
 Example config with `base_model`
 ```yaml
 model_list:
   - model_name: azure-gpt-3.5
-    litellm_params:
+    dheera_ai_params:
       model: azure/chatgpt-v-2
       api_base: os.environ/AZURE_API_BASE
       api_key: os.environ/AZURE_API_KEY

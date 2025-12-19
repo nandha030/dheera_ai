@@ -8,7 +8,7 @@ Covers Batches, Files
 | Feature | Supported | Notes | 
 |-------|-------|-------|
 | Supported Providers | OpenAI, Azure, Vertex, Bedrock, vLLM | - |
-| ✨ Cost Tracking | ✅ | LiteLLM Enterprise only |
+| ✨ Cost Tracking | ✅ | Dheera AI Enterprise only |
 | Logging | ✅ | Works across all logging integrations |
 
 ## Quick Start 
@@ -23,12 +23,12 @@ Covers Batches, Files
 
 
 <Tabs>
-<TabItem value="proxy" label="LiteLLM PROXY Server">
+<TabItem value="proxy" label="Dheera AI PROXY Server">
 
 ```bash
 $ export OPENAI_API_KEY="sk-..."
 
-$ litellm
+$ dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -78,7 +78,7 @@ curl http://localhost:4000/v1/batches \
 **Create File for Batch Completion**
 
 ```python
-import litellm
+import dheera_ai
 import os 
 import asyncio
 
@@ -87,7 +87,7 @@ os.environ["OPENAI_API_KEY"] = "sk-.."
 file_name = "openai_batch_completions.jsonl"
 _current_dir = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(_current_dir, file_name)
-file_obj = await litellm.acreate_file(
+file_obj = await dheera_ai.acreate_file(
     file=open(file_path, "rb"),
     purpose="batch",
     custom_llm_provider="openai",
@@ -98,11 +98,11 @@ print("Response from creating file=", file_obj)
 **Create Batch Request**
 
 ```python
-import litellm
+import dheera_ai
 import os 
 import asyncio
 
-create_batch_response = await litellm.acreate_batch(
+create_batch_response = await dheera_ai.acreate_batch(
     completion_window="24h",
     endpoint="/v1/chat/completions",
     input_file_id=batch_input_file_id,
@@ -110,7 +110,7 @@ create_batch_response = await litellm.acreate_batch(
     metadata={"key1": "value1", "key2": "value2"},
 )
 
-print("response from litellm.create_batch=", create_batch_response)
+print("response from dheera_ai.create_batch=", create_batch_response)
 ```
 
 **Retrieve the Specific Batch and File Content**
@@ -129,7 +129,7 @@ print("response from litellm.create_batch=", create_batch_response)
     # This loop checks the batch status every few seconds (polling)
 
     while True:
-        retrieved_batch = await litellm.aretrieve_batch(
+        retrieved_batch = await dheera_ai.aretrieve_batch(
             batch_id=create_batch_response.id,
             custom_llm_provider="openai"
         )
@@ -155,7 +155,7 @@ assert retrieved_batch.id == create_batch_response.id
 
 # try to get file content for our original file
 
-file_content = await litellm.afile_content(
+file_content = await dheera_ai.afile_content(
     file_id=batch_input_file_id, custom_llm_provider="openai"
 )
 
@@ -165,7 +165,7 @@ print("file content = ", file_content)
 **List Batches**
 
 ```python
-list_batches_response = litellm.list_batches(custom_llm_provider="openai", limit=2)
+list_batches_response = dheera_ai.list_batches(custom_llm_provider="openai", limit=2)
 print("list_batches_response=", list_batches_response)
 ```
 
@@ -182,7 +182,7 @@ Route batch operations to different provider accounts using model-specific crede
 
 **Priority Order:**
 1. **Encoded Batch/File ID** (highest) - Model info embedded in the ID
-2. **Model Parameter** - Via header (`x-litellm-model`), query param, or request body
+2. **Model Parameter** - Via header (`x-dheera_ai-model`), query param, or request body
 3. **Custom Provider** (fallback) - Uses environment variables
 
 ### Configuration
@@ -190,19 +190,19 @@ Route batch operations to different provider accounts using model-specific crede
 ```yaml
 model_list:
   - model_name: gpt-4o-account-1
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: sk-account-1-key
       api_base: https://api.openai.com/v1
   
   - model_name: gpt-4o-account-2
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: sk-account-2-key
       api_base: https://api.openai.com/v1
   
   - model_name: azure-batches
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-4
       api_key: azure-key-123
       api_base: https://my-resource.openai.azure.com
@@ -213,13 +213,13 @@ model_list:
 
 #### Scenario 1: Encoded File ID with Model
 
-When you upload a file with a model parameter, LiteLLM encodes the model information in the file ID. All subsequent operations automatically use those credentials.
+When you upload a file with a model parameter, Dheera AI encodes the model information in the file ID. All subsequent operations automatically use those credentials.
 
 ```bash
 # Step 1: Upload file with model
 curl http://localhost:4000/v1/files \
   -H "Authorization: Bearer sk-1234" \
-  -H "x-litellm-model: gpt-4o-account-1" \
+  -H "x-dheera_ai-model: gpt-4o-account-1" \
   -F purpose="batch" \
   -F file="@batch.jsonl"
 
@@ -264,7 +264,7 @@ Specify the model for each request without encoding it in the ID.
 # Create batch with model header
 curl http://localhost:4000/v1/batches \
   -H "Authorization: Bearer sk-1234" \
-  -H "x-litellm-model: gpt-4o-account-2" \
+  -H "x-dheera_ai-model: gpt-4o-account-2" \
   -H "Content-Type: application/json" \
   -d '{
     "input_file_id": "file-abc123",
@@ -319,13 +319,13 @@ curl http://localhost:4000/v1/batches \
 ```bash
 # Upload file to Account 1
 FILE_1=$(curl -s http://localhost:4000/v1/files \
-  -H "x-litellm-model: gpt-4o-account-1" \
+  -H "x-dheera_ai-model: gpt-4o-account-1" \
   -F purpose="batch" \
   -F file="@batch1.jsonl" | jq -r '.id')
 
 # Upload file to Account 2
 FILE_2=$(curl -s http://localhost:4000/v1/files \
-  -H "x-litellm-model: gpt-4o-account-2" \
+  -H "x-dheera_ai-model: gpt-4o-account-2" \
   -F purpose="batch" \
   -F file="@batch2.jsonl" | jq -r '.id')
 
@@ -349,11 +349,11 @@ curl "http://localhost:4000/v1/batches?model=gpt-4o-account-2"
 ### SDK Usage with Model Routing
 
 ```python
-import litellm
+import dheera_ai
 import asyncio
 
 # Upload file with model routing
-file_obj = await litellm.acreate_file(
+file_obj = await dheera_ai.acreate_file(
     file=open("batch.jsonl", "rb"),
     purpose="batch",
     model="gpt-4o-account-1",  # Route to specific account
@@ -363,7 +363,7 @@ print(f"File ID: {file_obj.id}")
 # File ID is encoded with model info
 
 # Create batch - automatically uses gpt-4o-account-1 credentials
-batch = await litellm.acreate_batch(
+batch = await dheera_ai.acreate_batch(
     completion_window="24h",
     endpoint="/v1/chat/completions",
     input_file_id=file_obj.id,  # Model info embedded in ID
@@ -373,14 +373,14 @@ print(f"Batch ID: {batch.id}")
 # Batch ID is also encoded
 
 # Retrieve batch - automatically routes to correct account
-retrieved = await litellm.aretrieve_batch(
+retrieved = await dheera_ai.aretrieve_batch(
     batch_id=batch.id,  # Model info embedded in ID
 )
 
 print(f"Batch status: {retrieved.status}")
 
 # Or explicitly specify model
-batch2 = await litellm.acreate_batch(
+batch2 = await dheera_ai.acreate_batch(
     completion_window="24h",
     endpoint="/v1/chat/completions",
     input_file_id="file-regular-id",
@@ -390,18 +390,18 @@ batch2 = await litellm.acreate_batch(
 
 ### How ID Encoding Works
 
-LiteLLM encodes model information into file and batch IDs using base64:
+Dheera AI encodes model information into file and batch IDs using base64:
 
 ```
 Original:  file-abc123
 Encoded:   file-bGl0ZWxsbTpmaWxlLWFiYzEyMzttb2RlbCxncHQtNG8tdGVzdA
            └─┬─┘ └──────────────────┬──────────────────────┘
-          prefix      base64(litellm:file-abc123;model,gpt-4o-test)
+          prefix      base64(dheera_ai:file-abc123;model,gpt-4o-test)
 
 Original:  batch_xyz789
 Encoded:   batch_bGl0ZWxsbTpiYXRjaF94eXo3ODk7bW9kZWwsZ3B0LTRvLXRlc3Q
            └──┬──┘ └──────────────────┬──────────────────────┘
-           prefix       base64(litellm:batch_xyz789;model,gpt-4o-test)
+           prefix       base64(dheera_ai:batch_xyz789;model,gpt-4o-test)
 ```
 
 The encoding:
@@ -435,7 +435,7 @@ All batch and file endpoints support model-based routing:
 
 ## How Cost Tracking for Batches API Works
 
-LiteLLM tracks batch processing costs by logging two key events:
+Dheera AI tracks batch processing costs by logging two key events:
 
 | Event Type | Description | When it's Logged |
 |------------|-------------|------------------|
@@ -444,7 +444,7 @@ LiteLLM tracks batch processing costs by logging two key events:
 
 Cost calculation:
 
-- LiteLLM polls the batch status until completion
+- Dheera AI polls the batch status until completion
 - Upon completion, it aggregates usage and costs from all responses in the output file
 - Total `token` and `response_cost` reflect the combined metrics across all batch responses
 
@@ -452,4 +452,4 @@ Cost calculation:
 
 
 
-## [Swagger API Reference](https://litellm-api.up.railway.app/#/batch)
+## [Swagger API Reference](https://dheera_ai-api.up.railway.app/#/batch)

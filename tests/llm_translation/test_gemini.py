@@ -8,12 +8,12 @@ sys.path.insert(
 )  # Adds the parent directory to the system paths
 
 from base_llm_unit_tests import BaseLLMChatTest
-from litellm.llms.vertex_ai.context_caching.transformation import (
+from dheera_ai.llms.vertex_ai.context_caching.transformation import (
     separate_cached_messages,
     transform_openai_messages_to_gemini_context_caching,
 )
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 import json
 
 
@@ -25,8 +25,8 @@ class TestGoogleAIStudioGemini(BaseLLMChatTest):
         return {"model": "gemini/gemini-2.5-flash"}
 
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
-        from litellm.litellm_core_utils.prompt_templates.factory import (
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
+        from dheera_ai.dheera_ai_core_utils.prompt_templates.factory import (
             convert_to_gemini_tool_call_invoke,
         )
 
@@ -35,12 +35,12 @@ class TestGoogleAIStudioGemini(BaseLLMChatTest):
 
     @pytest.mark.flaky(retries=3, delay=2)
     def test_url_context(self):
-        from litellm.utils import supports_url_context
+        from dheera_ai.utils import supports_url_context
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         base_completion_call_args = self.get_base_completion_call_args()
 
@@ -269,7 +269,7 @@ def test_gemini_context_caching_separate_messages():
 
 
 def test_gemini_image_generation():
-    # litellm._turn_on_debug()
+    # dheera_ai._turn_on_debug()
     response = completion(
         model="gemini/gemini-2.0-flash-exp-image-generation",
         messages=[{"role": "user", "content": "Generate an image of a cat"}],
@@ -304,14 +304,14 @@ def test_gemini_flash_image_preview_models(model_name: str):
     and invoke the generateContent endpoint returning inline image data.
     """
     from unittest.mock import patch, MagicMock
-    from litellm.types.utils import ImageResponse, ImageObject
+    from dheera_ai.types.utils import ImageResponse, ImageObject
 
     # Mock successful response to avoid API limits
     mock_response = ImageResponse()
     mock_response.data = [ImageObject(b64_json="test_base64_data", url=None)]
 
     with patch(
-        "litellm.llms.custom_httpx.llm_http_handler.HTTPHandler.post"
+        "dheera_ai.llms.custom_httpx.llm_http_handler.HTTPHandler.post"
     ) as mock_post:
         # Mock successful HTTP response
         mock_http_response = MagicMock()
@@ -328,7 +328,7 @@ def test_gemini_flash_image_preview_models(model_name: str):
         mock_post.return_value = mock_http_response
 
         # Test that the function works without throwing the original 400 error
-        response = litellm.image_generation(
+        response = dheera_ai.image_generation(
             model=model_name,
             prompt="Generate a simple test image",
             api_key="test_api_key",
@@ -369,10 +369,10 @@ def test_gemini_imagen_models_use_predict_endpoint():
     Test that Imagen models still use :predict endpoint (not broken by gemini-2.5-flash-image-preview fix)
     """
     from unittest.mock import patch, MagicMock
-    from litellm.types.utils import ImageResponse, ImageObject
+    from dheera_ai.types.utils import ImageResponse, ImageObject
 
     with patch(
-        "litellm.llms.custom_httpx.llm_http_handler.HTTPHandler.post"
+        "dheera_ai.llms.custom_httpx.llm_http_handler.HTTPHandler.post"
     ) as mock_post:
         # Mock successful HTTP response for Imagen
         mock_http_response = MagicMock()
@@ -383,7 +383,7 @@ def test_gemini_imagen_models_use_predict_endpoint():
         mock_post.return_value = mock_http_response
 
         # Test an Imagen model
-        response = litellm.image_generation(
+        response = dheera_ai.image_generation(
             model="gemini/imagen-3.0-generate-001",
             prompt="Generate a simple test image",
             api_key="test_api_key",
@@ -412,9 +412,9 @@ def test_gemini_imagen_models_use_predict_endpoint():
 
 
 def test_gemini_thinking():
-    litellm._turn_on_debug()
-    from litellm.types.utils import Message, CallTypes
-    from litellm.utils import return_raw_request
+    dheera_ai._turn_on_debug()
+    from dheera_ai.types.utils import Message, CallTypes
+    from dheera_ai.utils import return_raw_request
     import json
 
     messages = [
@@ -452,9 +452,9 @@ def test_gemini_thinking():
 
 
 def test_gemini_thinking_budget_0():
-    litellm._turn_on_debug()
-    from litellm.types.utils import Message, CallTypes
-    from litellm.utils import return_raw_request
+    dheera_ai._turn_on_debug()
+    from dheera_ai.types.utils import Message, CallTypes
+    from dheera_ai.utils import return_raw_request
     import json
 
     raw_request = return_raw_request(
@@ -476,9 +476,9 @@ def test_gemini_thinking_budget_0():
 
 def test_gemini_finish_reason():
     import os
-    from litellm import completion
+    from dheera_ai import completion
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     response = completion(
         model="gemini/gemini-2.5-flash-lite",
         messages=[{"role": "user", "content": "give me 3 random words"}],
@@ -490,9 +490,9 @@ def test_gemini_finish_reason():
 
 
 def test_gemini_url_context():
-    from litellm import completion
+    from dheera_ai import completion
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     URL1 = "https://www.foodnetwork.com/recipes/ina-garten/perfect-roast-chicken-recipe-1940592"
 
     prompt = f"""
@@ -516,10 +516,10 @@ def test_gemini_url_context():
 
 @pytest.mark.flaky(retries=3, delay=2)
 def test_gemini_with_grounding():
-    from litellm import completion, Usage, stream_chunk_builder
+    from dheera_ai import completion, Usage, stream_chunk_builder
 
-    litellm._turn_on_debug()
-    litellm.set_verbose = True
+    dheera_ai._turn_on_debug()
+    dheera_ai.set_verbose = True
     tools = [{"googleSearch": {}}]
 
     # response = completion(model="gemini/gemini-2.0-flash", messages=[{"role": "user", "content": "What is the capital of France?"}], tools=tools)
@@ -552,9 +552,9 @@ def test_gemini_with_grounding():
 
 
 def test_gemini_with_empty_function_call_arguments():
-    from litellm import completion
+    from dheera_ai import completion
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     tools = [
         {
             "type": "function",
@@ -575,7 +575,7 @@ def test_gemini_with_empty_function_call_arguments():
 
 @pytest.mark.asyncio
 async def test_claude_tool_use_with_gemini():
-    response = await litellm.anthropic.messages.acreate(
+    response = await dheera_ai.anthropic.messages.acreate(
         messages=[
             {
                 "role": "user",
@@ -711,7 +711,7 @@ def test_gemini_tool_use():
         "stream_options": {"include_usage": True},
     }
 
-    response = litellm.completion(**data)
+    response = dheera_ai.completion(**data)
     print(response)
 
     stop_reason = None
@@ -725,12 +725,12 @@ def test_gemini_tool_use():
 
 @pytest.mark.asyncio
 async def test_gemini_image_generation_async():
-    litellm._turn_on_debug()
-    response = await litellm.acompletion(
+    dheera_ai._turn_on_debug()
+    response = await dheera_ai.acompletion(
         messages=[
             {
                 "role": "user",
-                "content": "Generate an image of a banana wearing a costume that says LiteLLM",
+                "content": "Generate an image of a banana wearing a costume that says DheeraAI",
             }
         ],
         model="gemini/gemini-2.5-flash-image-preview",
@@ -754,12 +754,12 @@ async def test_gemini_image_generation_async():
 
 @pytest.mark.asyncio
 async def test_gemini_image_generation_async_stream():
-    # litellm._turn_on_debug()
-    response = await litellm.acompletion(
+    # dheera_ai._turn_on_debug()
+    response = await dheera_ai.acompletion(
         messages=[
             {
                 "role": "user",
-                "content": "Generate an image of a banana wearing a costume that says LiteLLM",
+                "content": "Generate an image of a banana wearing a costume that says DheeraAI",
             }
         ],
         model="gemini/gemini-2.5-flash-image-preview",
@@ -798,7 +798,7 @@ def test_system_message_with_no_user_message():
         },
     ]
 
-    response = litellm.completion(
+    response = dheera_ai.completion(
         model="gemini/gemini-2.5-flash",
         messages=messages,
     )
@@ -822,10 +822,10 @@ def get_current_weather(location, unit="fahrenheit"):
 
 
 def test_gemini_with_thinking():
-    from litellm import completion
+    from dheera_ai import completion
 
-    litellm._turn_on_debug()
-    litellm.modify_params = True
+    dheera_ai._turn_on_debug()
+    dheera_ai.modify_params = True
     model = "gemini/gemini-2.5-flash"
     messages = [
         {
@@ -857,7 +857,7 @@ def test_gemini_with_thinking():
             },
         }
     ]
-    response = litellm.completion(
+    response = dheera_ai.completion(
         model=model,
         messages=messages,
         tools=tools,
@@ -902,7 +902,7 @@ def test_gemini_with_thinking():
                 }
             )  # extend conversation with function response
         print(f"messages: {messages}")
-        second_response = litellm.completion(
+        second_response = dheera_ai.completion(
             model=model,
             messages=messages,
             seed=22,
@@ -917,8 +917,8 @@ def test_gemini_reasoning_effort_minimal():
     """
     Test that reasoning_effort='minimal' correctly maps to model-specific minimum thinking budgets
     """
-    from litellm.utils import return_raw_request
-    from litellm.types.utils import CallTypes
+    from dheera_ai.utils import return_raw_request
+    from dheera_ai.types.utils import CallTypes
     import json
 
     # Test with different Gemini models to verify model-specific mapping
@@ -999,8 +999,8 @@ def test_gemini_exception_message_format():
     """
     import httpx
     from unittest.mock import Mock
-    from litellm.litellm_core_utils.exception_mapping_utils import exception_type
-    from litellm import BadRequestError
+    from dheera_ai.dheera_ai_core_utils.exception_mapping_utils import exception_type
+    from dheera_ai import BadRequestError
 
     # Mock a typical Gemini API error response
     mock_response = Mock(spec=httpx.Response)
@@ -1061,12 +1061,12 @@ def l(status_code, expected_exception):
     Test comprehensive Gemini error handling for all HTTP status codes.
 
     This ensures that Gemini API errors of different types are properly mapped
-    to the correct LiteLLM exception types with GeminiException prefix.
+    to the correct DheeraAI exception types with GeminiException prefix.
     """
     import httpx
     from unittest.mock import Mock
-    from litellm.litellm_core_utils.exception_mapping_utils import exception_type
-    from litellm.exceptions import (
+    from dheera_ai.dheera_ai_core_utils.exception_mapping_utils import exception_type
+    from dheera_ai.exceptions import (
         BadRequestError,
         AuthenticationError,
         PermissionDeniedError,
@@ -1134,8 +1134,8 @@ def l(status_code, expected_exception):
 
 
 def test_gemini_embedding():
-    litellm._turn_on_debug()
-    response = litellm.embedding(
+    dheera_ai._turn_on_debug()
+    response = dheera_ai.embedding(
         model="gemini/gemini-embedding-001",
         input="Hello, world!",
     )
@@ -1146,9 +1146,9 @@ def test_gemini_embedding():
 def test_reasoning_effort_none_mapping():
     """
     Test that reasoning_effort='none' correctly maps to thinkingConfig.
-    Related issue: https://github.com/BerriAI/litellm/issues/16420
+    Related issue: https://github.com/BerriAI/dheera_ai/issues/16420
     """
-    from litellm.llms.vertex_ai.gemini.vertex_and_google_ai_studio_gemini import (
+    from dheera_ai.llms.vertex_ai.gemini.vertex_and_google_ai_studio_gemini import (
         VertexGeminiConfig,
     )
 
@@ -1165,12 +1165,12 @@ def test_reasoning_effort_none_mapping():
 def test_gemini_function_args_preserve_unicode():
     """
     Test for Issue #16533: Gemini function call arguments should preserve non-ASCII characters
-    https://github.com/BerriAI/litellm/issues/16533
+    https://github.com/BerriAI/dheera_ai/issues/16533
 
     Before fix: "や" becomes "\u3084"
     After fix: "や" stays as "や"
     """
-    from litellm.llms.vertex_ai.gemini.vertex_and_google_ai_studio_gemini import VertexGeminiConfig
+    from dheera_ai.llms.vertex_ai.gemini.vertex_and_google_ai_studio_gemini import VertexGeminiConfig
 
     # Test Japanese characters
     parts = [

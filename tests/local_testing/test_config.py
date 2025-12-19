@@ -20,18 +20,18 @@ from typing import Literal
 import pytest
 from pydantic import BaseModel, ConfigDict
 
-import litellm
-from litellm.proxy.common_utils.encrypt_decrypt_utils import encrypt_value
-from litellm.proxy.proxy_server import ProxyConfig
-from litellm.proxy.utils import DualCache, ProxyLogging
-from litellm.types.router import Deployment, LiteLLM_Params, ModelInfo
+import dheera_ai
+from dheera_ai.proxy.common_utils.encrypt_decrypt_utils import encrypt_value
+from dheera_ai.proxy.proxy_server import ProxyConfig
+from dheera_ai.proxy.utils import DualCache, ProxyLogging
+from dheera_ai.types.router import Deployment, DheeraAI_Params, ModelInfo
 
 
 class DBModel(BaseModel):
     model_id: str
     model_name: str
     model_info: dict
-    litellm_params: dict
+    dheera_ai_params: dict
 
     model_config = ConfigDict(protected_namespaces=())
 
@@ -45,37 +45,37 @@ async def test_delete_deployment():
     """
     import base64
 
-    litellm_params = LiteLLM_Params(
+    dheera_ai_params = DheeraAI_Params(
         model="azure/gpt-4.1-mini",
         api_key=os.getenv("AZURE_API_KEY"),
         api_base=os.getenv("AZURE_API_BASE"),
         api_version=os.getenv("AZURE_API_VERSION"),
     )
-    encrypted_litellm_params = litellm_params.dict(exclude_none=True)
+    encrypted_dheera_ai_params = dheera_ai_params.dict(exclude_none=True)
 
     master_key = "sk-1234"
 
-    setattr(litellm.proxy.proxy_server, "master_key", master_key)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", master_key)
 
-    for k, v in encrypted_litellm_params.items():
+    for k, v in encrypted_dheera_ai_params.items():
         if isinstance(v, str):
             encrypted_value = encrypt_value(v, master_key)
-            encrypted_litellm_params[k] = base64.b64encode(encrypted_value).decode(
+            encrypted_dheera_ai_params[k] = base64.b64encode(encrypted_value).decode(
                 "utf-8"
             )
 
-    deployment = Deployment(model_name="gpt-3.5-turbo", litellm_params=litellm_params)
+    deployment = Deployment(model_name="gpt-3.5-turbo", dheera_ai_params=dheera_ai_params)
     deployment_2 = Deployment(
-        model_name="gpt-3.5-turbo-2", litellm_params=litellm_params
+        model_name="gpt-3.5-turbo-2", dheera_ai_params=dheera_ai_params
     )
 
-    llm_router = litellm.Router(
+    llm_router = dheera_ai.Router(
         model_list=[
             deployment.to_json(exclude_none=True),
             deployment_2.to_json(exclude_none=True),
         ]
     )
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
     print(f"llm_router: {llm_router}")
 
     pc = ProxyConfig()
@@ -83,7 +83,7 @@ async def test_delete_deployment():
     db_model = DBModel(
         model_id=deployment.model_info.id,
         model_name="gpt-3.5-turbo",
-        litellm_params=encrypted_litellm_params,
+        dheera_ai_params=encrypted_dheera_ai_params,
         model_info={"id": deployment.model_info.id},
     )
 
@@ -97,20 +97,20 @@ async def test_delete_deployment():
     Scenario 2 - if model id != model_info["id"]
     """
 
-    llm_router = litellm.Router(
+    llm_router = dheera_ai.Router(
         model_list=[
             deployment.to_json(exclude_none=True),
             deployment_2.to_json(exclude_none=True),
         ]
     )
     print(f"llm_router: {llm_router}")
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
     pc = ProxyConfig()
 
     db_model = DBModel(
         model_id=deployment.model_info.id,
         model_name="gpt-3.5-turbo",
-        litellm_params=encrypted_litellm_params,
+        dheera_ai_params=encrypted_dheera_ai_params,
         model_info={"id": deployment.model_info.id},
     )
 
@@ -129,18 +129,18 @@ async def test_add_existing_deployment():
     """
     import base64
 
-    litellm_params = LiteLLM_Params(
+    dheera_ai_params = DheeraAI_Params(
         model="gpt-3.5-turbo",
         api_key=os.getenv("AZURE_API_KEY"),
         api_base=os.getenv("AZURE_API_BASE"),
         api_version=os.getenv("AZURE_API_VERSION"),
     )
-    deployment = Deployment(model_name="gpt-3.5-turbo", litellm_params=litellm_params)
+    deployment = Deployment(model_name="gpt-3.5-turbo", dheera_ai_params=dheera_ai_params)
     deployment_2 = Deployment(
-        model_name="gpt-3.5-turbo-2", litellm_params=litellm_params
+        model_name="gpt-3.5-turbo-2", dheera_ai_params=dheera_ai_params
     )
 
-    llm_router = litellm.Router(
+    llm_router = dheera_ai.Router(
         model_list=[
             deployment.to_json(exclude_none=True),
             deployment_2.to_json(exclude_none=True),
@@ -150,22 +150,22 @@ async def test_add_existing_deployment():
     init_len_list = len(llm_router.model_list)
     print(f"llm_router: {llm_router}")
     master_key = "sk-1234"
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
-    setattr(litellm.proxy.proxy_server, "master_key", master_key)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", master_key)
     pc = ProxyConfig()
 
-    encrypted_litellm_params = litellm_params.dict(exclude_none=True)
+    encrypted_dheera_ai_params = dheera_ai_params.dict(exclude_none=True)
 
-    for k, v in encrypted_litellm_params.items():
+    for k, v in encrypted_dheera_ai_params.items():
         if isinstance(v, str):
             encrypted_value = encrypt_value(v, master_key)
-            encrypted_litellm_params[k] = base64.b64encode(encrypted_value).decode(
+            encrypted_dheera_ai_params[k] = base64.b64encode(encrypted_value).decode(
                 "utf-8"
             )
     db_model = DBModel(
         model_id=deployment.model_info.id,
         model_name="gpt-3.5-turbo",
-        litellm_params=encrypted_litellm_params,
+        dheera_ai_params=encrypted_dheera_ai_params,
         model_info={"id": deployment.model_info.id},
     )
 
@@ -180,22 +180,22 @@ async def test_db_error_new_model_check():
     """
     - if error in db, don't delete existing models
 
-    Relevant issue: https://github.com/BerriAI/litellm/blob/ddfe687b13e9f31db2fb2322887804e3d01dd467/litellm/proxy/proxy_server.py#L2461
+    Relevant issue: https://github.com/BerriAI/dheera_ai/blob/ddfe687b13e9f31db2fb2322887804e3d01dd467/dheera_ai/proxy/proxy_server.py#L2461
     """
     import base64
 
-    litellm_params = LiteLLM_Params(
+    dheera_ai_params = DheeraAI_Params(
         model="gpt-3.5-turbo",
         api_key=os.getenv("AZURE_API_KEY"),
         api_base=os.getenv("AZURE_API_BASE"),
         api_version=os.getenv("AZURE_API_VERSION"),
     )
-    deployment = Deployment(model_name="gpt-3.5-turbo", litellm_params=litellm_params)
+    deployment = Deployment(model_name="gpt-3.5-turbo", dheera_ai_params=dheera_ai_params)
     deployment_2 = Deployment(
-        model_name="gpt-3.5-turbo-2", litellm_params=litellm_params
+        model_name="gpt-3.5-turbo-2", dheera_ai_params=dheera_ai_params
     )
 
-    llm_router = litellm.Router(
+    llm_router = dheera_ai.Router(
         model_list=[
             deployment.to_json(exclude_none=True),
             deployment_2.to_json(exclude_none=True),
@@ -205,22 +205,22 @@ async def test_db_error_new_model_check():
     init_len_list = len(llm_router.model_list)
     print(f"llm_router: {llm_router}")
     master_key = "sk-1234"
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
-    setattr(litellm.proxy.proxy_server, "master_key", master_key)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", master_key)
     pc = ProxyConfig()
 
-    encrypted_litellm_params = litellm_params.dict(exclude_none=True)
+    encrypted_dheera_ai_params = dheera_ai_params.dict(exclude_none=True)
 
-    for k, v in encrypted_litellm_params.items():
+    for k, v in encrypted_dheera_ai_params.items():
         if isinstance(v, str):
             encrypted_value = encrypt_value(v, master_key)
-            encrypted_litellm_params[k] = base64.b64encode(encrypted_value).decode(
+            encrypted_dheera_ai_params[k] = base64.b64encode(encrypted_value).decode(
                 "utf-8"
             )
     db_model = DBModel(
         model_id=deployment.model_info.id,
         model_name="gpt-3.5-turbo",
-        litellm_params=encrypted_litellm_params,
+        dheera_ai_params=encrypted_dheera_ai_params,
         model_info={"id": deployment.model_info.id},
     )
 
@@ -231,15 +231,15 @@ async def test_db_error_new_model_check():
     assert init_len_list == len(llm_router.model_list)
 
 
-litellm_params = LiteLLM_Params(
+dheera_ai_params = DheeraAI_Params(
     model="azure/gpt-4.1-mini",
     api_key=os.getenv("AZURE_API_KEY"),
     api_base=os.getenv("AZURE_API_BASE"),
     api_version=os.getenv("AZURE_API_VERSION"),
 )
 
-deployment = Deployment(model_name="gpt-3.5-turbo", litellm_params=litellm_params)
-deployment_2 = Deployment(model_name="gpt-3.5-turbo-2", litellm_params=litellm_params)
+deployment = Deployment(model_name="gpt-3.5-turbo", dheera_ai_params=dheera_ai_params)
+deployment_2 = Deployment(model_name="gpt-3.5-turbo-2", dheera_ai_params=dheera_ai_params)
 
 
 def _create_model_list(flag_value: Literal[0, 1], master_key: str):
@@ -249,25 +249,25 @@ def _create_model_list(flag_value: Literal[0, 1], master_key: str):
     """
     import base64
 
-    new_litellm_params = LiteLLM_Params(
+    new_dheera_ai_params = DheeraAI_Params(
         model="azure/gpt-4.1-mini-3",
         api_key=os.getenv("AZURE_API_KEY"),
         api_base=os.getenv("AZURE_API_BASE"),
         api_version=os.getenv("AZURE_API_VERSION"),
     )
 
-    encrypted_litellm_params = new_litellm_params.dict(exclude_none=True)
+    encrypted_dheera_ai_params = new_dheera_ai_params.dict(exclude_none=True)
 
-    for k, v in encrypted_litellm_params.items():
+    for k, v in encrypted_dheera_ai_params.items():
         if isinstance(v, str):
             encrypted_value = encrypt_value(v, master_key)
-            encrypted_litellm_params[k] = base64.b64encode(encrypted_value).decode(
+            encrypted_dheera_ai_params[k] = base64.b64encode(encrypted_value).decode(
                 "utf-8"
             )
     db_model = DBModel(
         model_id="12345",
         model_name="gpt-3.5-turbo",
-        litellm_params=encrypted_litellm_params,
+        dheera_ai_params=encrypted_dheera_ai_params,
         model_info={"id": "12345"},
     )
 
@@ -283,8 +283,8 @@ def _create_model_list(flag_value: Literal[0, 1], master_key: str):
     "llm_router",
     [
         None,
-        litellm.Router(),
-        litellm.Router(
+        dheera_ai.Router(),
+        dheera_ai.Router(
             model_list=[
                 deployment.to_json(exclude_none=True),
                 deployment_2.to_json(exclude_none=True),
@@ -306,8 +306,8 @@ async def test_add_and_delete_deployments(llm_router, model_list_flag_value):
     """
 
     master_key = "sk-1234"
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
-    setattr(litellm.proxy.proxy_server, "master_key", master_key)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", master_key)
     pc = ProxyConfig()
     pl = ProxyLogging(DualCache())
 
@@ -332,7 +332,7 @@ async def test_add_and_delete_deployments(llm_router, model_list_flag_value):
 
     await pc._update_llm_router(new_models=model_list, proxy_logging_obj=pl)
 
-    llm_router = getattr(litellm.proxy.proxy_server, "llm_router")
+    llm_router = getattr(dheera_ai.proxy.proxy_server, "llm_router")
 
     if model_list_flag_value == 0:
         if prev_llm_router_val is None:
@@ -346,9 +346,9 @@ async def test_add_and_delete_deployments(llm_router, model_list_flag_value):
             assert len(llm_router.model_list) == len(model_list) + prev_llm_router_val
 
 
-from litellm import LITELLM_CHAT_PROVIDERS, LlmProviders
-from litellm.utils import ProviderConfigManager
-from litellm.llms.base_llm.chat.transformation import BaseConfig
+from dheera_ai import DHEERA_AI_CHAT_PROVIDERS, LlmProviders
+from dheera_ai.utils import ProviderConfigManager
+from dheera_ai.llms.base_llm.chat.transformation import BaseConfig
 
 
 def _check_provider_config(config: BaseConfig, provider: LlmProviders):
@@ -358,9 +358,9 @@ def _check_provider_config(config: BaseConfig, provider: LlmProviders):
     ), f"Provider {provider} is not a subclass of BaseConfig. Got={config}"
 
     if (
-        provider != litellm.LlmProviders.OPENAI
-        and provider != litellm.LlmProviders.OPENAI_LIKE
-        and provider != litellm.LlmProviders.CUSTOM_OPENAI
+        provider != dheera_ai.LlmProviders.OPENAI
+        and provider != dheera_ai.LlmProviders.OPENAI_LIKE
+        and provider != dheera_ai.LlmProviders.CUSTOM_OPENAI
     ):
         assert (
             config.__class__.__name__ != "OpenAIGPTConfig"
@@ -370,7 +370,7 @@ def _check_provider_config(config: BaseConfig, provider: LlmProviders):
 
 
 def test_provider_config_manager_bedrock_converse_like():
-    from litellm.llms.bedrock.chat.converse_transformation import AmazonConverseConfig
+    from dheera_ai.llms.bedrock.chat.converse_transformation import AmazonConverseConfig
 
     config = ProviderConfigManager.get_provider_chat_config(
         model="bedrock/converse_like/us.amazon.nova-pro-v1:0",
@@ -381,9 +381,9 @@ def test_provider_config_manager_bedrock_converse_like():
 
 
 # def test_provider_config_manager():
-#     from litellm.llms.openai.chat.gpt_transformation import OpenAIGPTConfig
+#     from dheera_ai.llms.openai.chat.gpt_transformation import OpenAIGPTConfig
 
-#     for provider in LITELLM_CHAT_PROVIDERS:
+#     for provider in DHEERA_AI_CHAT_PROVIDERS:
 #         if (
 #             provider == LlmProviders.VERTEX_AI
 #             or provider == LlmProviders.VERTEX_AI_BETA
@@ -403,22 +403,22 @@ def test_provider_config_manager_bedrock_converse_like():
 #         _check_provider_config(config, provider)
 
 
-def test_litellm_proxy_responses_api_config():
-    """Test that litellm_proxy provider returns correct Responses API config"""
-    from litellm.llms.litellm_proxy.responses.transformation import (
-        LiteLLMProxyResponsesAPIConfig,
+def test_dheera_ai_proxy_responses_api_config():
+    """Test that dheera_ai_proxy provider returns correct Responses API config"""
+    from dheera_ai.llms.dheera_ai_proxy.responses.transformation import (
+        DheeraAIProxyResponsesAPIConfig,
     )
 
     config = ProviderConfigManager.get_provider_responses_api_config(
-        model="litellm_proxy/gpt-4",
-        provider=LlmProviders.LITELLM_PROXY,
+        model="dheera_ai_proxy/gpt-4",
+        provider=LlmProviders.DHEERA_AI_PROXY,
     )
     print(f"config: {config}")
-    assert config is not None, "Config should not be None for litellm_proxy provider"
+    assert config is not None, "Config should not be None for dheera_ai_proxy provider"
     assert isinstance(
-        config, LiteLLMProxyResponsesAPIConfig
-    ), f"Expected LiteLLMProxyResponsesAPIConfig, got {type(config)}"
+        config, DheeraAIProxyResponsesAPIConfig
+    ), f"Expected DheeraAIProxyResponsesAPIConfig, got {type(config)}"
     assert (
-        config.custom_llm_provider == LlmProviders.LITELLM_PROXY
-    ), "custom_llm_provider should be LITELLM_PROXY"
+        config.custom_llm_provider == LlmProviders.DHEERA_AI_PROXY
+    ), "custom_llm_provider should be DHEERA_AI_PROXY"
 

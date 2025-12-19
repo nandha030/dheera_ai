@@ -1,15 +1,15 @@
-# LiteLLM SDK vs OpenAI
+# Dheera AI SDK vs OpenAI
 
-Here is a script to load test LiteLLM vs OpenAI 
+Here is a script to load test Dheera AI vs OpenAI 
 
 ```python
 from openai import AsyncOpenAI, AsyncAzureOpenAI
 import random, uuid
-import time, asyncio, litellm
+import time, asyncio, dheera_ai
 # import logging
 # logging.basicConfig(level=logging.DEBUG)
 #### LITELLM PROXY #### 
-litellm_client = AsyncOpenAI(
+dheera_ai_client = AsyncOpenAI(
     api_key="sk-1234", # [CHANGE THIS]
     base_url="http://0.0.0.0:4000"
 )
@@ -26,7 +26,7 @@ client = AsyncAzureOpenAI(
 model_list = [
   {
     "model_name": "azure-canada",
-    "litellm_params": {
+    "dheera_ai_params": {
       "model": "azure/my-azure-deployment-name", # [CHANGE THIS]
       "api_key": "my-api-key", # [CHANGE THIS]
       "api_base": "my-api-base", # [CHANGE THIS]
@@ -35,7 +35,7 @@ model_list = [
   }
 ]
 
-router = litellm.Router(model_list=model_list)
+router = dheera_ai.Router(model_list=model_list)
 
 async def openai_completion():
   try:
@@ -64,7 +64,7 @@ async def router_completion():
 
 async def proxy_completion_non_streaming():
   try:
-    response = await litellm_client.chat.completions.create(
+    response = await dheera_ai_client.chat.completions.create(
               model="sagemaker-models", # [CHANGE THIS] (if you call it something else on your proxy)
               messages=[{"role": "user", "content": f"This is a test: {uuid.uuid4()}"}],
           )

@@ -5,20 +5,20 @@ import sys
 from typing import Any, Dict, List
 from unittest.mock import MagicMock, Mock, patch
 import os
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import time
 import base64
 
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
+import dheera_ai
 from abc import ABC, abstractmethod
 
-from litellm.integrations.custom_logger import CustomLogger
+from dheera_ai.integrations.custom_logger import CustomLogger
 import json
-from litellm.types.utils import StandardLoggingPayload
-from litellm.types.llms.openai import (
+from dheera_ai.types.utils import StandardLoggingPayload
+from dheera_ai.types.llms.openai import (
     ResponseCompletedEvent,
     ResponsesAPIResponse,
     ResponseAPIUsage,
@@ -27,12 +27,12 @@ from litellm.types.llms.openai import (
 from openai.types.responses.response_create_params import (
     ResponseInputParam,
 )
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
 
 
 def validate_responses_api_response(response, final_chunk: bool = False):
     """
-    Validate that a response from litellm.responses() or litellm.aresponses()
+    Validate that a response from dheera_ai.responses() or dheera_ai.aresponses()
     conforms to the expected ResponsesAPIResponse structure.
 
     Args:
@@ -116,25 +116,25 @@ class BaseResponsesAPITest(ABC):
     @pytest.mark.parametrize("sync_mode", [True, False])
     @pytest.mark.asyncio
     async def test_basic_openai_responses_api(self, sync_mode):
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
         base_completion_call_args = self.get_base_completion_call_args()
         try:
             if sync_mode:
-                response = litellm.responses(
+                response = dheera_ai.responses(
                     input="Basic ping",
                     max_output_tokens=20,
                     **base_completion_call_args,
                 )
             else:
-                response = await litellm.aresponses(
+                response = await dheera_ai.aresponses(
                     input="Basic ping",
                     max_output_tokens=20,
                     **base_completion_call_args,
                 )
-        except litellm.InternalServerError:
-            pytest.skip("Skipping test due to litellm.InternalServerError")
-        print("litellm response=", json.dumps(response, indent=4, default=str))
+        except dheera_ai.InternalServerError:
+            pytest.skip("Skipping test due to dheera_ai.InternalServerError")
+        print("dheera_ai response=", json.dumps(response, indent=4, default=str))
 
         # Use the helper function to validate the response
         validate_responses_api_response(response, final_chunk=True)
@@ -143,28 +143,28 @@ class BaseResponsesAPITest(ABC):
     @pytest.mark.asyncio
     @pytest.mark.flaky(retries=3, delay=2)
     async def test_basic_openai_responses_api_streaming(self, sync_mode):
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         # Enable cost calculation for streaming usage
-        litellm.include_cost_in_streaming_usage = True
+        dheera_ai.include_cost_in_streaming_usage = True
         base_completion_call_args = self.get_base_completion_call_args()
         collected_content_string = ""
         response_completed_event = None
         if sync_mode:
-            response = litellm.responses(
+            response = dheera_ai.responses(
                 input="Basic ping", stream=True, **base_completion_call_args
             )
             for event in response:
-                print("litellm response=", json.dumps(event, indent=4, default=str))
+                print("dheera_ai response=", json.dumps(event, indent=4, default=str))
                 if event.type == "response.output_text.delta":
                     collected_content_string += event.delta
                 elif event.type == "response.completed":
                     response_completed_event = event
         else:
-            response = await litellm.aresponses(
+            response = await dheera_ai.aresponses(
                 input="Basic ping", stream=True, **base_completion_call_args
             )
             async for event in response:
-                print("litellm response=", json.dumps(event, indent=4, default=str))
+                print("dheera_ai response=", json.dumps(event, indent=4, default=str))
                 if event.type == "response.output_text.delta":
                     collected_content_string += event.delta
                 elif event.type == "response.completed":
@@ -214,34 +214,34 @@ class BaseResponsesAPITest(ABC):
         print(f"Cost found in streaming response: {response_completed_event.response.usage.cost}")
         
         # Reset the setting
-        litellm.include_cost_in_streaming_usage = False
+        dheera_ai.include_cost_in_streaming_usage = False
 
     @pytest.mark.parametrize("sync_mode", [False, True])
     @pytest.mark.asyncio
     async def test_basic_openai_responses_delete_endpoint(self, sync_mode):
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
         base_completion_call_args = self.get_base_completion_call_args()
         if sync_mode:
-            response = litellm.responses(
+            response = dheera_ai.responses(
                 input="Basic ping", max_output_tokens=20, **base_completion_call_args
             )
 
             # delete the response
             if isinstance(response, ResponsesAPIResponse):
-                litellm.delete_responses(
+                dheera_ai.delete_responses(
                     response_id=response.id, **base_completion_call_args
                 )
             else:
                 raise ValueError("response is not a ResponsesAPIResponse")
         else:
-            response = await litellm.aresponses(
+            response = await dheera_ai.aresponses(
                 input="Basic ping", max_output_tokens=20, **base_completion_call_args
             )
 
             # async delete the response
             if isinstance(response, ResponsesAPIResponse):
-                await litellm.adelete_responses(
+                await dheera_ai.adelete_responses(
                     response_id=response.id, **base_completion_call_args
                 )
             else:
@@ -251,20 +251,20 @@ class BaseResponsesAPITest(ABC):
     @pytest.mark.flaky(retries=3, delay=2)
     @pytest.mark.asyncio
     async def test_basic_openai_responses_streaming_delete_endpoint(self, sync_mode):
-        # litellm._turn_on_debug()
-        # litellm.set_verbose = True
+        # dheera_ai._turn_on_debug()
+        # dheera_ai.set_verbose = True
         base_completion_call_args = self.get_base_completion_call_args()
         response_id = None
         if sync_mode:
             response_id = None
-            response = litellm.responses(
+            response = dheera_ai.responses(
                 input="Basic ping",
                 max_output_tokens=20,
                 stream=True,
                 **base_completion_call_args,
             )
             for event in response:
-                print("litellm response=", json.dumps(event, indent=4, default=str))
+                print("dheera_ai response=", json.dumps(event, indent=4, default=str))
                 if "response" in event:
                     response_obj = event.get("response")
                     if response_obj is not None:
@@ -273,18 +273,18 @@ class BaseResponsesAPITest(ABC):
 
             # delete the response
             assert response_id is not None
-            litellm.delete_responses(
+            dheera_ai.delete_responses(
                 response_id=response_id, **base_completion_call_args
             )
         else:
-            response = await litellm.aresponses(
+            response = await dheera_ai.aresponses(
                 input="Basic ping",
                 max_output_tokens=20,
                 stream=True,
                 **base_completion_call_args,
             )
             async for event in response:
-                print("litellm response=", json.dumps(event, indent=4, default=str))
+                print("dheera_ai response=", json.dumps(event, indent=4, default=str))
                 if "response" in event:
                     response_obj = event.get("response")
                     if response_obj is not None:
@@ -293,7 +293,7 @@ class BaseResponsesAPITest(ABC):
 
             # delete the response
             assert response_id is not None
-            await litellm.adelete_responses(
+            await dheera_ai.adelete_responses(
                 response_id=response_id, **base_completion_call_args
             )
 
@@ -301,17 +301,17 @@ class BaseResponsesAPITest(ABC):
     @pytest.mark.flaky(retries=3, delay=2)
     @pytest.mark.asyncio
     async def test_basic_openai_responses_get_endpoint(self, sync_mode):
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
         base_completion_call_args = self.get_base_completion_call_args()
         if sync_mode:
-            response = litellm.responses(
+            response = dheera_ai.responses(
                 input="Basic ping", max_output_tokens=20, **base_completion_call_args
             )
 
             # get the response
             if isinstance(response, ResponsesAPIResponse):
-                result = litellm.get_responses(
+                result = dheera_ai.get_responses(
                     response_id=response.id, **base_completion_call_args
                 )
                 assert result is not None
@@ -320,12 +320,12 @@ class BaseResponsesAPITest(ABC):
             else:
                 raise ValueError("response is not a ResponsesAPIResponse")
         else:
-            response = await litellm.aresponses(
+            response = await dheera_ai.aresponses(
                 input="Basic ping", max_output_tokens=20, **base_completion_call_args
             )
             # async get the response
             if isinstance(response, ResponsesAPIResponse):
-                result = await litellm.aget_responses(
+                result = await dheera_ai.aget_responses(
                     response_id=response.id, **base_completion_call_args
                 )
                 assert result is not None
@@ -338,9 +338,9 @@ class BaseResponsesAPITest(ABC):
     @pytest.mark.flaky(retries=3, delay=2)
     async def test_basic_openai_list_input_items_endpoint(self):
         """Test that calls the OpenAI List Input Items endpoint"""
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
-        response = await litellm.aresponses(
+        response = await dheera_ai.aresponses(
             model="gpt-4o",
             input="Tell me a three sentence bedtime story about a unicorn.",
         )
@@ -350,7 +350,7 @@ class BaseResponsesAPITest(ABC):
         assert response_id is not None, "Response should have an ID"
         print(f"Got response_id: {response_id}")
 
-        list_items_response = await litellm.alist_input_items(
+        list_items_response = await dheera_ai.alist_input_items(
             response_id=response_id,
             limit=20,
             order="desc",
@@ -362,17 +362,17 @@ class BaseResponsesAPITest(ABC):
 
     @pytest.mark.asyncio
     async def test_multiturn_responses_api(self):
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
         try:
             base_completion_call_args = self.get_base_completion_call_args()
-            response_1 = await litellm.aresponses(
+            response_1 = await dheera_ai.aresponses(
                 input="Basic ping", max_output_tokens=20, **base_completion_call_args
             )
 
             # follow up with a second request
             response_1_id = response_1.id
-            response_2 = await litellm.aresponses(
+            response_2 = await dheera_ai.aresponses(
                 input="Basic ping",
                 max_output_tokens=20,
                 previous_response_id=response_1_id,
@@ -382,14 +382,14 @@ class BaseResponsesAPITest(ABC):
             # assert the response is not None
             assert response_1 is not None
             assert response_2 is not None
-        except litellm.InternalServerError:
-            pytest.skip("Skipping test due to litellm.InternalServerError")
+        except dheera_ai.InternalServerError:
+            pytest.skip("Skipping test due to dheera_ai.InternalServerError")
 
     @pytest.mark.asyncio
     async def test_responses_api_with_tool_calls(self):
         """Test that calls the Responses API with tool calls including function call and output"""
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
         base_completion_call_args = self.get_base_completion_call_args()
 
         # Define the input with message, function call, and function call output
@@ -436,13 +436,13 @@ class BaseResponsesAPITest(ABC):
 
         try:
             # Make the responses API call
-            response = await litellm.aresponses(
+            response = await dheera_ai.aresponses(
                 input=input_data, store=False, tools=tools, **base_completion_call_args
             )
-        except litellm.InternalServerError:
-            pytest.skip("Skipping test due to litellm.InternalServerError")
+        except dheera_ai.InternalServerError:
+            pytest.skip("Skipping test due to dheera_ai.InternalServerError")
 
-        print("litellm response=", json.dumps(response, indent=4, default=str))
+        print("dheera_ai response=", json.dumps(response, indent=4, default=str))
 
         # Validate the response structure
         validate_responses_api_response(response, final_chunk=True)
@@ -465,8 +465,8 @@ class BaseResponsesAPITest(ABC):
         """
         from pydantic import BaseModel
 
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
         base_completion_call_args = self.get_base_completion_reasoning_call_args()
         if base_completion_call_args is None:
             pytest.skip("Skipping test due to no base completion reasoning call args")
@@ -488,7 +488,7 @@ class BaseResponsesAPITest(ABC):
         ]
 
         # First call - should trigger reasoning and tool call
-        response = await litellm.aresponses(
+        response = await dheera_ai.aresponses(
             input=input_messages,
             tools=tools,
             reasoning={"effort": "low", "summary": "detailed"},
@@ -530,7 +530,7 @@ class BaseResponsesAPITest(ABC):
         print(json.dumps(input_messages, indent=4, default=str))
 
         # Second call - should produce structured output
-        final_response = await litellm.aresponses(
+        final_response = await dheera_ai.aresponses(
             input=input_messages,
             tools=tools,
             reasoning={"effort": "low", "summary": "detailed"},
@@ -550,7 +550,7 @@ class BaseResponsesAPITest(ABC):
         Test that regular dict inputs with status fields are properly filtered
         to replicate exclude_unset=True behavior for non-Pydantic objects.
         """
-        from litellm.llms.openai.responses.transformation import OpenAIResponsesAPIConfig
+        from dheera_ai.llms.openai.responses.transformation import OpenAIResponsesAPIConfig
 
         # Test input with regular dict objects (like from JSON)
         test_input = [
@@ -607,17 +607,17 @@ class BaseResponsesAPITest(ABC):
     @pytest.mark.asyncio
     async def test_basic_openai_responses_cancel_endpoint(self, sync_mode):
         try:
-            litellm._turn_on_debug()
-            litellm.set_verbose = True
+            dheera_ai._turn_on_debug()
+            dheera_ai.set_verbose = True
             base_completion_call_args = self.get_base_completion_call_args()
             if sync_mode:
-                response = litellm.responses(
+                response = dheera_ai.responses(
                     input="Basic ping", max_output_tokens=20, background=True, **base_completion_call_args
                 )
 
                 # cancel the response
                 if isinstance(response, ResponsesAPIResponse):
-                    cancel_result = litellm.cancel_responses(
+                    cancel_result = dheera_ai.cancel_responses(
                         response_id=response.id, **base_completion_call_args
                     )
                     assert cancel_result is not None
@@ -627,13 +627,13 @@ class BaseResponsesAPITest(ABC):
                 else:
                     raise ValueError("response is not a ResponsesAPIResponse")
             else:
-                response = await litellm.aresponses(
+                response = await dheera_ai.aresponses(
                     input="Basic ping", max_output_tokens=20, background=True, **base_completion_call_args
                 )
 
                 # async cancel the response
                 if isinstance(response, ResponsesAPIResponse):
-                    cancel_result = await litellm.acancel_responses(
+                    cancel_result = await dheera_ai.acancel_responses(
                         response_id=response.id, **base_completion_call_args
                     )
                     assert cancel_result is not None
@@ -656,11 +656,11 @@ class BaseResponsesAPITest(ABC):
         
         if sync_mode:
             with pytest.raises(Exception):
-                litellm.cancel_responses(
+                dheera_ai.cancel_responses(
                     response_id="invalid_response_id_12345", **base_completion_call_args
                 )
         else:
             with pytest.raises(Exception):
-                await litellm.acancel_responses(
+                await dheera_ai.acancel_responses(
                     response_id="invalid_response_id_12345", **base_completion_call_args
                 )

@@ -11,12 +11,12 @@ import threading
 logging.basicConfig(level=logging.DEBUG)
 sys.path.insert(0, os.path.abspath("../.."))
 
-import litellm
-from litellm import completion
-from litellm.caching import InMemoryCache
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai.caching import InMemoryCache
 
-litellm.num_retries = 3
-litellm.success_callback = ["langfuse"]
+dheera_ai.num_retries = 3
+dheera_ai.success_callback = ["langfuse"]
 os.environ["LANGFUSE_DEBUG"] = "True"
 import time
 
@@ -120,7 +120,7 @@ class TestLangfuseLogging:
     @pytest_asyncio.fixture
     async def mock_setup(self):
         """Common setup for Langfuse logging tests"""
-        from litellm._uuid import uuid
+        from dheera_ai._uuid import uuid
         from unittest.mock import AsyncMock, patch
         import httpx
 
@@ -133,10 +133,10 @@ class TestLangfuseLogging:
         mock_post = AsyncMock()
         mock_post.return_value = mock_response
 
-        litellm.set_verbose = True
-        litellm.success_callback = ["langfuse"]
+        dheera_ai.set_verbose = True
+        dheera_ai.success_callback = ["langfuse"]
 
-        return {"trace_id": f"litellm-test-{str(uuid.uuid4())}", "mock_post": mock_post}
+        return {"trace_id": f"dheera_ai-test-{str(uuid.uuid4())}", "mock_post": mock_post}
 
     async def _verify_langfuse_call(
         self,
@@ -171,7 +171,7 @@ class TestLangfuseLogging:
         """Test Langfuse logging for chat completion"""
         setup = mock_setup
         with patch("httpx.Client.post", setup["mock_post"]):
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hello!"}],
                 mock_response="Hello! How can I assist you today?",
@@ -186,7 +186,7 @@ class TestLangfuseLogging:
         """Test Langfuse logging for chat completion with tags"""
         setup = mock_setup
         with patch("httpx.Client.post", setup["mock_post"]):
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hello!"}],
                 mock_response="Hello! How can I assist you today?",
@@ -204,7 +204,7 @@ class TestLangfuseLogging:
         """Test Langfuse logging for chat completion with tags"""
         setup = mock_setup
         with patch("httpx.Client.post", setup["mock_post"]):
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hello!"}],
                 mock_response="Hello! How can I assist you today?",
@@ -224,7 +224,7 @@ class TestLangfuseLogging:
         """Test Langfuse logging for chat completion with metadata for langfuse"""
         setup = mock_setup
         with patch("httpx.Client.post", setup["mock_post"]):
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hello!"}],
                 mock_response="Hello! How can I assist you today?",
@@ -280,7 +280,7 @@ class TestLangfuseLogging:
         }
 
         with patch("httpx.Client.post", setup["mock_post"]):
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hello!"}],
                 mock_response="Hello! How can I assist you today?",
@@ -341,7 +341,7 @@ class TestLangfuseLogging:
             test_metadata["trace_id"] = setup["trace_id"]
 
         with patch("httpx.Client.post", setup["mock_post"]):
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hello!"}],
                 mock_response="Hello! How can I assist you today?",
@@ -360,11 +360,11 @@ class TestLangfuseLogging:
     ):
         """Test Langfuse logging for chat completion with malformed LLM response"""
         setup = mock_setup
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         with patch("httpx.Client.post", setup["mock_post"]):
-            mock_response = litellm.ModelResponse(
+            mock_response = dheera_ai.ModelResponse(
                 choices=[],
-                usage=litellm.Usage(
+                usage=dheera_ai.Usage(
                     prompt_tokens=10,
                     completion_tokens=10,
                     total_tokens=20,
@@ -373,7 +373,7 @@ class TestLangfuseLogging:
                 object="chat.completion",
                 created=1723081200,
             ).model_dump()
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hello!"}],
                 mock_response=mock_response,
@@ -389,11 +389,11 @@ class TestLangfuseLogging:
     ):
         """Test Langfuse logging for chat completion with malformed LLM response"""
         setup = mock_setup
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         with patch("httpx.Client.post", setup["mock_post"]):
-            mock_response = litellm.ModelResponse(
+            mock_response = dheera_ai.ModelResponse(
                 choices=[],
-                usage=litellm.Usage(
+                usage=dheera_ai.Usage(
                     prompt_tokens=10,
                     completion_tokens=10,
                     total_tokens=20,
@@ -402,7 +402,7 @@ class TestLangfuseLogging:
                 object="chat.completion",
                 created=1723081200,
             ).model_dump()
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0",
                 messages=[{"role": "user", "content": "Hello!"}],
                 mock_response=mock_response,
@@ -420,11 +420,11 @@ class TestLangfuseLogging:
     ):
         """Test Langfuse logging for chat completion with malformed LLM response"""
         setup = mock_setup
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         with patch("httpx.Client.post", setup["mock_post"]):
-            mock_response = litellm.ModelResponse(
+            mock_response = dheera_ai.ModelResponse(
                 choices=[],
-                usage=litellm.Usage(
+                usage=dheera_ai.Usage(
                     prompt_tokens=10,
                     completion_tokens=10,
                     total_tokens=20,
@@ -433,7 +433,7 @@ class TestLangfuseLogging:
                 object="chat.completion",
                 created=1723081200,
             ).model_dump()
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="vertex_ai/gemini-2.0-flash-001",
                 messages=[{"role": "user", "content": "Hello!"}],
                 mock_response=mock_response,
@@ -448,12 +448,12 @@ class TestLangfuseLogging:
     @pytest.mark.asyncio
     async def test_langfuse_logging_with_router(self, mock_setup):
         """Test Langfuse logging with router"""
-        litellm._turn_on_debug()
-        router = litellm.Router(
+        dheera_ai._turn_on_debug()
+        router = dheera_ai.Router(
             model_list=[
                 {
                     "model_name": "gpt-3.5-turbo",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "model": "gpt-3.5-turbo",
                         "mock_response": "Hello! How can I assist you today?",
                         "api_key": "test_api_key",
@@ -462,9 +462,9 @@ class TestLangfuseLogging:
             ]
         )
         with patch("httpx.Client.post", mock_setup["mock_post"]):
-            mock_response = litellm.ModelResponse(
+            mock_response = dheera_ai.ModelResponse(
                 choices=[],
-                usage=litellm.Usage(
+                usage=dheera_ai.Usage(
                     prompt_tokens=10,
                     completion_tokens=10,
                     total_tokens=20,

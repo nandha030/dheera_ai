@@ -1,7 +1,7 @@
 """
 Simplified tests for default end user budget feature.
 
-Tests the core scenarios where litellm.max_end_user_budget_id applies
+Tests the core scenarios where dheera_ai.max_end_user_budget_id applies
 a default budget to end users without explicit budgets.
 """
 
@@ -14,10 +14,10 @@ import pytest
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-import litellm
-from litellm.proxy._types import LiteLLM_BudgetTable, LiteLLM_EndUserTable
-from litellm.proxy.auth.auth_checks import get_end_user_object
-from litellm.caching import DualCache
+import dheera_ai
+from dheera_ai.proxy._types import DheeraAI_BudgetTable, DheeraAI_EndUserTable
+from dheera_ai.proxy.auth.auth_checks import get_end_user_object
+from dheera_ai.caching import DualCache
 
 
 @pytest.mark.asyncio
@@ -28,9 +28,9 @@ async def test_default_budget_applied_to_end_user_without_budget():
     """
     end_user_id = f"test_user_{uuid.uuid4().hex}"
     default_budget_id = str(uuid.uuid4())
-    litellm.max_end_user_budget_id = default_budget_id
+    dheera_ai.max_end_user_budget_id = default_budget_id
     
-    default_budget = LiteLLM_BudgetTable(
+    default_budget = DheeraAI_BudgetTable(
         budget_id=default_budget_id,
         max_budget=10.0,
         rpm_limit=2,
@@ -41,7 +41,7 @@ async def test_default_budget_applied_to_end_user_without_budget():
     mock_end_user_data = {
         "user_id": end_user_id,
         "spend": 1.0,
-        "litellm_budget_table": None,
+        "dheera_ai_budget_table": None,
         "alias": None,
         "allowed_model_region": None,
         "default_model": None,
@@ -49,10 +49,10 @@ async def test_default_budget_applied_to_end_user_without_budget():
     }
     
     mock_prisma_client = MagicMock()
-    mock_prisma_client.db.litellm_endusertable.find_unique = AsyncMock(
+    mock_prisma_client.db.dheera_ai_endusertable.find_unique = AsyncMock(
         return_value=MagicMock(dict=lambda: mock_end_user_data)
     )
-    mock_prisma_client.db.litellm_budgettable.find_unique = AsyncMock(
+    mock_prisma_client.db.dheera_ai_budgettable.find_unique = AsyncMock(
         return_value=MagicMock(dict=lambda: default_budget.dict())
     )
     
@@ -69,13 +69,13 @@ async def test_default_budget_applied_to_end_user_without_budget():
     
     # Verify default budget was applied
     assert result is not None
-    assert result.litellm_budget_table is not None
-    assert result.litellm_budget_table.budget_id == default_budget_id
-    assert result.litellm_budget_table.max_budget == 10.0
-    assert result.litellm_budget_table.rpm_limit == 2
-    assert result.litellm_budget_table.tpm_limit == 10
+    assert result.dheera_ai_budget_table is not None
+    assert result.dheera_ai_budget_table.budget_id == default_budget_id
+    assert result.dheera_ai_budget_table.max_budget == 10.0
+    assert result.dheera_ai_budget_table.rpm_limit == 2
+    assert result.dheera_ai_budget_table.tpm_limit == 10
     
-    litellm.max_end_user_budget_id = None
+    dheera_ai.max_end_user_budget_id = None
 
 
 @pytest.mark.asyncio
@@ -87,9 +87,9 @@ async def test_explicit_budget_not_overridden_by_default():
     end_user_id = f"test_user_{uuid.uuid4().hex}"
     explicit_budget_id = str(uuid.uuid4())
     default_budget_id = str(uuid.uuid4())
-    litellm.max_end_user_budget_id = default_budget_id
+    dheera_ai.max_end_user_budget_id = default_budget_id
     
-    explicit_budget = LiteLLM_BudgetTable(
+    explicit_budget = DheeraAI_BudgetTable(
         budget_id=explicit_budget_id,
         max_budget=100.0,
         rpm_limit=50,
@@ -99,7 +99,7 @@ async def test_explicit_budget_not_overridden_by_default():
     mock_end_user_data = {
         "user_id": end_user_id,
         "spend": 10.0,
-        "litellm_budget_table": explicit_budget.dict(),
+        "dheera_ai_budget_table": explicit_budget.dict(),
         "alias": None,
         "allowed_model_region": None,
         "default_model": None,
@@ -107,7 +107,7 @@ async def test_explicit_budget_not_overridden_by_default():
     }
     
     mock_prisma_client = MagicMock()
-    mock_prisma_client.db.litellm_endusertable.find_unique = AsyncMock(
+    mock_prisma_client.db.dheera_ai_endusertable.find_unique = AsyncMock(
         return_value=MagicMock(dict=lambda: mock_end_user_data)
     )
     
@@ -124,11 +124,11 @@ async def test_explicit_budget_not_overridden_by_default():
     
     # Verify explicit budget is kept (not replaced with default)
     assert result is not None
-    assert result.litellm_budget_table.budget_id == explicit_budget_id
-    assert result.litellm_budget_table.max_budget == 100.0
-    assert result.litellm_budget_table.rpm_limit == 50
+    assert result.dheera_ai_budget_table.budget_id == explicit_budget_id
+    assert result.dheera_ai_budget_table.max_budget == 100.0
+    assert result.dheera_ai_budget_table.rpm_limit == 50
     
-    litellm.max_end_user_budget_id = None
+    dheera_ai.max_end_user_budget_id = None
 
 
 @pytest.mark.asyncio
@@ -139,9 +139,9 @@ async def test_budget_enforcement_blocks_over_budget_users():
     """
     end_user_id = f"test_user_{uuid.uuid4().hex}"
     default_budget_id = str(uuid.uuid4())
-    litellm.max_end_user_budget_id = default_budget_id
+    dheera_ai.max_end_user_budget_id = default_budget_id
     
-    default_budget = LiteLLM_BudgetTable(
+    default_budget = DheeraAI_BudgetTable(
         budget_id=default_budget_id,
         max_budget=10.0,
         rpm_limit=2,
@@ -151,7 +151,7 @@ async def test_budget_enforcement_blocks_over_budget_users():
     mock_end_user_data = {
         "user_id": end_user_id,
         "spend": 15.0,  # Exceeds budget of 10.0
-        "litellm_budget_table": None,
+        "dheera_ai_budget_table": None,
         "alias": None,
         "allowed_model_region": None,
         "default_model": None,
@@ -159,10 +159,10 @@ async def test_budget_enforcement_blocks_over_budget_users():
     }
     
     mock_prisma_client = MagicMock()
-    mock_prisma_client.db.litellm_endusertable.find_unique = AsyncMock(
+    mock_prisma_client.db.dheera_ai_endusertable.find_unique = AsyncMock(
         return_value=MagicMock(dict=lambda: mock_end_user_data)
     )
-    mock_prisma_client.db.litellm_budgettable.find_unique = AsyncMock(
+    mock_prisma_client.db.dheera_ai_budgettable.find_unique = AsyncMock(
         return_value=MagicMock(dict=lambda: default_budget.dict())
     )
     
@@ -171,7 +171,7 @@ async def test_budget_enforcement_blocks_over_budget_users():
     mock_cache.async_set_cache = AsyncMock()
     
     # Should raise BudgetExceededError
-    with pytest.raises(litellm.BudgetExceededError) as exc_info:
+    with pytest.raises(dheera_ai.BudgetExceededError) as exc_info:
         await get_end_user_object(
             end_user_id=end_user_id,
             prisma_client=mock_prisma_client,
@@ -182,7 +182,7 @@ async def test_budget_enforcement_blocks_over_budget_users():
     assert "ExceededBudget" in str(exc_info.value)
     assert end_user_id in str(exc_info.value)
     
-    litellm.max_end_user_budget_id = None
+    dheera_ai.max_end_user_budget_id = None
 
 
 @pytest.mark.asyncio
@@ -192,13 +192,13 @@ async def test_system_works_without_default_budget_configured():
     This ensures backward compatibility.
     """
     end_user_id = f"test_user_{uuid.uuid4().hex}"
-    litellm.max_end_user_budget_id = None  # Not configured
+    dheera_ai.max_end_user_budget_id = None  # Not configured
     
     # Mock end user without budget
     mock_end_user_data = {
         "user_id": end_user_id,
         "spend": 5.0,
-        "litellm_budget_table": None,
+        "dheera_ai_budget_table": None,
         "alias": None,
         "allowed_model_region": None,
         "default_model": None,
@@ -206,7 +206,7 @@ async def test_system_works_without_default_budget_configured():
     }
     
     mock_prisma_client = MagicMock()
-    mock_prisma_client.db.litellm_endusertable.find_unique = AsyncMock(
+    mock_prisma_client.db.dheera_ai_endusertable.find_unique = AsyncMock(
         return_value=MagicMock(dict=lambda: mock_end_user_data)
     )
     
@@ -224,5 +224,5 @@ async def test_system_works_without_default_budget_configured():
     # Should work fine, just without budget limits
     assert result is not None
     assert result.user_id == end_user_id
-    assert result.litellm_budget_table is None  # No budget applied
+    assert result.dheera_ai_budget_table is None  # No budget applied
 

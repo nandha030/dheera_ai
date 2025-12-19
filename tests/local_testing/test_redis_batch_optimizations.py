@@ -19,10 +19,10 @@ load_dotenv()
 sys.path.insert(0, os.path.abspath("../.."))
 
 import uuid
-from litellm.caching.dual_cache import DualCache
-from litellm.caching.in_memory_cache import InMemoryCache
-from litellm.caching.redis_cache import RedisCache
-from litellm.constants import DEFAULT_MAX_REDIS_BATCH_CACHE_SIZE
+from dheera_ai.caching.dual_cache import DualCache
+from dheera_ai.caching.in_memory_cache import InMemoryCache
+from dheera_ai.caching.redis_cache import RedisCache
+from dheera_ai.constants import DEFAULT_MAX_REDIS_BATCH_CACHE_SIZE
 
 
 @pytest.fixture

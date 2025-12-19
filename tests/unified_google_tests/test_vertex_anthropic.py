@@ -11,14 +11,14 @@ sys.path.insert(
     0, os.path.abspath("../../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm.google_genai import (
+import dheera_ai
+from dheera_ai.google_genai import (
     agenerate_content,
     agenerate_content_stream
 )
 from google.genai.types import ContentDict, PartDict, GenerateContentResponse
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.utils import StandardLoggingPayload
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.utils import StandardLoggingPayload
 
 
 async def vertex_anthropic_mock_response(*args, **kwargs):
@@ -59,19 +59,19 @@ async def test_vertex_anthropic_mocked():
     )
     
     # Expected values for validation
-    expected_url = "https://us-east5-aiplatform.googleapis.com/v1/projects/internal-litellm-local-dev/locations/us-east5/publishers/anthropic/models/claude-sonnet-4:rawPredict"
+    expected_url = "https://us-east5-aiplatform.googleapis.com/v1/projects/internal-dheera_ai-local-dev/locations/us-east5/publishers/anthropic/models/claude-sonnet-4:rawPredict"
     expected_body_keys = {"messages", "anthropic_version", "max_tokens"}
     expected_message_content = "Hello, can you tell me a short joke?"
     
     # Patch the AsyncHTTPHandler.post method at the module level
-    with patch('litellm.llms.custom_httpx.llm_http_handler.AsyncHTTPHandler.post', new_callable=AsyncMock) as mock_post:
+    with patch('dheera_ai.llms.custom_httpx.llm_http_handler.AsyncHTTPHandler.post', new_callable=AsyncMock) as mock_post:
         mock_post.return_value = await vertex_anthropic_mock_response()
         
         response = await agenerate_content(
             contents=contents,
             model="vertex_ai/claude-sonnet-4",
             vertex_location="us-east5",
-            vertex_project="internal-litellm-local-dev",
+            vertex_project="internal-dheera_ai-local-dev",
             custom_llm_provider="vertex_ai",
         )
         
@@ -221,19 +221,19 @@ async def test_vertex_anthropic_streaming_mocked():
     )
     
     # Expected values for validation (same as non-streaming)
-    expected_url = "https://us-east5-aiplatform.googleapis.com/v1/projects/internal-litellm-local-dev/locations/us-east5/publishers/anthropic/models/claude-sonnet-4:streamRawPredict"
+    expected_url = "https://us-east5-aiplatform.googleapis.com/v1/projects/internal-dheera_ai-local-dev/locations/us-east5/publishers/anthropic/models/claude-sonnet-4:streamRawPredict"
     expected_body_keys = {"messages", "anthropic_version", "max_tokens"}
     expected_message_content = "Hello, can you tell me a short joke?"
     
     # Patch the AsyncHTTPHandler.post method at the module level
-    with patch('litellm.llms.custom_httpx.llm_http_handler.AsyncHTTPHandler.post', new_callable=AsyncMock) as mock_post:
+    with patch('dheera_ai.llms.custom_httpx.llm_http_handler.AsyncHTTPHandler.post', new_callable=AsyncMock) as mock_post:
         mock_post.return_value = await vertex_anthropic_streaming_mock_response()
         
         response_stream = await agenerate_content_stream(
             contents=contents,
             model="vertex_ai/claude-sonnet-4",
             vertex_location="us-east5",
-            vertex_project="internal-litellm-local-dev",
+            vertex_project="internal-dheera_ai-local-dev",
             custom_llm_provider="vertex_ai",
         )
         

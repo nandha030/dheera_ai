@@ -9,16 +9,16 @@ import TabItem from '@theme/TabItem';
 
 ✨ This is an enterprise feature.
 
-[Get started with LiteLLM Enterprise](https://www.litellm.ai/enterprise)
+[Get started with Dheera AI Enterprise](https://www.dheera_ai.ai/enterprise)
 
 :::
 
-LiteLLM's dynamic callback management enables teams to control logging behavior on a per-request basis without requiring central infrastructure changes. This is essential for organizations managing large-scale service ecosystems where:
+Dheera AI's dynamic callback management enables teams to control logging behavior on a per-request basis without requiring central infrastructure changes. This is essential for organizations managing large-scale service ecosystems where:
 
 - **Teams manage their own compliance** - Services can handle sensitive data appropriately without central oversight
 - **Decentralized responsibility** - Each team controls their data handling while using shared infrastructure
 
-You can disable callbacks by passing the `x-litellm-disable-callbacks` header with your requests, giving teams granular control over where their data is logged.
+You can disable callbacks by passing the `x-dheera_ai-disable-callbacks` header with your requests, giving teams granular control over where their data is logged.
 
 ## Getting Started: List and Disable Callbacks
 
@@ -39,7 +39,7 @@ Start by viewing all currently enabled callbacks on your proxy to see what's ava
 curl -X 'GET' \
   'http://localhost:4000/callbacks/list' \
   -H 'accept: application/json' \
-  -H 'x-litellm-api-key: sk-1234'
+  -H 'x-dheera_ai-api-key: sk-1234'
 ```
 
 #### Response
@@ -72,11 +72,11 @@ The response contains three arrays that categorize your active callbacks:
 
 ## 2. Disable Callbacks
 
-Now that you know which callbacks are active, you can selectively disable them using the `x-litellm-disable-callbacks` header. You can reference any callback name from the list response above.
+Now that you know which callbacks are active, you can selectively disable them using the `x-dheera_ai-disable-callbacks` header. You can reference any callback name from the list response above.
 
 ### Disable a Single Callback
 
-Use the `x-litellm-disable-callbacks` header to disable specific callbacks for individual requests.
+Use the `x-dheera_ai-disable-callbacks` header to disable specific callbacks for individual requests.
 
 <Tabs>
 <TabItem value="Curl" label="Curl Request">
@@ -85,7 +85,7 @@ Use the `x-litellm-disable-callbacks` header to disable specific callbacks for i
 curl --location 'http://0.0.0.0:4000/chat/completions' \
     --header 'Content-Type: application/json' \
     --header 'Authorization: Bearer sk-1234' \
-    --header 'x-litellm-disable-callbacks: langfuse' \
+    --header 'x-dheera_ai-disable-callbacks: langfuse' \
     --data '{
     "model": "claude-sonnet-4-20250514",
     "messages": [
@@ -117,7 +117,7 @@ response = client.chat.completions.create(
         }
     ],
     extra_headers={
-        "x-litellm-disable-callbacks": "langfuse"
+        "x-dheera_ai-disable-callbacks": "langfuse"
     }
 )
 
@@ -138,7 +138,7 @@ You can disable multiple callbacks by providing a comma-separated list in the he
 curl --location 'http://0.0.0.0:4000/chat/completions' \
     --header 'Content-Type: application/json' \
     --header 'Authorization: Bearer sk-1234' \
-    --header 'x-litellm-disable-callbacks: langfuse,datadog,prometheus' \
+    --header 'x-dheera_ai-disable-callbacks: langfuse,datadog,prometheus' \
     --data '{
     "model": "claude-sonnet-4-20250514",
     "messages": [
@@ -170,7 +170,7 @@ response = client.chat.completions.create(
         }
     ],
     extra_headers={
-        "x-litellm-disable-callbacks": "langfuse,datadog,prometheus"
+        "x-dheera_ai-disable-callbacks": "langfuse,datadog,prometheus"
     }
 )
 
@@ -184,10 +184,10 @@ print(response)
 
 ### Expected Header Format
 
-The `x-litellm-disable-callbacks` header accepts callback names in the following formats (use the exact names returned by `/callbacks/list`):
+The `x-dheera_ai-disable-callbacks` header accepts callback names in the following formats (use the exact names returned by `/callbacks/list`):
 
-- **Single callback**: `x-litellm-disable-callbacks: langfuse`
-- **Multiple callbacks**: `x-litellm-disable-callbacks: langfuse,datadog,prometheus`
+- **Single callback**: `x-dheera_ai-disable-callbacks: langfuse`
+- **Multiple callbacks**: `x-dheera_ai-disable-callbacks: langfuse,datadog,prometheus`
 
 When specifying multiple callbacks, use comma-separated values without spaces around the commas.
 
@@ -197,18 +197,18 @@ When specifying multiple callbacks, use comma-separated values without spaces ar
 
 ```bash
 # These are all equivalent
-x-litellm-disable-callbacks: langfuse
-x-litellm-disable-callbacks: LANGFUSE  
-x-litellm-disable-callbacks: LangFuse
-x-litellm-disable-callbacks: langFUSE
+x-dheera_ai-disable-callbacks: langfuse
+x-dheera_ai-disable-callbacks: LANGFUSE  
+x-dheera_ai-disable-callbacks: LangFuse
+x-dheera_ai-disable-callbacks: langFUSE
 ```
 
 This applies to both single and multiple callback specifications:
 
 ```bash
 # Case insensitive for multiple callbacks
-x-litellm-disable-callbacks: LANGFUSE,datadog,PROMETHEUS
-x-litellm-disable-callbacks: langfuse,DATADOG,prometheus
+x-dheera_ai-disable-callbacks: LANGFUSE,datadog,PROMETHEUS
+x-dheera_ai-disable-callbacks: langfuse,DATADOG,prometheus
 ```
 
 ---
@@ -230,14 +230,14 @@ This is designed for enterprise scenarios where:
 Set `allow_dynamic_callback_disabling` to `false` in your config.yaml:
 
 ```yaml showLineNumbers title="config.yaml"
-litellm_settings:
+dheera_ai_settings:
   allow_dynamic_callback_disabling: false
 ```
 
 ### Effect
 
 When disabled:
-- The `x-litellm-disable-callbacks` header will be **ignored**
+- The `x-dheera_ai-disable-callbacks` header will be **ignored**
 - All configured callbacks will **always execute** for every request
 - Users cannot bypass logging through headers or request metadata
 - All requests are guaranteed to be logged per your proxy configuration
@@ -250,11 +250,11 @@ Here's a complete example for an organization requiring guaranteed logging:
 # config.yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["langfuse", "datadog", "s3"]
   # Disable dynamic callback disabling for compliance
   allow_dynamic_callback_disabling: false

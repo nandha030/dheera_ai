@@ -1,6 +1,6 @@
 
 
-# Multi-Instance TPM/RPM (litellm.Router)
+# Multi-Instance TPM/RPM (dheera_ai.Router)
 
 Test if your defined tpm/rpm limits are respected across multiple instances of the Router object. 
 
@@ -23,10 +23,10 @@ Copy this script 👇. Save it as `test_loadtest_router.py` AND run it with `pyt
 
 
 ```python
-from litellm import Router 
-import litellm
-litellm.suppress_debug_info = True
-litellm.set_verbose = False
+from dheera_ai import Router 
+import dheera_ai
+dheera_ai.suppress_debug_info = True
+dheera_ai.set_verbose = False
 import logging
 logging.basicConfig(level=logging.CRITICAL)
 import os, random, uuid, time, asyncio
@@ -35,7 +35,7 @@ import os, random, uuid, time, asyncio
 model_list = [
     {
         "model_name": "fake-openai-endpoint",
-        "litellm_params": {
+        "dheera_ai_params": {
             "model": "gpt-3.5-turbo",
             "api_key": "my-fake-key",
             "api_base": "http://0.0.0.0:8080",
@@ -44,7 +44,7 @@ model_list = [
     },
     {
         "model_name": "fake-openai-endpoint",
-        "litellm_params": {
+        "dheera_ai_params": {
             "model": "gpt-3.5-turbo",
             "api_key": "my-fake-key",
             "api_base": "http://0.0.0.0:8081",
@@ -124,13 +124,13 @@ If you don't want to call a real LLM API endpoint, you can setup a fake openai s
 
 ```yaml
 model_list:
-- litellm_params:
+- dheera_ai_params:
     api_base: http://0.0.0.0:8080
     api_key: my-fake-key
     model: openai/my-fake-model
     rpm: 100
   model_name: fake-openai-endpoint
-- litellm_params:
+- dheera_ai_params:
     api_base: http://0.0.0.0:8081
     api_key: my-fake-key
     model: openai/my-fake-model-2
@@ -149,14 +149,14 @@ router_settings:
 
 **Instance 1**
 ```bash
-litellm --config /path/to/config.yaml --port 4000
+dheera_ai --config /path/to/config.yaml --port 4000
 
 ## RUNNING on http://0.0.0.0:4000
 ```
 
 **Instance 2**
 ```bash
-litellm --config /path/to/config.yaml --port 4001
+dheera_ai --config /path/to/config.yaml --port 4001
 
 ## RUNNING on http://0.0.0.0:4001
 ```
@@ -170,22 +170,22 @@ Copy this script 👇. Save it as `test_loadtest_proxy.py` AND run it with `pyth
 ```python
 from openai import AsyncOpenAI, AsyncAzureOpenAI
 import random, uuid
-import time, asyncio, litellm
+import time, asyncio, dheera_ai
 # import logging
 # logging.basicConfig(level=logging.DEBUG)
 #### LITELLM PROXY #### 
-litellm_client = AsyncOpenAI(
+dheera_ai_client = AsyncOpenAI(
     api_key="sk-1234", # [CHANGE THIS]
     base_url="http://0.0.0.0:4000"
 )
-litellm_client_2 = AsyncOpenAI(
+dheera_ai_client_2 = AsyncOpenAI(
     api_key="sk-1234", # [CHANGE THIS]
     base_url="http://0.0.0.0:4001"
 )
 
 async def proxy_completion_non_streaming():
   try:
-    client = random.sample([litellm_client, litellm_client_2], 1)[0] # randomly pick b/w clients
+    client = random.sample([dheera_ai_client, dheera_ai_client_2], 1)[0] # randomly pick b/w clients
     # print(f"client={client}")
     response = await client.chat.completions.create(
               model="fake-openai-endpoint", # [CHANGE THIS] (if you call it something else on your proxy)

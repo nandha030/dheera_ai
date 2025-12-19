@@ -6,24 +6,24 @@ This is for the proxy only.
 
 ## Admin Flow
 
-### 1. Add the vector store to LiteLLM 
+### 1. Add the vector store to Dheera AI 
 
 ```yaml
 model_list:  
   - model_name: embedding-model
-    litellm_params:
+    dheera_ai_params:
       model: openai/text-embedding-3-large
 
 
 vector_store_registry:
   - vector_store_name: "azure-ai-search"
-    litellm_params:
+    dheera_ai_params:
       vector_store_id: "can-be-anything" # vector store id can be anything for the purpose of passthrough api
       custom_llm_provider: "azure_ai"
       api_key: os.environ/AZURE_SEARCH_API_KEY
       api_base: https://azure-kb-search.search.windows.net
-      litellm_embedding_model: "azure/text-embedding-3-large"
-      litellm_embedding_config:
+      dheera_ai_embedding_model: "azure/text-embedding-3-large"
+      dheera_ai_embedding_config:
           api_base: https://krris-mh44uf7y-eastus2.cognitiveservices.azure.com/
           api_key: os.environ/AZURE_API_KEY
           api_version: "2025-09-01"
@@ -33,12 +33,12 @@ general_settings:
     master_key: "sk-1234"
 ```
 
-Add your vector store credentials to LiteLLM. 
+Add your vector store credentials to Dheera AI. 
 
 ### 2. Start the proxy. 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -51,7 +51,7 @@ curl -L -X POST 'http://0.0.0.0:4000/v1/indexes' \
 -H 'Authorization: Bearer sk-1234' \
 -d '{ 
     "index_name": "dall-e-4",
-    "litellm_params": {
+    "dheera_ai_params": {
         "vector_store_index": "real-index-name-2",
         "vector_store_name": "azure-ai-search"
     }

@@ -24,7 +24,7 @@ def test_aaaasschema_migration_check(schema_setup, monkeypatch):
     # test_db_url = "postgresql://neondb_owner:npg_JiZPS0DAhRn4@ep-delicate-wave-a55cvbuc.us-east-2.aws.neon.tech/neondb?sslmode=require"
     monkeypatch.setenv("DATABASE_URL", test_db_url)
 
-    deploy_dir = Path("./litellm-proxy-extras/litellm_proxy_extras")
+    deploy_dir = Path("./dheera_ai-proxy-extras/dheera_ai_proxy_extras")
     source_migrations_dir = deploy_dir / "migrations"
     schema_path = Path("./schema.prisma")
 
@@ -40,7 +40,7 @@ def test_aaaasschema_migration_check(schema_setup, monkeypatch):
         if not temp_migrations_dir.exists() or not any(temp_migrations_dir.iterdir()):
             print("No existing migrations found - first migration needed")
             pytest.fail(
-                "No existing migrations found - first migration needed. Run `litellm/ci_cd/baseline_db.py` to create new migration -E.g. `python litellm/ci_cd/baseline_db_migration.py`."
+                "No existing migrations found - first migration needed. Run `dheera_ai/ci_cd/baseline_db.py` to create new migration -E.g. `python dheera_ai/ci_cd/baseline_db_migration.py`."
             )
 
         # Apply all existing migrations
@@ -74,7 +74,7 @@ def test_aaaasschema_migration_check(schema_setup, monkeypatch):
             print("Schema differences:")
             print(diff_result.stdout)
             pytest.fail(
-                "Schema changes detected - new migration required. Run `litellm/ci_cd/run_migration.py` to create new migration -E.g. `python litellm/ci_cd/run_migration.py <migration_name>`."
+                "Schema changes detected - new migration required. Run `dheera_ai/ci_cd/run_migration.py` to create new migration -E.g. `python dheera_ai/ci_cd/run_migration.py <migration_name>`."
             )
         else:
             print("No schema changes detected. Migration not needed.")

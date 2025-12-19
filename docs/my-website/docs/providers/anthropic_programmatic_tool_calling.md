@@ -3,7 +3,7 @@
 Programmatic tool calling allows Claude to write code that calls your tools programmatically within a code execution container, rather than requiring round trips through the model for each tool invocation. This reduces latency for multi-tool workflows and decreases token consumption by allowing Claude to filter or process data before it reaches the model's context window.
 
 :::info
-Programmatic tool calling is currently in public beta. LiteLLM automatically detects tools with the `allowed_callers` field and adds the appropriate beta header based on your provider:
+Programmatic tool calling is currently in public beta. Dheera AI automatically detects tools with the `allowed_callers` field and adds the appropriate beta header based on your provider:
 
 - **Anthropic API & Microsoft Foundry**: `advanced-tool-use-2025-11-20`
 - **Amazon Bedrock**: `advanced-tool-use-2025-11-20`
@@ -26,9 +26,9 @@ Programmatic tool calling is available on the following models:
 Here's a simple example where Claude programmatically queries a database multiple times and aggregates results:
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-5-20250929",
     messages=[
         {
@@ -151,7 +151,7 @@ Programmatic tool calling uses code execution containers:
 
 ```python
 # First request - creates a new container
-response1 = litellm.completion(
+response1 = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-5-20250929",
     messages=[{"role": "user", "content": "Query the database"}],
     tools=[...]
@@ -161,7 +161,7 @@ response1 = litellm.completion(
 container_id = response1.get("container", {}).get("id")
 
 # Second request - reuse the same container
-response2 = litellm.completion(
+response2 = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-5-20250929",
     messages=[...],
     tools=[...],
@@ -178,9 +178,9 @@ When a tool is called programmatically and the container is waiting for your too
 ### Step 1: Initial Request
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-5-20250929",
     messages=[{
         "role": "user",
@@ -269,7 +269,7 @@ messages = [
 ]
 
 # Continue the conversation
-response2 = litellm.completion(
+response2 = dheera_ai.completion(
     model="anthropic/claude-sonnet-4-5-20250929",
     messages=messages,
     tools=[...]
@@ -384,14 +384,14 @@ For example, calling 10 tools directly uses ~10x the tokens of calling them prog
 
 ## Provider Support
 
-LiteLLM supports programmatic tool calling across the following Anthropic-compatible providers:
+Dheera AI supports programmatic tool calling across the following Anthropic-compatible providers:
 
 - **Standard Anthropic API** (`anthropic/claude-sonnet-4-5-20250929`) ✅
 - **Azure Anthropic / Microsoft Foundry** (`azure/claude-sonnet-4-5-20250929`) ✅
 - **Amazon Bedrock** (`bedrock/invoke/anthropic.claude-sonnet-4-5-20250929-v1:0`) ✅
 - **Google Cloud Vertex AI** (`vertex_ai/claude-sonnet-4-5-20250929`) ❌ Not supported
 
-The beta header (`advanced-tool-use-2025-11-20`) is automatically added when LiteLLM detects tools with the `allowed_callers` field.
+The beta header (`advanced-tool-use-2025-11-20`) is automatically added when Dheera AI detects tools with the `allowed_callers` field.
 
 ## Limitations
 
@@ -425,7 +425,7 @@ The following tools cannot currently be called programmatically:
 
 **Beta header not added**
 
-- LiteLLM automatically adds the beta header when it detects `allowed_callers`
+- Dheera AI automatically adds the beta header when it detects `allowed_callers`
 - If you're manually setting headers, ensure you include `advanced-tool-use-2025-11-20`
 
 ## Related Features

@@ -18,8 +18,8 @@ import pytest
 
 sys.path.insert(0, os.path.abspath("../../.."))
 
-import litellm
-from litellm.types.rag import RAGIngestOptions, BedrockVectorStoreOptions
+import dheera_ai
+from dheera_ai.types.rag import RAGIngestOptions, BedrockVectorStoreOptions
 from tests.vector_store_tests.rag.base_rag_tests import BaseRAGTest
 
 

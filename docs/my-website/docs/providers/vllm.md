@@ -3,30 +3,30 @@ import TabItem from '@theme/TabItem';
 
 # VLLM
 
-LiteLLM supports all models on VLLM.
+Dheera AI supports all models on VLLM.
 
 | Property | Details |
 |-------|-------|
 | Description | vLLM is a fast and easy-to-use library for LLM inference and serving. [Docs](https://docs.vllm.ai/en/latest/index.html) |
-| Provider Route on LiteLLM | `hosted_vllm/` (for OpenAI compatible server), `vllm/` ([DEPRECATED] for vLLM sdk usage) |
+| Provider Route on Dheera AI | `hosted_vllm/` (for OpenAI compatible server), `vllm/` ([DEPRECATED] for vLLM sdk usage) |
 | Provider Doc | [vLLM ↗](https://docs.vllm.ai/en/latest/index.html) |
 | Supported Endpoints | `/chat/completions`, `/embeddings`, `/completions`, `/rerank`, `/audio/transcriptions` |
 
 
 # Quick Start
 
-## Usage - litellm.completion (calling OpenAI compatible endpoint)
-vLLM Provides an OpenAI compatible endpoints - here's how to call it with LiteLLM 
+## Usage - dheera_ai.completion (calling OpenAI compatible endpoint)
+vLLM Provides an OpenAI compatible endpoints - here's how to call it with Dheera AI 
 
-In order to use litellm to call a hosted vllm server add the following to your completion call
+In order to use dheera_ai to call a hosted vllm server add the following to your completion call
 
 * `model="hosted_vllm/<your-vllm-model-name>"` 
 * `api_base = "your-hosted-vllm-server"`
 
 ```python
-import litellm 
+import dheera_ai 
 
-response = litellm.completion(
+response = dheera_ai.completion(
             model="hosted_vllm/facebook/opt-125m", # pass the vllm model name
             messages=messages,
             api_base="https://hosted-vllm-api.co",
@@ -37,16 +37,16 @@ print(response)
 ```
 
 
-## Usage -  LiteLLM Proxy Server (calling OpenAI compatible endpoint)
+## Usage -  Dheera AI Proxy Server (calling OpenAI compatible endpoint)
 
-Here's how to call an OpenAI-Compatible Endpoint with the LiteLLM Proxy Server
+Here's how to call an OpenAI-Compatible Endpoint with the Dheera AI Proxy Server
 
 1. Modify the config.yaml 
 
   ```yaml
   model_list:
     - model_name: my-model
-      litellm_params:
+      dheera_ai_params:
         model: hosted_vllm/facebook/opt-125m  # add hosted_vllm/ prefix to route as OpenAI provider
         api_base: https://hosted-vllm-api.co      # add api base for OpenAI compatible provider
   ```
@@ -54,10 +54,10 @@ Here's how to call an OpenAI-Compatible Endpoint with the LiteLLM Proxy Server
 2. Start the proxy 
 
   ```bash
-  $ litellm --config /path/to/config.yaml
+  $ dheera_ai --config /path/to/config.yaml
   ```
 
-3. Send Request to LiteLLM Proxy Server
+3. Send Request to Dheera AI Proxy Server
 
   <Tabs>
 
@@ -66,8 +66,8 @@ Here's how to call an OpenAI-Compatible Endpoint with the LiteLLM Proxy Server
   ```python
   import openai
   client = openai.OpenAI(
-      api_key="sk-1234",             # pass litellm proxy key, if you're using virtual keys
-      base_url="http://0.0.0.0:4000" # litellm-proxy-base url
+      api_key="sk-1234",             # pass dheera_ai proxy key, if you're using virtual keys
+      base_url="http://0.0.0.0:4000" # dheera_ai-proxy-base url
   )
 
   response = client.chat.completions.create(
@@ -110,7 +110,7 @@ Here's how to call an OpenAI-Compatible Endpoint with the LiteLLM Proxy Server
   <TabItem value="sdk" label="SDK">
 
   ```python
-  from litellm import completion
+  from dheera_ai import completion
 
   response = completion(
       model="hosted_vllm/gpt-oss-120b",
@@ -128,7 +128,7 @@ Here's how to call an OpenAI-Compatible Endpoint with the LiteLLM Proxy Server
   ```yaml
   model_list:
     - model_name: gpt-oss-120b
-      litellm_params:
+      dheera_ai_params:
         model: hosted_vllm/gpt-oss-120b
         api_base: https://hosted-vllm-api.co
   ```
@@ -136,7 +136,7 @@ Here's how to call an OpenAI-Compatible Endpoint with the LiteLLM Proxy Server
   2. Start the proxy
 
   ```bash
-  litellm --config /path/to/config.yaml
+  dheera_ai --config /path/to/config.yaml
   ```
 
   3. Test it!
@@ -157,7 +157,7 @@ Here's how to call an OpenAI-Compatible Endpoint with the LiteLLM Proxy Server
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import embedding   
+from dheera_ai import embedding   
 import os
 
 os.environ["HOSTED_VLLM_API_BASE"] = "http://localhost:8000"
@@ -176,7 +176,7 @@ print(embedding)
 ```yaml
 model_list:
     - model_name: my-model
-      litellm_params:
+      dheera_ai_params:
         model: hosted_vllm/facebook/opt-125m  # add hosted_vllm/ prefix to route as OpenAI provider
         api_base: https://hosted-vllm-api.co      # add api base for OpenAI compatible provider
 ```
@@ -184,7 +184,7 @@ model_list:
 2. Start the proxy 
 
 ```bash
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -209,7 +209,7 @@ curl -L -X POST 'http://0.0.0.0:4000/embeddings' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import rerank
+from dheera_ai import rerank
 import os
 
 os.environ["HOSTED_VLLM_API_BASE"] = "http://localhost:8000"
@@ -235,7 +235,7 @@ print(response)
 ### Async Usage
 
 ```python
-from litellm import arerank
+from dheera_ai import arerank
 import os, asyncio
 
 os.environ["HOSTED_VLLM_API_BASE"] = "http://localhost:8000"
@@ -269,7 +269,7 @@ asyncio.run(test_async_rerank())
 ```yaml
 model_list:
     - model_name: my-rerank-model
-      litellm_params:
+      dheera_ai_params:
         model: hosted_vllm/your-rerank-model  # add hosted_vllm/ prefix to route as VLLM provider
         api_base: http://localhost:8000      # add api base for your VLLM server
         # api_key: your-api-key             # [optional] if your VLLM server requires authentication
@@ -278,7 +278,7 @@ model_list:
 2. Start the proxy 
 
 ```bash
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -302,7 +302,7 @@ curl -L -X POST 'http://0.0.0.0:4000/rerank' \
 }'
 ```
 
-[See OpenAI SDK/Langchain/etc. examples](../rerank.md#litellm-proxy-usage)
+[See OpenAI SDK/Langchain/etc. examples](../rerank.md#dheera_ai-proxy-usage)
 
 </TabItem>
 </Tabs>
@@ -334,7 +334,7 @@ There are two ways to send a video url to VLLM:
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 messages=[
     {
@@ -380,11 +380,11 @@ print(response)
 ```yaml
 model_list:
     - model_name: my-model
-      litellm_params:
+      dheera_ai_params:
         model: hosted_vllm/qwen  # add hosted_vllm/ prefix to route as OpenAI provider
         api_base: https://hosted-vllm-api.co      # add api base for OpenAI compatible provider
     - model_name: my-gemini-model
-      litellm_params:
+      dheera_ai_params:
         model: gemini/gemini-1.5-flash  # add gemini/ prefix to route as Google AI Studio provider
         api_key: os.environ/GEMINI_API_KEY
 ```
@@ -392,7 +392,7 @@ model_list:
 2. Start the proxy 
 
 ```bash
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -443,7 +443,7 @@ There are two ways to send a video url to VLLM:
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
             model="hosted_vllm/qwen", # pass the vllm model name
@@ -477,7 +477,7 @@ print(response)
 ```yaml
 model_list:
     - model_name: my-model
-      litellm_params:
+      dheera_ai_params:
         model: hosted_vllm/qwen  # add hosted_vllm/ prefix to route as OpenAI provider
         api_base: https://hosted-vllm-api.co      # add api base for OpenAI compatible provider
 ```
@@ -485,7 +485,7 @@ model_list:
 2. Start the proxy 
 
 ```bash
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -518,16 +518,16 @@ curl -X POST http://0.0.0.0:4000/chat/completions \
 
 
 ## (Deprecated) for `vllm pip package` 
-### Using - `litellm.completion`
+### Using - `dheera_ai.completion`
 
 ```
-pip install litellm vllm
+pip install dheera_ai vllm
 ```
 ```python
-import litellm 
+import dheera_ai 
 
-response = litellm.completion(
-            model="vllm/facebook/opt-125m", # add a vllm prefix so litellm knows the custom_llm_provider==vllm
+response = dheera_ai.completion(
+            model="vllm/facebook/opt-125m", # add a vllm prefix so dheera_ai knows the custom_llm_provider==vllm
             messages=messages,
             temperature=0.2,
             max_tokens=80)
@@ -539,7 +539,7 @@ print(response)
 ### Batch Completion
 
 ```python
-from litellm import batch_completion
+from dheera_ai import batch_completion
 
 model_name = "facebook/opt-125m"
 provider = "vllm"
@@ -570,7 +570,7 @@ def default_pt(messages):
     return " ".join(message["content"] for message in messages)
 ```
 
-[Code for how prompt templates work in LiteLLM](https://github.com/BerriAI/litellm/blob/main/litellm/llms/prompt_templates/factory.py)
+[Code for how prompt templates work in Dheera AI](https://github.com/BerriAI/dheera_ai/blob/main/dheera_ai/llms/prompt_templates/factory.py)
 
 
 #### Models we already have Prompt Templates for
@@ -588,7 +588,7 @@ def default_pt(messages):
 
 ```python 
 # Create your own custom prompt template works 
-litellm.register_prompt_template(
+dheera_ai.register_prompt_template(
 	model="togethercomputer/LLaMA-2-7B-32K",
 	roles={
             "system": {
@@ -603,7 +603,7 @@ litellm.register_prompt_template(
                 "pre_message": "\n",
                 "post_message": "\n",
             }
-        } # tell LiteLLM how you want to map the openai messages to this model
+        } # tell Dheera AI how you want to map the openai messages to this model
 )
 
 def test_vllm_custom_model():
@@ -615,5 +615,5 @@ def test_vllm_custom_model():
 test_vllm_custom_model()
 ```
 
-[Implementation Code](https://github.com/BerriAI/litellm/blob/6b3cb1898382f2e4e80fd372308ea232868c78d1/litellm/utils.py#L1414)
+[Implementation Code](https://github.com/BerriAI/dheera_ai/blob/6b3cb1898382f2e4e80fd372308ea232868c78d1/dheera_ai/utils.py#L1414)
 

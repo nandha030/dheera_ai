@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Nvidia NIM - Rerank
 
-Use Nvidia NIM Rerank models through LiteLLM.
+Use Nvidia NIM Rerank models through Dheera AI.
 
 | Property | Details |
 |----------|---------|
@@ -23,24 +23,24 @@ Nvidia NIM rerank models help you:
 
 :::tip
 
-See the full list of LiteLLM supported Nvidia NIM rerank models on [Nvidia NIM](https://models.litellm.ai)
+See the full list of Dheera AI supported Nvidia NIM rerank models on [Nvidia NIM](https://models.dheera_ai.ai)
 
 :::
 
 ## Usage
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 <Tabs>
 <TabItem value="llama-1b" label="LLaMa 1B Model">
 
 ```python
-import litellm
+import dheera_ai
 import os
 
 os.environ['NVIDIA_NIM_API_KEY'] = "nvapi-..."
 
-response = litellm.rerank(
+response = dheera_ai.rerank(
     model="nvidia_nim/nvidia/llama-3_2-nv-rerankqa-1b-v2",
     query="What is the GPU memory bandwidth of H100 SXM?",
     documents=[
@@ -58,12 +58,12 @@ print(response)
 <TabItem value="mistral-4b" label="Mistral 4B Model">
 
 ```python
-import litellm
+import dheera_ai
 import os
 
 os.environ['NVIDIA_NIM_API_KEY'] = "nvapi-..."
 
-response = litellm.rerank(
+response = dheera_ai.rerank(
     model="nvidia_nim/nvidia/nv-rerankqa-mistral-4b-v3",
     query="What is the GPU memory bandwidth of H100 SXM?",
     documents=[
@@ -103,7 +103,7 @@ print(response)
 ```
 
 
-## Usage with LiteLLM Proxy
+## Usage with Dheera AI Proxy
 
 ### 1. Setup Config
 
@@ -112,7 +112,7 @@ Add Nvidia NIM rerank models to your proxy configuration:
 ```yaml
 model_list:
   - model_name: nvidia-rerank
-    litellm_params:
+    dheera_ai_params:
       model: nvidia_nim/nvidia/llama-3_2-nv-rerankqa-1b-v2
       api_key: os.environ/NVIDIA_NIM_API_KEY
 ```
@@ -120,7 +120,7 @@ model_list:
 ### 2. Start Proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 ### 3. Make Rerank Requests
@@ -147,16 +147,16 @@ Some Nvidia NIM rerank models use the `/v1/ranking` endpoint instead of the defa
 
 Use the `ranking/` prefix to force requests to the `/v1/ranking` endpoint:
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 ```python showLineNumbers title="Force /v1/ranking endpoint with ranking/ prefix"
-import litellm
+import dheera_ai
 import os
 
 os.environ['NVIDIA_NIM_API_KEY'] = "nvapi-..."
 
 # Use "ranking/" prefix to force /v1/ranking endpoint
-response = litellm.rerank(
+response = dheera_ai.rerank(
     model="nvidia_nim/ranking/nvidia/llama-3.2-nv-rerankqa-1b-v2",
     query="which way did the traveler go?",
     documents=[
@@ -171,17 +171,17 @@ response = litellm.rerank(
 print(response)
 ```
 
-### LiteLLM Proxy
+### Dheera AI Proxy
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: nvidia-ranking
-    litellm_params:
+    dheera_ai_params:
       model: nvidia_nim/ranking/nvidia/llama-3.2-nv-rerankqa-1b-v2
       api_key: os.environ/NVIDIA_NIM_API_KEY
 ```
 
-```bash title="Request to LiteLLM Proxy"
+```bash title="Request to Dheera AI Proxy"
 curl -X POST http://0.0.0.0:4000/rerank \
   -H "Authorization: Bearer sk-1234" \
   -H "Content-Type: application/json" \
@@ -206,7 +206,7 @@ model: nvidia_nim/ranking/nvidia/llama-3.2-nv-rerankqa-1b-v2
             │        │                   │
             │        │                   └────▶ Model name sent to provider
             │        │
-            │        └────────────────────────▶ Tells LiteLLM the request/response and url should be sent to Nvidia NIM /v1/ranking endpoint
+            │        └────────────────────────▶ Tells Dheera AI the request/response and url should be sent to Nvidia NIM /v1/ranking endpoint
             │
             └─────────────────────────────────▶ Provider prefix
 
@@ -216,7 +216,7 @@ API URL: https://ai.api.nvidia.com/v1/ranking
 **Visual Flow:**
 
 ```
-Client Request                LiteLLM                              Provider API
+Client Request                Dheera AI                              Provider API
 ──────────────              ────────────                         ─────────────
 
 # Default reranking endpoint
@@ -269,7 +269,7 @@ Check the [Nvidia NIM model deployment page](https://build.nvidia.com/nvidia/lla
 - `"END"`: Truncate from the end of the text
 
 ```python
-response = litellm.rerank(
+response = dheera_ai.rerank(
     model="nvidia_nim/nvidia/llama-3_2-nv-rerankqa-1b-v2",
     query="GPU performance",
     documents=["High performance computing", "Fast GPU processing"],
@@ -297,7 +297,7 @@ import os
 os.environ['NVIDIA_NIM_API_KEY'] = "nvapi-..."
 
 # Or pass directly
-response = litellm.rerank(
+response = dheera_ai.rerank(
     model="nvidia_nim/nvidia/llama-3_2-nv-rerankqa-1b-v2",
     query="test",
     documents=["doc1"],
@@ -321,7 +321,7 @@ export NVIDIA_NIM_API_BASE="https://your-custom-endpoint.com"
 **Option 2: Pass as parameter**
 
 ```python
-response = litellm.rerank(
+response = dheera_ai.rerank(
     model="nvidia_nim/nvidia/llama-3_2-nv-rerankqa-1b-v2",
     query="test",
     documents=["doc1"],
@@ -334,7 +334,7 @@ response = litellm.rerank(
 If you have the complete endpoint URL, you can pass it directly:
 
 ```python
-response = litellm.rerank(
+response = dheera_ai.rerank(
     model="nvidia_nim/nvidia/llama-3_2-nv-rerankqa-1b-v2",
     query="test",
     documents=["doc1"],
@@ -342,7 +342,7 @@ response = litellm.rerank(
 )
 ```
 
-LiteLLM will detect the full URL (by checking for `/retrieval/` in the path) and use it as-is.
+Dheera AI will detect the full URL (by checking for `/retrieval/` in the path) and use it as-is.
 
 ### How do I get an API key?
 
@@ -352,5 +352,5 @@ Get your Nvidia NIM API key from [Nvidia's website](https://developer.nvidia.com
 
 - [Nvidia NIM - Main Documentation](./nvidia_nim)
 - [Nvidia NIM Chat Completions](./nvidia_nim#sample-usage)
-- [LiteLLM Rerank Endpoint](../rerank)
+- [Dheera AI Rerank Endpoint](../rerank)
 - [Nvidia NIM Official Docs ↗](https://docs.api.nvidia.com/nim/reference/)

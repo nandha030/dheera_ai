@@ -1,11 +1,11 @@
 # RunwayML - Video Generation
 
-LiteLLM supports RunwayML's Gen-4 video generation API, allowing you to generate videos from text prompts and images.
+Dheera AI supports RunwayML's Gen-4 video generation API, allowing you to generate videos from text prompts and images.
 
 ## Quick Start
 
 ```python showLineNumbers title="Basic Video Generation"
-from litellm import video_generation
+from dheera_ai import video_generation
 import os
 
 os.environ["RUNWAYML_API_KEY"] = "your-api-key"
@@ -13,7 +13,7 @@ os.environ["RUNWAYML_API_KEY"] = "your-api-key"
 # Generate video from text and image
 response = video_generation(
     model="runwayml/gen4_turbo",
-    prompt="A high quality demo video of litellm ai gateway",
+    prompt="A high quality demo video of dheera_ai ai gateway",
     input_reference="https://media.licdn.com/dms/image/v2/D4D0BAQFqOrIAJEgtLw/company-logo_200_200/company-logo_200_200/0/1714076049190/berri_ai_logo?e=2147483647&v=beta&t=7tG_KRZZ4MPGc7Iin79PcFcrpvf5Hu6rBM4ptHGU1DY",
     seconds=5,
     size="1280x720"
@@ -46,7 +46,7 @@ os.environ["RUNWAYML_API_KEY"] = "your-api-key"
 ## Complete Workflow
 
 ```python showLineNumbers title="Complete Video Generation Workflow"
-from litellm import video_generation, video_status, video_content
+from dheera_ai import video_generation, video_status, video_content
 import os
 import time
 
@@ -55,7 +55,7 @@ os.environ["RUNWAYML_API_KEY"] = "your-api-key"
 # 1. Generate video
 response = video_generation(
     model="runwayml/gen4_turbo",
-    prompt="A high quality demo video of litellm ai gateway",
+    prompt="A high quality demo video of dheera_ai ai gateway",
     input_reference="https://media.licdn.com/dms/image/v2/D4D0BAQFqOrIAJEgtLw/company-logo_200_200/company-logo_200_200/0/1714076049190/berri_ai_logo?e=2147483647&v=beta&t=7tG_KRZZ4MPGc7Iin79PcFcrpvf5Hu6rBM4ptHGU1DY",
     seconds=5,
     size="1280x720"
@@ -91,7 +91,7 @@ print("Video saved successfully!")
 ## Async Usage
 
 ```python showLineNumbers title="Async Video Generation"
-from litellm import avideo_generation, avideo_status, avideo_content
+from dheera_ai import avideo_generation, avideo_status, avideo_content
 import os
 import asyncio
 
@@ -135,14 +135,14 @@ async def generate_video():
 asyncio.run(generate_video())
 ```
 
-## LiteLLM Proxy Usage
+## Dheera AI Proxy Usage
 
 Add RunwayML to your proxy configuration:
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gen4-turbo
-    litellm_params:
+    dheera_ai_params:
       model: runwayml/gen4_turbo
       api_key: os.environ/RUNWAYML_API_KEY
 ```
@@ -150,7 +150,7 @@ model_list:
 Start the proxy:
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 Generate videos through the proxy:
@@ -158,10 +158,10 @@ Generate videos through the proxy:
 ```bash showLineNumbers title="Proxy Request"
 curl --location 'http://localhost:4000/v1/videos' \
 --header 'Content-Type: application/json' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --data '{
     "model": "runwayml/gen4_turbo",
-    "prompt": "A high quality demo video of litellm ai gateway",
+    "prompt": "A high quality demo video of dheera_ai ai gateway",
     "input_reference": "https://media.licdn.com/dms/image/v2/D4D0BAQFqOrIAJEgtLw/company-logo_200_200/company-logo_200_200/0/1714076049190/berri_ai_logo?e=2147483647&v=beta&t=7tG_KRZZ4MPGc7Iin79PcFcrpvf5Hu6rBM4ptHGU1DY",
     "ratio": "1280:720"
 }'
@@ -171,14 +171,14 @@ Check video status:
 
 ```bash showLineNumbers title="Check Status"
 curl --location 'http://localhost:4000/v1/videos/{video_id}' \
---header 'x-litellm-api-key: sk-1234'
+--header 'x-dheera_ai-api-key: sk-1234'
 ```
 
 Download video content:
 
 ```bash showLineNumbers title="Download Video"
 curl --location 'http://localhost:4000/v1/videos/{video_id}/content' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --output video.mp4
 ```
 
@@ -191,7 +191,7 @@ curl --location 'http://localhost:4000/v1/videos/{video_id}/content' \
 ## Error Handling
 
 ```python showLineNumbers title="Error Handling"
-from litellm import video_generation, video_status
+from dheera_ai import video_generation, video_status
 import time
 
 try:
@@ -229,14 +229,14 @@ except Exception as e:
 
 ## Cost Tracking
 
-LiteLLM automatically tracks RunwayML video generation costs:
+Dheera AI automatically tracks RunwayML video generation costs:
 
 ```python showLineNumbers title="Cost Tracking"
-from litellm import video_generation, completion_cost
+from dheera_ai import video_generation, completion_cost
 
 response = video_generation(
     model="runwayml/gen4_turbo",
-    prompt="A high quality demo video of litellm ai gateway",
+    prompt="A high quality demo video of dheera_ai ai gateway",
     input_reference="https://media.licdn.com/dms/image/v2/D4D0BAQFqOrIAJEgtLw/company-logo_200_200/company-logo_200_200/0/1714076049190/berri_ai_logo?e=2147483647&v=beta&t=7tG_KRZZ4MPGc7Iin79PcFcrpvf5Hu6rBM4ptHGU1DY",
     seconds=5,
     size="1280x720"
@@ -249,7 +249,7 @@ print(f"Video generation cost: ${cost}")
 
 ## API Reference
 
-For complete API details, see the [OpenAI Video Generation API specification](https://platform.openai.com/docs/guides/video-generation) which LiteLLM follows.
+For complete API details, see the [OpenAI Video Generation API specification](https://platform.openai.com/docs/guides/video-generation) which Dheera AI follows.
 
 ## Supported Features
 

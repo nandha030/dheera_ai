@@ -4,8 +4,8 @@ import io
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-from litellm import completion
-import litellm
+from dheera_ai import completion
+import dheera_ai
 
 import pytest
 
@@ -29,7 +29,7 @@ import time
 #         sys.stdout = old_stdout
 #         output = new_stdout.getvalue().strip()
 #         print(output)
-#         if "LiteLLM: Prompt Layer Logging: success" not in output:
+#         if "DheeraAI: Prompt Layer Logging: success" not in output:
 #             raise Exception("Required log message not found!")
 
 #     except Exception as e:
@@ -46,8 +46,8 @@ def test_promptlayer_logging_with_metadata():
         # Redirect stdout
         old_stdout = sys.stdout
         sys.stdout = new_stdout = io.StringIO()
-        litellm.set_verbose = True
-        litellm.success_callback = ["promptlayer"]
+        dheera_ai.set_verbose = True
+        dheera_ai.success_callback = ["promptlayer"]
 
         response = completion(
             model="gpt-3.5-turbo",
@@ -75,9 +75,9 @@ def test_promptlayer_logging_with_metadata():
 def test_promptlayer_logging_with_metadata_tags():
     try:
         # Redirect stdout
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
-        litellm.success_callback = ["promptlayer"]
+        dheera_ai.success_callback = ["promptlayer"]
         old_stdout = sys.stdout
         sys.stdout = new_stdout = io.StringIO()
 

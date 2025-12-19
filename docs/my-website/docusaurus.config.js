@@ -49,7 +49,7 @@ const config = {
   favicon: '/img/favicon.ico', 
 
   // Set the production url of your site here
-  url: 'https://docs.litellm.ai/',
+  url: 'https://docs.dheera_ai.ai/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -172,7 +172,7 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.png',
       navbar: {
-        title: '🚅 LiteLLM',
+        title: '🚅 DheeraAI',
         items: [
           {
             type: 'docSidebar',
@@ -195,17 +195,17 @@ const config = {
           { to: '/release_notes', label: 'Release Notes', position: 'left' },
           { to: '/blog', label: 'Blog', position: 'left' },
           {
-            href: 'https://models.litellm.ai/',
+            href: 'https://models.dheera_ai.ai/',
             label: '💸 LLM Model Cost Map',
             position: 'right',
           },
           {
-            href: 'https://github.com/BerriAI/litellm',
+            href: 'https://github.com/BerriAI/dheera_ai',
             label: 'GitHub',
             position: 'right',
           },
           {
-            href: 'https://www.litellm.ai/support',
+            href: 'https://www.dheera_ai.ai/support',
             label: 'Slack/Discord',
             position: 'right',
           }
@@ -219,7 +219,7 @@ const config = {
             items: [
               {
                 label: 'Getting Started',
-                to: 'https://docs.litellm.ai/docs/',
+                to: 'https://docs.dheera_ai.ai/docs/',
               },
             ],
           },
@@ -232,7 +232,7 @@ const config = {
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/LiteLLM',
+                href: 'https://twitter.com/DheeraAI',
               },
             ],
           },
@@ -241,7 +241,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/BerriAI/litellm/',
+                href: 'https://github.com/BerriAI/dheera_ai/',
               },
             ],
           },

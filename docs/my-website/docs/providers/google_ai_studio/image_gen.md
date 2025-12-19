@@ -10,7 +10,7 @@ Google AI Studio provides powerful image generation capabilities using Google's 
 | Property | Details |
 |----------|---------|
 | Description | Google AI Studio Image Generation uses Google's Imagen models to generate high-quality images from text descriptions. |
-| Provider Route on LiteLLM | `gemini/` |
+| Provider Route on Dheera AI | `gemini/` |
 | Provider Doc | [Google AI Studio Image Generation ↗](https://ai.google.dev/gemini-api/docs/imagen) |
 | Supported Operations | [`/images/generations`](#image-generation) |
 
@@ -28,20 +28,20 @@ Get your API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
 
 ## Image Generation
 
-### Usage - LiteLLM Python SDK
+### Usage - Dheera AI Python SDK
 
 <Tabs>
 <TabItem value="basic" label="Basic Usage">
 
 ```python showLineNumbers title="Basic Image Generation"
-import litellm
+import dheera_ai
 import os
 
 # Set your API key
 os.environ["GEMINI_API_KEY"] = "your-api-key-here"
 
 # Generate a single image
-response = litellm.image_generation(
+response = dheera_ai.image_generation(
     model="gemini/imagen-4.0-generate-001",
     prompt="A cute baby sea otter swimming in crystal clear water"
 )
@@ -54,7 +54,7 @@ print(response.data[0].url)
 <TabItem value="async" label="Async Usage">
 
 ```python showLineNumbers title="Async Image Generation"
-import litellm
+import dheera_ai
 import asyncio
 import os
 
@@ -63,7 +63,7 @@ async def generate_image():
     os.environ["GEMINI_API_KEY"] = "your-api-key-here"
     
     # Generate image asynchronously
-    response = await litellm.aimage_generation(
+    response = await dheera_ai.aimage_generation(
         model="gemini/imagen-4.0-generate-001",
         prompt="A beautiful sunset over mountains with vibrant colors",
         n=1,
@@ -81,14 +81,14 @@ asyncio.run(generate_image())
 <TabItem value="advanced" label="Advanced Parameters">
 
 ```python showLineNumbers title="Advanced Image Generation with Parameters"
-import litellm
+import dheera_ai
 import os
 
 # Set your API key
 os.environ["GEMINI_API_KEY"] = "your-api-key-here"
 
 # Generate image with additional parameters
-response = litellm.image_generation(
+response = dheera_ai.image_generation(
     model="gemini/imagen-4.0-generate-001",
     prompt="A futuristic cityscape at night with neon lights",
     n=1,
@@ -104,14 +104,14 @@ for image in response.data:
 </TabItem>
 </Tabs>
 
-### Usage - LiteLLM Proxy Server
+### Usage - Dheera AI Proxy Server
 
 #### 1. Configure your config.yaml
 
 ```yaml showLineNumbers title="Google AI Studio Image Generation Configuration"
 model_list:
   - model_name: google-imagen
-    litellm_params:
+    dheera_ai_params:
       model: gemini/imagen-4.0-generate-001
       api_key: os.environ/GEMINI_API_KEY
   model_info:
@@ -121,10 +121,10 @@ general_settings:
   master_key: sk-1234
 ```
 
-#### 2. Start LiteLLM Proxy Server
+#### 2. Start Dheera AI Proxy Server
 
-```bash showLineNumbers title="Start LiteLLM Proxy Server"
-litellm --config /path/to/config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy Server"
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -156,14 +156,14 @@ print(response.data[0].url)
 
 </TabItem>
 
-<TabItem value="litellm-sdk" label="LiteLLM SDK">
+<TabItem value="dheera_ai-sdk" label="Dheera AI SDK">
 
-```python showLineNumbers title="Google AI Studio Image Generation via Proxy - LiteLLM SDK"
-import litellm
+```python showLineNumbers title="Google AI Studio Image Generation via Proxy - Dheera AI SDK"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy
-response = litellm.image_generation(
-    model="litellm_proxy/google-imagen",
+# Configure Dheera AI to use your proxy
+response = dheera_ai.image_generation(
+    model="dheera_ai_proxy/google-imagen",
     prompt="A serene Japanese garden with cherry blossoms",
     api_base="http://localhost:4000",
     api_key="sk-1234"
@@ -205,10 +205,10 @@ Google AI Studio Image Generation supports the following OpenAI-compatible param
 1. Create an account at [Google AI Studio](https://aistudio.google.com/)
 2. Generate an API key from [API Keys section](https://aistudio.google.com/app/apikey)
 3. Set your `GEMINI_API_KEY` environment variable
-4. Start generating images using LiteLLM
+4. Start generating images using Dheera AI
 
 ## Additional Resources
 
 - [Google AI Studio Documentation](https://ai.google.dev/gemini-api/docs)
 - [Imagen Model Overview](https://ai.google.dev/gemini-api/docs/imagen)
-- [LiteLLM Image Generation Guide](../../completion/image_generation)
+- [Dheera AI Image Generation Guide](../../completion/image_generation)

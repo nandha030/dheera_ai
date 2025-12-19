@@ -9,20 +9,20 @@
 
 :::tip
 
-LiteLLM follows the [Perplexity API request/response for the Search API](https://docs.perplexity.ai/api-reference/search-post)
+Dheera AI follows the [Perplexity API request/response for the Search API](https://docs.perplexity.ai/api-reference/search-post)
 
 :::
 
 :::info
 
-Supported from LiteLLM v1.78.7+
+Supported from Dheera AI v1.78.7+
 :::
 
-## **LiteLLM Python SDK Usage**
+## **Dheera AI Python SDK Usage**
 ### Quick Start 
 
 ```python showLineNumbers title="Basic Search"
-from litellm import search
+from dheera_ai import search
 import os
 
 os.environ["PERPLEXITYAI_API_KEY"] = "pplx-..."
@@ -42,7 +42,7 @@ for result in response.results:
 ### Async Usage 
 
 ```python showLineNumbers title="Async Search"
-from litellm import asearch
+from dheera_ai import asearch
 import os, asyncio
 
 os.environ["PERPLEXITYAI_API_KEY"] = "pplx-..."
@@ -77,37 +77,37 @@ response = search(
 )
 ```
 
-## **LiteLLM AI Gateway Usage**
+## **Dheera AI AI Gateway Usage**
 
-LiteLLM provides a Perplexity API compatible `/search` endpoint for search calls.
+Dheera AI provides a Perplexity API compatible `/search` endpoint for search calls.
 
 **Setup**
 
-Add this to your litellm proxy config.yaml
+Add this to your dheera_ai proxy config.yaml
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
 search_tools:
   - search_tool_name: perplexity-search
-    litellm_params:
+    dheera_ai_params:
       search_provider: perplexity
       api_key: os.environ/PERPLEXITYAI_API_KEY
   
   - search_tool_name: tavily-search
-    litellm_params:
+    dheera_ai_params:
       search_provider: tavily
       api_key: os.environ/TAVILY_API_KEY
 ```
 
-Start litellm
+Start dheera_ai
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -148,17 +148,17 @@ Configure multiple search providers for automatic load balancing and fallbacks:
 ```yaml showLineNumbers title="config.yaml with load balancing"
 search_tools:
   - search_tool_name: my-search
-    litellm_params:
+    dheera_ai_params:
       search_provider: perplexity
       api_key: os.environ/PERPLEXITYAI_API_KEY
   
   - search_tool_name: my-search
-    litellm_params:
+    dheera_ai_params:
       search_provider: tavily
       api_key: os.environ/TAVILY_API_KEY
   
   - search_tool_name: my-search
-    litellm_params:
+    dheera_ai_params:
       search_provider: exa_ai
       api_key: os.environ/EXA_API_KEY
 
@@ -182,7 +182,7 @@ curl http://0.0.0.0:4000/v1/search/my-search \
 
 :::info
 
-LiteLLM follows the **Perplexity Search API specification**. 
+Dheera AI follows the **Perplexity Search API specification**. 
 
 See the [official Perplexity Search documentation](https://docs.perplexity.ai/api-reference/search-post) for complete details.
 

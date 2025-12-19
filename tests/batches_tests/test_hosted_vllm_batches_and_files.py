@@ -1,7 +1,7 @@
 """
 Unit Tests for hosted_vllm Batches and Files API
 
-Tests the integration of hosted_vllm provider with LiteLLM's batch and file operations.
+Tests the integration of hosted_vllm provider with DheeraAI's batch and file operations.
 Tests against a real OpenAI-compatible endpoint.
 """
 import json
@@ -19,7 +19,7 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )
 
-import litellm
+import dheera_ai
 
 
 SERVER_URL = "https://exampleopenaiendpoint-production-0ee2.up.railway.app/v1"
@@ -32,14 +32,14 @@ async def test_hosted_vllm_full_workflow():
     Test the complete workflow: create file -> create batch -> retrieve batch -> retrieve file.
     Tests against real OpenAI-compatible endpoint.
     """
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     file_name = "openai_batch_completions.jsonl"
     _current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(_current_dir, file_name)
     
     # Step 1: Create file
     print("\n=== Step 1: Creating file ===")
-    file_obj = await litellm.acreate_file(
+    file_obj = await dheera_ai.acreate_file(
         file=open(file_path, "rb"),
         purpose="batch",
         custom_llm_provider="hosted_vllm",
@@ -54,7 +54,7 @@ async def test_hosted_vllm_full_workflow():
     
     # Step 2: Create batch
     print("\n=== Step 2: Creating batch ===")
-    batch_obj = await litellm.acreate_batch(
+    batch_obj = await dheera_ai.acreate_batch(
         completion_window="24h",
         endpoint="/v1/chat/completions",
         input_file_id=file_obj.id,
@@ -74,7 +74,7 @@ async def test_hosted_vllm_full_workflow():
     
     # Step 3: Retrieve batch
     print("\n=== Step 3: Retrieving batch ===")
-    retrieved_batch = await litellm.aretrieve_batch(
+    retrieved_batch = await dheera_ai.aretrieve_batch(
         batch_id=batch_obj.id,
         custom_llm_provider="hosted_vllm",
         api_base=SERVER_URL,
@@ -90,7 +90,7 @@ async def test_hosted_vllm_full_workflow():
     
     # Step 4: Retrieve file (verify file still accessible)
     print("\n=== Step 4: Retrieving original file ===")
-    retrieved_file = await litellm.afile_retrieve(
+    retrieved_file = await dheera_ai.afile_retrieve(
         file_id=file_obj.id,
         custom_llm_provider="hosted_vllm",
         api_base=SERVER_URL,

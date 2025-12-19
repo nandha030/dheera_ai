@@ -19,10 +19,10 @@ import TabItem from '@theme/TabItem';
 
 ## Quick Start
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 ```python showLineNumbers
-from litellm import image_generation
+from dheera_ai import image_generation
 import os 
 
 # set api keys 
@@ -33,15 +33,15 @@ response = image_generation(prompt="A cute baby sea otter", model="dall-e-3")
 print(f"response: {response}")
 ```
 
-### LiteLLM Proxy
+### Dheera AI Proxy
 
 ### Setup config.yaml 
 
 ```yaml showLineNumbers
 model_list:
   - model_name: gpt-image-1 ### RECEIVED MODEL NAME ###
-    litellm_params: # all params accepted by litellm.image_generation()
-      model: azure/gpt-image-1 ### MODEL NAME sent to `litellm.image_generation()` ###
+    dheera_ai_params: # all params accepted by dheera_ai.image_generation()
+      model: azure/gpt-image-1 ### MODEL NAME sent to `dheera_ai.image_generation()` ###
       api_base: https://my-endpoint-europe-berri-992.openai.azure.com/
       api_key: "os.environ/AZURE_API_KEY_EU" # does os.getenv("AZURE_API_KEY_EU")
 
@@ -50,7 +50,7 @@ model_list:
 ### Start proxy 
 
 ```bash showLineNumbers
-litellm --config /path/to/config.yaml 
+dheera_ai --config /path/to/config.yaml 
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -93,20 +93,20 @@ print(image)
 </TabItem>
 </Tabs>
 
-## Input Params for `litellm.image_generation()`
+## Input Params for `dheera_ai.image_generation()`
 
 :::info
 
 Any non-openai params, will be treated as provider-specific params, and sent in the request body as kwargs to the provider.
 
-[**See Reserved Params**](https://github.com/BerriAI/litellm/blob/2f5f85cb52f36448d1f8bbfbd3b8af8167d0c4c8/litellm/main.py#L4082)
+[**See Reserved Params**](https://github.com/BerriAI/dheera_ai/blob/2f5f85cb52f36448d1f8bbfbd3b8af8167d0c4c8/dheera_ai/main.py#L4082)
 :::
 
 ### Required Fields
 
 - `prompt`: *string* - A text description of the desired image(s).  
 
-### Optional LiteLLM Fields
+### Optional Dheera AI Fields
 
     model: Optional[str] = None,
     n: Optional[int] = None,
@@ -119,7 +119,7 @@ Any non-openai params, will be treated as provider-specific params, and sent in 
     api_key: Optional[str] = None,
     api_base: Optional[str] = None,
     api_version: Optional[str] = None,
-    litellm_logging_obj=None,
+    dheera_ai_logging_obj=None,
     custom_llm_provider=None,
 
 - `model`: *string (optional)* The model to use for image generation. Defaults to openai/gpt-image-1
@@ -148,7 +148,7 @@ Any non-openai params, will be treated as provider-specific params, and sent in 
 
 - `api_type`: *string (optional)* - The type of API to use.
 
-### Output from `litellm.image_generation()`
+### Output from `dheera_ai.image_generation()`
 
 ```json
 
@@ -167,7 +167,7 @@ Any non-openai params, will be treated as provider-specific params, and sent in 
 
 ### Usage
 ```python showLineNumbers
-from litellm import image_generation
+from dheera_ai import image_generation
 import os
 os.environ['OPENAI_API_KEY'] = ""
 response = image_generation(model='gpt-image-1', prompt="cute baby otter")
@@ -182,7 +182,7 @@ response = image_generation(model='gpt-image-1', prompt="cute baby otter")
 ## Azure OpenAI Image Generation Models
 
 ### API keys
-This can be set as env variables or passed as **params to litellm.image_generation()**
+This can be set as env variables or passed as **params to dheera_ai.image_generation()**
 ```python showLineNumbers
 import os
 os.environ['AZURE_API_KEY'] = 
@@ -192,7 +192,7 @@ os.environ['AZURE_API_VERSION'] =
 
 ### Usage
 ```python showLineNumbers
-from litellm import embedding
+from dheera_ai import embedding
 response = embedding(
     model="azure/<your deployment name>",
     prompt="cute baby otter",
@@ -215,7 +215,7 @@ Use this for Stable Diffusion models hosted on Xinference
 
 #### Usage
 
-See Xinference usage with LiteLLM [here](./providers/xinference.md#image-generation)
+See Xinference usage with Dheera AI [here](./providers/xinference.md#image-generation)
 
 ## Recraft Image Generation Models
 
@@ -224,7 +224,7 @@ Use this for AI-powered design and image generation with Recraft
 #### Usage
 
 ```python showLineNumbers
-from litellm import image_generation
+from dheera_ai import image_generation
 import os
 
 os.environ['RECRAFT_API_KEY'] = "your-api-key"
@@ -236,18 +236,18 @@ response = image_generation(
 print(response)
 ```
 
-See Recraft usage with LiteLLM [here](./providers/recraft.md#image-generation)
+See Recraft usage with Dheera AI [here](./providers/recraft.md#image-generation)
 
 ## OpenAI Compatible Image Generation Models
 Use this for calling `/image_generation` endpoints on OpenAI Compatible Servers, example https://github.com/xorbitsai/inference
 
-**Note add `openai/` prefix to model so litellm knows to route to OpenAI**
+**Note add `openai/` prefix to model so dheera_ai knows to route to OpenAI**
 
 ### Usage
 ```python showLineNumbers
-from litellm import image_generation
+from dheera_ai import image_generation
 response = image_generation(
-  model = "openai/<your-llm-name>",     # add `openai/` prefix to model so litellm knows to route to OpenAI
+  model = "openai/<your-llm-name>",     # add `openai/` prefix to model so dheera_ai knows to route to OpenAI
   api_base="http://0.0.0.0:8000/"       # set API Base of your Custom OpenAI Endpoint
   prompt="cute baby otter"
 )
@@ -260,7 +260,7 @@ Use this for stable diffusion on bedrock
 ### Usage
 ```python showLineNumbers
 import os
-from litellm import image_generation
+from dheera_ai import image_generation
 
 os.environ["AWS_ACCESS_KEY_ID"] = ""
 os.environ["AWS_SECRET_ACCESS_KEY"] = ""
@@ -280,7 +280,7 @@ print(f"response: {response}")
 Use this for image generation models on VertexAI
 
 ```python showLineNumbers
-response = litellm.image_generation(
+response = dheera_ai.image_generation(
     prompt="An olympic size swimming pool",
     model="vertex_ai/imagegeneration@006",
     vertex_ai_project="adroit-crow-413218",
@@ -291,7 +291,7 @@ print(f"response: {response}")
 
 ## Supported Providers
 
-#### ⚡️See all supported models and providers at [models.litellm.ai](https://models.litellm.ai/)
+#### ⚡️See all supported models and providers at [models.dheera_ai.ai](https://models.dheera_ai.ai/)
 
 | Provider | Documentation Link |
 |----------|-------------------|

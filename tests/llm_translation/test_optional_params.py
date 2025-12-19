@@ -12,14 +12,14 @@ import pytest
 sys.path.insert(0, os.path.abspath("../.."))
 from unittest.mock import MagicMock, patch
 
-import litellm
-from litellm.litellm_core_utils.prompt_templates.factory import map_system_message_pt
-from litellm.types.completion import (
+import dheera_ai
+from dheera_ai.dheera_ai_core_utils.prompt_templates.factory import map_system_message_pt
+from dheera_ai.types.completion import (
     ChatCompletionMessageParam,
     ChatCompletionSystemMessageParam,
     ChatCompletionUserMessageParam,
 )
-from litellm.utils import (
+from dheera_ai.utils import (
     get_optional_params,
     get_optional_params_embeddings,
     get_optional_params_image_gen,
@@ -28,12 +28,12 @@ from litellm.utils import (
 
 ## get_optional_params_embeddings
 ### Models: OpenAI, Azure, Bedrock
-### Scenarios: w/ optional params + litellm.drop_params = True
+### Scenarios: w/ optional params + dheera_ai.drop_params = True
 
 
 def test_supports_system_message():
     """
-    Check if litellm.completion(...,supports_system_message=False)
+    Check if dheera_ai.completion(...,supports_system_message=False)
     """
     messages = [
         ChatCompletionSystemMessageParam(role="system", content="Listen here!"),
@@ -47,11 +47,11 @@ def test_supports_system_message():
 
     ## confirm you can make a openai call with this param
 
-    response = litellm.completion(
+    response = dheera_ai.completion(
         model="gpt-3.5-turbo", messages=new_messages, supports_system_message=False
     )
 
-    assert isinstance(response, litellm.ModelResponse)
+    assert isinstance(response, dheera_ai.ModelResponse)
 
 
 @pytest.mark.parametrize(
@@ -61,7 +61,7 @@ def test_anthropic_optional_params(stop_sequence, expected_count):
     """
     Test if whitespace character optional param is dropped by anthropic
     """
-    litellm.drop_params = True
+    dheera_ai.drop_params = True
     optional_params = get_optional_params(
         model="claude-3", custom_llm_provider="anthropic", stop=stop_sequence
     )
@@ -73,7 +73,7 @@ def test_get_requester_metadata_returns_none_for_empty():
     assert get_requester_metadata(metadata) is None
 
 
-@patch("litellm.main.openai_chat_completions.completion")
+@patch("dheera_ai.main.openai_chat_completions.completion")
 def test_requester_metadata_forwarded_to_openai(mock_completion):
     mock_completion.return_value = MagicMock()
     metadata = {
@@ -84,20 +84,20 @@ def test_requester_metadata_forwarded_to_openai(mock_completion):
         }
     }
 
-    original_api_key = litellm.api_key
-    litellm.api_key = "sk-test"
-    original_preview_flag = litellm.enable_preview_features
-    litellm.enable_preview_features = True
+    original_api_key = dheera_ai.api_key
+    dheera_ai.api_key = "sk-test"
+    original_preview_flag = dheera_ai.enable_preview_features
+    dheera_ai.enable_preview_features = True
 
     try:
-        litellm.completion(
+        dheera_ai.completion(
             model="gpt-4o",
             messages=[{"role": "user", "content": "hi"}],
             metadata=metadata,
         )
     finally:
-        litellm.api_key = original_api_key
-        litellm.enable_preview_features = original_preview_flag
+        dheera_ai.api_key = original_api_key
+        dheera_ai.enable_preview_features = original_preview_flag
 
     sent_metadata = mock_completion.call_args.kwargs["optional_params"]["metadata"]
     assert sent_metadata == {"custom_meta_key": "value"}
@@ -107,7 +107,7 @@ def test_get_optional_params_with_allowed_openai_params():
     """
     Test if use can dynamically pass in allowed_openai_params to override default behavior
     """
-    litellm.drop_params = True
+    dheera_ai.drop_params = True
     tools = [
         {
             "type": "function",
@@ -144,7 +144,7 @@ def test_get_optional_params_with_allowed_openai_params():
 
 
 def test_bedrock_optional_params_embeddings():
-    litellm.drop_params = True
+    dheera_ai.drop_params = True
     optional_params = get_optional_params_embeddings(
         model="", user="John", encoding_format=None, custom_llm_provider="bedrock"
     )
@@ -208,7 +208,7 @@ def test_bedrock_optional_params_completions(model):
     ],
 )
 def test_bedrock_optional_params_simple(model):
-    litellm.drop_params = True
+    dheera_ai.drop_params = True
     get_optional_params(
         model=model,
         max_tokens=10,
@@ -229,7 +229,7 @@ def test_bedrock_optional_params_simple(model):
 def test_bedrock_optional_params_embeddings_dimension(
     model, expected_dimensions, dimensions_kwarg
 ):
-    litellm.drop_params = True
+    dheera_ai.drop_params = True
     optional_params = get_optional_params_embeddings(
         model=model,
         user="John",
@@ -258,7 +258,7 @@ def test_google_ai_studio_optional_params_embeddings():
 
 
 def test_openai_optional_params_embeddings():
-    litellm.drop_params = True
+    dheera_ai.drop_params = True
     optional_params = get_optional_params_embeddings(
         model="", user="John", encoding_format=None, custom_llm_provider="openai"
     )
@@ -267,7 +267,7 @@ def test_openai_optional_params_embeddings():
 
 
 def test_azure_optional_params_embeddings():
-    litellm.drop_params = True
+    dheera_ai.drop_params = True
     optional_params = get_optional_params_embeddings(
         model="chatgpt-v-3",
         user="John",
@@ -279,7 +279,7 @@ def test_azure_optional_params_embeddings():
 
 
 def test_databricks_optional_params():
-    litellm.drop_params = True
+    dheera_ai.drop_params = True
     optional_params = get_optional_params(
         model="",
         user="John",
@@ -294,7 +294,7 @@ def test_databricks_optional_params():
 
 
 def test_azure_ai_mistral_optional_params():
-    litellm.drop_params = True
+    dheera_ai.drop_params = True
     optional_params = get_optional_params(
         model="mistral-large-latest",
         user="John",
@@ -306,8 +306,8 @@ def test_azure_ai_mistral_optional_params():
 
 
 def test_vertex_ai_llama_3_optional_params():
-    litellm.vertex_llama3_models = ["meta/llama3-405b-instruct-maas"]
-    litellm.drop_params = True
+    dheera_ai.vertex_llama3_models = ["meta/llama3-405b-instruct-maas"]
+    dheera_ai.drop_params = True
     optional_params = get_optional_params(
         model="meta/llama3-405b-instruct-maas",
         user="John",
@@ -319,8 +319,8 @@ def test_vertex_ai_llama_3_optional_params():
 
 
 def test_vertex_ai_mistral_optional_params():
-    litellm.vertex_mistral_models = ["mistral-large@2407"]
-    litellm.drop_params = True
+    dheera_ai.vertex_mistral_models = ["mistral-large@2407"]
+    dheera_ai.drop_params = True
     optional_params = get_optional_params(
         model="mistral-large@2407",
         user="John",
@@ -335,7 +335,7 @@ def test_vertex_ai_mistral_optional_params():
 
 def test_azure_gpt_optional_params_gpt_vision():
     # for OpenAI, Azure all extra params need to get passed as extra_body to OpenAI python. We assert we actually set extra_body here
-    optional_params = litellm.utils.get_optional_params(
+    optional_params = dheera_ai.utils.get_optional_params(
         model="",
         user="John",
         custom_llm_provider="azure",
@@ -375,7 +375,7 @@ def test_azure_gpt_optional_params_gpt_vision():
 
 def test_azure_gpt_optional_params_gpt_vision_with_extra_body():
     # if user passes extra_body, we should not over write it, we should pass it along to OpenAI python
-    optional_params = litellm.utils.get_optional_params(
+    optional_params = dheera_ai.utils.get_optional_params(
         model="",
         user="John",
         custom_llm_provider="azure",
@@ -418,7 +418,7 @@ def test_azure_gpt_optional_params_gpt_vision_with_extra_body():
 
 
 def test_openai_extra_headers():
-    optional_params = litellm.utils.get_optional_params(
+    optional_params = dheera_ai.utils.get_optional_params(
         model="",
         user="John",
         custom_llm_provider="openai",
@@ -446,8 +446,8 @@ def test_azure_tool_choice(api_version):
     """
     Test azure tool choice on older + new version
     """
-    litellm.drop_params = True
-    optional_params = litellm.utils.get_optional_params(
+    dheera_ai.drop_params = True
+    optional_params = dheera_ai.utils.get_optional_params(
         model="chatgpt-v-3",
         user="John",
         custom_llm_provider="azure",
@@ -475,7 +475,7 @@ def test_dynamic_drop_params(drop_params):
     Make a call to cohere w/ drop params = True vs. false.
     """
     if drop_params is True:
-        optional_params = litellm.utils.get_optional_params(
+        optional_params = dheera_ai.utils.get_optional_params(
             model="command-r",
             custom_llm_provider="cohere",
             response_format={"type": "json"},
@@ -483,7 +483,7 @@ def test_dynamic_drop_params(drop_params):
         )
     else:
         try:
-            optional_params = litellm.utils.get_optional_params(
+            optional_params = dheera_ai.utils.get_optional_params(
                 model="command-r",
                 custom_llm_provider="cohere",
                 response_format={"type": "json"},
@@ -496,10 +496,10 @@ def test_dynamic_drop_params(drop_params):
 
 def test_dynamic_drop_params_e2e():
     with patch(
-        "litellm.llms.custom_httpx.http_handler.HTTPHandler.post", new=MagicMock()
+        "dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post", new=MagicMock()
     ) as mock_response:
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="command-r",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
                 response_format={"key": "value"},
@@ -515,10 +515,10 @@ def test_dynamic_drop_params_e2e():
 
 def test_dynamic_pass_additional_params():
     with patch(
-        "litellm.llms.custom_httpx.http_handler.HTTPHandler.post", new=MagicMock()
+        "dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post", new=MagicMock()
     ) as mock_response:
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="command-r",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
                 custom_param="test",
@@ -540,9 +540,9 @@ def test_dynamic_pass_additional_params():
 )
 def test_drop_params_parallel_tool_calls(model, provider, should_drop):
     """
-    https://github.com/BerriAI/litellm/issues/4584
+    https://github.com/BerriAI/dheera_ai/issues/4584
     """
-    response = litellm.utils.get_optional_params(
+    response = dheera_ai.utils.get_optional_params(
         model=model,
         custom_llm_provider=provider,
         response_format={"type": "json"},
@@ -562,13 +562,13 @@ def test_drop_params_parallel_tool_calls(model, provider, should_drop):
 
 def test_dynamic_drop_params_parallel_tool_calls():
     """
-    https://github.com/BerriAI/litellm/issues/4584
+    https://github.com/BerriAI/dheera_ai/issues/4584
     """
     with patch(
-        "litellm.llms.custom_httpx.http_handler.HTTPHandler.post", new=MagicMock()
+        "dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post", new=MagicMock()
     ) as mock_response:
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="command-r",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
                 parallel_tool_calls=True,
@@ -588,7 +588,7 @@ def test_dynamic_drop_additional_params(drop_params):
     Make a call to cohere, dropping 'response_format' specifically
     """
     if drop_params is True:
-        optional_params = litellm.utils.get_optional_params(
+        optional_params = dheera_ai.utils.get_optional_params(
             model="command-r",
             custom_llm_provider="cohere",
             response_format={"type": "json"},
@@ -596,7 +596,7 @@ def test_dynamic_drop_additional_params(drop_params):
         )
     else:
         try:
-            optional_params = litellm.utils.get_optional_params(
+            optional_params = dheera_ai.utils.get_optional_params(
                 model="command-r",
                 custom_llm_provider="cohere",
                 response_format={"type": "json"},
@@ -610,7 +610,7 @@ def test_dynamic_drop_additional_params_stream_options():
     """
     Make a call to vertex ai, dropping 'stream_options' specifically
     """
-    optional_params = litellm.utils.get_optional_params(
+    optional_params = dheera_ai.utils.get_optional_params(
         model="mistral-large-2411@001",
         custom_llm_provider="vertex_ai",
         stream_options={"include_usage": True},
@@ -622,10 +622,10 @@ def test_dynamic_drop_additional_params_stream_options():
 
 def test_dynamic_drop_additional_params_e2e():
     with patch(
-        "litellm.llms.custom_httpx.http_handler.HTTPHandler.post", new=MagicMock()
+        "dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post", new=MagicMock()
     ) as mock_response:
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="command-r",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
                 response_format={"key": "value"},
@@ -642,14 +642,14 @@ def test_dynamic_drop_additional_params_e2e():
 
 
 def test_get_optional_params_image_gen():
-    response = litellm.utils.get_optional_params_image_gen(
+    response = dheera_ai.utils.get_optional_params_image_gen(
         aws_region_name="us-east-1", custom_llm_provider="openai"
     )
 
     print(response)
 
     assert "aws_region_name" not in response
-    response = litellm.utils.get_optional_params_image_gen(
+    response = dheera_ai.utils.get_optional_params_image_gen(
         aws_region_name="us-east-1", custom_llm_provider="bedrock"
     )
 
@@ -669,13 +669,13 @@ def test_bedrock_optional_params_embeddings_provider_specific_params():
 
 def test_get_optional_params_num_retries():
     """
-    Relevant issue - https://github.com/BerriAI/litellm/issues/5124
+    Relevant issue - https://github.com/BerriAI/dheera_ai/issues/5124
     """
     with patch(
-        "litellm.main.get_optional_params",
+        "dheera_ai.main.get_optional_params",
         new=MagicMock(return_value={"max_retries": 0}),
     ) as mock_client:
-        _ = litellm.completion(
+        _ = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hello world"}],
             num_retries=10,
@@ -695,7 +695,7 @@ def test_get_optional_params_num_retries():
     ],
 )
 def test_vertex_safety_settings(provider):
-    litellm.vertex_ai_safety_settings = [
+    dheera_ai.vertex_ai_safety_settings = [
         {
             "category": "HARM_CATEGORY_HARASSMENT",
             "threshold": "BLOCK_NONE",
@@ -795,7 +795,7 @@ def test_azure_o1_model_params():
 @pytest.mark.parametrize("provider", ["openai", "azure"])
 def test_o1_model_temperature_params(provider, temperature, expected_error):
     if expected_error:
-        with pytest.raises(litellm.UnsupportedParamsError):
+        with pytest.raises(dheera_ai.UnsupportedParamsError):
             get_optional_params(
                 model="o1-preview",
                 custom_llm_provider=provider,
@@ -851,9 +851,9 @@ def _check_additional_properties(schema):
 )
 def test_drop_nested_params_add_prop_and_strict(provider, model):
     """
-    Relevant issue - https://github.com/BerriAI/litellm/issues/5288
+    Relevant issue - https://github.com/BerriAI/dheera_ai/issues/5288
 
-    Relevant issue - https://github.com/BerriAI/litellm/issues/6136
+    Relevant issue - https://github.com/BerriAI/dheera_ai/issues/6136
     """
     tools = [
         {
@@ -893,7 +893,7 @@ def test_drop_nested_params_add_prop_and_strict(provider, model):
 
 def test_hosted_vllm_tool_param():
     """
-    Relevant issue - https://github.com/BerriAI/litellm/issues/6228
+    Relevant issue - https://github.com/BerriAI/dheera_ai/issues/6228
     """
     optional_params = get_optional_params(
         model="my-vllm-model",
@@ -1061,7 +1061,7 @@ def test_together_ai_model_params():
 
 
 def test_forward_user_param():
-    from litellm.utils import get_supported_openai_params, get_optional_params
+    from dheera_ai.utils import get_supported_openai_params, get_optional_params
 
     model = "claude-3-5-sonnet-20240620"
     optional_params = get_optional_params(
@@ -1098,7 +1098,7 @@ def test_ollama_pydantic_obj():
 
 
 def test_gemini_frequency_penalty():
-    from litellm.utils import get_supported_openai_params
+    from dheera_ai.utils import get_supported_openai_params
 
     optional_params = get_supported_openai_params(
         model="gemini-1.5-flash",
@@ -1109,7 +1109,7 @@ def test_gemini_frequency_penalty():
     assert "frequency_penalty" in optional_params
 
 
-def test_litellm_proxy_claude_3_5_sonnet():
+def test_dheera_ai_proxy_claude_3_5_sonnet():
     tools = [
         {
             "type": "function",
@@ -1135,7 +1135,7 @@ def test_litellm_proxy_claude_3_5_sonnet():
 
     optional_params = get_optional_params(
         model="claude-3-5-sonnet",
-        custom_llm_provider="litellm_proxy",
+        custom_llm_provider="dheera_ai_proxy",
         tools=tools,
         tool_choice=tool_choice,
     )
@@ -1145,8 +1145,8 @@ def test_litellm_proxy_claude_3_5_sonnet():
 
 def test_is_vertex_anthropic_model():
     assert (
-        litellm.VertexAIAnthropicConfig().is_supported_model(
-            model="claude-3-5-sonnet", custom_llm_provider="litellm_proxy"
+        dheera_ai.VertexAIAnthropicConfig().is_supported_model(
+            model="claude-3-5-sonnet", custom_llm_provider="dheera_ai_proxy"
         )
         is False
     )
@@ -1176,12 +1176,12 @@ def test_azure_prediction_param():
         custom_llm_provider="azure",
         prediction={
             "type": "content",
-            "content": "LiteLLM is a very useful way to connect to a variety of LLMs.",
+            "content": "DheeraAI is a very useful way to connect to a variety of LLMs.",
         },
     )
     assert optional_params["prediction"] == {
         "type": "content",
-        "content": "LiteLLM is a very useful way to connect to a variety of LLMs.",
+        "content": "DheeraAI is a very useful way to connect to a variety of LLMs.",
     }
 
 
@@ -1482,10 +1482,10 @@ def test_azure_modalities_param():
     assert optional_params["audio"] == {"type": "audio_input", "input": "test.wav"}
 
 
-def test_litellm_proxy_thinking_param():
+def test_dheera_ai_proxy_thinking_param():
     optional_params = get_optional_params(
         model="gpt-4o",
-        custom_llm_provider="litellm_proxy",
+        custom_llm_provider="dheera_ai_proxy",
         thinking={"type": "enabled", "budget_tokens": 1024},
     )
     assert optional_params["extra_body"]["thinking"] == {
@@ -1505,7 +1505,7 @@ def test_gemini_modalities_param():
 
 
 def test_azure_response_format_param():
-    optional_params = litellm.get_optional_params(
+    optional_params = dheera_ai.get_optional_params(
         model="azure/o_series/test-o3-mini",
         custom_llm_provider="azure/o_series",
         tools=[
@@ -1601,15 +1601,15 @@ def test_optional_params_image_gen_with_aspect_ratio():
 
 
 def test_optional_params_responses_api_allowed_openai_params():
-    from litellm import responses
+    from dheera_ai import responses
     from unittest.mock import patch, MagicMock
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
     with patch.object(client, "post") as mock_post:
         try:
-            response = litellm.responses(
+            response = dheera_ai.responses(
                 model="openai/o1-pro",
                 input="Tell me a three sentence bedtime story about a unicorn.",
                 max_output_tokens=100,

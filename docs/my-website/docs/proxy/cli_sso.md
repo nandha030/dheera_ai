@@ -1,6 +1,6 @@
 # CLI Authentication
 
-Use the litellm cli to authenticate to the LiteLLM Gateway. This is great if you're trying to give a large number of developers self-serve access to the LiteLLM Gateway.
+Use the dheera_ai cli to authenticate to the Dheera AI Gateway. This is great if you're trying to give a large number of developers self-serve access to the Dheera AI Gateway.
 
 
 ## Demo
@@ -9,21 +9,21 @@ Use the litellm cli to authenticate to the LiteLLM Gateway. This is great if you
 
 ## Usage 
 
-### Prerequisites - Start LiteLLM Proxy with Beta Flag
+### Prerequisites - Start Dheera AI Proxy with Beta Flag
 
 :::warning[Beta Feature - Required]
 
-CLI SSO Authentication is currently in beta. You must set this environment variable **when starting up your LiteLLM Proxy**:
+CLI SSO Authentication is currently in beta. You must set this environment variable **when starting up your Dheera AI Proxy**:
 
 ```bash
 export EXPERIMENTAL_UI_LOGIN="True"
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 Or add it to your proxy startup command:
 
 ```bash
-EXPERIMENTAL_UI_LOGIN="True" litellm --config config.yaml
+EXPERIMENTAL_UI_LOGIN="True" dheera_ai --config config.yaml
 ```
 
 :::
@@ -35,20 +35,20 @@ EXPERIMENTAL_UI_LOGIN="True" litellm --config config.yaml
    If you have [uv](https://github.com/astral-sh/uv) installed, you can try this:
 
    ```shell
-   uv tool install 'litellm[proxy]'
+   uv tool install 'dheera_ai[proxy]'
    ```
 
    If that works, you'll see something like this:
 
    ```shell
    ...
-   Installed 2 executables: litellm, litellm-proxy
+   Installed 2 executables: dheera_ai, dheera_ai-proxy
    ```
 
-   and now you can use the tool by just typing `litellm-proxy` in your terminal:
+   and now you can use the tool by just typing `dheera_ai-proxy` in your terminal:
 
    ```shell
-   litellm-proxy
+   dheera_ai-proxy
    ```
 
 2. **Set up environment variables**
@@ -56,7 +56,7 @@ EXPERIMENTAL_UI_LOGIN="True" litellm --config config.yaml
    On your local machine, set the proxy URL:
 
    ```bash
-   export LITELLM_PROXY_URL=http://localhost:4000
+   export DHEERA_AI_PROXY_URL=http://localhost:4000
    ```
 
    *(Replace with your actual proxy URL)*
@@ -64,15 +64,15 @@ EXPERIMENTAL_UI_LOGIN="True" litellm --config config.yaml
 3. **Login**
 
    ```shell
-   litellm-proxy login
+   dheera_ai-proxy login
    ```
 
-   This will open a browser window to authenticate. If you have connected LiteLLM Proxy to your SSO provider, you should be able to login with your SSO credentials. Once logged in, you can use the CLI to make requests to the LiteLLM Gateway.
+   This will open a browser window to authenticate. If you have connected Dheera AI Proxy to your SSO provider, you should be able to login with your SSO credentials. Once logged in, you can use the CLI to make requests to the Dheera AI Gateway.
 
 4. **Make a test request to view models**
 
    ```shell
-   litellm-proxy models list
+   dheera_ai-proxy models list
    ```
 
    This will list all the models available to you.

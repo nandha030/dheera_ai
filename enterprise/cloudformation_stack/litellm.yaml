@@ -1,44 +1,44 @@
 Resources:
-  LiteLLMServer:
+  Dheera AIServer:
     Type: AWS::EC2::Instance
     Properties:
       AvailabilityZone: us-east-1a
       ImageId: ami-0f403e3180720dd7e
       InstanceType: t2.micro
 
-  LiteLLMServerAutoScalingGroup:
+  Dheera AIServerAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       AvailabilityZones:
         - us-east-1a
-      LaunchConfigurationName: !Ref LiteLLMServerLaunchConfig
+      LaunchConfigurationName: !Ref Dheera AIServerLaunchConfig
       MinSize: 1
       MaxSize: 3
       DesiredCapacity: 1
       HealthCheckGracePeriod: 300
 
-  LiteLLMServerLaunchConfig:
+  Dheera AIServerLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
       ImageId: ami-0f403e3180720dd7e  # Replace with your desired AMI ID
       InstanceType: t2.micro
 
-  LiteLLMServerScalingPolicy:
+  Dheera AIServerScalingPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     Properties:
-      AutoScalingGroupName: !Ref LiteLLMServerAutoScalingGroup
+      AutoScalingGroupName: !Ref Dheera AIServerAutoScalingGroup
       PolicyType: TargetTrackingScaling
       TargetTrackingConfiguration:
         PredefinedMetricSpecification:
           PredefinedMetricType: ASGAverageCPUUtilization
         TargetValue: 60.0
 
-  LiteLLMDB:
+  Dheera AIDB:
     Type: AWS::RDS::DBInstance
     Properties:
       AllocatedStorage: 20
       Engine: postgres
-      MasterUsername: litellmAdmin
-      MasterUserPassword: litellmPassword
+      MasterUsername: dheera_aiAdmin
+      MasterUserPassword: dheera_aiPassword
       DBInstanceClass: db.t3.micro
       AvailabilityZone: us-east-1a

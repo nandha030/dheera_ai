@@ -3,24 +3,24 @@ import os
 import io, asyncio
 import pytest
 import time
-from litellm import mock_completion
+from dheera_ai import mock_completion
 from unittest.mock import MagicMock, AsyncMock, patch
 sys.path.insert(0, os.path.abspath("../.."))
-import litellm
-from litellm.proxy.guardrails.guardrail_hooks.lakera_ai_v2 import LakeraAIGuardrail
-from litellm.types.guardrails import PiiEntityType, PiiAction
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.caching.caching import DualCache
-from litellm.exceptions import BlockedPiiEntityError, GuardrailRaisedException
+import dheera_ai
+from dheera_ai.proxy.guardrails.guardrail_hooks.lakera_ai_v2 import LakeraAIGuardrail
+from dheera_ai.types.guardrails import PiiEntityType, PiiAction
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.caching.caching import DualCache
+from dheera_ai.exceptions import BlockedPiiEntityError, GuardrailRaisedException
 from fastapi import HTTPException
-from litellm.types.utils import CallTypes as LitellmCallTypes
+from dheera_ai.types.utils import CallTypes as LitellmCallTypes
 
 
 @pytest.mark.asyncio
 async def test_lakera_pre_call_hook_for_pii_masking():
     """Test for Lakera guardrail pre-call hook for PII masking"""
     # Setup the guardrail with specific entities config
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     lakera_guardrail = LakeraAIGuardrail(
         api_key=os.environ.get("LAKERA_API_KEY"),
     )

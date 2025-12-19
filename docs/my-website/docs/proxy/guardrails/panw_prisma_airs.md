@@ -4,7 +4,7 @@ import TabItem from '@theme/TabItem';
 
 # PANW Prisma AIRS
 
-LiteLLM supports PANW Prisma AIRS (AI Runtime Security) guardrails via the [Prisma AIRS Scan API](https://pan.dev/prisma-airs/api/airuntimesecurity/airuntimesecurityapi//). This integration provides **Security-as-Code** for AI applications using Palo Alto Networks' AI security platform.
+Dheera AI supports PANW Prisma AIRS (AI Runtime Security) guardrails via the [Prisma AIRS Scan API](https://pan.dev/prisma-airs/api/airuntimesecurity/airuntimesecurityapi//). This integration provides **Security-as-Code** for AI applications using Palo Alto Networks' AI security platform.
 
 ## Features
 
@@ -30,20 +30,20 @@ LiteLLM supports PANW Prisma AIRS (AI Runtime Security) guardrails via the [Pris
 
 For detailed setup instructions, see the [Prisma AIRS API Overview](https://docs.paloaltonetworks.com/ai-runtime-security/activation-and-onboarding/ai-runtime-security-api-intercept-overview).
 
-### 2. Define Guardrails on your LiteLLM config.yaml
+### 2. Define Guardrails on your Dheera AI config.yaml
 
 Define your guardrails under the `guardrails` section:
 
 ```yaml
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o-mini
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "panw-prisma-airs-guardrail"
-    litellm_params:
+    dheera_ai_params:
       guardrail: panw_prisma_airs
       mode: "pre_call"                    # Run before LLM call
       api_key: os.environ/PANW_PRISMA_AIRS_API_KEY    # Your Prisma AIRS API key
@@ -57,7 +57,7 @@ guardrails:
 - `post_call` Run **after** LLM call, on **input & output**  
 - `during_call` Run **during** LLM call, on **input**. Same as `pre_call` but runs in parallel with LLM call
 
-### 3. Start LiteLLM Gateway
+### 3. Start Dheera AI Gateway
 
 ```bash title="Set environment variables"
 export PANW_PRISMA_AIRS_API_KEY="your-panw-api-key"
@@ -66,7 +66,7 @@ export OPENAI_API_KEY="sk-proj-..."
 ```
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 
@@ -169,7 +169,7 @@ Expected successful response:
     "prompt_tokens": 12,
     "total_tokens": 37
   },
-  "x-litellm-panw-scan": {
+  "x-dheera_ai-panw-scan": {
     "action": "allow",
     "category": "benign",
     "profile_id": "03b32734-d06d-4bb7-a8df-ac5147630ce8",
@@ -201,7 +201,7 @@ Expected successful response:
 |-----------|----------|-------------|---------|
 | `api_key` | Yes | Your PANW Prisma AIRS API key from Strata Cloud Manager | - |
 | `profile_name` | No | Security profile name configured in Strata Cloud Manager. Optional if API key has linked profile | - |
-| `app_name` | No | Application identifier for tracking in Prisma AIRS analytics (will be prefixed with "LiteLLM-") | `LiteLLM` |
+| `app_name` | No | Application identifier for tracking in Prisma AIRS analytics (will be prefixed with "Dheera AI-") | `Dheera AI` |
 | `api_base` | No | Regional API endpoint (see [Regional Endpoints](#regional-endpoints) below) | `https://service.api.aisecurity.paloaltonetworks.com` (US) |
 | `mode` | No | When to run the guardrail | `pre_call` |
 | `fallback_on_error` | No | Action when PANW API is unavailable: `"block"` (fail-closed, default) or `"allow"` (fail-open). Config errors always block. | `block` |
@@ -222,7 +222,7 @@ PANW Prisma AIRS supports multiple regional endpoints based on your deployment p
 ```yaml
 guardrails:
   - guardrail_name: "panw-eu"
-    litellm_params:
+    dheera_ai_params:
       guardrail: panw_prisma_airs
       api_key: os.environ/PANW_PRISMA_AIRS_API_KEY
       api_base: "https://service-de.api.aisecurity.paloaltonetworks.com"
@@ -248,7 +248,7 @@ You can override guardrail settings on a per-request basis using the `metadata` 
     "profile_name": "dev-allow-all",            // Override profile name
     "profile_id": "uuid-here",                  // Override profile ID (takes precedence)
     "user_ip": "192.168.1.100",                 // Track user IP
-    "app_name": "MyApp"                         // Custom app name (becomes "LiteLLM-MyApp")
+    "app_name": "MyApp"                         // Custom app name (becomes "Dheera AI-MyApp")
   }
 }
 ```
@@ -260,8 +260,8 @@ You can override guardrail settings on a per-request basis using the `metadata` 
 | `profile_name` | PANW AI security profile name | Per-request > config |
 | `profile_id` | PANW AI security profile ID (takes precedence over profile_name) | Per-request only |
 | `user_ip` | User IP address for tracking in Prisma AIRS | Per-request only |
-| `app_name` | Application identifier (prefixed with "LiteLLM-") | Per-request > config > "LiteLLM" |
-| `app_user` | Custom user identifier for tracking in Prisma AIRS | `app_user` > `user` > "litellm_user" |
+| `app_name` | Application identifier (prefixed with "Dheera AI-") | Per-request > config > "Dheera AI" |
+| `app_user` | Custom user identifier for tracking in Prisma AIRS | `app_user` > `user` > "dheera_ai_user" |
 
 :::info Profile Resolution
 - If both `profile_id` and `profile_name` are provided, PANW API uses `profile_id` (it takes precedence)
@@ -272,7 +272,7 @@ You can override guardrail settings on a per-request basis using the `metadata` 
 
 ## Multi-Turn Conversation Tracking
 
-PANW Prisma AIRS automatically tracks multi-turn conversations using LiteLLM's `litellm_trace_id`. This enables you to:
+PANW Prisma AIRS automatically tracks multi-turn conversations using Dheera AI's `dheera_ai_trace_id`. This enables you to:
 
 - **Group related requests** - All requests in a conversation share the same AI Session ID in Prisma AIRS SCM logs
 - **Track conversation context** - See the full history of prompts and responses for a user session
@@ -280,10 +280,10 @@ PANW Prisma AIRS automatically tracks multi-turn conversations using LiteLLM's `
 
 ### How It Works
 
-LiteLLM automatically generates a unique `litellm_trace_id` for each conversation session. The PANW guardrail uses this as the PANW transaction ID (which maps to "AI Session ID" in Strata Cloud Manager):
+Dheera AI automatically generates a unique `dheera_ai_trace_id` for each conversation session. The PANW guardrail uses this as the PANW transaction ID (which maps to "AI Session ID" in Strata Cloud Manager):
 
 ```
-Conversation Session: litellm_trace_id = "abc-123-def-456"
+Conversation Session: dheera_ai_trace_id = "abc-123-def-456"
 
 Turn 1 (User):    "What's the capital of France?"
   → Scan ID: scan_001 | Prisma AIRS AI Session ID: abc-123-def-456
@@ -306,11 +306,11 @@ All scans appear under the same AI Session ID in Prisma AIRS logs, making it eas
 
 ### Session Tracking
 
-LiteLLM automatically generates a unique `litellm_trace_id` for each request, which the PANW guardrail uses as the AI Session ID in Strata Cloud Manager. All prompt and response scans for a request are automatically grouped under the same session.
+Dheera AI automatically generates a unique `dheera_ai_trace_id` for each request, which the PANW guardrail uses as the AI Session ID in Strata Cloud Manager. All prompt and response scans for a request are automatically grouped under the same session.
 
 #### Custom Session IDs (Per-App Tracking)
 
-You can provide your own `litellm_trace_id` to track sessions on a per-app or per-conversation basis:
+You can provide your own `dheera_ai_trace_id` to track sessions on a per-app or per-conversation basis:
 
 ```bash
 curl -X POST http://localhost:4000/v1/chat/completions \
@@ -319,7 +319,7 @@ curl -X POST http://localhost:4000/v1/chat/completions \
   -d '{
     "model": "gpt-3.5-turbo",
     "messages": [{"role": "user", "content": "capital of France"}],
-    "litellm_trace_id": "my-app-session-123",             # Custom AI Session ID
+    "dheera_ai_trace_id": "my-app-session-123",             # Custom AI Session ID
     "metadata": {
       "profile_name": "dev-allow-all-profile",            # Override security profile
       "user_ip": "192.168.1.1",                           # Track user IP
@@ -356,14 +356,14 @@ You can configure different security profiles for different use cases:
 ```yaml
 guardrails:
   - guardrail_name: "panw-strict-security"
-    litellm_params:
+    dheera_ai_params:
       guardrail: panw_prisma_airs
       mode: "pre_call"
       api_key: os.environ/PANW_PRISMA_AIRS_API_KEY
       profile_name: "strict-policy"       # High security profile
       
   - guardrail_name: "panw-permissive-security"  
-    litellm_params:
+    dheera_ai_params:
       guardrail: panw_prisma_airs
       mode: "post_call"
       api_key: os.environ/PANW_PRISMA_AIRS_API_KEY
@@ -377,13 +377,13 @@ For multi-tenant deployments where different customers need different PANW API k
 ```yaml
 guardrails:
   - guardrail_name: "panw-customer-a"
-    litellm_params:
+    dheera_ai_params:
       guardrail: panw_prisma_airs
       mode: "pre_call"
       api_key: os.environ/PANW_CUSTOMER_A_KEY  # Linked to Customer A profile in SCM
       
   - guardrail_name: "panw-customer-b"
-    litellm_params:
+    dheera_ai_params:
       guardrail: panw_prisma_airs
       mode: "pre_call"
       api_key: os.environ/PANW_CUSTOMER_B_KEY  # Linked to Customer B profile in SCM
@@ -422,7 +422,7 @@ PANW Prisma AIRS can automatically mask sensitive content (PII, credit cards, SS
 ```yaml
 guardrails:
   - guardrail_name: "panw-with-masking"
-    litellm_params:
+    dheera_ai_params:
       guardrail: panw_prisma_airs
       mode: "post_call"                      # Scan response output
       api_key: os.environ/PANW_PRISMA_AIRS_API_KEY
@@ -438,11 +438,11 @@ guardrails:
 - `mask_on_block: true` - Backwards compatible flag that enables both request and response masking
 
 :::warning Important: Masking is Controlled by PANW Security Profile
-The **actual masking behavior** (what content gets masked and how) is controlled by your **PANW Prisma AIRS security profile** configured in Strata Cloud Manager. The LiteLLM config settings (`mask_request_content`, `mask_response_content`) only control whether to:
+The **actual masking behavior** (what content gets masked and how) is controlled by your **PANW Prisma AIRS security profile** configured in Strata Cloud Manager. The Dheera AI config settings (`mask_request_content`, `mask_response_content`) only control whether to:
 - **Apply the masked content** returned by PANW and allow the request to continue, OR
 - **Block the request** entirely when sensitive data is detected
 
-LiteLLM does not alter or configure your PANW security profile. To change what content gets masked, update your profile settings in Strata Cloud Manager.
+Dheera AI does not alter or configure your PANW security profile. To change what content gets masked, update your profile settings in Strata Cloud Manager.
 :::
 
 :::info Security Posture
@@ -456,7 +456,7 @@ By default, the PANW guardrail operates in **fail-closed** mode for maximum secu
 ```yaml
 guardrails:
   - guardrail_name: "panw-high-availability"
-    litellm_params:
+    dheera_ai_params:
       guardrail: panw_prisma_airs
       api_key: os.environ/PANW_PRISMA_AIRS_API_KEY
       profile_name: "production"
@@ -501,7 +501,7 @@ Enabling `fallback_on_error="allow"` reduces security in exchange for availabili
 When fail-open is triggered, the response includes a special header for tracking:
 
 ```
-X-LiteLLM-Applied-Guardrails: panw-airs:unscanned
+X-Dheera AI-Applied-Guardrails: panw-airs:unscanned
 ```
 
 This allows you to:
@@ -566,7 +566,7 @@ The guardrail masks sensitive content in:
 ```yaml
 guardrails:
   - guardrail_name: "panw-production-security"
-    litellm_params:
+    dheera_ai_params:
       guardrail: panw_prisma_airs
       mode: "post_call"                      # Scan input and output
       api_key: os.environ/PANW_PRISMA_AIRS_API_KEY

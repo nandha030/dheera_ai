@@ -6,15 +6,15 @@ import io, asyncio
 # logging.basicConfig(level=logging.DEBUG)
 sys.path.insert(0, os.path.abspath("../.."))
 
-from litellm import completion
-import litellm
+from dheera_ai import completion
+import dheera_ai
 
-litellm.num_retries = 3
+dheera_ai.num_retries = 3
 
 import time, random
 import pytest
 import boto3
-from litellm._logging import verbose_logger
+from dheera_ai._logging import verbose_logger
 import logging
 
 
@@ -25,17 +25,17 @@ import logging
 @pytest.mark.flaky(retries=3, delay=1)
 async def test_basic_s3_logging(sync_mode, streaming):
     verbose_logger.setLevel(level=logging.DEBUG)
-    litellm.success_callback = ["s3"]
-    litellm.s3_callback_params = {
+    dheera_ai.success_callback = ["s3"]
+    dheera_ai.s3_callback_params = {
         "s3_bucket_name": "load-testing-oct",
         "s3_aws_secret_access_key": "os.environ/AWS_SECRET_ACCESS_KEY",
         "s3_aws_access_key_id": "os.environ/AWS_ACCESS_KEY_ID",
         "s3_region_name": "us-west-2",
     }
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     response_id = None
     if sync_mode is True:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "This is a test"}],
             mock_response="It's simple to use and easy to get started",
@@ -49,7 +49,7 @@ async def test_basic_s3_logging(sync_mode, streaming):
             response_id = response.id
         time.sleep(2)
     else:
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "This is a test"}],
             mock_response="It's simple to use and easy to get started",
@@ -82,23 +82,23 @@ async def test_basic_s3_logging(sync_mode, streaming):
 @pytest.mark.flaky(retries=3, delay=1)
 async def test_basic_s3_v2_logging(streaming):
     from blockbuster import BlockBuster
-    from litellm.integrations.s3_v2 import S3Logger
+    from dheera_ai.integrations.s3_v2 import S3Logger
     s3_v2_logger = S3Logger(s3_flush_interval=1)
-    litellm.callbacks = [s3_v2_logger]
+    dheera_ai.callbacks = [s3_v2_logger]
     blockbuster = BlockBuster()
     blockbuster.activate()
 
-    litellm._turn_on_debug()
-    litellm.callbacks = ["s3_v2"]
-    litellm.s3_callback_params = {
+    dheera_ai._turn_on_debug()
+    dheera_ai.callbacks = ["s3_v2"]
+    dheera_ai.s3_callback_params = {
         "s3_bucket_name": "load-testing-oct",
         "s3_aws_secret_access_key": "os.environ/AWS_SECRET_ACCESS_KEY",
         "s3_aws_access_key_id": "os.environ/AWS_ACCESS_KEY_ID",
         "s3_region_name": "us-west-2",
     }
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     response_id = None
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": "This is a test"}],
         stream=streaming,
@@ -133,7 +133,7 @@ async def test_basic_s3_v2_logging(streaming):
 async def test_basic_s3_v2_logging_failure():
     """Test that S3 v2 logger makes httpx PUT request when logging failures"""
     from unittest.mock import AsyncMock, MagicMock, patch
-    from litellm.integrations.s3_v2 import S3Logger
+    from dheera_ai.integrations.s3_v2 import S3Logger
     
     # Create S3 logger with short flush interval
     s3_v2_logger = S3Logger(s3_flush_interval=1)
@@ -164,18 +164,18 @@ async def test_basic_s3_v2_logging_failure():
     s3_v2_logger.async_upload_data_to_s3 = mock_upload
     
     # Configure S3 callback params
-    litellm.callbacks = [s3_v2_logger]
-    litellm.s3_callback_params = {
+    dheera_ai.callbacks = [s3_v2_logger]
+    dheera_ai.s3_callback_params = {
         "s3_bucket_name": "test-bucket",
         "s3_aws_secret_access_key": "test-secret",
         "s3_aws_access_key_id": "test-key",
         "s3_region_name": "us-west-2",
     }
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     
     # Trigger a failure by using invalid API key
     try:
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="gpt-4o-mini",
             api_key="invalid-api-key",
             messages=[{"role": "user", "content": "This is a test"}],
@@ -239,22 +239,22 @@ list_all_s3_objects("load-testing-oct")
 def test_s3_logging():
     # all s3 requests need to be in one test function
     # since we are modifying stdout, and pytests runs tests in parallel
-    # on circle ci - we only test litellm.acompletion()
+    # on circle ci - we only test dheera_ai.acompletion()
     try:
         # redirect stdout to log_file
-        litellm.cache = litellm.Cache(
+        dheera_ai.cache = dheera_ai.Cache(
             type="s3",
-            s3_bucket_name="litellm-my-test-bucket-2",
+            s3_bucket_name="dheera_ai-my-test-bucket-2",
             s3_region_name="us-east-1",
         )
 
-        litellm.success_callback = ["s3"]
-        litellm.s3_callback_params = {
-            "s3_bucket_name": "litellm-logs-2",
+        dheera_ai.success_callback = ["s3"]
+        dheera_ai.s3_callback_params = {
+            "s3_bucket_name": "dheera_ai-logs-2",
             "s3_aws_secret_access_key": "os.environ/AWS_SECRET_ACCESS_KEY",
             "s3_aws_access_key_id": "os.environ/AWS_ACCESS_KEY_ID",
         }
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         print("Testing async s3 logging")
 
@@ -265,7 +265,7 @@ def test_s3_logging():
         curr_time = str(time.time())
 
         async def _test():
-            return await litellm.acompletion(
+            return await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": f"This is a test {curr_time}"}],
                 max_tokens=10,
@@ -278,7 +278,7 @@ def test_s3_logging():
         expected_keys.append(response.id)
 
         async def _test():
-            return await litellm.acompletion(
+            return await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": f"This is a test {curr_time}"}],
                 max_tokens=10,
@@ -294,7 +294,7 @@ def test_s3_logging():
         import boto3
 
         s3 = boto3.client("s3")
-        bucket_name = "litellm-logs-2"
+        bucket_name = "dheera_ai-logs-2"
         # List objects in the bucket
         response = s3.list_objects(Bucket=bucket_name)
 
@@ -349,17 +349,17 @@ def test_s3_logging():
 def test_s3_logging_async():
     # this tests time added to make s3 logging calls, vs just acompletion calls
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         # Make 5 calls with an empty success_callback
-        litellm.success_callback = []
+        dheera_ai.success_callback = []
         start_time_empty_callback = asyncio.run(make_async_calls())
         print("done with no callback test")
 
         print("starting s3 logging load test")
         # Make 5 calls with success_callback set to "langfuse"
-        litellm.success_callback = ["s3"]
-        litellm.s3_callback_params = {
-            "s3_bucket_name": "litellm-logs-2",
+        dheera_ai.success_callback = ["s3"]
+        dheera_ai.s3_callback_params = {
+            "s3_bucket_name": "dheera_ai-logs-2",
             "s3_aws_secret_access_key": "os.environ/AWS_SECRET_ACCESS_KEY",
             "s3_aws_access_key_id": "os.environ/AWS_ACCESS_KEY_ID",
         }
@@ -373,7 +373,7 @@ def test_s3_logging_async():
         # assert the diff is not more than 1 second
         assert abs(start_time_s3 - start_time_empty_callback) < 1
 
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         pass
     except Exception as e:
         pytest.fail(f"An exception occurred - {e}")
@@ -383,7 +383,7 @@ async def make_async_calls():
     tasks = []
     for _ in range(5):
         task = asyncio.create_task(
-            litellm.acompletion(
+            dheera_ai.acompletion(
                 model="azure/gpt-4.1-mini",
                 messages=[{"role": "user", "content": "This is a test"}],
                 max_tokens=5,
@@ -415,21 +415,21 @@ async def make_async_calls():
 def test_s3_logging_r2():
     # all s3 requests need to be in one test function
     # since we are modifying stdout, and pytests runs tests in parallel
-    # on circle ci - we only test litellm.acompletion()
+    # on circle ci - we only test dheera_ai.acompletion()
     try:
         # redirect stdout to log_file
-        # litellm.cache = litellm.Cache(
-        #     type="s3", s3_bucket_name="litellm-r2-bucket", s3_region_name="us-west-2"
+        # dheera_ai.cache = dheera_ai.Cache(
+        #     type="s3", s3_bucket_name="dheera_ai-r2-bucket", s3_region_name="us-west-2"
         # )
-        litellm.set_verbose = True
-        from litellm._logging import verbose_logger
+        dheera_ai.set_verbose = True
+        from dheera_ai._logging import verbose_logger
         import logging
 
         verbose_logger.setLevel(level=logging.DEBUG)
 
-        litellm.success_callback = ["s3"]
-        litellm.s3_callback_params = {
-            "s3_bucket_name": "litellm-r2-bucket",
+        dheera_ai.success_callback = ["s3"]
+        dheera_ai.s3_callback_params = {
+            "s3_bucket_name": "dheera_ai-r2-bucket",
             "s3_aws_secret_access_key": "os.environ/R2_S3_ACCESS_KEY",
             "s3_aws_access_key_id": "os.environ/R2_S3_ACCESS_ID",
             "s3_endpoint_url": "os.environ/R2_S3_URL",
@@ -444,7 +444,7 @@ def test_s3_logging_r2():
         curr_time = str(time.time())
 
         async def _test():
-            return await litellm.acompletion(
+            return await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": f"This is a test {curr_time}"}],
                 max_tokens=10,
@@ -466,7 +466,7 @@ def test_s3_logging_r2():
             aws_secret_access_key=os.getenv("R2_S3_ACCESS_KEY"),
         )
 
-        bucket_name = "litellm-r2-bucket"
+        bucket_name = "dheera_ai-r2-bucket"
         # List objects in the bucket
         response = s3.list_objects(Bucket=bucket_name)
 
@@ -477,7 +477,7 @@ def test_s3_logging_r2():
         # Reset stdout to the original value
         print("Passed! Testing async s3 logging")
 
-from litellm.integrations.s3_v2 import S3Logger
+from dheera_ai.integrations.s3_v2 import S3Logger
 
 class TestS3Logger(S3Logger):
     def __init__(self, *args, **kwargs):

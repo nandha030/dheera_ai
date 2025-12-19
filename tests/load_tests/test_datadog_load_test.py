@@ -4,15 +4,15 @@ import os
 sys.path.insert(0, os.path.abspath("../.."))
 
 import asyncio
-import litellm
+import dheera_ai
 import pytest
 import logging
-from litellm._logging import verbose_logger
+from dheera_ai._logging import verbose_logger
 
 
 def test_datadog_logging_async():
     try:
-        # litellm.set_verbose = True
+        # dheera_ai.set_verbose = True
         os.environ["DD_API_KEY"] = "anything"
         os.environ["_DATADOG_BASE_URL"] = (
             "https://exampleopenaiendpoint-production.up.railway.app"
@@ -21,7 +21,7 @@ def test_datadog_logging_async():
         os.environ["DD_SITE"] = "us5.datadoghq.com"
         os.environ["DD_API_KEY"] = "xxxxxx"
 
-        litellm.success_callback = ["datadog"]
+        dheera_ai.success_callback = ["datadog"]
 
         percentage_diffs = []
 
@@ -29,14 +29,14 @@ def test_datadog_logging_async():
             print(f"\nRun {run + 1}:")
 
             # Test with empty success_callback
-            litellm.success_callback = []
-            litellm.callbacks = []
+            dheera_ai.success_callback = []
+            dheera_ai.callbacks = []
             start_time_empty_callback = asyncio.run(make_async_calls())
             print("Done with no callback test")
 
             # Test with datadog callback
             print("Starting datadog test")
-            litellm.success_callback = ["datadog"]
+            dheera_ai.success_callback = ["datadog"]
             start_time_datadog = asyncio.run(make_async_calls())
             print("Done with datadog test")
 
@@ -60,7 +60,7 @@ def test_datadog_logging_async():
             avg_percentage_diff < 10
         ), f"Average performance difference of {avg_percentage_diff:.2f}% exceeds 10% threshold"
 
-    except litellm.Timeout:
+    except dheera_ai.Timeout:
         pass
     except Exception as e:
         pytest.fail(f"An exception occurred - {e}")
@@ -89,7 +89,7 @@ async def make_async_calls(metadata=None, **completion_kwargs):
 
 
 def create_async_task(**completion_kwargs):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     completion_args = {
         "model": "openai/chatgpt-v-3",
         "api_version": "2024-02-01",
@@ -101,4 +101,4 @@ def create_async_task(**completion_kwargs):
         "mock_response": "hello from my load test",
     }
     completion_args.update(completion_kwargs)
-    return asyncio.create_task(litellm.acompletion(**completion_args))
+    return asyncio.create_task(dheera_ai.acompletion(**completion_args))

@@ -1,10 +1,10 @@
 from cache_unit_tests import LLMCachingUnitTests
-from litellm.caching import LiteLLMCacheType
+from dheera_ai.caching import DheeraAICacheType
 
 
 class TestDiskCacheUnitTests(LLMCachingUnitTests):
-    def get_cache_type(self) -> LiteLLMCacheType:
-        return LiteLLMCacheType.DISK
+    def get_cache_type(self) -> DheeraAICacheType:
+        return DheeraAICacheType.DISK
 
 
 # if __name__ == "__main__":

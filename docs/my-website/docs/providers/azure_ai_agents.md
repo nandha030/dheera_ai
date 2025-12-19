@@ -8,7 +8,7 @@ Call Azure AI Foundry Agents in the OpenAI Request/Response format.
 | Property | Details |
 |----------|---------|
 | Description | Azure AI Foundry Agents provides hosted agent runtimes that can execute agentic workflows with foundation models, tools, and code interpreters. |
-| Provider Route on LiteLLM | `azure_ai/agents/{AGENT_ID}` |
+| Provider Route on Dheera AI | `azure_ai/agents/{AGENT_ID}` |
 | Provider Doc | [Azure AI Foundry Agents ↗](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/quickstart) |
 
 ## Authentication
@@ -25,7 +25,7 @@ export AZURE_CLIENT_ID="your-client-id"
 export AZURE_CLIENT_SECRET="your-client-secret"
 ```
 
-LiteLLM will automatically obtain an Azure AD token using these credentials.
+Dheera AI will automatically obtain an Azure AD token using these credentials.
 
 ### Option 2: Azure AD Token (Manual)
 
@@ -53,13 +53,13 @@ Or add via **Azure AI Foundry Portal** → Your Project → **Project users** �
 
 ## Quick Start
 
-### Model Format to LiteLLM
+### Model Format to Dheera AI
 
-To call an Azure AI Foundry Agent through LiteLLM, use the following model format.
+To call an Azure AI Foundry Agent through Dheera AI, use the following model format.
 
-Here the `model=azure_ai/agents/` tells LiteLLM to call the Azure AI Foundry Agent Service API.
+Here the `model=azure_ai/agents/` tells Dheera AI to call the Azure AI Foundry Agent Service API.
 
-```shell showLineNumbers title="Model Format to LiteLLM"
+```shell showLineNumbers title="Model Format to Dheera AI"
 azure_ai/agents/{AGENT_ID}
 ```
 
@@ -68,14 +68,14 @@ azure_ai/agents/{AGENT_ID}
 
 You can find the Agent ID in your Azure AI Foundry portal under Agents.
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 ```python showLineNumbers title="Basic Agent Completion"
-import litellm
+import dheera_ai
 
 # Make a completion request to your Azure AI Foundry Agent
 # Uses AZURE_TENANT_ID, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET env vars for auth
-response = litellm.completion(
+response = dheera_ai.completion(
     model="azure_ai/agents/asst_abc123",
     messages=[
         {
@@ -91,10 +91,10 @@ print(f"Usage: {response.usage}")
 ```
 
 ```python showLineNumbers title="Streaming Agent Responses"
-import litellm
+import dheera_ai
 
 # Stream responses from your Azure AI Foundry Agent
-response = await litellm.acompletion(
+response = await dheera_ai.acompletion(
     model="azure_ai/agents/asst_abc123",
     messages=[
         {
@@ -111,17 +111,17 @@ async for chunk in response:
         print(chunk.choices[0].delta.content, end="")
 ```
 
-### LiteLLM Proxy
+### Dheera AI Proxy
 
 #### 1. Configure your model in config.yaml
 
 <Tabs>
 <TabItem value="config-yaml" label="config.yaml">
 
-```yaml showLineNumbers title="LiteLLM Proxy Configuration"
+```yaml showLineNumbers title="Dheera AI Proxy Configuration"
 model_list:
   - model_name: azure-agent-1
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/agents/asst_abc123
       api_base: https://your-resource.services.ai.azure.com/api/projects/your-project
       # Service Principal auth (recommended)
@@ -130,7 +130,7 @@ model_list:
       client_secret: os.environ/AZURE_CLIENT_SECRET
 
   - model_name: azure-agent-math-tutor
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/agents/asst_def456
       api_base: https://your-resource.services.ai.azure.com/api/projects/your-project
       # Or pass Azure AD token directly
@@ -140,10 +140,10 @@ model_list:
 </TabItem>
 </Tabs>
 
-#### 2. Start the LiteLLM Proxy
+#### 2. Start the Dheera AI Proxy
 
-```bash showLineNumbers title="Start LiteLLM Proxy"
-litellm --config config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy"
+dheera_ai --config config.yaml
 ```
 
 #### 3. Make requests to your Azure AI Foundry Agents
@@ -154,7 +154,7 @@ litellm --config config.yaml
 ```bash showLineNumbers title="Basic Agent Request"
 curl http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "model": "azure-agent-1",
     "messages": [
@@ -169,7 +169,7 @@ curl http://localhost:4000/v1/chat/completions \
 ```bash showLineNumbers title="Streaming Agent Request"
 curl http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "model": "azure-agent-math-tutor",
     "messages": [
@@ -186,13 +186,13 @@ curl http://localhost:4000/v1/chat/completions \
 
 <TabItem value="openai-sdk" label="OpenAI Python SDK">
 
-```python showLineNumbers title="Using OpenAI SDK with LiteLLM Proxy"
+```python showLineNumbers title="Using OpenAI SDK with Dheera AI Proxy"
 from openai import OpenAI
 
-# Initialize client with your LiteLLM proxy URL
+# Initialize client with your Dheera AI proxy URL
 client = OpenAI(
     base_url="http://localhost:4000",
-    api_key="your-litellm-api-key"
+    api_key="your-dheera_ai-api-key"
 )
 
 # Make a completion request to your Azure AI Foundry Agent
@@ -214,7 +214,7 @@ from openai import OpenAI
 
 client = OpenAI(
     base_url="http://localhost:4000", 
-    api_key="your-litellm-api-key"
+    api_key="your-dheera_ai-api-key"
 )
 
 # Stream Agent responses
@@ -253,13 +253,13 @@ export AZURE_CLIENT_SECRET="your-client-secret"
 
 ## Conversation Continuity (Thread Management)
 
-Azure AI Foundry Agents use threads to maintain conversation context. LiteLLM automatically manages threads for you, but you can also pass an existing thread ID to continue a conversation.
+Azure AI Foundry Agents use threads to maintain conversation context. Dheera AI automatically manages threads for you, but you can also pass an existing thread ID to continue a conversation.
 
 ```python showLineNumbers title="Continuing a Conversation"
-import litellm
+import dheera_ai
 
 # First message creates a new thread
-response1 = await litellm.acompletion(
+response1 = await dheera_ai.acompletion(
     model="azure_ai/agents/asst_abc123",
     messages=[{"role": "user", "content": "My name is Alice"}],
     api_base="https://your-resource.services.ai.azure.com/api/projects/your-project",
@@ -269,7 +269,7 @@ response1 = await litellm.acompletion(
 thread_id = response1._hidden_params.get("thread_id")
 
 # Continue the conversation using the same thread
-response2 = await litellm.acompletion(
+response2 = await dheera_ai.acompletion(
     model="azure_ai/agents/asst_abc123",
     messages=[{"role": "user", "content": "What's my name?"}],
     api_base="https://your-resource.services.ai.azure.com/api/projects/your-project",
@@ -287,9 +287,9 @@ Azure AI Foundry Agents support additional parameters that can be passed to cust
 <TabItem value="sdk" label="SDK">
 
 ```python showLineNumbers title="Using Agent-specific parameters"
-from litellm import completion
+from dheera_ai import completion
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="azure_ai/agents/asst_abc123",
     messages=[
         {
@@ -306,10 +306,10 @@ response = litellm.completion(
 </TabItem>
 <TabItem value="proxy" label="Proxy">
 
-```yaml showLineNumbers title="LiteLLM Proxy Configuration with Parameters"
+```yaml showLineNumbers title="Dheera AI Proxy Configuration with Parameters"
 model_list:
   - model_name: azure-agent-analyst
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/agents/asst_abc123
       api_base: https://your-resource.services.ai.azure.com/api/projects/your-project
       tenant_id: os.environ/AZURE_TENANT_ID
@@ -328,9 +328,9 @@ model_list:
 | `thread_id` | string | Optional thread ID to continue an existing conversation |
 | `instructions` | string | Optional instructions to override the agent's default instructions for this run |
 
-## LiteLLM A2A Gateway
+## Dheera AI A2A Gateway
 
-You can also connect to Azure AI Foundry Agents through LiteLLM's A2A (Agent-to-Agent) Gateway UI. This provides a visual way to register and test agents without writing code.
+You can also connect to Azure AI Foundry Agents through Dheera AI's A2A (Agent-to-Agent) Gateway UI. This provides a visual way to register and test agents without writing code.
 
 ### 1. Navigate to Agents
 
@@ -368,7 +368,7 @@ Get the Agent ID from your Azure AI Foundry portal:
 
 ![Copy Agent ID](https://ajeuwbhvhr.cloudimg.io/https://colony-recorder.s3.amazonaws.com/files/2025-12-14/bf17dfec-a627-41c6-9121-3935e86d3700/ascreenshot.jpeg?tl_px=0,0&br_px=2618,1463&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=504,241)
 
-3. Paste the Agent ID in LiteLLM - this tells LiteLLM which agent to invoke on Azure Foundry
+3. Paste the Agent ID in Dheera AI - this tells Dheera AI which agent to invoke on Azure Foundry
 
 ![Paste Agent ID](https://ajeuwbhvhr.cloudimg.io/https://colony-recorder.s3.amazonaws.com/files/2025-12-14/45230c28-54f6-441c-9a20-4ef8b74076e2/ascreenshot.jpeg?tl_px=0,97&br_px=2617,1560&force_format=jpeg&q=100&width=1120.0)
 
@@ -382,7 +382,7 @@ Get your API base URL from Azure AI Foundry:
 
 ![Get API Base](https://ajeuwbhvhr.cloudimg.io/https://colony-recorder.s3.amazonaws.com/files/2025-12-14/60e2c735-4480-44b7-ab12-d69f4200b12c/ascreenshot.jpeg?tl_px=0,40&br_px=2618,1503&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=278,277)
 
-4. Paste the URL in LiteLLM
+4. Paste the URL in Dheera AI
 
 ![Paste API Base](https://ajeuwbhvhr.cloudimg.io/https://colony-recorder.s3.amazonaws.com/files/2025-12-14/e9c6f48e-7602-449a-9261-0df4a0a66876/ascreenshot.jpeg?tl_px=267,456&br_px=2468,1687&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=524,277)
 

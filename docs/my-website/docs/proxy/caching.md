@@ -9,7 +9,7 @@ For OpenAI/Anthropic Prompt Caching, go [here](../completion/prompt_caching.md)
 
 :::
 
-Cache LLM Responses. LiteLLM's caching system stores and reuses LLM responses to save costs and reduce latency. When you make the same request twice, the cached response is returned instead of calling the LLM API again.
+Cache LLM Responses. Dheera AI's caching system stores and reuses LLM responses to save costs and reduce latency. When you make the same request twice, the cached response is returned instead of calling the LLM API again.
 
 
 
@@ -33,15 +33,15 @@ Caching can be enabled by adding the `cache` key in the `config.yaml`
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
   - model_name: text-embedding-ada-002
-    litellm_params:
+    dheera_ai_params:
       model: text-embedding-ada-002
 
-litellm_settings:
+dheera_ai_settings:
   set_verbose: True
-  cache: True          # set cache responses to True, litellm defaults to using a redis cache
+  cache: True          # set cache responses to True, dheera_ai defaults to using a redis cache
 ```
 
 #### [OPTIONAL] Step 1.5: Add redis namespaces, default ttl 
@@ -50,17 +50,17 @@ litellm_settings:
 If you want to create some folder for your keys, you can set a namespace, like this:
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   cache: true 
   cache_params:        # set cache params for redis
     type: redis
-    namespace: "litellm.caching.caching"
+    namespace: "dheera_ai.caching.caching"
 ```
 
 and keys will be stored like:
 
 ```
-litellm.caching.caching:<hash>
+dheera_ai.caching.caching:<hash>
 ```
 
 #### Redis Cluster 
@@ -72,11 +72,11 @@ litellm.caching.caching:<hash>
 ```yaml
 model_list:
   - model_name: "*"
-    litellm_params:
+    dheera_ai_params:
       model: "*"
 
 
-litellm_settings:
+dheera_ai_settings:
   cache: True
   cache_params:
     type: redis
@@ -131,11 +131,11 @@ print("REDIS_CLUSTER_NODES", os.environ["REDIS_CLUSTER_NODES"])
 ```yaml
 model_list:
   - model_name: "*"
-    litellm_params:
+    dheera_ai_params:
       model: "*"
 
 
-litellm_settings:
+dheera_ai_settings:
   cache: true
   cache_params:
     type: "redis"
@@ -180,7 +180,7 @@ print("REDIS_SENTINEL_NODES", os.environ["REDIS_SENTINEL_NODES"])
 #### TTL
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   cache: true 
   cache_params:        # set cache params for redis
     type: redis
@@ -192,7 +192,7 @@ litellm_settings:
 
 #### SSL
 
-just set `REDIS_SSL="True"` in your .env, and LiteLLM will pick this up. 
+just set `REDIS_SSL="True"` in your .env, and Dheera AI will pick this up. 
 
 ```env
 REDIS_SSL="True"
@@ -225,7 +225,7 @@ pip install google-cloud-iam
 For Redis Cluster with GCP IAM:
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   cache: True
   cache_params:
     type: redis
@@ -288,10 +288,10 @@ You can pass in any additional redis.Redis arg, by storing the variable + value 
 REDIS_<redis-kwarg-name> = ""
 ``` 
 
-[**See how it's read from the environment**](https://github.com/BerriAI/litellm/blob/4d7ff1b33b9991dcf38d821266290631d9bcd2dd/litellm/_redis.py#L40)
+[**See how it's read from the environment**](https://github.com/BerriAI/dheera_ai/blob/4d7ff1b33b9991dcf38d821266290631d9bcd2dd/dheera_ai/_redis.py#L40)
 #### Step 3: Run proxy with config
 ```shell
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 </TabItem>
 
@@ -304,18 +304,18 @@ Caching can be enabled by adding the `cache` key in the `config.yaml`
 ```yaml
 model_list:
   - model_name: fake-openai-endpoint
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
   - model_name: openai-embedding
-    litellm_params:
+    dheera_ai_params:
       model: openai/text-embedding-3-small
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   set_verbose: True
-  cache: True          # set cache responses to True, litellm defaults to using a redis cache
+  cache: True          # set cache responses to True, dheera_ai defaults to using a redis cache
   cache_params:
     type: qdrant-semantic
     qdrant_semantic_cache_embedding_model: openai-embedding # the model should be defined on the model_list
@@ -333,7 +333,7 @@ QDRANT_API_BASE = "https://5392d382-45*********.cloud.qdrant.io"
 
 #### Step 3: Run proxy with config
 ```shell
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 
@@ -351,7 +351,7 @@ curl -i http://localhost:4000/v1/chat/completions \
   }'
 ```
 
-**Expect to see `x-litellm-semantic-similarity` in the response headers when semantic caching is one**
+**Expect to see `x-dheera_ai-semantic-similarity` in the response headers when semantic caching is one**
 
 </TabItem>
 
@@ -361,18 +361,18 @@ curl -i http://localhost:4000/v1/chat/completions \
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
   - model_name: text-embedding-ada-002
-    litellm_params:
+    dheera_ai_params:
       model: text-embedding-ada-002
 
-litellm_settings:
+dheera_ai_settings:
   set_verbose: True
   cache: True          # set cache responses to True
   cache_params:        # set cache params for s3
     type: s3
-    s3_bucket_name: cache-bucket-litellm   # AWS Bucket Name for S3
+    s3_bucket_name: cache-bucket-dheera_ai   # AWS Bucket Name for S3
     s3_region_name: us-west-2              # AWS Region Name for S3
     s3_aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID  # us os.environ/<variable name> to pass environment variables. This is AWS Access Key ID for S3
     s3_aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY  # AWS Secret Access Key for S3
@@ -381,7 +381,7 @@ litellm_settings:
 
 #### Step 2: Run proxy with config
 ```shell
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 </TabItem>
 
@@ -394,16 +394,16 @@ Caching can be enabled by adding the `cache` key in the `config.yaml`
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
   - model_name: azure-embedding-model
-    litellm_params:
+    dheera_ai_params:
       model: azure/azure-embedding-model
       api_base: os.environ/AZURE_API_BASE
       api_key: os.environ/AZURE_API_KEY
       api_version: "2023-07-01-preview"
 
-litellm_settings:
+dheera_ai_settings:
   set_verbose: True
   cache: True          # set cache responses to True
   cache_params:
@@ -431,7 +431,7 @@ REDIS_<redis-kwarg-name> = ""
 
 #### Step 3: Run proxy with config
 ```shell
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 </TabItem>
 
@@ -440,7 +440,7 @@ $ litellm --config /path/to/config.yaml
 
 #### Step 1: Add `cache` to the config.yaml
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   cache: True
   cache_params:
     type: local
@@ -448,7 +448,7 @@ litellm_settings:
 
 #### Step 2: Run proxy with config
 ```shell
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 </TabItem>
@@ -457,16 +457,16 @@ $ litellm --config /path/to/config.yaml
 
 #### Step 1: Add `cache` to the config.yaml
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   cache: True
   cache_params:
     type: disk
-    disk_cache_dir: /tmp/litellm-cache  # OPTIONAL, default to ./.litellm_cache
+    disk_cache_dir: /tmp/dheera_ai-cache  # OPTIONAL, default to ./.dheera_ai_cache
 ```
 
 #### Step 2: Run proxy with config
 ```shell
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 </TabItem>
@@ -487,7 +487,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
      "model": "gpt-3.5-turbo",
-     "messages": [{"role": "user", "content": "write a poem about litellm!"}],
+     "messages": [{"role": "user", "content": "write a poem about dheera_ai!"}],
      "temperature": 0.7
    }'
 
@@ -495,7 +495,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
      "model": "gpt-3.5-turbo",
-     "messages": [{"role": "user", "content": "write a poem about litellm!"}],
+     "messages": [{"role": "user", "content": "write a poem about dheera_ai!"}],
      "temperature": 0.7
    }'
 ```
@@ -508,14 +508,14 @@ curl --location 'http://0.0.0.0:4000/embeddings' \
   --header 'Content-Type: application/json' \
   --data ' {
   "model": "text-embedding-ada-002",
-  "input": ["write a litellm poem"]
+  "input": ["write a dheera_ai poem"]
   }'
 
 curl --location 'http://0.0.0.0:4000/embeddings' \
   --header 'Content-Type: application/json' \
   --data ' {
   "model": "text-embedding-ada-002",
-  "input": ["write a litellm poem"]
+  "input": ["write a dheera_ai poem"]
   }'
 ```
 </TabItem>
@@ -762,7 +762,7 @@ Set `supported_call_types: []` to disable caching on the actual api call.
 
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   cache: True
   cache_params:
     type: redis
@@ -771,7 +771,7 @@ litellm_settings:
 
 
 ## Debugging Caching - `/cache/ping`
-LiteLLM Proxy exposes a `/cache/ping` endpoint to test if the cache is working as expected
+Dheera AI Proxy exposes a `/cache/ping` endpoint to test if the cache is working as expected
 
 **Usage**
 ```shell
@@ -785,7 +785,7 @@ curl --location 'http://0.0.0.0:4000/cache/ping'  -H "Authorization: Bearer sk-1
     "cache_type": "redis",
     "ping_response": true,
     "set_cache_response": "success",
-    "litellm_cache_params": {
+    "dheera_ai_cache_params": {
         "supported_call_types": "['completion', 'acompletion', 'embedding', 'aembedding', 'atranscription', 'transcription']",
         "type": "redis",
         "namespace": "None"
@@ -808,7 +808,7 @@ By default, caching is on for all call types. You can control which call types c
 **Cache will only be on for the call types specified in `supported_call_types`**
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   cache: True
   cache_params:
     type: redis
@@ -819,15 +819,15 @@ litellm_settings:
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: gpt-3.5-turbo
   - model_name: text-embedding-ada-002
-    litellm_params:
+    dheera_ai_params:
       model: text-embedding-ada-002
 
-litellm_settings:
+dheera_ai_settings:
   set_verbose: True
-  cache: True          # set cache responses to True, litellm defaults to using a redis cache
+  cache: True          # set cache responses to True, dheera_ai defaults to using a redis cache
   cache_params:         # cache_params are optional
     type: "redis"  # The type of cache to initialize. Can be "local" or "redis". Defaults to "local".
     host: "localhost"  # The host address for the Redis cache. Required if type is "redis".
@@ -854,7 +854,7 @@ curl -X POST "http://0.0.0.0:4000/cache/delete" \
 ```
 
 #### Viewing Cache Keys from responses
-You can view the cache_key in the response headers, on cache hits the cache key is sent as the `x-litellm-cache-key` response headers
+You can view the cache_key in the response headers, on cache hits the cache key is sent as the `x-dheera_ai-cache-key` response headers
 ```shell
 curl -i --location 'http://0.0.0.0:4000/chat/completions' \
     --header 'Authorization: Bearer sk-1234' \
@@ -865,17 +865,17 @@ curl -i --location 'http://0.0.0.0:4000/chat/completions' \
     "messages": [
         {
         "role": "user",
-        "content": "what is litellm"
+        "content": "what is dheera_ai"
         }
     ],
 }'
 ```
 
-Response from litellm proxy 
+Response from dheera_ai proxy 
 ```json
 date: Thu, 04 Apr 2024 17:37:21 GMT
 content-type: application/json
-x-litellm-cache-key: 586bf3f3c1bf5aecb55bd9996494d3bbc69eb58397163add6d49537762a7548d
+x-dheera_ai-cache-key: 586bf3f3c1bf5aecb55bd9996494d3bbc69eb58397163add6d49537762a7548d
 
 {
     "id": "chatcmpl-9ALJTzsBlXR9zTxPvzfFFtFbFtG6T",
@@ -901,13 +901,13 @@ x-litellm-cache-key: 586bf3f3c1bf5aecb55bd9996494d3bbc69eb58397163add6d49537762a
 ```yaml
 model_list:
   - model_name: fake-openai-endpoint
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_key: fake-key
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
 
 # default off mode
-litellm_settings:
+dheera_ai_settings:
   set_verbose: True
   cache: True
   cache_params:
@@ -924,7 +924,7 @@ litellm_settings:
 import os
 from openai import OpenAI
 
-client = OpenAI(api_key=<litellm-api-key>, base_url="http://0.0.0.0:4000")
+client = OpenAI(api_key=<dheera_ai-api-key>, base_url="http://0.0.0.0:4000")
 
 chat_completion = client.chat.completions.create(
     messages=[
@@ -966,7 +966,7 @@ curl http://localhost:4000/v1/chat/completions \
 You can set the `max_connections` parameter in your `cache_params` for Redis. This is passed directly to the Redis client and controls the maximum number of simultaneous connections in the pool. If you see errors like `No connection available`, try increasing this value:
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   cache: true
   cache_params:
     type: redis
@@ -986,7 +986,7 @@ cache_params:
   # Type of cache (options: "local", "redis", "s3")
   type: s3
 
-  # List of litellm call types to cache for
+  # List of dheera_ai call types to cache for
   # Options: "completion", "acompletion", "embedding", "aembedding"
   supported_call_types: ["acompletion", "atext_completion", "aembedding", "atranscription"]
                       # /chat/completions, /completions, /embeddings, /audio/transcriptions
@@ -1020,14 +1020,14 @@ cache_params:
 
 ## Provider-Specific Optional Parameters Caching
 
-By default, LiteLLM only includes standard OpenAI parameters in cache keys. However, some providers (like Vertex AI) use additional parameters that affect the output but aren't included in the standard cache key generation.
+By default, Dheera AI only includes standard OpenAI parameters in cache keys. However, some providers (like Vertex AI) use additional parameters that affect the output but aren't included in the standard cache key generation.
 
 ### Enable Provider-Specific Parameter Caching
 
 Add this setting to your `config.yaml` to include provider-specific optional parameters in cache keys:
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   cache: True
   cache_params:
     type: "redis"

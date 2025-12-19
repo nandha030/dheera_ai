@@ -1,10 +1,10 @@
 # Custom HTTP Handler
 
-Configure custom aiohttp sessions for better performance and control in LiteLLM completions.
+Configure custom aiohttp sessions for better performance and control in Dheera AI completions.
 
 ## Overview
 
-You can now inject custom `aiohttp.ClientSession` instances into LiteLLM for:
+You can now inject custom `aiohttp.ClientSession` instances into Dheera AI for:
 - Custom connection pooling and timeouts
 - Corporate proxy and SSL configurations  
 - Performance optimization
@@ -14,10 +14,10 @@ You can now inject custom `aiohttp.ClientSession` instances into LiteLLM for:
 
 ### Default (No Changes Required)
 ```python
-import litellm
+import dheera_ai
 
 # Works exactly as before
-response = await litellm.acompletion(
+response = await dheera_ai.acompletion(
     model="gpt-3.5-turbo",
     messages=[{"role": "user", "content": "Hello!"}]
 )
@@ -26,8 +26,8 @@ response = await litellm.acompletion(
 ### Custom Session
 ```python
 import aiohttp
-import litellm
-from litellm.llms.custom_httpx.aiohttp_handler import BaseLLMAIOHTTPHandler
+import dheera_ai
+from dheera_ai.llms.custom_httpx.aiohttp_handler import BaseLLMAIOHTTPHandler
 
 # Create optimized session
 session = aiohttp.ClientSession(
@@ -36,10 +36,10 @@ session = aiohttp.ClientSession(
 )
 
 # Replace global handler
-litellm.base_llm_aiohttp_handler = BaseLLMAIOHTTPHandler(client_session=session)
+dheera_ai.base_llm_aiohttp_handler = BaseLLMAIOHTTPHandler(client_session=session)
 
 # All completions now use your session
-response = await litellm.acompletion(model="gpt-3.5-turbo", messages=[...])
+response = await dheera_ai.acompletion(model="gpt-3.5-turbo", messages=[...])
 ```
 
 ## Common Patterns
@@ -49,7 +49,7 @@ response = await litellm.acompletion(model="gpt-3.5-turbo", messages=[...])
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import aiohttp
-import litellm
+import dheera_ai
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -58,7 +58,7 @@ async def lifespan(app: FastAPI):
         timeout=aiohttp.ClientTimeout(total=180),
         connector=aiohttp.TCPConnector(limit=300)
     )
-    litellm.base_llm_aiohttp_handler = BaseLLMAIOHTTPHandler(
+    dheera_ai.base_llm_aiohttp_handler = BaseLLMAIOHTTPHandler(
         client_session=session
     )
     yield
@@ -69,7 +69,7 @@ app = FastAPI(lifespan=lifespan)
 
 @app.post("/chat")
 async def chat(messages: list[dict]):
-    return await litellm.acompletion(model="gpt-3.5-turbo", messages=messages)
+    return await dheera_ai.acompletion(model="gpt-3.5-turbo", messages=messages)
 ```
 
 ### Corporate Proxy
@@ -86,7 +86,7 @@ session = aiohttp.ClientSession(
     trust_env=True  # Use environment proxy settings
 )
 
-litellm.base_llm_aiohttp_handler = BaseLLMAIOHTTPHandler(client_session=session)
+dheera_ai.base_llm_aiohttp_handler = BaseLLMAIOHTTPHandler(client_session=session)
 ```
 
 ### High Performance
@@ -103,7 +103,7 @@ session = aiohttp.ClientSession(
     )
 )
 
-litellm.base_llm_aiohttp_handler = BaseLLMAIOHTTPHandler(client_session=session)
+dheera_ai.base_llm_aiohttp_handler = BaseLLMAIOHTTPHandler(client_session=session)
 ```
 
 ## Constructor Options

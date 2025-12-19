@@ -5,7 +5,7 @@
 # import pytest
 
 # sys.path.insert(0, os.path.abspath("../.."))
-# import openai, litellm, uuid
+# import openai, dheera_ai, uuid
 # from openai import AsyncAzureOpenAI
 
 # client = AsyncAzureOpenAI(
@@ -17,7 +17,7 @@
 # model_list = [
 #     {
 #         "model_name": "azure-test",
-#         "litellm_params": {
+#         "dheera_ai_params": {
 #             "model": "azure/gpt-4.1-mini",
 #             "api_key": os.getenv("AZURE_API_KEY"),
 #             "api_base": os.getenv("AZURE_API_BASE"),
@@ -26,7 +26,7 @@
 #     }
 # ]
 
-# router = litellm.Router(model_list=model_list)  # type: ignore
+# router = dheera_ai.Router(model_list=model_list)  # type: ignore
 
 
 # async def _openai_completion():

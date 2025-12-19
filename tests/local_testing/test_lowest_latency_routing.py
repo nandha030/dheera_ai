@@ -20,10 +20,10 @@ sys.path.insert(
 )  # Adds the parent directory to the system path
 import pytest
 
-import litellm
-from litellm import Router
-from litellm.caching.caching import DualCache
-from litellm.router_strategy.lowest_latency import LowestLatencyLoggingHandler
+import dheera_ai
+from dheera_ai import Router
+from dheera_ai.caching.caching import DualCache
+from dheera_ai.router_strategy.lowest_latency import LowestLatencyLoggingHandler
 
 ### UNIT TESTS FOR LATENCY ROUTING ###
 
@@ -44,7 +44,7 @@ async def test_latency_memory_leak(sync_mode):
     model_group = "gpt-3.5-turbo"
     deployment_id = "1234"
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "gpt-3.5-turbo",
                 "deployment": "azure/gpt-4.1-mini",
@@ -125,7 +125,7 @@ def test_latency_updated():
     model_group = "gpt-3.5-turbo"
     deployment_id = "1234"
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "gpt-3.5-turbo",
                 "deployment": "azure/gpt-4.1-mini",
@@ -168,7 +168,7 @@ def test_latency_updated_custom_ttl():
     model_group = "gpt-3.5-turbo"
     deployment_id = "1234"
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "gpt-3.5-turbo",
                 "deployment": "azure/gpt-4.1-mini",
@@ -198,12 +198,12 @@ def test_get_available_deployments():
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {"model": "azure/gpt-4.1-mini"},
+            "dheera_ai_params": {"model": "azure/gpt-4.1-mini"},
             "model_info": {"id": "1234"},
         },
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {"model": "azure/gpt-4.1-mini"},
+            "dheera_ai_params": {"model": "azure/gpt-4.1-mini"},
             "model_info": {"id": "5678"},
         },
     ]
@@ -214,7 +214,7 @@ def test_get_available_deployments():
     ## DEPLOYMENT 1 ##
     deployment_id = "1234"
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "gpt-3.5-turbo",
                 "deployment": "azure/gpt-4.1-mini",
@@ -235,7 +235,7 @@ def test_get_available_deployments():
     ## DEPLOYMENT 2 ##
     deployment_id = "5678"
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "gpt-3.5-turbo",
                 "deployment": "azure/gpt-4.1-mini",
@@ -270,7 +270,7 @@ def test_get_available_deployments():
 
 async def _deploy(lowest_latency_logger, deployment_id, tokens_used, duration):
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "gpt-3.5-turbo",
                 "deployment": "azure/gpt-4.1-mini",
@@ -315,12 +315,12 @@ def test_get_available_endpoints_tpm_rpm_check_async(ans_rpm):
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {"model": "azure/gpt-4.1-mini"},
+            "dheera_ai_params": {"model": "azure/gpt-4.1-mini"},
             "model_info": {"id": "1234", "rpm": ans_rpm},
         },
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {"model": "azure/gpt-4.1-mini"},
+            "dheera_ai_params": {"model": "azure/gpt-4.1-mini"},
             "model_info": {"id": "5678", "rpm": non_ans_rpm},
         },
     ]
@@ -364,12 +364,12 @@ def test_get_available_endpoints_tpm_rpm_check(ans_rpm):
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {"model": "azure/gpt-4.1-mini"},
+            "dheera_ai_params": {"model": "azure/gpt-4.1-mini"},
             "model_info": {"id": "1234", "rpm": ans_rpm},
         },
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {"model": "azure/gpt-4.1-mini"},
+            "dheera_ai_params": {"model": "azure/gpt-4.1-mini"},
             "model_info": {"id": "5678", "rpm": non_ans_rpm},
         },
     ]
@@ -380,7 +380,7 @@ def test_get_available_endpoints_tpm_rpm_check(ans_rpm):
     ## DEPLOYMENT 1 ##
     deployment_id = "1234"
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "gpt-3.5-turbo",
                 "deployment": "azure/gpt-4.1-mini",
@@ -402,7 +402,7 @@ def test_get_available_endpoints_tpm_rpm_check(ans_rpm):
     ## DEPLOYMENT 2 ##
     deployment_id = "5678"
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "gpt-3.5-turbo",
                 "deployment": "azure/gpt-4.1-mini",
@@ -437,7 +437,7 @@ def test_router_get_available_deployments():
     model_list = [
         {
             "model_name": "azure-model",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-turbo",
                 "api_key": "os.environ/AZURE_FRANCE_API_KEY",
                 "api_base": "https://openai-france-1234.openai.azure.com",
@@ -447,7 +447,7 @@ def test_router_get_available_deployments():
         },
         {
             "model_name": "azure-model",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-35-turbo",
                 "api_key": "os.environ/AZURE_EUROPE_API_KEY",
                 "api_base": "https://my-endpoint-europe-berri-992.openai.azure.com",
@@ -466,7 +466,7 @@ def test_router_get_available_deployments():
     ## DEPLOYMENT 1 ##
     deployment_id = 1
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "azure-model",
             },
@@ -486,7 +486,7 @@ def test_router_get_available_deployments():
     ## DEPLOYMENT 2 ##
     deployment_id = 2
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "azure-model",
             },
@@ -524,7 +524,7 @@ async def test_router_completion_streaming():
     model_list = [
         {
             "model_name": "azure-model",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-turbo",
                 "api_key": "os.environ/AZURE_FRANCE_API_KEY",
                 "api_base": "https://openai-france-1234.openai.azure.com",
@@ -535,7 +535,7 @@ async def test_router_completion_streaming():
         },
         {
             "model_name": "azure-model",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-35-turbo",
                 "api_key": "os.environ/AZURE_EUROPE_API_KEY",
                 "api_base": "https://my-endpoint-europe-berri-992.openai.azure.com",
@@ -591,15 +591,15 @@ async def test_lowest_latency_routing_with_timeouts():
     - Run 10 more requests
     - All requests should have been routed to endpoint 2
     """
-    import litellm
+    import dheera_ai
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     router = Router(
         model_list=[
             {
                 "model_name": "azure-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/slow-endpoint",
                     "api_base": "https://exampleopenaiendpoint-production-c715.up.railway.app/",  # If you are Krrish, this is OpenAI Endpoint3 on our Railway endpoint :)
                     "api_key": "fake-key",
@@ -608,7 +608,7 @@ async def test_lowest_latency_routing_with_timeouts():
             },
             {
                 "model_name": "azure-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/fast-endpoint",
                     "api_base": "https://exampleopenaiendpoint-production.up.railway.app/",
                     "api_key": "fake-key",
@@ -666,15 +666,15 @@ async def test_lowest_latency_routing_first_pick():
     - IT SHOULD NEVER PICK THE Very First deployment everytime all deployment latencies are 0
     - This ensures that after the ttl window resets it randomly picks a deployment
     """
-    import litellm
+    import dheera_ai
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     router = Router(
         model_list=[
             {
                 "model_name": "azure-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/fast-endpoint",
                     "api_base": "https://exampleopenaiendpoint-production.up.railway.app/",
                     "api_key": "fake-key",
@@ -683,7 +683,7 @@ async def test_lowest_latency_routing_first_pick():
             },
             {
                 "model_name": "azure-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/fast-endpoint-2",
                     "api_base": "https://exampleopenaiendpoint-production.up.railway.app/",
                     "api_key": "fake-key",
@@ -692,7 +692,7 @@ async def test_lowest_latency_routing_first_pick():
             },
             {
                 "model_name": "azure-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/fast-endpoint-2",
                     "api_base": "https://exampleopenaiendpoint-production.up.railway.app/",
                     "api_key": "fake-key",
@@ -701,7 +701,7 @@ async def test_lowest_latency_routing_first_pick():
             },
             {
                 "model_name": "azure-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/fast-endpoint-2",
                     "api_base": "https://exampleopenaiendpoint-production.up.railway.app/",
                     "api_key": "fake-key",
@@ -743,7 +743,7 @@ async def test_lowest_latency_routing_buffer(buffer):
     model_list = [
         {
             "model_name": "azure-model",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-turbo",
                 "api_key": "os.environ/AZURE_FRANCE_API_KEY",
                 "api_base": "https://openai-france-1234.openai.azure.com",
@@ -753,7 +753,7 @@ async def test_lowest_latency_routing_buffer(buffer):
         },
         {
             "model_name": "azure-model",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-35-turbo",
                 "api_key": "os.environ/AZURE_EUROPE_API_KEY",
                 "api_base": "https://my-endpoint-europe-berri-992.openai.azure.com",
@@ -773,7 +773,7 @@ async def test_lowest_latency_routing_buffer(buffer):
     ## DEPLOYMENT 1 ##
     deployment_id = 1
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "azure-model",
             },
@@ -793,7 +793,7 @@ async def test_lowest_latency_routing_buffer(buffer):
     ## DEPLOYMENT 2 ##
     deployment_id = 2
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "azure-model",
             },
@@ -841,7 +841,7 @@ async def test_lowest_latency_routing_time_to_first_token(sync_mode):
     model_list = [
         {
             "model_name": "azure-model",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-turbo",
                 "api_key": "os.environ/AZURE_FRANCE_API_KEY",
                 "api_base": "https://openai-france-1234.openai.azure.com",
@@ -850,7 +850,7 @@ async def test_lowest_latency_routing_time_to_first_token(sync_mode):
         },
         {
             "model_name": "azure-model",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-35-turbo",
                 "api_key": "os.environ/AZURE_EUROPE_API_KEY",
                 "api_base": "https://my-endpoint-europe-berri-992.openai.azure.com",
@@ -874,7 +874,7 @@ async def test_lowest_latency_routing_time_to_first_token(sync_mode):
     four_seconds_later = start_time + timedelta(seconds=4)
 
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "azure-model",
             },
@@ -884,8 +884,8 @@ async def test_lowest_latency_routing_time_to_first_token(sync_mode):
         "completion_start_time": one_second_later,
     }
 
-    response_obj = litellm.ModelResponse(
-        usage=litellm.Usage(completion_tokens=50, total_tokens=50)
+    response_obj = dheera_ai.ModelResponse(
+        usage=dheera_ai.Usage(completion_tokens=50, total_tokens=50)
     )
     end_time = four_seconds_later
 
@@ -906,7 +906,7 @@ async def test_lowest_latency_routing_time_to_first_token(sync_mode):
     ## DEPLOYMENT 2 ##
     deployment_id = 2
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "azure-model",
             },
@@ -915,8 +915,8 @@ async def test_lowest_latency_routing_time_to_first_token(sync_mode):
         "stream": True,
         "completion_start_time": three_seconds_later,
     }
-    response_obj = litellm.ModelResponse(
-        usage=litellm.Usage(completion_tokens=50, total_tokens=50)
+    response_obj = dheera_ai.ModelResponse(
+        usage=dheera_ai.Usage(completion_tokens=50, total_tokens=50)
     )
     end_time = three_seconds_later
     if sync_mode:

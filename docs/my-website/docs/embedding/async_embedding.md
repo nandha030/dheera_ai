@@ -1,13 +1,13 @@
-# litellm.aembedding()
+# dheera_ai.aembedding()
 
-LiteLLM provides an asynchronous version of the `embedding` function called `aembedding`
+Dheera AI provides an asynchronous version of the `embedding` function called `aembedding`
 ### Usage
 ```python
-from litellm import aembedding
+from dheera_ai import aembedding
 import asyncio
 
 async def test_get_response():
-    response = await aembedding('text-embedding-ada-002', input=["good morning from litellm"])
+    response = await aembedding('text-embedding-ada-002', input=["good morning from dheera_ai"])
     return response
 
 response = asyncio.run(test_get_response())

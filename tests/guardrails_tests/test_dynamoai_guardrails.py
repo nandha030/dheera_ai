@@ -7,9 +7,9 @@ import pytest
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-from litellm.proxy.guardrails.guardrail_hooks.dynamoai import DynamoAIGuardrails
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.caching.caching import DualCache
+from dheera_ai.proxy.guardrails.guardrail_hooks.dynamoai import DynamoAIGuardrails
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.caching.caching import DualCache
 from unittest.mock import AsyncMock, MagicMock
 
 

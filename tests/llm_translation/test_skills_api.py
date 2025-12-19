@@ -14,8 +14,8 @@ import pytest
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-import litellm
-from litellm.types.llms.anthropic_skills import (
+import dheera_ai
+from dheera_ai.types.llms.anthropic_skills import (
     DeleteSkillResponse,
     ListSkillsResponse,
     Skill,
@@ -91,18 +91,18 @@ class BaseSkillsAPITest(ABC):
         if not api_key:
             pytest.skip(f"No API key provided for {custom_llm_provider}")
 
-        litellm.set_verbose = True
-        litellm._turn_on_debug()
+        dheera_ai.set_verbose = True
+        dheera_ai._turn_on_debug()
 
         # Use helper to create skill zip
-        skill_name = "test-skill-litellm"
+        skill_name = "test-skill-dheera_ai"
         
         # Use unique title to avoid conflicts with previous test runs
         unique_title = f"Test Skill {int(time.time())}"
         
         # Upload the skill with the zip file
         with create_skill_zip(skill_name) as zip_file:
-            response = litellm.create_skill(
+            response = dheera_ai.create_skill(
                 display_title=unique_title,
                 files=[zip_file],
                 custom_llm_provider=custom_llm_provider,
@@ -129,14 +129,14 @@ class BaseSkillsAPITest(ABC):
             pytest.skip(f"No API key provided for {custom_llm_provider}")
 
         # Enable debug logging
-        os.environ["LITELLM_LOG"] = "DEBUG"
-        litellm.set_verbose = True
+        os.environ["DHEERA_AI_LOG"] = "DEBUG"
+        dheera_ai.set_verbose = True
 
         print(f"\n=== Testing list_skills ===")
         print("API Key: [REDACTED]")
         print(f"API Base: {api_base}")
         
-        response = litellm.list_skills(
+        response = dheera_ai.list_skills(
             limit=10,
             custom_llm_provider=custom_llm_provider,
             api_key=api_key,
@@ -159,10 +159,10 @@ class BaseSkillsAPITest(ABC):
         if not api_key:
             pytest.skip(f"No API key provided for {custom_llm_provider}")
 
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         # First list existing skills to see if any exist
-        list_response = litellm.list_skills(
+        list_response = dheera_ai.list_skills(
             limit=1,
             custom_llm_provider=custom_llm_provider,
             api_key=api_key,
@@ -181,7 +181,7 @@ class BaseSkillsAPITest(ABC):
         
 
             # Now get the skill
-            response = litellm.get_skill(
+            response = dheera_ai.get_skill(
                 skill_id=skill_id,
                 custom_llm_provider=custom_llm_provider,
                 api_key=api_key,
@@ -213,7 +213,7 @@ class BaseSkillsAPITest(ABC):
 
         pytest.skip("Anthropic requires deleting all skill versions first - skipping for now")
 
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         # Use helper to create skill zip
         skill_name = "test-delete-skill"
@@ -223,7 +223,7 @@ class BaseSkillsAPITest(ABC):
         
         # Create a skill specifically to delete
         with create_skill_zip(skill_name) as zip_file:
-            created_skill = litellm.create_skill(
+            created_skill = dheera_ai.create_skill(
                 display_title=unique_title,
                 files=[zip_file],
                 custom_llm_provider=custom_llm_provider,
@@ -237,7 +237,7 @@ class BaseSkillsAPITest(ABC):
         print(f"Created skill to delete: {skill_id}")
 
         # Now delete the skill
-        response = litellm.delete_skill(
+        response = dheera_ai.delete_skill(
             skill_id=skill_id,
             custom_llm_provider=custom_llm_provider,
             api_key=api_key,

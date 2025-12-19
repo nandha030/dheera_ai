@@ -12,14 +12,14 @@ os.environ['MISTRAL_API_KEY']
 
 ## Sample Usage
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['MISTRAL_API_KEY'] = ""
 response = completion(
     model="mistral/mistral-tiny", 
     messages=[
-       {"role": "user", "content": "hello from litellm"}
+       {"role": "user", "content": "hello from dheera_ai"}
    ],
 )
 print(response)
@@ -27,14 +27,14 @@ print(response)
 
 ## Sample Usage - Streaming
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['MISTRAL_API_KEY'] = ""
 response = completion(
     model="mistral/mistral-tiny", 
     messages=[
-       {"role": "user", "content": "hello from litellm"}
+       {"role": "user", "content": "hello from dheera_ai"}
    ],
     stream=True
 )
@@ -45,14 +45,14 @@ for chunk in response:
 
 
 
-## Usage with LiteLLM Proxy 
+## Usage with Dheera AI Proxy 
 
 ### 1. Set Mistral Models on config.yaml
 
 ```yaml
 model_list:
   - model_name: mistral-small-latest
-    litellm_params:
+    dheera_ai_params:
       model: mistral/mistral-small-latest
       api_key: "os.environ/MISTRAL_API_KEY" # ensure you have `MISTRAL_API_KEY` in your .env
 ```
@@ -60,7 +60,7 @@ model_list:
 ### 2. Start Proxy 
 
 ```
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 ### 3. Test it
@@ -116,7 +116,7 @@ from langchain.prompts.chat import (
 from langchain.schema import HumanMessage, SystemMessage
 
 chat = ChatOpenAI(
-    openai_api_base="http://0.0.0.0:4000", # set openai_api_base to the LiteLLM Proxy
+    openai_api_base="http://0.0.0.0:4000", # set openai_api_base to the Dheera AI Proxy
     model = "mistral-small-latest",
     temperature=0.1
 )
@@ -126,7 +126,7 @@ messages = [
         content="You are a helpful assistant that im using to make a test request to."
     ),
     HumanMessage(
-        content="test from litellm. tell me why it's amazing in 1 sentence"
+        content="test from dheera_ai. tell me why it's amazing in 1 sentence"
     ),
 ]
 response = chat(messages)
@@ -139,7 +139,7 @@ print(response)
 ## Supported Models
 
 :::info
-All models listed here https://docs.mistral.ai/platform/endpoints are supported. We actively maintain the list of models, pricing, token window, etc. [here](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json).
+All models listed here https://docs.mistral.ai/platform/endpoints are supported. We actively maintain the list of models, pricing, token window, etc. [here](https://github.com/BerriAI/dheera_ai/blob/main/model_prices_and_context_window.json).
 
 :::
 
@@ -164,7 +164,7 @@ All models listed here https://docs.mistral.ai/platform/endpoints are supported.
 ## Function Calling 
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # set env
 os.environ["MISTRAL_API_KEY"] = "your-api-key"
@@ -207,9 +207,9 @@ assert isinstance(
 
 ## Reasoning
 
-Mistral does not directly support reasoning, instead it recommends a specific [system prompt](https://docs.mistral.ai/capabilities/reasoning/) to use with their magistral models. By setting the `reasoning_effort` parameter, LiteLLM will prepend the system prompt to the request. 
+Mistral does not directly support reasoning, instead it recommends a specific [system prompt](https://docs.mistral.ai/capabilities/reasoning/) to use with their magistral models. By setting the `reasoning_effort` parameter, Dheera AI will prepend the system prompt to the request. 
 
-If an existing system message is provided, LiteLLM will send both as a list of system messages (you can verify this by enabling `litellm._turn_on_debug()`).
+If an existing system message is provided, Dheera AI will send both as a list of system messages (you can verify this by enabling `dheera_ai._turn_on_debug()`).
 
 ### Supported Models
 
@@ -223,7 +223,7 @@ If an existing system message is provided, LiteLLM will send both as a list of s
 The `reasoning_effort` parameter controls how much effort the model puts into reasoning. When used with magistral models.
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['MISTRAL_API_KEY'] = "your-api-key"
@@ -241,7 +241,7 @@ print(response)
 
 ### Example with System Message
 
-If you already have a system message, LiteLLM will prepend the reasoning instructions:
+If you already have a system message, Dheera AI will prepend the reasoning instructions:
 
 ```python
 response = completion(
@@ -259,9 +259,9 @@ response = completion(
 #  You are a helpful math tutor."
 ```
 
-### Usage with LiteLLM Proxy
+### Usage with Dheera AI Proxy
 
-You can also use reasoning capabilities through the LiteLLM proxy:
+You can also use reasoning capabilities through the Dheera AI proxy:
 
 <Tabs>
 <TabItem value="Curl" label="Curl Request">
@@ -313,13 +313,13 @@ print(response)
 
 ## Sample Usage - Embedding
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 import os
 
 os.environ['MISTRAL_API_KEY'] = ""
 response = embedding(
     model="mistral/mistral-embed",
-    input=["good morning from litellm"],
+    input=["good morning from dheera_ai"],
 )
 print(response)
 ```

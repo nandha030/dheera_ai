@@ -1,32 +1,32 @@
 # ✨ Temporary Budget Increase
 
-Set temporary budget increase for a LiteLLM Virtual Key. Use this if you get asked to increase the budget for a key temporarily.
+Set temporary budget increase for a Dheera AI Virtual Key. Use this if you get asked to increase the budget for a key temporarily.
 
 
 | Hierarchy | Supported | 
 |-----------|-----------|
-| LiteLLM Virtual Key | ✅ |
+| Dheera AI Virtual Key | ✅ |
 | User | ❌ |
 | Team | ❌ |
 | Organization | ❌ |
 
 :::note
 
-✨ Temporary Budget Increase is a LiteLLM Enterprise feature.
+✨ Temporary Budget Increase is a Dheera AI Enterprise feature.
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Get free 7-day trial key](https://www.litellm.ai/enterprise#trial)
+[Get free 7-day trial key](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
 
-1. Create a LiteLLM Virtual Key with budget
+1. Create a Dheera AI Virtual Key with budget
 
 ```bash
 curl -L -X POST 'http://localhost:4000/key/generate' \
 -H 'Content-Type: application/json' \
--H 'Authorization: Bearer LITELLM_MASTER_KEY' \
+-H 'Authorization: Bearer DHEERA_AI_MASTER_KEY' \
 -d '{
     "max_budget": 0.0000001
 }'
@@ -44,7 +44,7 @@ Expected response:
 
 ```bash
 curl -L -X POST 'http://localhost:4000/key/update' \
--H 'Authorization: Bearer LITELLM_MASTER_KEY' \
+-H 'Authorization: Bearer DHEERA_AI_MASTER_KEY' \
 -H 'Content-Type: application/json' \
 -d '{
     "key": "sk-your-new-key",
@@ -68,7 +68,7 @@ curl -L -X POST 'http://localhost:4000/chat/completions' \
 Expected Response Header:
 
 ```
-x-litellm-key-max-budget: 100.0000001
+x-dheera_ai-key-max-budget: 100.0000001
 ```
 
 

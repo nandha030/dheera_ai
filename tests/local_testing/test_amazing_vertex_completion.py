@@ -23,8 +23,8 @@ import httpx
 
 import pytest
 
-import litellm
-from litellm import (
+import dheera_ai
+from dheera_ai import (
     RateLimitError,
     Timeout,
     acompletion,
@@ -33,14 +33,14 @@ from litellm import (
     embedding,
     image_generation,
 )
-from litellm.llms.vertex_ai.gemini.transformation import (
+from dheera_ai.llms.vertex_ai.gemini.transformation import (
     _gemini_convert_messages_with_history,
 )
-from litellm.llms.vertex_ai.vertex_llm_base import VertexBase
+from dheera_ai.llms.vertex_ai.vertex_llm_base import VertexBase
 
 
-litellm.num_retries = 3
-litellm.cache = None
+dheera_ai.num_retries = 3
+dheera_ai.cache = None
 user_message = "Write a short poem about the sky"
 messages = [{"content": user_message, "role": "user"}]
 
@@ -159,9 +159,9 @@ async def test_get_response():
             ],
         )
         return response
-    except litellm.RateLimitError:
+    except dheera_ai.RateLimitError:
         pass
-    except litellm.UnprocessableEntityError as e:
+    except dheera_ai.UnprocessableEntityError as e:
         pass
     except Exception as e:
         pytest.fail(f"An error occurred - {str(e)}")
@@ -175,7 +175,7 @@ def test_vertex_ai_anthropic_streaming():
     try:
         load_vertex_ai_credentials()
 
-        # litellm.set_verbose = True
+        # dheera_ai.set_verbose = True
 
         model = "claude-3-5-sonnet@20240620"
 
@@ -198,7 +198,7 @@ def test_vertex_ai_anthropic_streaming():
             streaming_format_tests(idx=idx, chunk=chunk)
 
     # raise Exception("it worked!")
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -232,7 +232,7 @@ async def test_aavertex_ai_anthropic_async():
             vertex_credentials=vertex_credentials,
         )
         print(f"Model Response: {response}")
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -249,7 +249,7 @@ async def test_aavertex_ai_anthropic_async():
 async def test_aaavertex_ai_anthropic_async_streaming():
     # load_vertex_ai_credentials()
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         model = "claude-3-5-sonnet@20240620"
 
         vertex_ai_project = "pathrise-convert-1606954137718"
@@ -271,7 +271,7 @@ async def test_aaavertex_ai_anthropic_async_streaming():
         async for chunk in response:
             streaming_format_tests(idx=idx, chunk=chunk)
             idx += 1
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -287,19 +287,19 @@ async def test_aaavertex_ai_anthropic_async_streaming():
 def test_avertex_ai():
     import random
 
-    litellm.num_retries = 3
+    dheera_ai.num_retries = 3
     load_vertex_ai_credentials()
     test_models = (
-        litellm.vertex_chat_models
-        | litellm.vertex_code_chat_models
-        | litellm.vertex_text_models
-        | litellm.vertex_code_text_models
+        dheera_ai.vertex_chat_models
+        | dheera_ai.vertex_code_chat_models
+        | dheera_ai.vertex_text_models
+        | dheera_ai.vertex_code_text_models
     )
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
     vertex_ai_project = "pathrise-convert-1606954137718"
 
     test_models = random.sample(list(test_models), 1)
-    test_models += list(litellm.vertex_language_models)  # always test gemini-pro
+    test_models += list(dheera_ai.vertex_language_models)  # always test gemini-pro
     for model in test_models:
         try:
             if model in VERTEX_MODELS_TO_NOT_TEST or (
@@ -321,10 +321,10 @@ def test_avertex_ai():
             print(
                 f"response.choices[0].finish_reason: {response.choices[0].finish_reason}"
             )
-            assert response.choices[0].finish_reason in litellm._openai_finish_reasons
-        except litellm.RateLimitError as e:
+            assert response.choices[0].finish_reason in dheera_ai._openai_finish_reasons
+        except dheera_ai.RateLimitError as e:
             pass
-        except litellm.InternalServerError as e:
+        except dheera_ai.InternalServerError as e:
             pass
         except Exception as e:
             pytest.fail(f"Error occurred: {e}")
@@ -339,18 +339,18 @@ def test_avertex_ai():
 @pytest.mark.flaky(retries=3, delay=1)
 def test_avertex_ai_stream():
     load_vertex_ai_credentials()
-    litellm.set_verbose = True
-    litellm.vertex_project = "pathrise-convert-1606954137718"
+    dheera_ai.set_verbose = True
+    dheera_ai.vertex_project = "pathrise-convert-1606954137718"
     import random
 
     test_models = (
-        litellm.vertex_chat_models
-        | litellm.vertex_code_chat_models
-        | litellm.vertex_text_models
-        | litellm.vertex_code_text_models
+        dheera_ai.vertex_chat_models
+        | dheera_ai.vertex_code_chat_models
+        | dheera_ai.vertex_text_models
+        | dheera_ai.vertex_code_text_models
     )
     test_models = random.sample(list(test_models), 1)
-    test_models += list(litellm.vertex_language_models)  # always test gemini-pro
+    test_models += list(dheera_ai.vertex_language_models)  # always test gemini-pro
     for model in test_models:
         try:
             if model in VERTEX_MODELS_TO_NOT_TEST or (
@@ -374,9 +374,9 @@ def test_avertex_ai_stream():
                 assert type(content) == str
                 # pass
             assert len(completed_str) > 1
-        except litellm.RateLimitError as e:
+        except dheera_ai.RateLimitError as e:
             pass
-        except litellm.InternalServerError as e:
+        except dheera_ai.InternalServerError as e:
             pass
         except Exception as e:
             pytest.fail(f"Error occurred: {e}")
@@ -400,15 +400,15 @@ async def test_async_vertexai_response_basic():
             timeout=5
         )
         print(f"response: {response}")
-    except litellm.NotFoundError as e:
+    except dheera_ai.NotFoundError as e:
         pass
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         pass
-    except litellm.APIError as e:
+    except dheera_ai.APIError as e:
         pass
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         pass
     except Exception as e:
         pytest.fail(f"An exception occurred: {e}")
@@ -421,17 +421,17 @@ async def test_async_vertexai_response_basic():
 async def test_async_vertexai_streaming_response():
     import random
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     load_vertex_ai_credentials()
     test_models = (
-        litellm.vertex_chat_models
-        | litellm.vertex_code_chat_models
-        | litellm.vertex_text_models
-        | litellm.vertex_code_text_models
+        dheera_ai.vertex_chat_models
+        | dheera_ai.vertex_code_chat_models
+        | dheera_ai.vertex_text_models
+        | dheera_ai.vertex_code_text_models
     )
     test_models = random.sample(list(test_models), 1)
-    test_models += list(litellm.vertex_language_models)  # always test gemini-pro
+    test_models += list(dheera_ai.vertex_language_models)  # always test gemini-pro
     test_models = ["gemini-2.5-flash"]
     for model in test_models:
         if model in VERTEX_MODELS_TO_NOT_TEST or (
@@ -464,15 +464,15 @@ async def test_async_vertexai_streaming_response():
                 if chunk.choices[0].delta.content is not None:
                     complete_response += chunk.choices[0].delta.content
             print(f"complete_response: {complete_response}")
-        except litellm.NotFoundError as e:
+        except dheera_ai.NotFoundError as e:
             pass
-        except litellm.RateLimitError as e:
+        except dheera_ai.RateLimitError as e:
             pass
-        except litellm.APIConnectionError:
+        except dheera_ai.APIConnectionError:
             pass
-        except litellm.Timeout as e:
+        except dheera_ai.Timeout as e:
             pass
-        except litellm.InternalServerError as e:
+        except dheera_ai.InternalServerError as e:
             pass
         except Exception as e:
             print(e)
@@ -482,7 +482,7 @@ async def test_async_vertexai_streaming_response():
 @pytest.mark.parametrize("load_pdf", [False])  # True,
 @pytest.mark.flaky(retries=3, delay=1)
 def test_completion_function_plus_pdf(load_pdf):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     load_vertex_ai_credentials()
     try:
         import base64
@@ -516,7 +516,7 @@ def test_completion_function_plus_pdf(load_pdf):
         )
 
         print(response)
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         pass
     except Exception as e:
         pytest.fail("Got={}".format(str(e)))
@@ -535,11 +535,11 @@ def encode_image(image_path):
 def test_gemini_pro_vision_base64():
     try:
         load_vertex_ai_credentials()
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         image_path = "../proxy/cached_logo.jpg"
         # Getting the base64 string
         base64_image = encode_image(image_path)
-        resp = litellm.completion(
+        resp = dheera_ai.completion(
             model="vertex_ai/gemini-1.5-pro",
             messages=[
                 {
@@ -559,9 +559,9 @@ def test_gemini_pro_vision_base64():
         print(resp)
 
         prompt_tokens = resp.usage.prompt_tokens
-    except litellm.InternalServerError:
+    except dheera_ai.InternalServerError:
         pass
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         if "500 Internal error encountered.'" in str(e):
@@ -696,20 +696,20 @@ def vertex_httpx_grounding_post(*args, **kwargs):
 def test_gemini_pro_grounding(value_in_dict):
     try:
         load_vertex_ai_credentials()
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         tools = [{"googleSearchRetrieval": value_in_dict}]
 
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
-        from litellm.llms.custom_httpx.http_handler import HTTPHandler
+        from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
         client = HTTPHandler()
 
         with patch.object(
             client, "post", side_effect=vertex_httpx_grounding_post
         ) as mock_call:
-            resp = litellm.completion(
+            resp = dheera_ai.completion(
                 model="vertex_ai_beta/gemini-1.0-pro-001",
                 messages=[{"role": "user", "content": "Who won the world cup?"}],
                 tools=tools,
@@ -732,9 +732,9 @@ def test_gemini_pro_grounding(value_in_dict):
             assert "vertex_ai_grounding_metadata" in resp._hidden_params
             assert isinstance(resp._hidden_params["vertex_ai_grounding_metadata"], list)
 
-    except litellm.InternalServerError:
+    except dheera_ai.InternalServerError:
         pass
-    except litellm.RateLimitError:
+    except dheera_ai.RateLimitError:
         pass
 
 
@@ -746,7 +746,7 @@ def test_gemini_pro_grounding(value_in_dict):
 async def test_gemini_pro_function_calling_httpx(model, sync_mode):
     try:
         load_vertex_ai_credentials()
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         messages = [
             {
@@ -788,9 +788,9 @@ async def test_gemini_pro_function_calling_httpx(model, sync_mode):
         }
         print(f"Model for call - {model}")
         if sync_mode:
-            response = litellm.completion(**data)
+            response = dheera_ai.completion(**data)
         else:
-            response = await litellm.acompletion(**data)
+            response = await dheera_ai.acompletion(**data)
 
         print(f"response: {response}")
 
@@ -798,7 +798,7 @@ async def test_gemini_pro_function_calling_httpx(model, sync_mode):
         assert isinstance(
             response.choices[0].message.tool_calls[0].function.arguments, str
         )
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         if "429 Quota exceeded" in str(e):
@@ -827,7 +827,7 @@ from test_completion import response_format_tests
 async def test_partner_models_httpx(model, region, sync_mode):
     try:
         load_vertex_ai_credentials()
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         messages = [
             {
@@ -848,28 +848,28 @@ async def test_partner_models_httpx(model, region, sync_mode):
             "vertex_ai_location": region,
         }
         if sync_mode:
-            response = litellm.completion(**data)
+            response = dheera_ai.completion(**data)
         else:
-            response = await litellm.acompletion(**data)
+            response = await dheera_ai.acompletion(**data)
 
         response_format_tests(response=response)
 
         print(f"response: {response}")
 
         assert isinstance(response._hidden_params["response_cost"], float)
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         print("RateLimitError", e)
         pass
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         print("Timeout", e)
         pass
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         print("InternalServerError", e)
         pass
-    except litellm.APIConnectionError as e:
+    except dheera_ai.APIConnectionError as e:
         print("APIConnectionError", e)
         pass
-    except litellm.ServiceUnavailableError as e:
+    except dheera_ai.ServiceUnavailableError as e:
         print("ServiceUnavailableError", e)
         pass
     except Exception as e:
@@ -888,7 +888,7 @@ async def test_partner_models_httpx(model, region, sync_mode):
         (
             "vertex_ai/mistral-large-2411",
             "us-central1",
-        ),  # critical - we had this issue: https://github.com/BerriAI/litellm/issues/13888
+        ),  # critical - we had this issue: https://github.com/BerriAI/dheera_ai/issues/13888
         ("vertex_ai/openai/gpt-oss-20b-maas", "us-central1"),
     ],
 )
@@ -901,7 +901,7 @@ async def test_partner_models_httpx(model, region, sync_mode):
 async def test_partner_models_httpx_streaming(model, region, sync_mode):
     try:
         load_vertex_ai_credentials()
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         messages = [
             {
@@ -922,18 +922,18 @@ async def test_partner_models_httpx_streaming(model, region, sync_mode):
             "vertex_ai_location": region,
         }
         if sync_mode:
-            response = litellm.completion(**data)
+            response = dheera_ai.completion(**data)
             for idx, chunk in enumerate(response):
                 streaming_format_tests(idx=idx, chunk=chunk)
         else:
-            response = await litellm.acompletion(**data)
+            response = await dheera_ai.acompletion(**data)
             idx = 0
             async for chunk in response:
                 streaming_format_tests(idx=idx, chunk=chunk)
                 idx += 1
 
         print(f"response: {response}")
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         if "429 Quota exceeded" in str(e):
@@ -1082,7 +1082,7 @@ async def test_gemini_pro_json_schema_httpx_content_policy_error(
     provider, content_filter_type
 ):
     load_vertex_ai_credentials()
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     messages = [
         {
             "role": "user",
@@ -1097,7 +1097,7 @@ Using this JSON schema:
             """,
         }
     ]
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
@@ -1318,12 +1318,12 @@ async def test_gemini_pro_json_schema_args_sent_httpx(
     enforce_validation,
 ):
     load_vertex_ai_credentials()
-    os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-    litellm.model_cost = litellm.get_model_cost_map(url="")
+    os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+    dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     messages = [{"role": "user", "content": "List 5 cookie recipes"}]
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     response_schema = {
         "type": "object",
@@ -1358,7 +1358,7 @@ async def test_gemini_pro_json_schema_args_sent_httpx(
             httpx_response.side_effect = vertex_httpx_mock_post_valid_response
     resp = None
     with patch.object(client, "post", new=httpx_response) as mock_call:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         print(f"model entering completion: {model}")
 
         try:
@@ -1376,7 +1376,7 @@ async def test_gemini_pro_json_schema_args_sent_httpx(
             print("Received={}".format(resp))
             if invalid_response is True and enforce_validation is True:
                 pytest.fail("Expected this to fail")
-        except litellm.JSONSchemaValidationError as e:
+        except dheera_ai.JSONSchemaValidationError as e:
             if invalid_response is False:
                 pytest.fail("Expected this to pass. Got={}".format(e))
 
@@ -1408,13 +1408,13 @@ async def test_gemini_pro_json_schema_args_sent_httpx(
 
 @pytest.mark.asyncio
 async def test_anthropic_message_via_anthropic_messages():
-    from litellm.llms.custom_httpx.llm_http_handler import AsyncHTTPHandler
+    from dheera_ai.llms.custom_httpx.llm_http_handler import AsyncHTTPHandler
     from unittest.mock import MagicMock, AsyncMock
 
     load_vertex_ai_credentials()
-    os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-    litellm.model_cost = litellm.get_model_cost_map(url="")
-    litellm.set_verbose = True
+    os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+    dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
+    dheera_ai.set_verbose = True
     client = AsyncHTTPHandler()
 
     httpx_response = AsyncMock()
@@ -1424,7 +1424,7 @@ async def test_anthropic_message_via_anthropic_messages():
     call_2_kwargs = {}
     with patch.object(client, "post", new=httpx_response) as mock_call:
         messages = [{"role": "user", "content": "List 5 cookie recipes"}]
-        response = await litellm.anthropic_messages(
+        response = await dheera_ai.anthropic_messages(
             model="vertex_ai/claude-3-5-sonnet@20240620",
             messages=messages,
             max_tokens=100,
@@ -1436,7 +1436,7 @@ async def test_anthropic_message_via_anthropic_messages():
         call_1_kwargs = mock_call.call_args.kwargs
 
     with patch.object(client, "post", new=httpx_response) as mock_call:
-        response_2 = await litellm.acompletion(
+        response_2 = await dheera_ai.acompletion(
             model="vertex_ai/claude-3-5-sonnet@20240620",
             messages=messages,
             max_tokens=100,
@@ -1509,18 +1509,18 @@ async def test_gemini_pro_json_schema_args_sent_httpx_openai_schema(
     from typing import List
 
     if enforce_validation:
-        litellm.enable_json_schema_validation = True
+        dheera_ai.enable_json_schema_validation = True
 
     from pydantic import BaseModel
 
     load_vertex_ai_credentials()
-    os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-    litellm.model_cost = litellm.get_model_cost_map(url="")
+    os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+    dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     messages = [{"role": "user", "content": "List 5 cookie recipes"}]
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     class Recipe(BaseModel):
         recipe_name: str
@@ -1556,7 +1556,7 @@ async def test_gemini_pro_json_schema_args_sent_httpx_openai_schema(
             print("Received={}".format(resp))
             if invalid_response is True and enforce_validation is True:
                 pytest.fail("Expected this to fail")
-        except litellm.JSONSchemaValidationError as e:
+        except dheera_ai.JSONSchemaValidationError as e:
             if invalid_response is False:
                 pytest.fail("Expected this to pass. Got={}".format(e))
 
@@ -1599,14 +1599,14 @@ async def test_gemini_pro_json_schema_args_sent_httpx_openai_schema(
 @pytest.mark.asyncio
 async def test_gemini_pro_httpx_custom_api_base(model):
     load_vertex_ai_credentials()
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     messages = [
         {
             "role": "user",
             "content": "Hello world",
         }
     ]
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
@@ -1647,7 +1647,7 @@ async def test_gemini_pro_httpx_custom_api_base(model):
 async def test_gemini_pro_function_calling(provider, sync_mode):
     try:
         load_vertex_ai_credentials()
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         messages = [
             {
@@ -1710,12 +1710,12 @@ async def test_gemini_pro_function_calling(provider, sync_mode):
             "tools": tools,
         }
         if sync_mode:
-            response = litellm.completion(**data)
+            response = dheera_ai.completion(**data)
         else:
-            response = await litellm.acompletion(**data)
+            response = await dheera_ai.acompletion(**data)
 
         print(f"response: {response}")
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         if "429 Quota exceeded" in str(e):
@@ -1732,7 +1732,7 @@ async def test_gemini_pro_function_calling(provider, sync_mode):
 @pytest.mark.flaky(retries=3, delay=1)
 async def test_gemini_pro_function_calling_streaming(sync_mode):
     load_vertex_ai_credentials()
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     data = {
         "model": "vertex_ai/gemini-2.5-flash-lite",
         "messages": [
@@ -1765,32 +1765,32 @@ async def test_gemini_pro_function_calling_streaming(sync_mode):
     chunks = []
     try:
         if sync_mode == True:
-            response = litellm.completion(**data)
+            response = dheera_ai.completion(**data)
             print(f"completion: {response}")
 
             for chunk in response:
                 chunks.append(chunk)
-                assert isinstance(chunk, litellm.ModelResponseStream)
+                assert isinstance(chunk, dheera_ai.ModelResponseStream)
         else:
-            response = await litellm.acompletion(**data)
+            response = await dheera_ai.acompletion(**data)
             print(f"completion: {response}")
 
-            assert isinstance(response, litellm.CustomStreamWrapper)
+            assert isinstance(response, dheera_ai.CustomStreamWrapper)
 
             async for chunk in response:
                 print(f"chunk: {chunk}")
                 chunks.append(chunk)
-                assert isinstance(chunk, litellm.ModelResponseStream)
+                assert isinstance(chunk, dheera_ai.ModelResponseStream)
 
-        complete_response = litellm.stream_chunk_builder(chunks=chunks)
+        complete_response = dheera_ai.stream_chunk_builder(chunks=chunks)
         assert (
             complete_response.choices[0].message.content is not None
             or len(complete_response.choices[0].message.tool_calls) > 0
         )
         print(f"complete_response: {complete_response}")
-    except litellm.APIError as e:
+    except dheera_ai.APIError as e:
         pass
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
 
 
@@ -1804,16 +1804,16 @@ async def test_gemini_pro_function_calling_streaming(sync_mode):
 async def test_vertexai_embedding(sync_mode):
     try:
         load_vertex_ai_credentials()
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
-        input_text = ["good morning from litellm", "this is another item"]
+        input_text = ["good morning from dheera_ai", "this is another item"]
 
         if sync_mode:
-            response = litellm.embedding(
+            response = dheera_ai.embedding(
                 model="textembedding-gecko@001", input=input_text
             )
         else:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 model="textembedding-gecko@001", input=input_text
             )
 
@@ -1833,7 +1833,7 @@ async def test_vertexai_embedding(sync_mode):
             assert len(embedding["embedding"]) > 0
             assert all(isinstance(x, float) for x in embedding["embedding"])
 
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -1870,11 +1870,11 @@ async def test_vertexai_multimodal_embedding():
     }
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        # Act: Call the litellm.aembedding function
-        response = await litellm.aembedding(
+        # Act: Call the dheera_ai.aembedding function
+        response = await dheera_ai.aembedding(
             model="vertex_ai/multimodalembedding@001",
             input=[
                 {
@@ -1930,11 +1930,11 @@ async def test_vertexai_multimodal_embedding_text_input():
     }
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        # Act: Call the litellm.aembedding function
-        response = await litellm.aembedding(
+        # Act: Call the dheera_ai.aembedding function
+        response = await dheera_ai.aembedding(
             model="vertex_ai/multimodalembedding@001",
             input=[
                 "this is a unicorn",
@@ -1988,11 +1988,11 @@ async def test_vertexai_multimodal_embedding_image_in_input():
     }
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        # Act: Call the litellm.aembedding function
-        response = await litellm.aembedding(
+        # Act: Call the dheera_ai.aembedding function
+        response = await dheera_ai.aembedding(
             model="vertex_ai/multimodalembedding@001",
             input=["gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png"],
         )
@@ -2054,11 +2054,11 @@ async def test_vertexai_multimodal_embedding_base64image_in_input():
     }
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        # Act: Call the litellm.aembedding function
-        response = await litellm.aembedding(
+        # Act: Call the dheera_ai.aembedding function
+        response = await dheera_ai.aembedding(
             model="vertex_ai/multimodalembedding@001",
             input=[base64_image],
         )
@@ -2085,7 +2085,7 @@ async def test_vertexai_multimodal_embedding_base64image_in_input():
 def test_vertexai_embedding_embedding_latest():
     try:
         load_vertex_ai_credentials()
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         response = embedding(
             model="vertex_ai/text-embedding-004",
@@ -2098,7 +2098,7 @@ def test_vertexai_embedding_embedding_latest():
         assert len(response.data[0]["embedding"]) == 1
         assert response.usage.prompt_tokens > 0
         print(f"response:", response)
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -2109,7 +2109,7 @@ def test_vertexai_multimodalembedding_embedding_latest():
         import requests, base64
 
         load_vertex_ai_credentials()
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         response = embedding(
             model="vertex_ai/multimodalembedding@001",
@@ -2125,7 +2125,7 @@ def test_vertexai_multimodalembedding_embedding_latest():
 
         assert response._hidden_params["response_cost"] > 0
         print(f"response:", response)
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -2134,7 +2134,7 @@ def test_vertexai_multimodalembedding_embedding_latest():
 def test_vertexai_embedding_embedding_latest():
     try:
         load_vertex_ai_credentials()
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         response = embedding(
             model="vertex_ai/text-embedding-004",
@@ -2147,7 +2147,7 @@ def test_vertexai_embedding_embedding_latest():
         assert len(response.data[0]["embedding"]) == 1
         assert response.usage.prompt_tokens > 0
         print(f"response:", response)
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -2158,7 +2158,7 @@ def test_vertexai_embedding_embedding_latest():
 def test_vertexai_embedding_embedding_latest_input_type():
     try:
         load_vertex_ai_credentials()
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         response = embedding(
             model="vertex_ai/text-embedding-004",
@@ -2167,7 +2167,7 @@ def test_vertexai_embedding_embedding_latest_input_type():
         )
         assert response.usage.prompt_tokens > 0
         print(f"response:", response)
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -2179,13 +2179,13 @@ def test_vertexai_embedding_embedding_latest_input_type():
 async def test_vertexai_aembedding():
     try:
         load_vertex_ai_credentials()
-        # litellm.set_verbose=True
-        response = await litellm.aembedding(
+        # dheera_ai.set_verbose=True
+        response = await dheera_ai.aembedding(
             model="textembedding-gecko@001",
-            input=["good morning from litellm", "this is another item"],
+            input=["good morning from dheera_ai", "this is another item"],
         )
         print(f"response: {response}")
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -2355,11 +2355,11 @@ async def test_completion_fine_tuned_model():
     }
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        # Act: Call the litellm.completion function
-        response = await litellm.acompletion(
+        # Act: Call the dheera_ai.completion function
+        response = await dheera_ai.acompletion(
             model="vertex_ai_beta/4965075652664360960",
             messages=[{"role": "user", "content": "Write a short poem about the sky"}],
         )
@@ -2451,7 +2451,7 @@ def mock_gemini_request(*args, **kwargs):
 
 
 def mock_gemini_list_request(*args, **kwargs):
-    from litellm.types.llms.vertex_ai import (
+    from dheera_ai.types.llms.vertex_ai import (
         CachedContent,
         CachedContentListAllResponseBody,
     )
@@ -2467,7 +2467,7 @@ def mock_gemini_list_request(*args, **kwargs):
     return mock_response
 
 
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 
 
 @pytest.mark.parametrize(
@@ -2476,9 +2476,9 @@ from litellm._uuid import uuid
 )
 @pytest.mark.asyncio
 async def test_gemini_context_caching_anthropic_format(sync_mode):
-    from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     gemini_context_caching_messages = [
         # System Message
         {
@@ -2527,7 +2527,7 @@ async def test_gemini_context_caching_anthropic_format(sync_mode):
     with patch.object(client, "post", side_effect=mock_gemini_request) as mock_client:
         try:
             if sync_mode:
-                response = litellm.completion(
+                response = dheera_ai.completion(
                     model="gemini/gemini-2.5-flash-lite-001",
                     messages=gemini_context_caching_messages,
                     temperature=0.2,
@@ -2535,7 +2535,7 @@ async def test_gemini_context_caching_anthropic_format(sync_mode):
                     client=client,
                 )
             else:
-                response = await litellm.acompletion(
+                response = await dheera_ai.acompletion(
                     model="gemini/gemini-2.5-flash-lite-001",
                     messages=gemini_context_caching_messages,
                     temperature=0.2,
@@ -2565,7 +2565,7 @@ async def test_gemini_context_caching_anthropic_format(sync_mode):
 
 @pytest.mark.asyncio
 async def test_partner_models_httpx_ai21():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model = "vertex_ai/jamba-1.5-mini@001"
 
     messages = [
@@ -2644,10 +2644,10 @@ async def test_partner_models_httpx_ai21():
     mock_response.status_code = 200
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        response = await litellm.acompletion(**data)
+        response = await dheera_ai.acompletion(**data)
 
         # Assert
         mock_post.assert_called_once()
@@ -2718,9 +2718,9 @@ async def test_partner_models_httpx_ai21():
 
 
 def test_gemini_function_call_parameter_in_messages():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     load_vertex_ai_credentials()
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     tools = [
         {
@@ -2836,8 +2836,8 @@ def test_gemini_function_call_parameter_in_messages():
 
 
 def test_gemini_function_call_parameter_in_messages_2():
-    litellm.set_verbose = True
-    from litellm.llms.vertex_ai.gemini.transformation import (
+    dheera_ai.set_verbose = True
+    from dheera_ai.llms.vertex_ai.gemini.transformation import (
         _gemini_convert_messages_with_history,
     )
 
@@ -2901,9 +2901,9 @@ def test_gemini_function_call_parameter_in_messages_2():
     ],
 )
 def test_gemini_finetuned_endpoint(base_model, metadata):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     load_vertex_ai_credentials()
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     # Set up the messages
     messages = [
@@ -2964,22 +2964,22 @@ async def test_vertexai_embedding_finetuned(respx_mock: MockRouter):
     """
     Tests that:
     - Request URL and body are correctly formatted for Vertex AI embeddings
-    - Response is properly parsed into litellm's embedding response format
+    - Response is properly parsed into dheera_ai's embedding response format
     """
     load_vertex_ai_credentials()
-    litellm.set_verbose = True
-    litellm.disable_aiohttp_transport = (
+    dheera_ai.set_verbose = True
+    dheera_ai.disable_aiohttp_transport = (
         True  # since this uses respx, we need to set use_aiohttp_transport to False
     )
 
     # Test input
-    input_text = ["good morning from litellm", "this is another item"]
+    input_text = ["good morning from dheera_ai", "this is another item"]
 
     # Expected request/response
     expected_url = "https://us-central1-aiplatform.googleapis.com/v1/projects/633608382793/locations/us-central1/endpoints/1004708436694269952:predict"
     expected_request = {
         "instances": [
-            {"inputs": "good morning from litellm"},
+            {"inputs": "good morning from dheera_ai"},
             {"inputs": "this is another item"},
         ],
         "parameters": {},
@@ -3002,7 +3002,7 @@ async def test_vertexai_embedding_finetuned(respx_mock: MockRouter):
     )
 
     # Make request
-    response = await litellm.aembedding(
+    response = await dheera_ai.aembedding(
         vertex_project="633608382793",
         model="vertex_ai/1004708436694269952",
         input=input_text,
@@ -3035,16 +3035,16 @@ async def test_vertexai_model_garden_model_completion(
     respx_mock: MockRouter, max_retries
 ):
     """
-    Relevant issue: https://github.com/BerriAI/litellm/issues/6480
+    Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6480
 
     Using OpenAI compatible models from Vertex Model Garden
     """
-    litellm.disable_aiohttp_transport = (
+    dheera_ai.disable_aiohttp_transport = (
         True  # since this uses respx, we need to set use_aiohttp_transport to False
     )
-    litellm.module_level_aclient = httpx.AsyncClient()
+    dheera_ai.module_level_aclient = httpx.AsyncClient()
     load_vertex_ai_credentials()
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     # Test input
     messages = [
@@ -3090,7 +3090,7 @@ async def test_vertexai_model_garden_model_completion(
     )
 
     # Make request
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="vertex_ai/openai/5464397967697903616",
         messages=messages,
         vertex_project="633608382793",
@@ -3152,8 +3152,8 @@ def vertex_ai_anthropic_thinking_mock_response(*args, **kwargs):
 
 
 def test_vertex_anthropic_completion():
-    from litellm import completion
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai import completion
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
@@ -3183,8 +3183,8 @@ def test_vertex_anthropic_completion():
 
 
 def test_signed_s3_url_with_format():
-    from litellm import completion
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai import completion
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
@@ -3199,7 +3199,7 @@ def test_signed_s3_url_with_format():
                     {
                         "type": "image_url",
                         "image_url": {
-                            "url": "https://litellm-logo-aws-marketplace.s3.us-west-2.amazonaws.com/berriai-logo-github.png?response-content-disposition=inline&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Security-Token=IQoJb3JpZ2luX2VjENj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIHlAy6QneghdEo4Dp4rw%2BHhdInKX4MU3T0hZT1qV3AD%2FAiBGY%2FtfxmBJkj%2BK6%2FxAgek6L3tpOcq6su1mBrj87El%2FCirLAwghEAEaDDg4ODYwMjIyMzQyOCIMzds7lsxAFHHCRHmkKqgDgnsJBaEmmwXBWqzyMMe3BUKsCqfvrYupFGxBREP%2BaEz%2ByLSKiTM3xWzaRz6vrP9T4HSJ97B9wQ3dhUBT22XzdOFsaq49wZapwy9hoPNrMyZ77DIa0MlEbg0uudGOaMAw4NbVEqoERQuZmIMMbNHCeoJsZxKCttRZlTDzU%2FeNNy96ltb%2FuIkX5b3OOYdUaKj%2FUjmPz%2FEufY%2Bn%2FFHawunSYXJwL4pYuBF1IKRtPjqamaYscH%2FrzD7fubGUMqk6hvyGEo%2BLqnVyruQEmVFqAnXyWlpHGqeWazEC7xcsC2lhLO%2FKUouyVML%2FxyYtL4CuKp52qtLWWauAFGnyBZnCHtSL58KLaMTSh7inhoFFIKDN2hymrJ4D9%2Bxv%2FMOzefH5X%2B0pcdJUwyxcwgL3myggRmIYq1L6IL4I%2F54BIU%2FMctJcRXQ8NhQNP2PsaCsXYHHVMXRZxps9v8t9Ciorb0PAaLr0DIGVgEqejSjwbzNTctQf59Rj0GhZ0A6A3nFaq3nL4UvO51aPP6aelN6RnLwHh8fF80iPWII7Oj9PWn9bkON%2F7%2B5k42oPFR0KDTD0yaO%2BBjrlAouRvkyHZnCuLuJdEeqc8%2Fwm4W8SbMiYDzIEPPe2wFR2sH4%2FDlnJRqia9Or00d4N%2BOefBkPv%2Bcdt68r%2FwjeWOrulczzLGjJE%2FGw1Lb9dtGtmupGm2XKOW3geJwXkk1qcr7u5zwy6DNamLJbitB026JFKorRnPajhe5axEDv%2BRu6l1f0eailIrCwZ2iytA94Ni8LTha2GbZvX7fFHcmtyNlgJPpMcELdkOEGTCNBldGck5MFHG27xrVrlR%2F7HZIkKYlImNmsOIjuK7acDiangvVdB6GlmVbzNUKtJ7YJhS2ivwvdDIf8XuaFAkhjRNpewDl0GzPvojK%2BDTizZydyJL%2B20pVkSXptyPwrrHEeiOFWwhszW2iTZij4rlRAoZW6NEdfkWsXrGMbxJTZa3E5URejJbg%2B4QgGtjLrgJhRC1pJGP02GX7VMxVWZzomfC2Hn7WaF44wgcuqjE4HGJfpA2ZLBxde52g%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA45ZGR4NCKIUOODV3%2F20250305%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250305T235823Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=71a900a9467eaf3811553500aaf509a10a9e743a8133cfb6a78dcbcbc6da4a05",
+                            "url": "https://dheera_ai-logo-aws-marketplace.s3.us-west-2.amazonaws.com/berriai-logo-github.png?response-content-disposition=inline&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Security-Token=IQoJb3JpZ2luX2VjENj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIHlAy6QneghdEo4Dp4rw%2BHhdInKX4MU3T0hZT1qV3AD%2FAiBGY%2FtfxmBJkj%2BK6%2FxAgek6L3tpOcq6su1mBrj87El%2FCirLAwghEAEaDDg4ODYwMjIyMzQyOCIMzds7lsxAFHHCRHmkKqgDgnsJBaEmmwXBWqzyMMe3BUKsCqfvrYupFGxBREP%2BaEz%2ByLSKiTM3xWzaRz6vrP9T4HSJ97B9wQ3dhUBT22XzdOFsaq49wZapwy9hoPNrMyZ77DIa0MlEbg0uudGOaMAw4NbVEqoERQuZmIMMbNHCeoJsZxKCttRZlTDzU%2FeNNy96ltb%2FuIkX5b3OOYdUaKj%2FUjmPz%2FEufY%2Bn%2FFHawunSYXJwL4pYuBF1IKRtPjqamaYscH%2FrzD7fubGUMqk6hvyGEo%2BLqnVyruQEmVFqAnXyWlpHGqeWazEC7xcsC2lhLO%2FKUouyVML%2FxyYtL4CuKp52qtLWWauAFGnyBZnCHtSL58KLaMTSh7inhoFFIKDN2hymrJ4D9%2Bxv%2FMOzefH5X%2B0pcdJUwyxcwgL3myggRmIYq1L6IL4I%2F54BIU%2FMctJcRXQ8NhQNP2PsaCsXYHHVMXRZxps9v8t9Ciorb0PAaLr0DIGVgEqejSjwbzNTctQf59Rj0GhZ0A6A3nFaq3nL4UvO51aPP6aelN6RnLwHh8fF80iPWII7Oj9PWn9bkON%2F7%2B5k42oPFR0KDTD0yaO%2BBjrlAouRvkyHZnCuLuJdEeqc8%2Fwm4W8SbMiYDzIEPPe2wFR2sH4%2FDlnJRqia9Or00d4N%2BOefBkPv%2Bcdt68r%2FwjeWOrulczzLGjJE%2FGw1Lb9dtGtmupGm2XKOW3geJwXkk1qcr7u5zwy6DNamLJbitB026JFKorRnPajhe5axEDv%2BRu6l1f0eailIrCwZ2iytA94Ni8LTha2GbZvX7fFHcmtyNlgJPpMcELdkOEGTCNBldGck5MFHG27xrVrlR%2F7HZIkKYlImNmsOIjuK7acDiangvVdB6GlmVbzNUKtJ7YJhS2ivwvdDIf8XuaFAkhjRNpewDl0GzPvojK%2BDTizZydyJL%2B20pVkSXptyPwrrHEeiOFWwhszW2iTZij4rlRAoZW6NEdfkWsXrGMbxJTZa3E5URejJbg%2B4QgGtjLrgJhRC1pJGP02GX7VMxVWZzomfC2Hn7WaF44wgcuqjE4HGJfpA2ZLBxde52g%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA45ZGR4NCKIUOODV3%2F20250305%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250305T235823Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=71a900a9467eaf3811553500aaf509a10a9e743a8133cfb6a78dcbcbc6da4a05",
                             "format": "image/jpeg",
                         },
                     },
@@ -3233,9 +3233,9 @@ def test_gemini_fine_tuned_model_request_consistency():
     - Request 1: Fine tuned: vertex_ai/gemini/ft-uuid
     - Request 2: vertex_ai/gemini-2.0-flash-001
     """
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     load_vertex_ai_credentials()
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
     from unittest.mock import patch, MagicMock
 
     # Set up the messages
@@ -3328,14 +3328,14 @@ def test_gemini_fine_tuned_model_request_consistency():
 
 @pytest.mark.parametrize("provider", ["vertex_ai", "gemini"])
 @pytest.mark.parametrize("route", ["completion", "embedding", "image_generation"])
-def test_litellm_api_base(monkeypatch, provider, route):
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+def test_dheera_ai_api_base(monkeypatch, provider, route):
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
-    import litellm
+    import dheera_ai
 
-    monkeypatch.setattr(litellm, "api_base", "https://litellm.com")
+    monkeypatch.setattr(dheera_ai, "api_base", "https://dheera_ai.com")
 
     load_vertex_ai_credentials()
 
@@ -3366,12 +3366,12 @@ def test_litellm_api_base(monkeypatch, provider, route):
             print(e)
 
         mock_client.assert_called()
-        assert mock_client.call_args.kwargs["url"].startswith("https://litellm.com")
+        assert mock_client.call_args.kwargs["url"].startswith("https://dheera_ai.com")
 
 
 def test_gemini_tool_calling_working_demo():
     load_vertex_ai_credentials()
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     args = {
         "messages": [
             {
@@ -3446,7 +3446,7 @@ def test_gemini_tool_calling_working_demo():
 
 def test_gemini_tool_calling_not_working():
     load_vertex_ai_credentials()
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     args = {
         "messages": [
             {
@@ -3517,10 +3517,10 @@ def test_gemini_tool_calling_not_working():
 
 
 def test_vertex_ai_llama_tool_calling():
-    os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-    litellm.model_cost = litellm.get_model_cost_map(url="")
+    os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+    dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
     load_vertex_ai_credentials()
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     args = {
         "model": "vertex_ai/meta/llama-4-maverick-17b-128e-instruct-maas",
         "messages": [
@@ -3550,7 +3550,7 @@ def test_vertex_ai_llama_tool_calling():
     }
     try:
         response = completion(**args)
-    except litellm.RateLimitError:
+    except dheera_ai.RateLimitError:
         pytest.skip("Rate limit error")
     print(response)
 
@@ -3561,7 +3561,7 @@ def test_vertex_ai_llama_tool_calling():
 
 def test_vertex_schema_test():
     load_vertex_ai_credentials()
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     def tool_call(text: str | None) -> str:
         return text or "No text provided"
@@ -3588,7 +3588,7 @@ def test_vertex_schema_test():
         },
     }
 
-    response = litellm.completion(
+    response = dheera_ai.completion(
         model="vertex_ai/gemini-2.5-flash",
         messages=[{"role": "user", "content": "call the tool"}],
         tools=[tool],
@@ -3599,8 +3599,8 @@ def test_vertex_schema_test():
 
 
 def test_vertex_ai_response_id():
-    """Test that litellm preserves the response ID from Vertex AI's API for non-streaming responses"""
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    """Test that dheera_ai preserves the response ID from Vertex AI's API for non-streaming responses"""
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     load_vertex_ai_credentials()
 
@@ -3646,9 +3646,9 @@ def test_vertex_ai_response_id():
 
 
 def test_vertex_ai_streaming_response_id():
-    """Test that litellm preserves the response ID from Vertex AI's API for streaming responses"""
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
-    from litellm.llms.vertex_ai.gemini.vertex_and_google_ai_studio_gemini import (
+    """Test that dheera_ai preserves the response ID from Vertex AI's API for streaming responses"""
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.vertex_ai.gemini.vertex_and_google_ai_studio_gemini import (
         make_sync_call,
     )
 
@@ -3702,7 +3702,7 @@ def test_vertex_ai_streaming_response_id():
 
 def test_vertex_ai_gemini_2_5_pro_streaming():
     load_vertex_ai_credentials()
-    # litellm._turn_on_debug()
+    # dheera_ai._turn_on_debug()
     response = completion(
         model="vertex_ai/gemini-2.5-pro",
         messages=[{"role": "user", "content": "Hi!"}],
@@ -3722,7 +3722,7 @@ def test_vertex_ai_gemini_2_5_pro_streaming():
 
 def test_vertex_ai_gemini_audio_ogg():
     load_vertex_ai_credentials()
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     response = completion(
         model="vertex_ai/gemini-2.0-flash",
         messages=[
@@ -3752,8 +3752,8 @@ def test_vertex_ai_gemini_audio_ogg():
 async def test_vertex_ai_deepseek():
     """Test that deepseek models use the correct v1 API endpoint instead of v1beta1."""
     # load_vertex_ai_credentials()
-    litellm._turn_on_debug()
-    from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
+    dheera_ai._turn_on_debug()
+    from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
 
     client = AsyncHTTPHandler()
 
@@ -3791,10 +3791,10 @@ async def test_vertex_ai_deepseek():
 
 
 def test_gemini_grounding_on_streaming():
-    from litellm import completion
+    from dheera_ai import completion
 
     load_vertex_ai_credentials()
-    # litellm._turn_on_debug()
+    # dheera_ai._turn_on_debug()
     args = {
         "model": "vertex_ai/gemini-2.0-flash",
         "messages": [
@@ -3827,7 +3827,7 @@ def test_gemini_google_maps_tool_simple():
     Test googleMaps tool with just enableWidget parameter.
     """
     load_vertex_ai_credentials()
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     tools = [{"googleMaps": {"enableWidget": True}}]
     tools_with_location = [{"googleMaps": {"enableWidget": True, "latitude": 37.7749, "longitude": -122.4194, "languageCode": "en_US"}}]
@@ -3845,7 +3845,7 @@ def test_gemini_google_maps_tool_simple():
             )
         print(f"Response: {response.model_dump_json(indent=4)}")
         assert response.choices[0].message.content is not None
-    except litellm.RateLimitError:
+    except dheera_ai.RateLimitError:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")

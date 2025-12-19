@@ -3,30 +3,30 @@ import TabItem from '@theme/TabItem';
 
 # Llamafile
 
-LiteLLM supports all models on Llamafile.
+Dheera AI supports all models on Llamafile.
 
 | Property                  | Details                                                                                                                              |
 |---------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
 | Description               | llamafile lets you distribute and run LLMs with a single file. [Docs](https://github.com/Mozilla-Ocho/llamafile/blob/main/README.md) |
-| Provider Route on LiteLLM | `llamafile/` (for OpenAI compatible server)                                                                                          |
+| Provider Route on Dheera AI | `llamafile/` (for OpenAI compatible server)                                                                                          |
 | Provider Doc              | [llamafile ↗](https://github.com/Mozilla-Ocho/llamafile/blob/main/llama.cpp/server/README.md#api-endpoints)                          |
 | Supported Endpoints       | `/chat/completions`, `/embeddings`, `/completions`                                                                                   |
 
 
 # Quick Start
 
-## Usage - litellm.completion (calling OpenAI compatible endpoint)
-llamafile Provides an OpenAI compatible endpoint for chat completions - here's how to call it with LiteLLM
+## Usage - dheera_ai.completion (calling OpenAI compatible endpoint)
+llamafile Provides an OpenAI compatible endpoint for chat completions - here's how to call it with Dheera AI
 
-To use litellm to call llamafile add the following to your completion call
+To use dheera_ai to call llamafile add the following to your completion call
 
 * `model="llamafile/<your-llamafile-model-name>"` 
 * `api_base = "your-hosted-llamafile"`
 
 ```python
-import litellm 
+import dheera_ai 
 
-response = litellm.completion(
+response = dheera_ai.completion(
             model="llamafile/mistralai/mistral-7b-instruct-v0.2", # pass the llamafile model name for completeness
             messages=messages,
             api_base="http://localhost:8080/v1",
@@ -37,16 +37,16 @@ print(response)
 ```
 
 
-## Usage -  LiteLLM Proxy Server (calling OpenAI compatible endpoint)
+## Usage -  Dheera AI Proxy Server (calling OpenAI compatible endpoint)
 
-Here's how to call an OpenAI-Compatible Endpoint with the LiteLLM Proxy Server
+Here's how to call an OpenAI-Compatible Endpoint with the Dheera AI Proxy Server
 
 1. Modify the config.yaml 
 
   ```yaml
   model_list:
     - model_name: my-model
-      litellm_params:
+      dheera_ai_params:
         model: llamafile/mistralai/mistral-7b-instruct-v0.2 # add llamafile/ prefix to route as OpenAI provider
         api_base: http://localhost:8080/v1 # add api base for OpenAI compatible provider
   ```
@@ -54,10 +54,10 @@ Here's how to call an OpenAI-Compatible Endpoint with the LiteLLM Proxy Server
 1. Start the proxy 
 
   ```bash
-  $ litellm --config /path/to/config.yaml
+  $ dheera_ai --config /path/to/config.yaml
   ```
 
-1. Send Request to LiteLLM Proxy Server
+1. Send Request to Dheera AI Proxy Server
 
   <Tabs>
 
@@ -66,8 +66,8 @@ Here's how to call an OpenAI-Compatible Endpoint with the LiteLLM Proxy Server
   ```python
   import openai
   client = openai.OpenAI(
-      api_key="sk-1234", # pass litellm proxy key, if you're using virtual keys
-      base_url="http://0.0.0.0:4000" # litellm-proxy-base url
+      api_key="sk-1234", # pass dheera_ai proxy key, if you're using virtual keys
+      base_url="http://0.0.0.0:4000" # dheera_ai-proxy-base url
   )
 
   response = client.chat.completions.create(
@@ -111,7 +111,7 @@ Here's how to call an OpenAI-Compatible Endpoint with the LiteLLM Proxy Server
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import embedding   
+from dheera_ai import embedding   
 import os
 
 os.environ["LLAMAFILE_API_BASE"] = "http://localhost:8080/v1"
@@ -130,7 +130,7 @@ print(embedding)
 ```yaml
 model_list:
     - model_name: my-model
-      litellm_params:
+      dheera_ai_params:
         model: llamafile/sentence-transformers/all-MiniLM-L6-v2 # add llamafile/ prefix to route as OpenAI provider
         api_base: http://localhost:8080/v1 # add api base for OpenAI compatible provider
 ```
@@ -138,7 +138,7 @@ model_list:
 1. Start the proxy 
 
 ```bash
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```

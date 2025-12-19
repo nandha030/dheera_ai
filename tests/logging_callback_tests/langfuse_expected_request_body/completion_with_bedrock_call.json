@@ -4,9 +4,9 @@
             "id": "3c9b544f-ef3f-449e-8ec1-763acbb56bec",
             "type": "trace-create",
             "body": {
-                "id": "litellm-test-c4c1c850-e8c9-4b16-b5a4-bff2bf9fa4f6",
+                "id": "dheera_ai-test-c4c1c850-e8c9-4b16-b5a4-bff2bf9fa4f6",
                 "timestamp": "2025-05-26T21:13:16.796768Z",
-                "name": "litellm-acompletion",
+                "name": "dheera_ai-acompletion",
                 "input": {
                     "messages": [
                         {
@@ -23,8 +23,8 @@
             "id": "90e6bc70-05d9-4444-8b87-4523a9a54c17",
             "type": "generation-create",
             "body": {
-                "traceId": "litellm-test-c4c1c850-e8c9-4b16-b5a4-bff2bf9fa4f6",
-                "name": "litellm-acompletion",
+                "traceId": "dheera_ai-test-c4c1c850-e8c9-4b16-b5a4-bff2bf9fa4f6",
+                "name": "dheera_ai-acompletion",
                 "startTime": "2025-05-26T14:13:16.469836-07:00",
                 "metadata": {
                     "hidden_params": {
@@ -33,12 +33,12 @@
                         "api_base": null,
                         "response_cost": 0.00018,
                         "additional_headers": {},
-                        "litellm_overhead_time_ms": null,
+                        "dheera_ai_overhead_time_ms": null,
                         "batch_models": null,
-                        "litellm_model_name": "bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0",
+                        "dheera_ai_model_name": "bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0",
                         "usage_object": null
                     },
-                    "litellm_response_cost": 0.00018,
+                    "dheera_ai_response_cost": 0.00018,
                     "cache_hit": false,
                     "requester_metadata": {}
                 },
@@ -77,7 +77,7 @@
     ],
     "metadata": {
         "batch_size": 2,
-        "sdk_integration": "litellm",
+        "sdk_integration": "dheera_ai",
         "sdk_name": "python",
         "sdk_version": "2.44.1",
         "public_key": "pk-lf-3bfc4db9-217f-48e9-92e0-142566e3c204"

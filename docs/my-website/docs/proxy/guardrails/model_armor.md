@@ -4,7 +4,7 @@ import TabItem from '@theme/TabItem';
 
 # Google Cloud Model Armor
 
-LiteLLM supports Google Cloud Model Armor guardrails via the [Model Armor API](https://cloud.google.com/security-command-center/docs/model-armor-overview). 
+Dheera AI supports Google Cloud Model Armor guardrails via the [Model Armor API](https://cloud.google.com/security-command-center/docs/model-armor-overview). 
 
 
 ## Supported Guardrails
@@ -12,20 +12,20 @@ LiteLLM supports Google Cloud Model Armor guardrails via the [Model Armor API](h
 - [Model Armor Templates](https://cloud.google.com/security-command-center/docs/manage-model-armor-templates) - Content sanitization and blocking based on configured templates
 
 ## Quick Start
-### 1. Define Guardrails on your LiteLLM config.yaml 
+### 1. Define Guardrails on your Dheera AI config.yaml 
 
 Define your guardrails under the `guardrails` section
 
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: model-armor-shield
-    litellm_params:
+    dheera_ai_params:
       guardrail: model_armor
       mode: [pre_call, post_call]  # Run on both input and output
       template_id: "your-template-id"  # Required: Your Model Armor template ID
@@ -43,11 +43,11 @@ guardrails:
 - `pre_call` Run **before** LLM call, on **input**
 - `post_call` Run **after** LLM call, on **input & output**
 
-### 2. Start LiteLLM Gateway 
+### 2. Start Dheera AI Gateway 
 
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 ### 3. Test request 

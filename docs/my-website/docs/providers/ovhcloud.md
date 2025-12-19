@@ -8,7 +8,7 @@ You can explore the last models we made available in our [catalog](https://endpo
 
 :::tip
 
-We support ALL OVHCloud AI Endpoints models, just set `model=ovhcloud/<any-model-on-ai-endpoints>` as a prefix when sending litellm requests.
+We support ALL OVHCloud AI Endpoints models, just set `model=ovhcloud/<any-model-on-ai-endpoints>` as a prefix when sending dheera_ai requests.
 For the complete models catalog, visit https://endpoints.ai.cloud.ovh.net/catalog. **
 
 :::
@@ -18,7 +18,7 @@ For the complete models catalog, visit https://endpoints.ai.cloud.ovh.net/catalo
 You can define your API key by setting the `OVHCLOUD_API_KEY` environment variable or by overriding the `api_key` parameter. You can generate a key on the [OVHCloud Manager](https://www.ovh.com/manager).
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 # Our API is free but ratelimited for calls without an API key.
@@ -46,7 +46,7 @@ print(response)
 ### Streaming
 Set the parameter `stream` to `True` to stream a response.
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['OVHCLOUD_API_KEY'] = "your-api-key"
@@ -75,7 +75,7 @@ for part in response:
 ### Tool Calling
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import json
 
 def get_current_weather(location, unit="celsius"):
@@ -210,7 +210,7 @@ else:
 ```python
 from base64 import b64encode
 from mimetypes import guess_type
-import litellm
+import dheera_ai
 
 # Auxiliary function to get b64 images
 def data_url_from_image(file_path):
@@ -224,7 +224,7 @@ def data_url_from_image(file_path):
     data_url = f"data:{mime_type};base64,{encoded_string}"
     return data_url
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model = "ovhcloud/Mistral-Small-3.2-24B-Instruct-2506", 
     messages=[
         {
@@ -254,7 +254,7 @@ print(response.choices[0].message.content)
 ### Structured Output
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="ovhcloud/Meta-Llama-3_3-70B-Instruct",
@@ -301,7 +301,7 @@ print(response.choices[0].message.content)
 ### Embeddings
 
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 
 response = embedding(
     model="ovhcloud/BGE-M3",
@@ -314,7 +314,7 @@ print(response.data)
 ### Audio Transcription
 
 ```python
-from litellm import transcription
+from dheera_ai import transcription
 
 audio_file = open("path/to/your/audio.wav", "rb")
 
@@ -326,16 +326,16 @@ response = transcription(
 print(response.text)
 ```
 
-## Usage with LiteLLM Proxy Server
+## Usage with Dheera AI Proxy Server
 
-Here's how to call a OVHCloud AI Endpoints model with the LiteLLM Proxy Server
+Here's how to call a OVHCloud AI Endpoints model with the Dheera AI Proxy Server
 
 1. Modify the config.yaml 
 
   ```yaml
   model_list:
     - model_name: my-model
-      litellm_params:
+      dheera_ai_params:
         model: ovhcloud/<your-model-name>  # add ovhcloud/ prefix to route as OVHCloud provider
         api_key: api-key                   # api key to send your model
   ```
@@ -344,10 +344,10 @@ Here's how to call a OVHCloud AI Endpoints model with the LiteLLM Proxy Server
 2. Start the proxy 
 
   ```bash
-  $ litellm --config /path/to/config.yaml
+  $ dheera_ai --config /path/to/config.yaml
   ```
 
-3. Send Request to LiteLLM Proxy Server
+3. Send Request to Dheera AI Proxy Server
 
   <Tabs>
 
@@ -356,8 +356,8 @@ Here's how to call a OVHCloud AI Endpoints model with the LiteLLM Proxy Server
   ```python
   import openai
   client = openai.OpenAI(
-      api_key="sk-1234",             # pass litellm proxy key, if you're using virtual keys
-      base_url="http://0.0.0.0:4000" # litellm-proxy-base url
+      api_key="sk-1234",             # pass dheera_ai proxy key, if you're using virtual keys
+      base_url="http://0.0.0.0:4000" # dheera_ai-proxy-base url
   )
 
   response = client.chat.completions.create(

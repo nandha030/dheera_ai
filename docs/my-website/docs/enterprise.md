@@ -3,14 +3,14 @@ import Image from '@theme/IdealImage';
 # Enterprise
 
 :::info
-- ✨ SSO is free for up to 5 users. After that, an enterprise license is required. [Get Started with Enterprise here](https://www.litellm.ai/enterprise)
-- Who is Enterprise for? Companies giving access to 100+ users **OR** 10+ AI use-cases. If you're not sure, [get in touch with us](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat) to discuss your needs.
+- ✨ SSO is free for up to 5 users. After that, an enterprise license is required. [Get Started with Enterprise here](https://www.dheera_ai.ai/enterprise)
+- Who is Enterprise for? Companies giving access to 100+ users **OR** 10+ AI use-cases. If you're not sure, [get in touch with us](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat) to discuss your needs.
 :::
 
-For companies that need SSO, user management and professional support for LiteLLM Proxy
+For companies that need SSO, user management and professional support for Dheera AI Proxy
 
 :::info
-Get free 7-day trial key [here](https://www.litellm.ai/enterprise#trial)
+Get free 7-day trial key [here](https://www.dheera_ai.ai/enterprise#trial)
 :::
 
 ## Enterprise Features
@@ -36,23 +36,23 @@ Manage Yourself - you can deploy our Docker Image or build a custom image from o
 
 ### What’s the cost of the Self-Managed Enterprise edition?
 
-Self-Managed Enterprise deployments require our team to understand your exact needs. [Get in touch with us to learn more](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+Self-Managed Enterprise deployments require our team to understand your exact needs. [Get in touch with us to learn more](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 
 ### How does deployment with Enterprise License work? 
 
-You just deploy [our docker image](https://docs.litellm.ai/docs/proxy/deploy) and get an enterprise license key to add to your environment to unlock additional functionality (SSO, etc.). 
+You just deploy [our docker image](https://docs.dheera_ai.ai/docs/proxy/deploy) and get an enterprise license key to add to your environment to unlock additional functionality (SSO, etc.). 
 
 ```env
-LITELLM_LICENSE="eyJ..."
+DHEERA_AI_LICENSE="eyJ..."
 ```
 
 **No data leaves your environment.** 
 
 
-## Hosted LiteLLM Proxy
+## Hosted Dheera AI Proxy
 
-LiteLLM maintains the proxy, so you can focus on your core products. 
+Dheera AI maintains the proxy, so you can focus on your core products. 
 
 We provide a dedicated proxy for your team, and manage the infrastructure. 
 
@@ -60,16 +60,16 @@ We provide a dedicated proxy for your team, and manage the infrastructure.
 
 Our proxy is already used in production by customers. 
 
-See our status page for [**live reliability**](https://status.litellm.ai/)
+See our status page for [**live reliability**](https://status.dheera_ai.ai/)
 
 ### **Benefits**
 - **No Maintenance, No Infra**: We'll maintain the proxy, and spin up any additional infrastructure (e.g.: separate server for spend logs) to make sure you can load balance + track spend across multiple LLM projects. 
 - **Reliable**: Our hosted proxy is tested on 1k requests per second, making it reliable for high load.
-- **Secure**: LiteLLM is SOC-2 Type 2 and ISO 27001 certified, to make sure your data is as secure as possible.
+- **Secure**: Dheera AI is SOC-2 Type 2 and ISO 27001 certified, to make sure your data is as secure as possible.
 
-### Supported data regions for LiteLLM Cloud
+### Supported data regions for Dheera AI Cloud
 
-You can find [supported data regions litellm here](../docs/data_security#supported-data-regions-for-litellm-cloud)
+You can find [supported data regions dheera_ai here](../docs/data_security#supported-data-regions-for-dheera_ai-cloud)
 
 
 ## Frequently Asked Questions
@@ -94,7 +94,7 @@ Professional Support can assist with LLM/Provider integrations, deployment, upgr
 
 Pricing is based on usage. We can figure out a price that works for your team, on the call. 
 
-[**Contact Us to learn more**](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+[**Contact Us to learn more**](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 
 
@@ -102,17 +102,17 @@ Pricing is based on usage. We can figure out a price that works for your team, o
 
 ### 1. Create keys
 
-<Image img={require('../img/litellm_hosted_ui_create_key.png')} />
+<Image img={require('../img/dheera_ai_hosted_ui_create_key.png')} />
 
 ### 2. Add Models
 
-<Image img={require('../img/litellm_hosted_ui_add_models.png')}/>
+<Image img={require('../img/dheera_ai_hosted_ui_add_models.png')}/>
 
 ### 3. Track spend 
 
-<Image img={require('../img/litellm_hosted_usage_dashboard.png')} />
+<Image img={require('../img/dheera_ai_hosted_usage_dashboard.png')} />
 
 
 ### 4. Configure load balancing 
 
-<Image img={require('../img/litellm_hosted_ui_router.png')} />
+<Image img={require('../img/dheera_ai_hosted_ui_router.png')} />

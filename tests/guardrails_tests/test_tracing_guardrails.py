@@ -4,14 +4,14 @@ import io, asyncio
 import json
 import pytest
 import time
-from litellm import mock_completion
+from dheera_ai import mock_completion
 from unittest.mock import MagicMock, AsyncMock, patch
 sys.path.insert(0, os.path.abspath("../.."))
-import litellm
-from litellm.proxy.guardrails.guardrail_hooks.presidio import _OPTIONAL_PresidioPIIMasking, PresidioPerRequestConfig
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.utils import StandardLoggingPayload, StandardLoggingGuardrailInformation
-from litellm.types.guardrails import GuardrailEventHooks
+import dheera_ai
+from dheera_ai.proxy.guardrails.guardrail_hooks.presidio import _OPTIONAL_PresidioPIIMasking, PresidioPerRequestConfig
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.utils import StandardLoggingPayload, StandardLoggingGuardrailInformation
+from dheera_ai.types.guardrails import GuardrailEventHooks
 from typing import Optional
 
 
@@ -30,7 +30,7 @@ async def test_standard_logging_payload_includes_guardrail_information():
     Test that the standard logging payload includes the guardrail information when a guardrail is applied
     """
     test_custom_logger = CustomLoggerForTesting()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     presidio_guard = _OPTIONAL_PresidioPIIMasking(
         guardrail_name="presidio_guard",
         event_hook=GuardrailEventHooks.pre_call,
@@ -119,8 +119,8 @@ async def test_standard_logging_payload_includes_guardrail_information():
             call_type="acompletion"
         )
 
-    # 2. call litellm.acompletion
-    response = await litellm.acompletion(**request_data)
+    # 2. call dheera_ai.acompletion
+    response = await dheera_ai.acompletion(**request_data)
 
     # 3. assert that the standard logging payload includes the guardrail information
     await asyncio.sleep(1)
@@ -165,7 +165,7 @@ async def test_langfuse_trace_includes_guardrail_information():
     """
     import httpx
     from unittest.mock import AsyncMock, patch
-    from litellm.integrations.langfuse.langfuse_prompt_management import LangfusePromptManagement 
+    from dheera_ai.integrations.langfuse.langfuse_prompt_management import LangfusePromptManagement 
     callback = LangfusePromptManagement(flush_interval=3)
     import json
     
@@ -179,8 +179,8 @@ async def test_langfuse_trace_includes_guardrail_information():
     mock_post.return_value = mock_response
     
     with patch("httpx.Client.post", mock_post):
-        litellm._turn_on_debug()
-        litellm.callbacks = [callback]
+        dheera_ai._turn_on_debug()
+        dheera_ai.callbacks = [callback]
         presidio_guard = _OPTIONAL_PresidioPIIMasking(
             guardrail_name="presidio_guard",
             event_hook=GuardrailEventHooks.pre_call,
@@ -204,8 +204,8 @@ async def test_langfuse_trace_includes_guardrail_information():
             call_type="acompletion"
         )
 
-        # 2. call litellm.acompletion
-        response = await litellm.acompletion(**request_data)
+        # 2. call dheera_ai.acompletion
+        response = await dheera_ai.acompletion(**request_data)
 
         # 3. Wait for async logging operations to complete
         await asyncio.sleep(5)
@@ -262,14 +262,14 @@ async def test_bedrock_guardrail_status_blocked():
     2. The status_fields.guardrail_status is set to "guardrail_intervened"
     3. The status_fields.llm_api_status remains "success" (mock LLM call succeeds)
     """
-    from litellm.proxy.guardrails.guardrail_hooks.bedrock_guardrails import BedrockGuardrail
-    from litellm.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy.guardrails.guardrail_hooks.bedrock_guardrails import BedrockGuardrail
+    from dheera_ai.proxy._types import UserAPIKeyAuth
     from unittest.mock import AsyncMock, MagicMock, patch
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     
     # Setup custom logger to capture standard logging payload
     test_custom_logger = CustomLoggerForTesting()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     
     # Create Bedrock guardrail with mock AWS credentials
     bedrock_guard = BedrockGuardrail(
@@ -318,9 +318,9 @@ async def test_bedrock_guardrail_status_blocked():
             # Expected exception when guardrail blocks content
             pass
     
-    # Call litellm.acompletion to trigger logging callbacks
+    # Call dheera_ai.acompletion to trigger logging callbacks
     # This populates the standard_logging_payload in our custom logger
-    response = await litellm.acompletion(**request_data)
+    response = await dheera_ai.acompletion(**request_data)
     await asyncio.sleep(1)
     
     # Verify the standard logging payload was captured
@@ -352,17 +352,17 @@ async def test_bedrock_guardrail_status_success():
     2. The status_fields.guardrail_status is set to "success" 
     3. The status_fields.llm_api_status is "success"
     """
-    from litellm.proxy.guardrails.guardrail_hooks.bedrock_guardrails import BedrockGuardrail
-    from litellm.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy.guardrails.guardrail_hooks.bedrock_guardrails import BedrockGuardrail
+    from dheera_ai.proxy._types import UserAPIKeyAuth
     from unittest.mock import AsyncMock, MagicMock, patch
     
     # Reset callbacks completely to avoid event loop conflicts
-    litellm.callbacks = []
+    dheera_ai.callbacks = []
     await asyncio.sleep(0.1)  # Let previous callbacks finish
     
     # Setup custom logger to capture standard logging payload
     test_custom_logger = CustomLoggerForTesting()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     
     # Create Bedrock guardrail
     bedrock_guard = BedrockGuardrail(
@@ -401,8 +401,8 @@ async def test_bedrock_guardrail_status_success():
             call_type="completion"
         )
     
-    # Call litellm.acompletion to trigger logging
-    response = await litellm.acompletion(**request_data)
+    # Call dheera_ai.acompletion to trigger logging
+    response = await dheera_ai.acompletion(**request_data)
     await asyncio.sleep(1)
     
     # Check standard logging payload status fields
@@ -431,18 +431,18 @@ async def test_bedrock_guardrail_status_failure():
     2. The status_fields.guardrail_status is set to "guardrail_failed_to_respond"
     3. The exception is still raised (maintaining existing behavior)
     """
-    from litellm.proxy.guardrails.guardrail_hooks.bedrock_guardrails import BedrockGuardrail
-    from litellm.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy.guardrails.guardrail_hooks.bedrock_guardrails import BedrockGuardrail
+    from dheera_ai.proxy._types import UserAPIKeyAuth
     from unittest.mock import AsyncMock, MagicMock, patch
     import httpx
     
     # Reset callbacks completely to avoid event loop conflicts
-    litellm.callbacks = []
+    dheera_ai.callbacks = []
     await asyncio.sleep(0.1)
     
     # Setup custom logger to capture standard logging payload
     test_custom_logger = CustomLoggerForTesting()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     
     # Create Bedrock guardrail
     bedrock_guard = BedrockGuardrail(
@@ -481,8 +481,8 @@ async def test_bedrock_guardrail_status_failure():
             # Expected exception when endpoint is down
             pass
     
-    # Call litellm.acompletion to trigger logging
-    response = await litellm.acompletion(**request_data)
+    # Call dheera_ai.acompletion to trigger logging
+    response = await dheera_ai.acompletion(**request_data)
     await asyncio.sleep(1)
     
     # Check standard logging payload status fields
@@ -511,17 +511,17 @@ async def test_noma_guardrail_status_blocked():
     2. The status_fields.guardrail_status is set to "guardrail_intervened"
     3. The status_fields.llm_api_status remains "success"
     """
-    from litellm.proxy.guardrails.guardrail_hooks.noma.noma import NomaGuardrail
-    from litellm.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy.guardrails.guardrail_hooks.noma.noma import NomaGuardrail
+    from dheera_ai.proxy._types import UserAPIKeyAuth
     from unittest.mock import AsyncMock, MagicMock, patch
     
     # Reset callbacks completely to avoid event loop conflicts
-    litellm.callbacks = []
+    dheera_ai.callbacks = []
     await asyncio.sleep(0.1)  # Let previous callbacks finish
     
     # Setup custom logger to capture standard logging payload
     test_custom_logger = CustomLoggerForTesting()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     
     # Create Noma guardrail
     noma_guard = NomaGuardrail(
@@ -566,8 +566,8 @@ async def test_noma_guardrail_status_blocked():
         except Exception:
             pass
     
-    # Call litellm.acompletion to trigger logging
-    response = await litellm.acompletion(**request_data)
+    # Call dheera_ai.acompletion to trigger logging
+    response = await dheera_ai.acompletion(**request_data)
     await asyncio.sleep(1)
     
     # Check standard logging payload status fields
@@ -596,17 +596,17 @@ async def test_noma_guardrail_status_success():
     2. The status_fields.guardrail_status is set to "success"
     3. The status_fields.llm_api_status is "success"
     """
-    from litellm.proxy.guardrails.guardrail_hooks.noma.noma import NomaGuardrail
-    from litellm.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy.guardrails.guardrail_hooks.noma.noma import NomaGuardrail
+    from dheera_ai.proxy._types import UserAPIKeyAuth
     from unittest.mock import AsyncMock, MagicMock, patch
     
     # Reset callbacks completely to avoid event loop conflicts
-    litellm.callbacks = []
+    dheera_ai.callbacks = []
     await asyncio.sleep(0.1)  # Let previous callbacks finish
     
     # Setup custom logger to capture standard logging payload
     test_custom_logger = CustomLoggerForTesting()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     
     # Create Noma guardrail
     noma_guard = NomaGuardrail(
@@ -643,8 +643,8 @@ async def test_noma_guardrail_status_success():
             call_type="completion"
         )
     
-    # Call litellm.acompletion to trigger logging
-    response = await litellm.acompletion(**request_data)
+    # Call dheera_ai.acompletion to trigger logging
+    response = await dheera_ai.acompletion(**request_data)
     await asyncio.sleep(1)
     
     # Check standard logging payload status fields
@@ -675,7 +675,7 @@ def test_guardrail_status_fields_computation():
     - guardrail_status="guardrail_failed_to_respond" -> status_fields.guardrail_status="guardrail_failed_to_respond"
     - no guardrail -> status_fields.guardrail_status="not_run"
     """
-    from litellm.litellm_core_utils.litellm_logging import _get_status_fields
+    from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import _get_status_fields
     
     # Test guardrail_intervened status (content was blocked by guardrail)
     # guardrail_information is now a list

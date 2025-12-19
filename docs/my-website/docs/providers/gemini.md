@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 | Property | Details |
 |-------|-------|
 | Description | Google AI Studio is a fully-managed AI development platform for building and using generative AI. |
-| Provider Route on LiteLLM | `gemini/` |
+| Provider Route on Dheera AI | `gemini/` |
 | Provider Doc | [Google AI Studio ↗](https://aistudio.google.com/) |
 | API Endpoint for Provider | https://generativelanguage.googleapis.com |
 | Supported OpenAI Endpoints | `/chat/completions`, [`/embeddings`](../embedding/supported_embedding#gemini-ai-embedding-models), `/completions`, [`/videos`](./gemini/videos.md), [`/images/edits`](../image_edits.md) |
@@ -25,13 +25,13 @@ os.environ["GEMINI_API_KEY"] = "your-api-key"
 
 ## Sample Usage
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['GEMINI_API_KEY'] = ""
 response = completion(
     model="gemini/gemini-pro", 
-    messages=[{"role": "user", "content": "write code for saying hi from LiteLLM"}]
+    messages=[{"role": "user", "content": "write code for saying hi from Dheera AI"}]
 )
 ```
 
@@ -56,13 +56,13 @@ response = completion(
 **Anthropic Params**
 - thinking (used to set max budget tokens across anthropic/gemini models)
 
-[**See Updated List**](https://github.com/BerriAI/litellm/blob/main/litellm/llms/gemini/chat/transformation.py#L70)
+[**See Updated List**](https://github.com/BerriAI/dheera_ai/blob/main/dheera_ai/llms/gemini/chat/transformation.py#L70)
 
 
 
 ## Usage - Thinking / `reasoning_content`
 
-LiteLLM translates OpenAI's `reasoning_effort` to Gemini's `thinking` parameter. [Code](https://github.com/BerriAI/litellm/blob/620664921902d7a9bfb29897a7b27c1a7ef4ddfb/litellm/llms/vertex_ai/gemini/vertex_and_google_ai_studio_gemini.py#L362)
+Dheera AI translates OpenAI's `reasoning_effort` to Gemini's `thinking` parameter. [Code](https://github.com/BerriAI/dheera_ai/blob/620664921902d7a9bfb29897a7b27c1a7ef4ddfb/dheera_ai/llms/vertex_ai/gemini/vertex_and_google_ai_studio_gemini.py#L362)
 
 **Cost Optimization:** Use `reasoning_effort="none"` (OpenAI standard) for significant cost savings - up to 96% cheaper. [Google's docs](https://ai.google.dev/gemini-api/docs/openai)
 
@@ -71,11 +71,11 @@ Note: Reasoning cannot be turned off on Gemini 2.5 Pro models.
 :::
 
 :::tip Gemini 3 Models
-For **Gemini 3+ models** (e.g., `gemini-3-pro-preview`), LiteLLM automatically maps `reasoning_effort` to the new `thinking_level` parameter instead of `thinking_budget`. The `thinking_level` parameter uses `"low"` or `"high"` values for better control over reasoning depth.
+For **Gemini 3+ models** (e.g., `gemini-3-pro-preview`), Dheera AI automatically maps `reasoning_effort` to the new `thinking_level` parameter instead of `thinking_budget`. The `thinking_level` parameter uses `"low"` or `"high"` values for better control over reasoning depth.
 :::
 
 :::warning Image Models
-**Gemini image models** (e.g., `gemini-3-pro-image-preview`, `gemini-2.0-flash-exp-image-generation`) do **not** support the `thinking_level` parameter. LiteLLM automatically excludes image models from receiving thinking configuration to prevent API errors.
+**Gemini image models** (e.g., `gemini-3-pro-image-preview`, `gemini-2.0-flash-exp-image-generation`) do **not** support the `thinking_level` parameter. Dheera AI automatically excludes image models from receiving thinking configuration to prevent API errors.
 :::
 
 **Mapping for Gemini 2.5 and earlier models**
@@ -83,7 +83,7 @@ For **Gemini 3+ models** (e.g., `gemini-3-pro-preview`), LiteLLM automatically m
 | reasoning_effort | thinking | Notes |
 | ---------------- | -------- | ----- |
 | "none"           | "budget_tokens": 0, "includeThoughts": false | 💰 **Recommended for cost optimization** - OpenAI-compatible, always 0 |
-| "disable"        | "budget_tokens": DEFAULT (0), "includeThoughts": false | LiteLLM-specific, configurable via env var |
+| "disable"        | "budget_tokens": DEFAULT (0), "includeThoughts": false | Dheera AI-specific, configurable via env var |
 | "low"            | "budget_tokens": 1024 | |
 | "medium"         | "budget_tokens": 2048 | |
 | "high"           | "budget_tokens": 4096 | |
@@ -103,7 +103,7 @@ For **Gemini 3+ models** (e.g., `gemini-3-pro-preview`), LiteLLM automatically m
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # Cost-optimized: Use reasoning_effort="none" for best pricing
 resp = completion(
@@ -129,7 +129,7 @@ resp = completion(
 
 ```yaml
 - model_name: gemini-2.5-flash
-  litellm_params:
+  dheera_ai_params:
     model: gemini/gemini-2.5-flash-preview-04-17
     api_key: os.environ/GEMINI_API_KEY
 ```
@@ -137,7 +137,7 @@ resp = completion(
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -164,7 +164,7 @@ For Gemini 3+ models (e.g., `gemini-3-pro-preview`), you can use the new `thinki
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # Use thinking_level for Gemini 3 models
 resp = completion(
@@ -202,12 +202,12 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 :::warning
 **Temperature Recommendation for Gemini 3 Models**
 
-For Gemini 3 models, LiteLLM defaults `temperature` to `1.0` and strongly recommends keeping it at this default. Setting `temperature < 1.0` can cause:
+For Gemini 3 models, Dheera AI defaults `temperature` to `1.0` and strongly recommends keeping it at this default. Setting `temperature < 1.0` can cause:
 - Infinite loops
 - Degraded reasoning performance
 - Failure on complex tasks
 
-LiteLLM will automatically set `temperature=1.0` if not specified for Gemini 3+ models.
+Dheera AI will automatically set `temperature=1.0` if not specified for Gemini 3+ models.
 :::
 
 **Expected Response**
@@ -259,7 +259,7 @@ This is translated to Gemini's [`thinkingConfig` parameter](https://ai.google.de
 <TabItem value="sdk" label="SDK">
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
   model="gemini/gemini-2.5-flash-preview-04-17",
   messages=[{"role": "user", "content": "What is the capital of France?"}],
   thinking={"type": "enabled", "budget_tokens": 1024},
@@ -272,7 +272,7 @@ response = litellm.completion(
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "gemini/gemini-2.5-flash-preview-04-17",
     "messages": [{"role": "user", "content": "What is the capital of France?"}],
@@ -291,13 +291,13 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 
 :::info
 
-LiteLLM supports Gemini TTS models that can generate audio responses using the OpenAI-compatible `audio` parameter format.
+Dheera AI supports Gemini TTS models that can generate audio responses using the OpenAI-compatible `audio` parameter format.
 
 :::
 
 ### Supported Models
 
-LiteLLM supports Gemini TTS models with audio capabilities (e.g. `gemini-2.5-flash-preview-tts` and `gemini-2.5-pro-preview-tts`). For the complete list of available TTS models and voices, see the [official Gemini TTS documentation](https://ai.google.dev/gemini-api/docs/speech-generation).
+Dheera AI supports Gemini TTS models with audio capabilities (e.g. `gemini-2.5-flash-preview-tts` and `gemini-2.5-pro-preview-tts`). For the complete list of available TTS models and voices, see the [official Gemini TTS documentation](https://ai.google.dev/gemini-api/docs/speech-generation).
 
 ### Limitations
 
@@ -316,7 +316,7 @@ LiteLLM supports Gemini TTS models with audio capabilities (e.g. `gemini-2.5-fla
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['GEMINI_API_KEY'] = "your-api-key"
@@ -342,11 +342,11 @@ print(response)
 ```yaml
 model_list:
   - model_name: gemini-tts-flash
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.5-flash-preview-tts
       api_key: os.environ/GEMINI_API_KEY
   - model_name: gemini-tts-pro
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.5-pro-preview-tts
       api_key: os.environ/GEMINI_API_KEY
 ```
@@ -354,7 +354,7 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make TTS request
@@ -402,14 +402,14 @@ For more information about Gemini's TTS capabilities and available voices, see t
 
 ## Passing Gemini Specific Params
 ### Response schema 
-LiteLLM supports sending `response_schema` as a param for Gemini-1.5-Pro on Google AI Studio. 
+Dheera AI supports sending `response_schema` as a param for Gemini-1.5-Pro on Google AI Studio. 
 
 **Response Schema**
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 import json 
 import os 
 
@@ -452,7 +452,7 @@ print(json.loads(completion.choices[0].message.content))
 ```yaml
 model_list:
   - model_name: gemini-pro
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-1.5-pro
       api_key: os.environ/GEMINI_API_KEY
 ```
@@ -460,7 +460,7 @@ model_list:
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -501,7 +501,7 @@ To validate the response_schema, set `enforce_validation: true`.
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion, JSONSchemaValidationError
+from dheera_ai import completion, JSONSchemaValidationError
 try: 
 	completion(
     model="gemini/gemini-1.5-pro", 
@@ -523,7 +523,7 @@ except JSONSchemaValidationError as e:
 ```yaml
 model_list:
   - model_name: gemini-pro
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-1.5-pro
       api_key: os.environ/GEMINI_API_KEY
 ```
@@ -531,7 +531,7 @@ model_list:
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -566,7 +566,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 </TabItem>
 </Tabs>
 
-LiteLLM will validate the response against the schema, and raise a `JSONSchemaValidationError` if the response does not match the schema. 
+Dheera AI will validate the response against the schema, and raise a `JSONSchemaValidationError` if the response does not match the schema. 
 
 JSONSchemaValidationError inherits from `openai.APIError` 
 
@@ -576,7 +576,7 @@ Access the raw response with `e.raw_response`
 
 ### GenerationConfig Params 
 
-To pass additional GenerationConfig params - e.g. `topK`, just pass it in the request body of the call, and LiteLLM will pass it straight through as a key-value pair in the request body. 
+To pass additional GenerationConfig params - e.g. `topK`, just pass it in the request body of the call, and Dheera AI will pass it straight through as a key-value pair in the request body. 
 
 [**See Gemini GenerationConfigParams**](https://ai.google.dev/api/generate-content#v1beta.GenerationConfig)
 
@@ -584,7 +584,7 @@ To pass additional GenerationConfig params - e.g. `topK`, just pass it in the re
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 import json 
 import os 
 
@@ -613,7 +613,7 @@ print(json.loads(completion.choices[0].message.content))
 ```yaml
 model_list:
   - model_name: gemini-pro
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-1.5-pro
       api_key: os.environ/GEMINI_API_KEY
 ```
@@ -621,7 +621,7 @@ model_list:
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -651,7 +651,7 @@ To validate the response_schema, set `enforce_validation: true`.
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion, JSONSchemaValidationError
+from dheera_ai import completion, JSONSchemaValidationError
 try: 
 	completion(
     model="gemini/gemini-1.5-pro", 
@@ -673,7 +673,7 @@ except JSONSchemaValidationError as e:
 ```yaml
 model_list:
   - model_name: gemini-pro
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-1.5-pro
       api_key: os.environ/GEMINI_API_KEY
 ```
@@ -681,7 +681,7 @@ model_list:
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -722,7 +722,7 @@ In certain use-cases you may need to make calls to the models and pass [safety s
 ```python
 response = completion(
     model="gemini/gemini-pro", 
-    messages=[{"role": "user", "content": "write code for saying hi from LiteLLM"}],
+    messages=[{"role": "user", "content": "write code for saying hi from Dheera AI"}],
     safety_settings=[
         {
             "category": "HARM_CATEGORY_HARASSMENT",
@@ -747,7 +747,7 @@ response = completion(
 ## Tool Calling 
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 # set env
 os.environ["GEMINI_API_KEY"] = ".."
@@ -796,7 +796,7 @@ assert isinstance(
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GEMINI_API_KEY"] = ".."
@@ -819,14 +819,14 @@ print(response)
 ```yaml
 model_list:
   - model_name: gemini-2.0-flash
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.0-flash
       api_key: os.environ/GEMINI_API_KEY
 ```
 
 2. Start Proxy
 ```bash
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -851,7 +851,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GEMINI_API_KEY"] = ".."
@@ -881,14 +881,14 @@ print(f"Retrieval Status: {urlMetadata['urlRetrievalStatus']}")
 ```yaml
 model_list:
   - model_name: gemini-2.0-flash
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.0-flash
       api_key: os.environ/GEMINI_API_KEY
 ```
 
 2. Start Proxy
 ```bash
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -912,7 +912,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GEMINI_API_KEY"] = ".."
@@ -935,14 +935,14 @@ print(response)
 ```yaml
 model_list:
   - model_name: gemini-2.0-flash
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.0-flash
       api_key: os.environ/GEMINI_API_KEY
 ```
 
 2. Start Proxy
 ```bash
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -969,7 +969,7 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GEMINI_API_KEY"] = ".."
@@ -992,14 +992,14 @@ print(response)
 ```yaml
 model_list:
   - model_name: gemini-2.0-flash
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.0-flash
       api_key: os.environ/GEMINI_API_KEY
 ```
 
 2. Start Proxy
 ```bash
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -1022,10 +1022,10 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 ### Computer Use Tool
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GEMINI_API_KEY"] = "your-api-key"
@@ -1045,7 +1045,7 @@ messages = [
         "content": [
             {
                 "type": "text",
-                "text": "Navigate to google.com and search for 'LiteLLM'"
+                "text": "Navigate to google.com and search for 'Dheera AI'"
             },
             {
                 "type": "image_url",
@@ -1084,7 +1084,7 @@ if response.choices[0].message.tool_calls:
             },
             {
                 "type": "input_image",
-                "image_url": "data:image/png;base64,..."  # New screenshot after action (Can send an image url as well, litellm handles the conversion)
+                "image_url": "data:image/png;base64,..."  # New screenshot after action (Can send an image url as well, dheera_ai handles the conversion)
             }
         ]
     })
@@ -1098,14 +1098,14 @@ if response.choices[0].message.tool_calls:
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy Server">
+<TabItem value="proxy" label="Dheera AI Proxy Server">
 
 1. Add model to config.yaml
 
 ```yaml
 model_list:
   - model_name: gemini-computer-use
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.5-computer-use-preview-10-2025
       api_key: os.environ/GEMINI_API_KEY
 ```
@@ -1113,7 +1113,7 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make request
@@ -1176,7 +1176,7 @@ When responding to Computer Use tool calls, include the URL and screenshot:
 
 ### Environment Mapping
 
-| LiteLLM Input | Gemini API Value |
+| Dheera AI Input | Gemini API Value |
 |--------------|------------------|
 | `"browser"` | `ENVIRONMENT_BROWSER` |
 | `"unspecified"` | `ENVIRONMENT_UNSPECIFIED` |
@@ -1194,8 +1194,8 @@ Thought signatures are particularly important for multi-turn function calling sc
 ### How Thought Signatures Work
 
 - **Function calls with signatures**: When Gemini returns a function call, it includes a `thought_signature` in the response
-- **Preservation**: LiteLLM automatically extracts and stores thought signatures in `provider_specific_fields` of tool calls
-- **Return in conversation history**: When you include the assistant's message with tool calls in subsequent requests, LiteLLM automatically preserves and returns the thought signatures to Gemini
+- **Preservation**: Dheera AI automatically extracts and stores thought signatures in `provider_specific_fields` of tool calls
+- **Return in conversation history**: When you include the assistant's message with tool calls in subsequent requests, Dheera AI automatically preserves and returns the thought signatures to Gemini
 - **Parallel function calls**: Only the first function call in a parallel set has a thought signature
 - **Sequential function calls**: Each function call in a multi-step sequence has its own signature
 
@@ -1207,7 +1207,7 @@ To enable thought signatures, you need to enable thinking/reasoning:
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="gemini/gemini-2.5-flash",
@@ -1237,7 +1237,7 @@ curl http://localhost:4000/v1/chat/completions \
 
 ### Multi-Turn Function Calling with Thought Signatures
 
-When building conversation history for multi-turn function calling, you must include the thought signatures from previous responses. LiteLLM handles this automatically when you append the full assistant message to your conversation history.
+When building conversation history for multi-turn function calling, you must include the thought signatures from previous responses. Dheera AI handles this automatically when you append the full assistant message to your conversation history.
 
 <Tabs>
 <TabItem value="sdk" label="OpenAI Client">
@@ -1464,7 +1464,7 @@ curl --location 'http://localhost:4000/v1/chat/completions' \
 
 ### Important Notes
 
-1. **Automatic Handling**: LiteLLM automatically extracts thought signatures from Gemini responses and preserves them when you include assistant messages in conversation history. You don't need to manually extract or manage them.
+1. **Automatic Handling**: Dheera AI automatically extracts thought signatures from Gemini responses and preserves them when you include assistant messages in conversation history. You don't need to manually extract or manage them.
 
 2. **Parallel Function Calls**: When the model makes parallel function calls, only the first function call will have a thought signature. Subsequent parallel calls won't have signatures.
 
@@ -1474,7 +1474,7 @@ curl --location 'http://localhost:4000/v1/chat/completions' \
 
 5. **Format**: Thought signatures are stored in `provider_specific_fields.thought_signature` of tool calls in the response, and are automatically included when you append the assistant message to your conversation history.
 
-6. **Chat Completions Clients**: With chat completions clients where you cannot control whether or not the previous assistant message is included as-is (ex langchain's ChatOpenAI), LiteLLM also preserves the thought signature by appending it to the tool call id (`call_123__thought__<thought-signature>`) and extracting it back out before sending the outbound request to Gemini. 
+6. **Chat Completions Clients**: With chat completions clients where you cannot control whether or not the previous assistant message is included as-is (ex langchain's ChatOpenAI), Dheera AI also preserves the thought signature by appending it to the tool call id (`call_123__thought__<thought-signature>`) and extracting it back out before sending the outbound request to Gemini. 
 
 ## JSON Mode
 
@@ -1482,7 +1482,7 @@ curl --location 'http://localhost:4000/v1/chat/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 import json 
 import os 
 
@@ -1513,7 +1513,7 @@ print(json.loads(completion.choices[0].message.content))
 ```yaml
 model_list:
   - model_name: gemini-pro
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-1.5-pro
       api_key: os.environ/GEMINI_API_KEY
 ```
@@ -1521,7 +1521,7 @@ model_list:
 2. Start Proxy 
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 3. Make Request!
@@ -1543,13 +1543,13 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
 </TabItem>
 </Tabs>
 # Gemini-Pro-Vision
-LiteLLM Supports the following image types passed in `url`
+Dheera AI Supports the following image types passed in `url`
 - Images with direct links - https://storage.googleapis.com/github-repo/img/gemini/intro/landmark3.jpg
 - Image in local storage - ./localimage.jpeg
 
 ## Image Resolution Control (Gemini 3+)
 
-For Gemini 3+ models, LiteLLM supports per-part media resolution control using OpenAI's `detail` parameter. This allows you to specify different resolution levels for individual images in your request.
+For Gemini 3+ models, Dheera AI supports per-part media resolution control using OpenAI's `detail` parameter. This allows you to specify different resolution levels for individual images in your request.
 
 **Supported `detail` values:**
 - `"low"` - Maps to `media_resolution: "low"` (280 tokens for images, 70 tokens per frame for videos)
@@ -1559,7 +1559,7 @@ For Gemini 3+ models, LiteLLM supports per-part media resolution control using O
 **Usage Example:**
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 messages = [
     {
@@ -1600,7 +1600,7 @@ response = completion(
 ## Sample Usage
 ```python
 import os
-import litellm
+import dheera_ai
 from dotenv import load_dotenv
 
 # Load the environment variables from .env file
@@ -1629,7 +1629,7 @@ messages = [
 ]
 
 # Make the API call to Gemini model
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gemini/gemini-pro-vision",
     messages=messages,
 )
@@ -1645,7 +1645,7 @@ print(content)
 
 ### Inline Data (e.g. audio stream)
 
-LiteLLM follows the OpenAI format and accepts sending inline data as an encoded base64 string. 
+Dheera AI follows the OpenAI format and accepts sending inline data as an encoded base64 string. 
 
 The format to follow is 
 
@@ -1656,20 +1656,20 @@ data:<mime_type>;base64,<encoded_data>
 ** LITELLM CALL **
 
 ```python
-import litellm
+import dheera_ai
 from pathlib import Path
 import base64
 import os
 
 os.environ["GEMINI_API_KEY"] = "" 
 
-litellm.set_verbose = True # 👈 See Raw call 
+dheera_ai.set_verbose = True # 👈 See Raw call 
 
 audio_bytes = Path("speech_vertex.mp3").read_bytes()
 encoded_data = base64.b64encode(audio_bytes).decode("utf-8")
 print("Audio Bytes = {}".format(audio_bytes))
 model = "gemini/gemini-1.5-flash"
-response = litellm.completion(
+response = dheera_ai.completion(
     model=model,
     messages=[
         {
@@ -1714,15 +1714,15 @@ print(response.text)
 ### https:// file 
 
 ```python
-import litellm
+import dheera_ai
 import os
 
 os.environ["GEMINI_API_KEY"] = "" 
 
-litellm.set_verbose = True # 👈 See Raw call 
+dheera_ai.set_verbose = True # 👈 See Raw call 
 
 model = "gemini/gemini-1.5-flash"
-response = litellm.completion(
+response = dheera_ai.completion(
     model=model,
     messages=[
         {
@@ -1745,15 +1745,15 @@ response = litellm.completion(
 ### gs:// file 
 
 ```python
-import litellm
+import dheera_ai
 import os
 
 os.environ["GEMINI_API_KEY"] = "" 
 
-litellm.set_verbose = True # 👈 See Raw call 
+dheera_ai.set_verbose = True # 👈 See Raw call 
 
 model = "gemini/gemini-1.5-flash"
-response = litellm.completion(
+response = dheera_ai.completion(
     model=model,
     messages=[
         {
@@ -1777,7 +1777,7 @@ response = litellm.completion(
 ## Chat Models
 :::tip
 
-**We support ALL Gemini models, just set `model=gemini/<any-model-on-gemini>` as a prefix when sending litellm requests**
+**We support ALL Gemini models, just set `model=gemini/<any-model-on-gemini>` as a prefix when sending dheera_ai requests**
 
 :::
 | Model Name            | Function Call                                          | Required OS Variables          |
@@ -1845,7 +1845,7 @@ You can now specify a custom Time-To-Live (TTL) for your cached content using th
 
 **Notes:**
 
-- [Relevant code](https://github.com/BerriAI/litellm/blob/main/litellm/llms/vertex_ai/context_caching/vertex_ai_context_caching.py#L255)
+- [Relevant code](https://github.com/BerriAI/dheera_ai/blob/main/dheera_ai/llms/vertex_ai/context_caching/vertex_ai_context_caching.py#L255)
 
 - Gemini Context Caching only allows 1 block of continuous messages to be cached. 
 
@@ -1876,7 +1876,7 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 
 for _ in range(2): 
     resp = completion(
@@ -1913,7 +1913,7 @@ for _ in range(2):
 <TabItem value="sdk-ttl" label="SDK with Custom TTL">
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 
 # Cache for 2 hours (7200 seconds)
 resp = completion(
@@ -1959,7 +1959,7 @@ print(resp.usage)
 ```yaml
 model_list:
     - model_name: gemini-1.5-pro
-      litellm_params:
+      dheera_ai_params:
         model: gemini/gemini-1.5-pro
         api_key: os.environ/GEMINI_API_KEY
 ```
@@ -1967,7 +1967,7 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -2051,8 +2051,8 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 ```python 
 import openai
 client = openai.AsyncOpenAI(
-    api_key="anything",            # litellm proxy api key
-    base_url="http://0.0.0.0:4000" # litellm proxy base url
+    api_key="anything",            # dheera_ai proxy api key
+    base_url="http://0.0.0.0:4000" # dheera_ai proxy base url
 )
 
 
@@ -2084,8 +2084,8 @@ response = await client.chat.completions.create(
 ```python 
 import openai
 client = openai.AsyncOpenAI(
-    api_key="anything",            # litellm proxy api key
-    base_url="http://0.0.0.0:4000" # litellm proxy base url
+    api_key="anything",            # dheera_ai proxy api key
+    base_url="http://0.0.0.0:4000" # dheera_ai proxy base url
 )
 
 response = await client.chat.completions.create(
@@ -2124,7 +2124,7 @@ response = await client.chat.completions.create(
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 
 response = completion(
     model="gemini/gemini-2.0-flash-exp-image-generation",
@@ -2141,7 +2141,7 @@ assert response.choices[0].message.content is not None # "data:image/png;base64,
 ```yaml
 model_list:
   - model_name: gemini-2.0-flash-exp-image-generation
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.0-flash-exp-image-generation
       api_key: os.environ/GEMINI_API_KEY
 ```
@@ -2149,7 +2149,7 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -2184,7 +2184,7 @@ The number of image tokens depends on the output resolution:
 | 1K-2K (1024x1024 to 2048x2048) | 1,120 | $0.134 |
 | 4K (4096x4096) | 2,000 | $0.24 |
 
-LiteLLM automatically calculates costs using `output_cost_per_image_token` from the model pricing configuration.
+Dheera AI automatically calculates costs using `output_cost_per_image_token` from the model pricing configuration.
 
 **Example response usage:**
 ```json

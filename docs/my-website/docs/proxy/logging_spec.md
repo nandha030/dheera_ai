@@ -68,7 +68,7 @@ class CostBreakdown(TypedDict, total=False):
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `user_api_key_hash` | `Optional[str]` | Hash of the litellm virtual key |
+| `user_api_key_hash` | `Optional[str]` | Hash of the dheera_ai virtual key |
 | `user_api_key_alias` | `Optional[str]` | Alias of the API key |
 | `user_api_key_org_id` | `Optional[str]` | Organization ID associated with the key |
 | `user_api_key_team_id` | `Optional[str]` | Team ID associated with the key |
@@ -125,7 +125,7 @@ Inherits from `StandardLoggingUserAPIKeyMetadata` and adds:
 | `response_cost` | `Optional[str]` | Optional response cost |
 | `additional_headers` | `Optional[StandardLoggingAdditionalHeaders]` | Additional headers |
 | `batch_models` | `Optional[List[str]]` | Only set for Batches API. Lists the models used for cost calculation |
-| `litellm_model_name` | `Optional[str]` | Model name sent in request |
+| `dheera_ai_model_name` | `Optional[str]` | Model name sent in request |
 
 ## StandardLoggingModelInformation
 
@@ -259,7 +259,7 @@ Used for tracking prompt versioning and management information.
 
 ## StandardLoggingMCPToolCall
 
-Used to track Model Context Protocol (MCP) tool calls within LiteLLM requests. This provides detailed logging for external tool integrations.
+Used to track Model Context Protocol (MCP) tool calls within Dheera AI requests. This provides detailed logging for external tool integrations.
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -267,7 +267,7 @@ Used to track Model Context Protocol (MCP) tool calls within LiteLLM requests. T
 | `arguments` | `dict` | **Required**. Arguments passed to the tool as key-value pairs |
 | `result` | `Optional[dict]` | The response/result returned by the tool execution (populated by custom logging hooks) |
 | `mcp_server_name` | `Optional[str]` | Name of the MCP server that handled the tool call (e.g., `"weather-service"`, `"database-connector"`) |
-| `mcp_server_logo_url` | `Optional[str]` | URL for the MCP server's logo (used for UI display in LiteLLM dashboard) |
+| `mcp_server_logo_url` | `Optional[str]` | URL for the MCP server's logo (used for UI display in Dheera AI dashboard) |
 | `namespaced_tool_name` | `Optional[str]` | Fully qualified tool name including server prefix (e.g., `"deepwiki-mcp/get_page_content"`, `"github-mcp/create_issue"`) |
 | `mcp_server_cost_info` | `Optional[MCPServerCostInfo]` | Cost tracking information for the tool call |
 

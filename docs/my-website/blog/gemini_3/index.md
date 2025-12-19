@@ -1,18 +1,18 @@
 ---
 slug: gemini_3
-title: "DAY 0 Support: Gemini 3 on LiteLLM"
+title: "DAY 0 Support: Gemini 3 on Dheera AI"
 date: 2025-11-19T10:00:00
 authors:
   - name: Sameer Kankute
-    title: SWE @ LiteLLM (LLM Translation)
+    title: SWE @ Dheera AI (LLM Translation)
     url: https://www.linkedin.com/in/sameer-kankute/
     image_url: https://media.licdn.com/dms/image/v2/D4D03AQHB_loQYd5gjg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1719137160975?e=1765411200&v=beta&t=c8396f--_lH6Fb_pVvx_jGholPfcl0bvwmNynbNdnII
   - name: Krrish Dholakia
-    title: "CEO, LiteLLM"
+    title: "CEO, Dheera AI"
     url: https://www.linkedin.com/in/krish-d/
     image_url: https://pbs.twimg.com/profile_images/1298587542745358340/DZv3Oj-h_400x400.jpg
   - name: Ishaan Jaff
-    title: "CTO, LiteLLM"
+    title: "CTO, Dheera AI"
     url: https://www.linkedin.com/in/reffajnaahsi/
     image_url: https://pbs.twimg.com/profile_images/1613813310264340481/lz54oEiB_400x400.jpg
 tags: [gemini, day 0 support, llms]
@@ -24,7 +24,7 @@ import TabItem from '@theme/TabItem';
 
 :::info
 
-This guide covers common questions and best practices for using `gemini-3-pro-preview` with LiteLLM Proxy and SDK.
+This guide covers common questions and best practices for using `gemini-3-pro-preview` with Dheera AI Proxy and SDK.
 
 :::
 
@@ -34,7 +34,7 @@ This guide covers common questions and best practices for using `gemini-3-pro-pr
 <TabItem value="sdk" label="Python SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["GEMINI_API_KEY"] = "your-api-key"
@@ -49,14 +49,14 @@ print(response.choices[0].message.content)
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 **1. Add to config.yaml:**
 
 ```yaml
 model_list:
   - model_name: gemini-3-pro-preview
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-3-pro-preview
       api_key: os.environ/GEMINI_API_KEY
 ```
@@ -64,7 +64,7 @@ model_list:
 **2. Start proxy:**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 **3. Make request:**
@@ -85,7 +85,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 
 ## Supported Endpoints
 
-LiteLLM provides **full end-to-end support** for Gemini 3 Pro Preview on:
+Dheera AI provides **full end-to-end support** for Gemini 3 Pro Preview on:
 
 - ✅ `/v1/chat/completions` - OpenAI-compatible chat completions endpoint
 - ✅ `/v1/responses` - OpenAI Responses API endpoint (streaming and non-streaming)
@@ -106,9 +106,9 @@ Thought signatures are encrypted representations of the model's internal reasoni
 
 #### How Thought Signatures Work
 
-1. **Automatic Extraction**: When Gemini 3 returns a function call, LiteLLM automatically extracts the `thought_signature` from the response
+1. **Automatic Extraction**: When Gemini 3 returns a function call, Dheera AI automatically extracts the `thought_signature` from the response
 2. **Storage**: Thought signatures are stored in `provider_specific_fields.thought_signature` of tool calls
-3. **Automatic Preservation**: When you include the assistant's message in conversation history, LiteLLM automatically preserves and returns thought signatures to Gemini
+3. **Automatic Preservation**: When you include the assistant's message in conversation history, Dheera AI automatically preserves and returns thought signatures to Gemini
 
 ## Example: Multi-Turn Function Calling
 
@@ -121,8 +121,8 @@ When using streaming mode with `stream_chunk_builder()`, thought signatures are 
 
 ```python
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["GEMINI_API_KEY"] = "your-api-key"
 
@@ -162,7 +162,7 @@ for part in response:
 
 # Reconstruct message using stream_chunk_builder
 # Thought signatures are now preserved automatically!
-full_response = litellm.stream_chunk_builder(chunks, messages=messages)
+full_response = dheera_ai.stream_chunk_builder(chunks, messages=messages)
 print(f"Full response: {full_response}")
 
 assistant_msg = full_response.choices[0].message
@@ -364,7 +364,7 @@ curl http://localhost:4000/v1/chat/completions \
 
 #### Important Notes on Thought Signatures
 
-1. **Automatic Handling**: LiteLLM automatically extracts and preserves thought signatures. You don't need to manually manage them.
+1. **Automatic Handling**: Dheera AI automatically extracts and preserves thought signatures. You don't need to manually manage them.
 
 2. **Parallel Function Calls**: When the model makes parallel function calls, only the **first function call** has a thought signature.
 
@@ -376,11 +376,11 @@ curl http://localhost:4000/v1/chat/completions \
 
 #### Common Question: Will switching from a non-Gemini-3 model to Gemini-3 break conversation history?
 
-**Answer: No!** LiteLLM automatically handles this by adding dummy thought signatures when needed.
+**Answer: No!** Dheera AI automatically handles this by adding dummy thought signatures when needed.
 
 #### How It Works
 
-When you switch from a model that doesn't use thought signatures (e.g., `gemini-2.5-flash`) to Gemini 3, LiteLLM:
+When you switch from a model that doesn't use thought signatures (e.g., `gemini-2.5-flash`) to Gemini 3, Dheera AI:
 
 1. **Detects missing signatures**: Identifies assistant messages with tool calls that lack thought signatures
 2. **Adds dummy signature**: Automatically injects a dummy thought signature (`skip_thought_signature_validator`) for compatibility
@@ -410,7 +410,7 @@ response1 = client.chat.completions.create(
 messages.append(response1.choices[0].message)
 
 # Step 2: Switch to gemini-3-pro-preview
-# LiteLLM automatically adds dummy thought signature to the previous assistant message
+# Dheera AI automatically adds dummy thought signature to the previous assistant message
 response2 = client.chat.completions.create(
     model="gemini-3-pro-preview",  # 👈 Switched model
     messages=messages,  # 👈 Same conversation history
@@ -438,7 +438,7 @@ curl http://localhost:4000/v1/chat/completions \
   }'
 
 # Step 2: Switch to gemini-3-pro-preview with same conversation history
-# LiteLLM automatically handles the missing thought signature
+# Dheera AI automatically handles the missing thought signature
 curl http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer sk-1234" \
@@ -454,7 +454,7 @@ curl http://localhost:4000/v1/chat/completions \
     "tools": [...],
     "reasoning_effort": "low"
   }'
-# ✅ Works! LiteLLM adds dummy signature automatically
+# ✅ Works! Dheera AI adds dummy signature automatically
 ```
 
 </TabItem>
@@ -473,7 +473,7 @@ This is the recommended approach by Google for handling conversation history fro
 
 #### How `reasoning_effort` Maps to `thinking_level`
 
-For Gemini 3 Pro Preview, LiteLLM automatically maps `reasoning_effort` to the new `thinking_level` parameter:
+For Gemini 3 Pro Preview, Dheera AI automatically maps `reasoning_effort` to the new `thinking_level` parameter:
 
 | `reasoning_effort` | `thinking_level` | Notes |
 |-------------------|------------------|-------|
@@ -486,7 +486,7 @@ For Gemini 3 Pro Preview, LiteLLM automatically maps `reasoning_effort` to the n
 
 #### Default Behavior
 
-If you don't specify `reasoning_effort`, LiteLLM automatically sets `thinking_level="low"` for Gemini 3 models, to avoid high costs. 
+If you don't specify `reasoning_effort`, Dheera AI automatically sets `thinking_level="low"` for Gemini 3 models, to avoid high costs. 
 
 ### Example Usage
 
@@ -494,7 +494,7 @@ If you don't specify `reasoning_effort`, LiteLLM automatically sets `thinking_le
 <TabItem value="sdk" label="Python SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # Low thinking level (faster, lower cost)
 response = completion(
@@ -512,7 +512,7 @@ response = completion(
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 ```bash
 # Low thinking level
@@ -543,20 +543,20 @@ curl http://localhost:4000/v1/chat/completions \
 
 1. **Gemini 3 Cannot Disable Thinking**: Unlike Gemini 2.5 models, Gemini 3 cannot fully disable thinking. Even when you set `reasoning_effort="none"` or `"disable"`, it maps to `thinking_level="low"`.
 
-2. **Temperature Recommendation**: For Gemini 3 models, LiteLLM defaults `temperature` to `1.0` and strongly recommends keeping it at this default. Setting `temperature < 1.0` can cause:
+2. **Temperature Recommendation**: For Gemini 3 models, Dheera AI defaults `temperature` to `1.0` and strongly recommends keeping it at this default. Setting `temperature < 1.0` can cause:
    - Infinite loops
    - Degraded reasoning performance
    - Failure on complex tasks
 
-3. **Automatic Defaults**: If you don't specify `reasoning_effort`, LiteLLM automatically sets `thinking_level="low"` for optimal performance.
+3. **Automatic Defaults**: If you don't specify `reasoning_effort`, Dheera AI automatically sets `thinking_level="low"` for optimal performance.
 
 ## Cost Tracking: Prompt Caching & Context Window
 
-LiteLLM provides comprehensive cost tracking for Gemini 3 Pro Preview, including support for prompt caching and tiered pricing based on context window size.
+Dheera AI provides comprehensive cost tracking for Gemini 3 Pro Preview, including support for prompt caching and tiered pricing based on context window size.
 
 ### Prompt Caching Cost Tracking
 
-Gemini 3 supports prompt caching, which allows you to cache frequently used prompt prefixes to reduce costs. LiteLLM automatically tracks and calculates costs for:
+Gemini 3 supports prompt caching, which allows you to cache frequently used prompt prefixes to reduce costs. Dheera AI automatically tracks and calculates costs for:
 
 - **Cache Hit Tokens**: Tokens that are read from cache (charged at a lower rate)
 - **Cache Creation Tokens**: Tokens that are written to cache (one-time cost)
@@ -564,7 +564,7 @@ Gemini 3 supports prompt caching, which allows you to cache frequently used prom
 
 #### How It Works
 
-LiteLLM extracts caching information from the `prompt_tokens_details` field in the usage object:
+Dheera AI extracts caching information from the `prompt_tokens_details` field in the usage object:
 
 ```python
 {
@@ -587,10 +587,10 @@ Gemini 3 Pro Preview supports up to 1M tokens of context, with tiered pricing th
 
 #### Automatic Tier Detection
 
-LiteLLM automatically detects when your prompt exceeds the 200k token threshold and applies the appropriate tiered pricing:
+Dheera AI automatically detects when your prompt exceeds the 200k token threshold and applies the appropriate tiered pricing:
 
 ```python
-from litellm import completion_cost
+from dheera_ai import completion_cost
 
 # Example: Small prompt (< 200k tokens)
 response_small = completion(
@@ -618,10 +618,10 @@ The cost calculation includes:
 
 ### Example: Viewing Cost Breakdown
 
-You can view the detailed cost breakdown using LiteLLM's cost tracking:
+You can view the detailed cost breakdown using Dheera AI's cost tracking:
 
 ```python
-from litellm import completion, completion_cost
+from dheera_ai import completion, completion_cost
 
 response = completion(
     model="gemini/gemini-3-pro-preview",
@@ -650,11 +650,11 @@ if usage.prompt_tokens_details:
 1. **Use Prompt Caching**: For repeated prompt prefixes, enable caching to reduce costs by up to 90% for cached portions
 2. **Monitor Context Size**: Be aware that prompts above 200k tokens use tiered pricing (2x for input, 1.5x for output)
 3. **Cache Management**: Cache creation tokens are charged once when writing to cache, then subsequent reads are much cheaper
-4. **Track Usage**: Use LiteLLM's built-in cost tracking to monitor spending across different token types
+4. **Track Usage**: Use Dheera AI's built-in cost tracking to monitor spending across different token types
 
-### Integration with LiteLLM Proxy
+### Integration with Dheera AI Proxy
 
-When using LiteLLM Proxy, all cost tracking is automatically logged and available through:
+When using Dheera AI Proxy, all cost tracking is automatically logged and available through:
 
 - **Usage Logs**: Detailed token and cost breakdowns in proxy logs
 - **Budget Management**: Set budgets and alerts based on actual usage
@@ -664,11 +664,11 @@ When using LiteLLM Proxy, all cost tracking is automatically logged and availabl
 # config.yaml
 model_list:
   - model_name: gemini-3-pro-preview
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-3-pro-preview
       api_key: os.environ/GEMINI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   # Enable detailed cost tracking
   success_callback: ["langfuse"]  # or your preferred logging service
 ```
@@ -684,40 +684,40 @@ You can use `gemini-3-pro-preview` with **Claude Code CLI** - Anthropic's comman
 ```yaml
 model_list:
   - model_name: gemini-3-pro-preview
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-3-pro-preview
       api_key: os.environ/GEMINI_API_KEY
 
-litellm_settings:
-  master_key: os.environ/LITELLM_MASTER_KEY
+dheera_ai_settings:
+  master_key: os.environ/DHEERA_AI_MASTER_KEY
 ```
 
 **2. Set environment variables:**
 
 ```bash
 export GEMINI_API_KEY="your-gemini-api-key"
-export LITELLM_MASTER_KEY="sk-1234567890"  # Generate a secure key
+export DHEERA_AI_MASTER_KEY="sk-1234567890"  # Generate a secure key
 ```
 
-**3. Start LiteLLM Proxy:**
+**3. Start Dheera AI Proxy:**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
 
-**4. Configure Claude Code to use LiteLLM Proxy:**
+**4. Configure Claude Code to use Dheera AI Proxy:**
 
 ```bash
 export ANTHROPIC_BASE_URL="http://0.0.0.0:4000"
-export ANTHROPIC_AUTH_TOKEN="$LITELLM_MASTER_KEY"
+export ANTHROPIC_AUTH_TOKEN="$DHEERA_AI_MASTER_KEY"
 ```
 
 **5. Use Gemini 3 Pro Preview with Claude Code:**
 
 ```bash
-# Claude Code will use gemini-3-pro-preview from your LiteLLM proxy
+# Claude Code will use gemini-3-pro-preview from your Dheera AI proxy
 claude --model gemini-3-pro-preview
 
 ```
@@ -736,8 +736,8 @@ $ claude --model gemini-3-pro-preview
 ### Benefits
 
 - ✅ **Native Claude Code Experience**: Use Gemini 3 Pro Preview with Claude Code's familiar CLI interface
-- ✅ **Unified Authentication**: Single API key for all models through LiteLLM proxy
-- ✅ **Cost Tracking**: All usage tracked through LiteLLM's centralized logging
+- ✅ **Unified Authentication**: Single API key for all models through Dheera AI proxy
+- ✅ **Cost Tracking**: All usage tracked through Dheera AI's centralized logging
 - ✅ **Seamless Model Switching**: Easily switch between Claude and Gemini models
 - ✅ **Full Feature Support**: All Gemini 3 features (thought signatures, function calling, etc.) work through Claude Code
 
@@ -746,16 +746,16 @@ $ claude --model gemini-3-pro-preview
 **Claude Code not finding the model:**
 - Ensure the model name in Claude Code matches exactly: `gemini-3-pro-preview`
 - Verify your proxy is running: `curl http://0.0.0.0:4000/health`
-- Check that `ANTHROPIC_BASE_URL` points to your LiteLLM proxy
+- Check that `ANTHROPIC_BASE_URL` points to your Dheera AI proxy
 
 **Authentication errors:**
-- Verify `ANTHROPIC_AUTH_TOKEN` matches your LiteLLM master key
+- Verify `ANTHROPIC_AUTH_TOKEN` matches your Dheera AI master key
 - Ensure `GEMINI_API_KEY` is set correctly
-- Check LiteLLM proxy logs for detailed error messages
+- Check Dheera AI proxy logs for detailed error messages
 
 ## Responses API Support
 
-LiteLLM fully supports the OpenAI Responses API for Gemini 3 Pro Preview, including both streaming and non-streaming modes. The Responses API provides a structured way to handle multi-turn conversations with function calling, and LiteLLM automatically preserves thought signatures throughout the conversation.
+Dheera AI fully supports the OpenAI Responses API for Gemini 3 Pro Preview, including both streaming and non-streaming modes. The Responses API provides a structured way to handle multi-turn conversations with function calling, and Dheera AI automatically preserves thought signatures throughout the conversation.
 
 ### Example: Using Responses API with Gemini 3
 
@@ -904,7 +904,7 @@ for chunk in response:
 ### Responses API Benefits
 
 - ✅ **Structured Output**: Responses API provides a clear structure for handling function calls and multi-turn conversations
-- ✅ **Thought Signature Preservation**: LiteLLM automatically preserves thought signatures in both streaming and non-streaming modes
+- ✅ **Thought Signature Preservation**: Dheera AI automatically preserves thought signatures in both streaming and non-streaming modes
 - ✅ **Seamless Integration**: Works with existing OpenAI SDK patterns
 - ✅ **Full Feature Support**: All Gemini 3 features (thought signatures, function calling, reasoning) are fully supported
 
@@ -942,7 +942,7 @@ For Gemini 3 models, always use `temperature=1.0` (default). Lower temperatures 
 #### 4. Handle Model Switches Gracefully
 
 When switching from non-Gemini-3 to Gemini-3:
-- ✅ LiteLLM automatically handles missing thought signatures
+- ✅ Dheera AI automatically handles missing thought signatures
 - ✅ No manual intervention needed
 - ✅ Conversation history continues seamlessly
 
@@ -962,7 +962,7 @@ messages.append(response.choices[0].message)  # ✅ Includes thought signatures
 
 **Symptom**: Errors when switching from gemini-2.5-flash to gemini-3-pro-preview
 
-**Solution**: This should work automatically! LiteLLM adds dummy signatures. If you see errors, ensure you're using the latest LiteLLM version.
+**Solution**: This should work automatically! Dheera AI adds dummy signatures. If you see errors, ensure you're using the latest Dheera AI version.
 
 #### Issue: Infinite Loops or Poor Performance
 

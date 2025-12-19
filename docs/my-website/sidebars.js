@@ -63,7 +63,7 @@ const sidebars = {
           "proxy/guardrails/grayswan",
           "proxy/guardrails/hiddenlayer",
           "proxy/guardrails/lasso_security",
-          "proxy/guardrails/litellm_content_filter",
+          "proxy/guardrails/dheera_ai_content_filter",
           "proxy/guardrails/guardrails_ai",
           "proxy/guardrails/lakera_ai",
           "proxy/guardrails/model_armor",
@@ -96,9 +96,9 @@ const sidebars = {
       type: "category",
       label: "[Beta] Prompt Management",
       items: [
-        "proxy/litellm_prompt_management",
+        "proxy/dheera_ai_prompt_management",
         "proxy/custom_prompt_management",
-        "proxy/native_litellm_prompt",
+        "proxy/native_dheera_ai_prompt",
         "proxy/prompt_management",
         "proxy/arize_phoenix_prompts"
       ]
@@ -111,8 +111,8 @@ const sidebars = {
         "tutorials/cost_tracking_coding",
         "tutorials/cursor_integration",
         "tutorials/github_copilot_integration",
-        "tutorials/litellm_gemini_cli",
-        "tutorials/litellm_qwen_code_cli",
+        "tutorials/dheera_ai_gemini_cli",
+        "tutorials/dheera_ai_qwen_code_cli",
         "tutorials/openai_codex",
         "tutorials/openweb_ui"
       ]
@@ -125,12 +125,12 @@ const sidebars = {
 
     {
       type: "category",
-      label: "LiteLLM Python SDK",
+      label: "DheeraAI Python SDK",
       items: [
         {
           type: "link",
           label: "Quick Start",
-          href: "/docs/#litellm-python-sdk",
+          href: "/docs/#dheera_ai-python-sdk",
         },
         {
           type: "category",
@@ -174,7 +174,7 @@ const sidebars = {
             {
               type: "link",
               label: "All Supported Endpoints →",
-              href: "https://docs.litellm.ai/docs/supported_endpoints",
+              href: "https://docs.dheera_ai.ai/docs/supported_endpoints",
             },
           ],
         },
@@ -197,10 +197,10 @@ const sidebars = {
     },
     {
       type: "category",
-      label: "LiteLLM AI Gateway (Proxy)",
+      label: "DheeraAI AI Gateway (Proxy)",
       link: {
         type: "generated-index",
-        title: "LiteLLM AI Gateway (LLM Proxy)",
+        title: "DheeraAI AI Gateway (LLM Proxy)",
         description: `OpenAI Proxy Server (LLM Gateway) to call 100+ LLMs in a unified interface & track spend, set budgets per virtual key/user`,
         slug: "/simple_proxy",
       },
@@ -209,12 +209,12 @@ const sidebars = {
         {
           type: "link",
           label: "A2A Agent Gateway",
-          href: "https://docs.litellm.ai/docs/a2a",
+          href: "https://docs.dheera_ai.ai/docs/a2a",
         },
         {
           type: "link",
           label: "MCP Gateway",
-          href: "https://docs.litellm.ai/docs/mcp",
+          href: "https://docs.dheera_ai.ai/docs/mcp",
         },
         {
           "type": "category",
@@ -239,8 +239,8 @@ const sidebars = {
         },
         {
           "type": "link",
-          "label": "Demo LiteLLM Cloud",
-          "href": "https://www.litellm.ai/cloud"
+          "label": "Demo DheeraAI Cloud",
+          "href": "https://www.dheera_ai.ai/cloud"
         },
         {
           type: "category",
@@ -256,7 +256,7 @@ const sidebars = {
             "proxy/self_serve",
             "proxy/ui/bulk_edit_users",
             "proxy/ui_credentials",
-            "tutorials/scim_litellm",
+            "tutorials/scim_dheera_ai",
             {
               type: "category",
               label: "UI Logs",
@@ -286,7 +286,7 @@ const sidebars = {
         {
           type: "link",
           label: "All Endpoints (Swagger)",
-          href: "https://litellm-api.up.railway.app/",
+          href: "https://dheera_ai-api.up.railway.app/",
         },
   "proxy/enterprise",
         {
@@ -332,7 +332,7 @@ const sidebars = {
         {
           type: "link",
           label: "Load Balancing, Routing, Fallbacks",
-          href: "https://docs.litellm.ai/docs/routing-load-balancing",
+          href: "https://docs.dheera_ai.ai/docs/routing-load-balancing",
         },
         {
           type: "category",
@@ -402,7 +402,7 @@ const sidebars = {
         type: "generated-index",
         title: "Supported Endpoints",
         description:
-          "Learn how to deploy + call models from different providers on LiteLLM",
+          "Learn how to deploy + call models from different providers on DheeraAI",
         slug: "/supported_endpoints",
       },
       items: [
@@ -458,7 +458,7 @@ const sidebars = {
           label: "/files",
           items: [
             "files_endpoints",
-            "proxy/litellm_managed_files",
+            "proxy/dheera_ai_managed_files",
           ],
         },
         {
@@ -564,7 +564,7 @@ const sidebars = {
         type: "generated-index",
         title: "Providers",
         description:
-          "Learn how to deploy + call models from different providers on LiteLLM",
+          "Learn how to deploy + call models from different providers on DheeraAI",
         slug: "/providers",
       },
       items: [
@@ -665,7 +665,7 @@ const sidebars = {
             "providers/bedrock_vector_store",
           ]
         },
-        "providers/litellm_proxy",
+        "providers/dheera_ai_proxy",
         "providers/ai21",
         "providers/aiml",
         "providers/aleph_alpha",
@@ -858,21 +858,21 @@ const sidebars = {
       items: [
         "tutorials/openweb_ui",
         "tutorials/openai_codex",
-        "tutorials/litellm_gemini_cli",
-        "tutorials/litellm_qwen_code_cli",
+        "tutorials/dheera_ai_gemini_cli",
+        "tutorials/dheera_ai_qwen_code_cli",
         "tutorials/anthropic_file_usage",
         "tutorials/default_team_self_serve",
         "tutorials/msft_sso",
         "tutorials/prompt_caching",
         "tutorials/tag_management",
-        'tutorials/litellm_proxy_aporia',
+        'tutorials/dheera_ai_proxy_aporia',
         "tutorials/presidio_pii_masking",
         "tutorials/elasticsearch_logging",
         "tutorials/gemini_realtime_with_audio",
         "tutorials/claude_responses_api",
         {
           type: "category",
-          label: "LiteLLM Python SDK Tutorials",
+          label: "DheeraAI Python SDK Tutorials",
           items: [
             'tutorials/google_adk',
             'tutorials/azure_openai',
@@ -919,12 +919,12 @@ const sidebars = {
         "migration_policy",
         {
           type: "category",
-          label: "❤️ 🚅 Projects built on LiteLLM",
+          label: "❤️ 🚅 Projects built on DheeraAI",
           link: {
             type: "generated-index",
-            title: "Projects built on LiteLLM",
+            title: "Projects built on DheeraAI",
             description:
-              "Learn how to deploy + call models from different providers on LiteLLM",
+              "Learn how to deploy + call models from different providers on DheeraAI",
             slug: "/project",
           },
           items: [
@@ -950,7 +950,7 @@ const sidebars = {
             "projects/Otter",
             "projects/GPT Migrate",
             "projects/YiVal",
-            "projects/LiteLLM Proxy",
+            "projects/DheeraAI Proxy",
             "projects/llm_cord",
             "projects/pgai",
             "projects/GPTLocalhost",

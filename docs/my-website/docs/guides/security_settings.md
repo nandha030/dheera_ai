@@ -4,12 +4,12 @@ import TabItem from '@theme/TabItem';
 # SSL, HTTP Proxy Security Settings
 
 If you're in an environment using an older TTS bundle, with an older encryption, follow this guide. By default
-LiteLLM uses the certifi CA bundle for SSL verification, which is compatible with most modern servers.
+Dheera AI uses the certifi CA bundle for SSL verification, which is compatible with most modern servers.
  However, if you need to disable SSL verification or use a custom CA bundle, you can do so by following the steps below.
 
 Be aware that environmental variables take precedence over the settings in the SDK.
 
-LiteLLM uses HTTPX for network requests, unless otherwise specified.
+Dheera AI uses HTTPX for network requests, unless otherwise specified.
 
 ## 1. Custom CA Bundle
 
@@ -19,14 +19,14 @@ You can set a custom CA bundle file path using the `SSL_CERT_FILE` environmental
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
-litellm.ssl_verify = "client.pem"
+import dheera_ai
+dheera_ai.ssl_verify = "client.pem"
 ```
 </TabItem>
 <TabItem value="proxy" label="PROXY">
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   ssl_verify: "client.pem"
 ```
 
@@ -46,14 +46,14 @@ export SSL_CERT_FILE="client.pem"
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
-litellm.ssl_verify = False
+import dheera_ai
+dheera_ai.ssl_verify = False
 ```
 </TabItem>
 <TabItem value="proxy" label="PROXY">
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   ssl_verify: false
 ```
 
@@ -74,14 +74,14 @@ The `ssl_security_level` allows setting a lower security level for SSL connectio
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
-litellm.ssl_security_level = "DEFAULT@SECLEVEL=1"
+import dheera_ai
+dheera_ai.ssl_security_level = "DEFAULT@SECLEVEL=1"
 ```
 </TabItem>
 <TabItem value="proxy" label="PROXY">
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   ssl_security_level: "DEFAULT@SECLEVEL=1"
 ```
 </TabItem>
@@ -101,14 +101,14 @@ The `SSL_CERTIFICATE` environmental variable or `ssl_certificate` attribute allo
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
-litellm.ssl_certificate = "/path/to/certificate.pem"
+import dheera_ai
+dheera_ai.ssl_certificate = "/path/to/certificate.pem"
 ```
 </TabItem>
 <TabItem value="proxy" label="PROXY">
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   ssl_certificate: "/path/to/certificate.pem"
 ```
 </TabItem>
@@ -131,15 +131,15 @@ The `ssl_ecdh_curve` setting allows you to configure the Elliptic Curve Diffie-H
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
-litellm.ssl_ecdh_curve = "X25519"  # Disables PQC for better performance
+import dheera_ai
+dheera_ai.ssl_ecdh_curve = "X25519"  # Disables PQC for better performance
 ```
 
 </TabItem>
 <TabItem value="proxy" label="PROXY">
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   ssl_ecdh_curve: "X25519"
 ```
 
@@ -160,7 +160,7 @@ export SSL_ECDH_CURVE="X25519"
 - `secp384r1` - NIST P-384 curve
 - `secp521r1` - NIST P-521 curve
 
-**Note:** If an invalid curve name is provided or if your Python/OpenSSL version doesn't support this feature, LiteLLM will log a warning and continue with default curves.
+**Note:** If an invalid curve name is provided or if your Python/OpenSSL version doesn't support this feature, Dheera AI will log a warning and continue with default curves.
 
 ## 6. Use HTTP_PROXY environment variable
 
@@ -170,8 +170,8 @@ Both httpx and aiohttp libraries use `urllib.request.getproxies` from environmen
 <TabItem value="sdk" label="SDK">
 
 ```python
-import litellm
-litellm.aiohttp_trust_env = True
+import dheera_ai
+dheera_ai.aiohttp_trust_env = True
 ```
 
 ```bash

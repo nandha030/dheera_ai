@@ -75,7 +75,7 @@ All the text models from [OpenRouter](https://openrouter.ai/docs) are supported 
 
 ## Novita AI Completion Models
 
-🚨 LiteLLM supports ALL Novita AI models, send `model=novita/<your-novita-model>` to send it to Novita AI. See all Novita AI models [here](https://novita.ai/models/llm?utm_source=github_litellm&utm_medium=github_readme&utm_campaign=github_link)
+🚨 Dheera AI supports ALL Novita AI models, send `model=novita/<your-novita-model>` to send it to Novita AI. See all Novita AI models [here](https://novita.ai/models/llm?utm_source=github_dheera_ai&utm_medium=github_readme&utm_campaign=github_link)
 
 | Model Name       | Function Call                              | Required OS Variables                |
 |------------------|--------------------------------------------|--------------------------------------|

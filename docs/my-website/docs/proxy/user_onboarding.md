@@ -1,6 +1,6 @@
 # User Onboarding Guide
 
-A step-by-step guide to help admins onboard users to your LiteLLM proxy instance and help users get started with their API key.
+A step-by-step guide to help admins onboard users to your Dheera AI proxy instance and help users get started with their API key.
 
 ---
 

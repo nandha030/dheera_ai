@@ -5,30 +5,30 @@ import pytest
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm import Router
-from litellm.router import Deployment, LiteLLM_Params
-from litellm.types.router import ModelInfo
+import dheera_ai
+from dheera_ai import Router
+from dheera_ai.router import Deployment, DheeraAI_Params
+from dheera_ai.types.router import ModelInfo
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 from dotenv import load_dotenv
 from unittest.mock import AsyncMock, MagicMock, patch
-from litellm.router_utils.cooldown_callbacks import router_cooldown_event_callback
-from litellm.router_utils.cooldown_handlers import (
+from dheera_ai.router_utils.cooldown_callbacks import router_cooldown_event_callback
+from dheera_ai.router_utils.cooldown_handlers import (
     _should_run_cooldown_logic,
     _should_cooldown_deployment,
     cast_exception_status_to_int,
     _is_cooldown_required,
 )
-from litellm.router_utils.router_callbacks.track_deployment_metrics import (
+from dheera_ai.router_utils.router_callbacks.track_deployment_metrics import (
     increment_deployment_failures_for_current_minute,
     increment_deployment_successes_for_current_minute,
 )
 
 import pytest
 from unittest.mock import patch
-from litellm import Router
-from litellm.router_utils.cooldown_handlers import _should_cooldown_deployment
+from dheera_ai import Router
+from dheera_ai.router_utils.cooldown_handlers import _should_cooldown_deployment
 
 load_dotenv()
 
@@ -47,7 +47,7 @@ async def test_router_cooldown_event_callback_no_deployment():
     mock_router.get_deployment.return_value = None
 
     await router_cooldown_event_callback(
-        litellm_router_instance=mock_router,
+        dheera_ai_router_instance=mock_router,
         deployment_id="test-deployment",
         exception_status="429",
         cooldown_time=60.0,
@@ -58,109 +58,109 @@ async def test_router_cooldown_event_callback_no_deployment():
 
 
 @pytest.fixture
-def testing_litellm_router():
+def testing_dheera_ai_router():
     return Router(
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {"model": "gpt-3.5-turbo"},
+                "dheera_ai_params": {"model": "gpt-3.5-turbo"},
                 "model_id": "test_deployment",
             },
             {
                 "model_name": "test_deployment",
-                "litellm_params": {"model": "openai/test_deployment"},
+                "dheera_ai_params": {"model": "openai/test_deployment"},
                 "model_id": "test_deployment_2",
             },
             {
                 "model_name": "test_deployment",
-                "litellm_params": {"model": "openai/test_deployment-2"},
+                "dheera_ai_params": {"model": "openai/test_deployment-2"},
                 "model_id": "test_deployment_3",
             },
         ]
     )
 
 
-def test_should_run_cooldown_logic(testing_litellm_router):
-    testing_litellm_router.disable_cooldowns = True
+def test_should_run_cooldown_logic(testing_dheera_ai_router):
+    testing_dheera_ai_router.disable_cooldowns = True
     # don't run cooldown logic if disable_cooldowns is True
     assert (
         _should_run_cooldown_logic(
-            testing_litellm_router, "test_deployment", 500, Exception("Test")
+            testing_dheera_ai_router, "test_deployment", 500, Exception("Test")
         )
         is False
     )
 
     # don't cooldown if deployment is None
-    testing_litellm_router.disable_cooldowns = False
+    testing_dheera_ai_router.disable_cooldowns = False
     assert (
-        _should_run_cooldown_logic(testing_litellm_router, None, 500, Exception("Test"))
+        _should_run_cooldown_logic(testing_dheera_ai_router, None, 500, Exception("Test"))
         is False
     )
 
     # don't cooldown if it's a provider default deployment
-    testing_litellm_router.provider_default_deployment_ids = ["test_deployment"]
+    testing_dheera_ai_router.provider_default_deployment_ids = ["test_deployment"]
     assert (
         _should_run_cooldown_logic(
-            testing_litellm_router, "test_deployment", 500, Exception("Test")
+            testing_dheera_ai_router, "test_deployment", 500, Exception("Test")
         )
         is False
     )
 
 
-def test_should_cooldown_deployment_rate_limit_error(testing_litellm_router):
+def test_should_cooldown_deployment_rate_limit_error(testing_dheera_ai_router):
     """
     Test the _should_cooldown_deployment function when a rate limit error occurs
     """
     # Test 429 error (rate limit) -> always cooldown a deployment returning 429s
-    _exception = litellm.exceptions.RateLimitError(
+    _exception = dheera_ai.exceptions.RateLimitError(
         "Rate limit", "openai", "gpt-3.5-turbo"
     )
     assert (
         _should_cooldown_deployment(
-            testing_litellm_router, "test_deployment", 429, _exception
+            testing_dheera_ai_router, "test_deployment", 429, _exception
         )
         is True
     )
 
 
-def test_should_cooldown_deployment_auth_limit_error(testing_litellm_router):
+def test_should_cooldown_deployment_auth_limit_error(testing_dheera_ai_router):
     """
     Test the _should_cooldown_deployment function when an auth limit error occurs
     """
     # Test 401 error (auth limit) -> always cooldown a deployment returning 401s
-    _exception = litellm.exceptions.AuthenticationError(
+    _exception = dheera_ai.exceptions.AuthenticationError(
         "Unauthorized", "openai", "gpt-3.5-turbo"
     )
     assert (
         _should_cooldown_deployment(
-            testing_litellm_router, "test_deployment", 401, _exception
+            testing_dheera_ai_router, "test_deployment", 401, _exception
         )
         is True
     )
 
 
 @pytest.mark.asyncio
-async def test_should_cooldown_deployment(testing_litellm_router):
+async def test_should_cooldown_deployment(testing_dheera_ai_router):
     """
     Cooldown a deployment if it fails 60% of requests in 1 minute - DEFAULT threshold is 50%
     """
-    from litellm._logging import verbose_router_logger
+    from dheera_ai._logging import verbose_router_logger
     import logging
 
     verbose_router_logger.setLevel(logging.DEBUG)
 
     # Test 429 error (rate limit) -> always cooldown a deployment returning 429s
-    _exception = litellm.exceptions.RateLimitError(
+    _exception = dheera_ai.exceptions.RateLimitError(
         "Rate limit", "openai", "gpt-3.5-turbo"
     )
     assert (
         _should_cooldown_deployment(
-            testing_litellm_router, "test_deployment", 429, _exception
+            testing_dheera_ai_router, "test_deployment", 429, _exception
         )
         is True
     )
 
-    available_deployment = testing_litellm_router.get_available_deployment(
+    available_deployment = testing_dheera_ai_router.get_available_deployment(
         model="test_deployment"
     )
     print("available_deployment", available_deployment)
@@ -172,18 +172,18 @@ async def test_should_cooldown_deployment(testing_litellm_router):
     # set current success for deployment to 40
     for _ in range(40):
         increment_deployment_successes_for_current_minute(
-            litellm_router_instance=testing_litellm_router, deployment_id=deployment_id
+            dheera_ai_router_instance=testing_dheera_ai_router, deployment_id=deployment_id
         )
 
     # now we fail 40 requests in a row
     tasks = []
     for _ in range(41):
         tasks.append(
-            testing_litellm_router.acompletion(
+            testing_dheera_ai_router.acompletion(
                 model=deployment_id,
                 messages=[{"role": "user", "content": "Hello, world!"}],
                 max_tokens=100,
-                mock_response="litellm.InternalServerError",
+                mock_response="dheera_ai.InternalServerError",
             )
         )
     try:
@@ -196,7 +196,7 @@ async def test_should_cooldown_deployment(testing_litellm_router):
     # expect this to fail since it's now 51% of requests are failing
     assert (
         _should_cooldown_deployment(
-            testing_litellm_router, deployment_id, 500, Exception("Test")
+            testing_dheera_ai_router, deployment_id, 500, Exception("Test")
         )
         is True
     )
@@ -212,7 +212,7 @@ async def test_should_cooldown_deployment_allowed_fails_set_on_router():
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {"model": "gpt-3.5-turbo"},
+                "dheera_ai_params": {"model": "gpt-3.5-turbo"},
                 "model_id": "test_deployment",
             },
         ]
@@ -237,34 +237,34 @@ async def test_should_cooldown_deployment_allowed_fails_set_on_router():
 
 
 def test_increment_deployment_successes_for_current_minute_does_not_write_to_redis(
-    testing_litellm_router,
+    testing_dheera_ai_router,
 ):
     """
     Ensure tracking deployment metrics does not write to redis
 
     Important - If it writes to redis on every request it will seriously impact performance / latency
     """
-    from litellm.caching.dual_cache import DualCache
-    from litellm.caching.redis_cache import RedisCache
-    from litellm.caching.in_memory_cache import InMemoryCache
-    from litellm.router_utils.router_callbacks.track_deployment_metrics import (
+    from dheera_ai.caching.dual_cache import DualCache
+    from dheera_ai.caching.redis_cache import RedisCache
+    from dheera_ai.caching.in_memory_cache import InMemoryCache
+    from dheera_ai.router_utils.router_callbacks.track_deployment_metrics import (
         increment_deployment_successes_for_current_minute,
     )
 
     # Mock RedisCache
     mock_redis_cache = MagicMock(spec=RedisCache)
 
-    testing_litellm_router.cache = DualCache(
+    testing_dheera_ai_router.cache = DualCache(
         redis_cache=mock_redis_cache, in_memory_cache=InMemoryCache()
     )
 
     # Call the function we're testing
     increment_deployment_successes_for_current_minute(
-        litellm_router_instance=testing_litellm_router, deployment_id="test_deployment"
+        dheera_ai_router_instance=testing_dheera_ai_router, deployment_id="test_deployment"
     )
 
     increment_deployment_failures_for_current_minute(
-        litellm_router_instance=testing_litellm_router, deployment_id="test_deployment"
+        dheera_ai_router_instance=testing_dheera_ai_router, deployment_id="test_deployment"
     )
 
     time.sleep(1)
@@ -274,10 +274,10 @@ def test_increment_deployment_successes_for_current_minute_does_not_write_to_red
 
     print(
         "in memory cache values=",
-        testing_litellm_router.cache.in_memory_cache.cache_dict,
+        testing_dheera_ai_router.cache.in_memory_cache.cache_dict,
     )
     assert (
-        testing_litellm_router.cache.in_memory_cache.get_cache(
+        testing_dheera_ai_router.cache.in_memory_cache.get_cache(
             "test_deployment:successes"
         )
         is not None
@@ -296,7 +296,7 @@ def router():
         model_list=[
             {
                 "model_name": "gpt-4",
-                "litellm_params": {"model": "gpt-4"},
+                "dheera_ai_params": {"model": "gpt-4"},
                 "model_info": {
                     "id": "gpt-4--0",
                 },
@@ -306,20 +306,20 @@ def router():
 
 
 @patch(
-    "litellm.router_utils.cooldown_handlers.get_deployment_successes_for_current_minute"
+    "dheera_ai.router_utils.cooldown_handlers.get_deployment_successes_for_current_minute"
 )
 @patch(
-    "litellm.router_utils.cooldown_handlers.get_deployment_failures_for_current_minute"
+    "dheera_ai.router_utils.cooldown_handlers.get_deployment_failures_for_current_minute"
 )
 def test_should_cooldown_high_traffic_all_fails(mock_failures, mock_successes, router):
     # Simulate 10 failures, 0 successes
-    from litellm.constants import SINGLE_DEPLOYMENT_TRAFFIC_FAILURE_THRESHOLD
+    from dheera_ai.constants import SINGLE_DEPLOYMENT_TRAFFIC_FAILURE_THRESHOLD
 
     mock_failures.return_value = SINGLE_DEPLOYMENT_TRAFFIC_FAILURE_THRESHOLD + 1
     mock_successes.return_value = 0
 
     should_cooldown = _should_cooldown_deployment(
-        litellm_router_instance=router,
+        dheera_ai_router_instance=router,
         deployment="gpt-4--0",
         exception_status=500,
         original_exception=Exception("Test error"),
@@ -331,10 +331,10 @@ def test_should_cooldown_high_traffic_all_fails(mock_failures, mock_successes, r
 
 
 @patch(
-    "litellm.router_utils.cooldown_handlers.get_deployment_successes_for_current_minute"
+    "dheera_ai.router_utils.cooldown_handlers.get_deployment_successes_for_current_minute"
 )
 @patch(
-    "litellm.router_utils.cooldown_handlers.get_deployment_failures_for_current_minute"
+    "dheera_ai.router_utils.cooldown_handlers.get_deployment_failures_for_current_minute"
 )
 def test_no_cooldown_low_traffic(mock_failures, mock_successes, router):
     # Simulate 3 failures (below MIN_TRAFFIC_THRESHOLD)
@@ -342,7 +342,7 @@ def test_no_cooldown_low_traffic(mock_failures, mock_successes, router):
     mock_successes.return_value = 0
 
     should_cooldown = _should_cooldown_deployment(
-        litellm_router_instance=router,
+        dheera_ai_router_instance=router,
         deployment="gpt-4--0",
         exception_status=500,
         original_exception=Exception("Test error"),
@@ -354,10 +354,10 @@ def test_no_cooldown_low_traffic(mock_failures, mock_successes, router):
 
 
 @patch(
-    "litellm.router_utils.cooldown_handlers.get_deployment_successes_for_current_minute"
+    "dheera_ai.router_utils.cooldown_handlers.get_deployment_successes_for_current_minute"
 )
 @patch(
-    "litellm.router_utils.cooldown_handlers.get_deployment_failures_for_current_minute"
+    "dheera_ai.router_utils.cooldown_handlers.get_deployment_failures_for_current_minute"
 )
 def test_cooldown_rate_limit(mock_failures, mock_successes, router):
     """
@@ -367,7 +367,7 @@ def test_cooldown_rate_limit(mock_failures, mock_successes, router):
     mock_successes.return_value = 0
 
     should_cooldown = _should_cooldown_deployment(
-        litellm_router_instance=router,
+        dheera_ai_router_instance=router,
         deployment="gpt-4--0",
         exception_status=429,  # Rate limit error
         original_exception=Exception("Rate limit exceeded"),
@@ -379,10 +379,10 @@ def test_cooldown_rate_limit(mock_failures, mock_successes, router):
 
 
 @patch(
-    "litellm.router_utils.cooldown_handlers.get_deployment_successes_for_current_minute"
+    "dheera_ai.router_utils.cooldown_handlers.get_deployment_successes_for_current_minute"
 )
 @patch(
-    "litellm.router_utils.cooldown_handlers.get_deployment_failures_for_current_minute"
+    "dheera_ai.router_utils.cooldown_handlers.get_deployment_failures_for_current_minute"
 )
 def test_mixed_success_failure(mock_failures, mock_successes, router):
     # Simulate 3 failures, 7 successes
@@ -390,7 +390,7 @@ def test_mixed_success_failure(mock_failures, mock_successes, router):
     mock_successes.return_value = 7
 
     should_cooldown = _should_cooldown_deployment(
-        litellm_router_instance=router,
+        dheera_ai_router_instance=router,
         deployment="gpt-4--0",
         exception_status=500,
         original_exception=Exception("Test error"),
@@ -401,12 +401,12 @@ def test_mixed_success_failure(mock_failures, mock_successes, router):
     ), "Should not cooldown when failure rate is below threshold"
 
 
-def test_is_cooldown_required_empty_string_exception_status(testing_litellm_router):
+def test_is_cooldown_required_empty_string_exception_status(testing_dheera_ai_router):
     """
     Test that _is_cooldown_required returns False when exception_status is an empty string
     """
     result = _is_cooldown_required(
-        litellm_router_instance=testing_litellm_router,
+        dheera_ai_router_instance=testing_dheera_ai_router,
         model_id="test_deployment",
         exception_status="",
     )
@@ -416,7 +416,7 @@ def test_is_cooldown_required_empty_string_exception_status(testing_litellm_rout
     ), "Should not require cooldown when exception_status is empty string"
 
 
-def test_should_cooldown_deployment_minimum_request_threshold(testing_litellm_router):
+def test_should_cooldown_deployment_minimum_request_threshold(testing_dheera_ai_router):
     """
     Test that error rate cooldown does NOT trigger on first failure.
 
@@ -428,11 +428,11 @@ def test_should_cooldown_deployment_minimum_request_threshold(testing_litellm_ro
     The fix: Add a minimum request threshold (DEFAULT_FAILURE_THRESHOLD_MINIMUM_REQUESTS)
     before applying error rate cooldown.
     """
-    from litellm.constants import DEFAULT_FAILURE_THRESHOLD_MINIMUM_REQUESTS
+    from dheera_ai.constants import DEFAULT_FAILURE_THRESHOLD_MINIMUM_REQUESTS
 
     # Get a deployment that's not a single-deployment model group
     # (test_deployment_2 and test_deployment_3 are both for "test_deployment" model)
-    available_deployment = testing_litellm_router.get_available_deployment(
+    available_deployment = testing_dheera_ai_router.get_available_deployment(
         model="test_deployment"
     )
     assert available_deployment is not None
@@ -441,16 +441,16 @@ def test_should_cooldown_deployment_minimum_request_threshold(testing_litellm_ro
     # Simulate only 1 failure (below minimum threshold)
     # This should NOT trigger cooldown even though 100% > 50%
     increment_deployment_failures_for_current_minute(
-        litellm_router_instance=testing_litellm_router, deployment_id=deployment_id
+        dheera_ai_router_instance=testing_dheera_ai_router, deployment_id=deployment_id
     )
 
-    _exception = litellm.exceptions.InternalServerError(
+    _exception = dheera_ai.exceptions.InternalServerError(
         "Internal error", "openai", "gpt-3.5-turbo"
     )
 
     # With only 1 request, should NOT cooldown (below minimum threshold)
     should_cooldown = _should_cooldown_deployment(
-        testing_litellm_router, deployment_id, 500, _exception
+        testing_dheera_ai_router, deployment_id, 500, _exception
     )
     assert (
         should_cooldown is False
@@ -459,12 +459,12 @@ def test_should_cooldown_deployment_minimum_request_threshold(testing_litellm_ro
     # Now add more failures to reach the minimum threshold
     for _ in range(DEFAULT_FAILURE_THRESHOLD_MINIMUM_REQUESTS - 1):
         increment_deployment_failures_for_current_minute(
-            litellm_router_instance=testing_litellm_router, deployment_id=deployment_id
+            dheera_ai_router_instance=testing_dheera_ai_router, deployment_id=deployment_id
         )
 
     # Now with enough requests (all failures), it SHOULD trigger cooldown
     should_cooldown = _should_cooldown_deployment(
-        testing_litellm_router, deployment_id, 500, _exception
+        testing_dheera_ai_router, deployment_id, 500, _exception
     )
     assert (
         should_cooldown is True

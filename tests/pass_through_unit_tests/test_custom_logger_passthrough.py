@@ -12,11 +12,11 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.types.passthrough_endpoints.pass_through_endpoints import PassthroughStandardLoggingPayload
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.proxy.pass_through_endpoints.pass_through_endpoints import pass_through_request
+import dheera_ai
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.types.passthrough_endpoints.pass_through_endpoints import PassthroughStandardLoggingPayload
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.proxy.pass_through_endpoints.pass_through_endpoints import pass_through_request
 
 class TestCustomLogger(CustomLogger):
     def __init__(self):
@@ -29,7 +29,7 @@ class TestCustomLogger(CustomLogger):
 @pytest.mark.asyncio
 async def test_assistants_passthrough_logging():
     test_custom_logger = TestCustomLogger()
-    litellm._async_success_callback = [test_custom_logger]
+    dheera_ai._async_success_callback = [test_custom_logger]
 
     TARGET_URL = "https://api.openai.com/v1/assistants"
     REQUEST_BODY = {
@@ -93,7 +93,7 @@ async def test_assistants_passthrough_logging():
 @pytest.mark.asyncio
 async def test_threads_passthrough_logging():
     test_custom_logger = TestCustomLogger()
-    litellm._async_success_callback = [test_custom_logger]
+    dheera_ai._async_success_callback = [test_custom_logger]
 
     TARGET_URL = "https://api.openai.com/v1/threads"
     REQUEST_BODY = {} 

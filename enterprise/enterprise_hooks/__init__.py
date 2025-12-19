@@ -1,11 +1,11 @@
 from typing import Dict, Literal, Type, Union
 
-from litellm_enterprise.proxy.hooks.managed_files import _PROXY_LiteLLMManagedFiles
+from dheera_ai_enterprise.proxy.hooks.managed_files import _PROXY_DheeraAIManagedFiles
 
-from litellm.integrations.custom_logger import CustomLogger
+from dheera_ai.integrations.custom_logger import CustomLogger
 
 ENTERPRISE_PROXY_HOOKS: Dict[str, Type[CustomLogger]] = {
-    "managed_files": _PROXY_LiteLLMManagedFiles,
+    "managed_files": _PROXY_DheeraAIManagedFiles,
 }
 
 

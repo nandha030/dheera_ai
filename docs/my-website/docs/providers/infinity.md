@@ -6,14 +6,14 @@ import TabItem from '@theme/TabItem';
 | Property                  | Details                                                                                                    |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | Description               | Infinity is a high-throughput, low-latency REST API for serving text-embeddings, reranking models and clip |
-| Provider Route on LiteLLM | `infinity/`                                                                                                |
+| Provider Route on Dheera AI | `infinity/`                                                                                                |
 | Supported Operations      | `/rerank`, `/embeddings`                                                                                   |
 | Link to Provider Doc      | [Infinity ↗](https://github.com/michaelfeil/infinity)                                                      |
 
-## **Usage - LiteLLM Python SDK**
+## **Usage - Dheera AI Python SDK**
 
 ```python
-from litellm import rerank, embedding
+from dheera_ai import rerank, embedding
 import os
 
 os.environ["INFINITY_API_BASE"] = "http://localhost:8080"
@@ -25,27 +25,27 @@ response = rerank(
 )
 ```
 
-## **Usage - LiteLLM Proxy**
+## **Usage - Dheera AI Proxy**
 
-LiteLLM provides an cohere api compatible `/rerank` endpoint for Rerank calls.
+Dheera AI provides an cohere api compatible `/rerank` endpoint for Rerank calls.
 
 **Setup**
 
-Add this to your litellm proxy config.yaml
+Add this to your dheera_ai proxy config.yaml
 
 ```yaml
 model_list:
   - model_name: custom-infinity-rerank
-    litellm_params:
+    dheera_ai_params:
       model: infinity/rerank
       api_base: https://localhost:8080
       api_key: os.environ/INFINITY_API_KEY
 ```
 
-Start litellm
+Start dheera_ai
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -126,7 +126,7 @@ Any unmapped params will be passed to the provider as-is.
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import rerank
+from dheera_ai import rerank
 import os
 
 os.environ["INFINITY_API_BASE"] = "http://localhost:8080"
@@ -148,16 +148,16 @@ response = rerank(
 ```yaml
 model_list:
   - model_name: custom-infinity-rerank
-    litellm_params:
+    dheera_ai_params:
       model: infinity/rerank
       api_base: https://localhost:8080
       raw_scores: True # 👈 EITHER SET PROVIDER-SPECIFIC PARAMS HERE OR IN REQUEST BODY
 ```
 
-2. Start litellm
+2. Start dheera_ai
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -187,16 +187,16 @@ curl http://0.0.0.0:4000/rerank \
 
 ## Embeddings
 
-LiteLLM provides an OpenAI api compatible `/embeddings` endpoint for embedding calls.
+Dheera AI provides an OpenAI api compatible `/embeddings` endpoint for embedding calls.
 
 **Setup**
 
-Add this to your litellm proxy config.yaml
+Add this to your dheera_ai proxy config.yaml
 
 ```yaml
 model_list:
   - model_name: custom-infinity-embedding
-    litellm_params:
+    dheera_ai_params:
       model: infinity/provider/custom-embedding-v1
       api_base: http://localhost:8080
       api_key: os.environ/INFINITY_API_KEY
@@ -229,14 +229,14 @@ curl http://0.0.0.0:4000/embeddings \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 import os
 
 os.environ["INFINITY_API_BASE"] = "http://localhost:8080"
 
 response = embedding(
     model="infinity/bge-small",
-    input=["good morning from litellm"]
+    input=["good morning from dheera_ai"]
 )
 
 print(response.data[0]['embedding'])
@@ -268,8 +268,8 @@ curl http://0.0.0.0:4000/embeddings \
 from openai import OpenAI
 
 client = OpenAI(
-  api_key="<LITELLM_MASTER_KEY>",
-  base_url="<LITELLM_URL>"
+  api_key="<DHEERA_AI_MASTER_KEY>",
+  base_url="<DHEERA_AI_URL>"
 )
 
 response = client.embeddings.create(

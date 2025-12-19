@@ -9,7 +9,7 @@ import traceback
 
 from dotenv import load_dotenv
 
-import litellm.types
+import dheera_ai.types
 
 load_dotenv()
 import io
@@ -23,8 +23,8 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-import litellm
-from litellm import (
+import dheera_ai
+from dheera_ai import (
     ModelResponse,
     RateLimitError,
     ServiceUnavailableError,
@@ -33,16 +33,16 @@ from litellm import (
     completion_cost,
     embedding,
 )
-from litellm.llms.bedrock.chat import BedrockLLM
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
-from litellm.litellm_core_utils.prompt_templates.factory import _bedrock_tools_pt
+from dheera_ai.llms.bedrock.chat import BedrockLLM
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
+from dheera_ai.dheera_ai_core_utils.prompt_templates.factory import _bedrock_tools_pt
 from base_llm_unit_tests import BaseLLMChatTest, BaseAnthropicChatTest
 from base_rerank_unit_tests import BaseLLMRerankTest
 from base_embedding_unit_tests import BaseLLMEmbeddingTest
 
-# litellm.num_retries = 3
-litellm.cache = None
-litellm.success_callback = []
+# dheera_ai.num_retries = 3
+dheera_ai.cache = None
+dheera_ai.success_callback = []
 user_message = "Write a short poem about the sky"
 messages = [{"content": user_message, "role": "user"}]
 
@@ -50,10 +50,10 @@ messages = [{"content": user_message, "role": "user"}]
 @pytest.fixture(autouse=True)
 def reset_callbacks():
     print("\npytest fixture - resetting callbacks")
-    litellm.success_callback = []
-    litellm._async_success_callback = []
-    litellm.failure_callback = []
-    litellm.callbacks = []
+    dheera_ai.success_callback = []
+    dheera_ai._async_success_callback = []
+    dheera_ai.failure_callback = []
+    dheera_ai.callbacks = []
 
 
 def test_completion_bedrock_claude_completion_auth():
@@ -97,10 +97,10 @@ def test_completion_bedrock_claude_completion_auth():
 def test_completion_bedrock_guardrails(streaming):
     import os
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     import logging
 
-    from litellm._logging import verbose_logger
+    from dheera_ai._logging import verbose_logger
 
     # verbose_logger.setLevel(logging.DEBUG)
     try:
@@ -132,7 +132,7 @@ def test_completion_bedrock_guardrails(streaming):
 
             print("TRACE=", response.trace)
         else:
-            litellm.set_verbose = True
+            dheera_ai.set_verbose = True
             response = completion(
                 model="anthropic.claude-3-5-sonnet-20240620-v1:0",
                 messages=[
@@ -185,7 +185,7 @@ def test_completion_bedrock_claude_external_client_auth():
     try:
         import boto3
 
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         bedrock = boto3.client(
             service_name="bedrock-runtime",
@@ -230,7 +230,7 @@ def test_completion_bedrock_claude_sts_client_auth():
     try:
         import boto3
 
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         response = completion(
             model="bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0",
@@ -291,9 +291,9 @@ def bedrock_session_token_creds():
     else:
         # For circle-ci testing
         # aws_role_name = os.environ["AWS_TEMP_ROLE_NAME"]
-        # TODO: This is using ai.moda's IAM role, we should use LiteLLM's IAM role eventually
+        # TODO: This is using ai.moda's IAM role, we should use DheeraAI's IAM role eventually
         aws_role_name = (
-            "arn:aws:iam::335785316107:role/litellm-github-unit-tests-circleci"
+            "arn:aws:iam::335785316107:role/dheera_ai-github-unit-tests-circleci"
         )
         aws_web_identity_token = "oidc/circleci_v2/"
 
@@ -309,13 +309,13 @@ def bedrock_session_token_creds():
 def process_stream_response(res, messages):
     import types
 
-    if isinstance(res, litellm.utils.CustomStreamWrapper):
+    if isinstance(res, dheera_ai.utils.CustomStreamWrapper):
         chunks = []
         for part in res:
             chunks.append(part)
             text = part.choices[0].delta.content or ""
             print(text, end="")
-        res = litellm.stream_chunk_builder(chunks, messages=messages)
+        res = dheera_ai.stream_chunk_builder(chunks, messages=messages)
     else:
         raise ValueError("Response object is not a streaming response")
 
@@ -337,7 +337,7 @@ def test_completion_bedrock_claude_aws_session_token(bedrock_session_token_creds
     aws_session_token = bedrock_session_token_creds.token
 
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         response_1 = completion(
             model="bedrock/anthropic.claude-3-haiku-20240307-v1:0",
@@ -433,7 +433,7 @@ def test_completion_bedrock_claude_aws_bedrock_client(bedrock_session_token_cred
     )
 
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         response_1 = completion(
             model="bedrock/anthropic.claude-3-haiku-20240307-v1:0",
@@ -513,11 +513,11 @@ def test_completion_bedrock_claude_sts_oidc_auth():
     aws_web_identity_token = "oidc/circleci_v2/"
     aws_region_name = os.environ["AWS_REGION_NAME"]
     # aws_role_name = os.environ["AWS_TEMP_ROLE_NAME"]
-    # TODO: This is using ai.moda's IAM role, we should use LiteLLM's IAM role eventually
-    aws_role_name = "arn:aws:iam::335785316107:role/litellm-github-unit-tests-circleci"
+    # TODO: This is using ai.moda's IAM role, we should use DheeraAI's IAM role eventually
+    aws_role_name = "arn:aws:iam::335785316107:role/dheera_ai-github-unit-tests-circleci"
 
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         response_1 = completion(
             model="bedrock/anthropic.claude-3-haiku-20240307-v1:0",
@@ -580,11 +580,11 @@ def test_completion_bedrock_httpx_command_r_sts_oidc_auth():
     aws_web_identity_token = "oidc/circleci_v2/"
     aws_region_name = "us-west-2"
     # aws_role_name = os.environ["AWS_TEMP_ROLE_NAME"]
-    # TODO: This is using ai.moda's IAM role, we should use LiteLLM's IAM role eventually
-    aws_role_name = "arn:aws:iam::335785316107:role/litellm-github-unit-tests-circleci"
+    # TODO: This is using ai.moda's IAM role, we should use DheeraAI's IAM role eventually
+    aws_role_name = "arn:aws:iam::335785316107:role/dheera_ai-github-unit-tests-circleci"
 
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         response = completion(
             model="bedrock/cohere.command-r-v1:0",
@@ -615,7 +615,7 @@ def test_completion_bedrock_httpx_command_r_sts_oidc_auth():
 )
 def test_bedrock_claude_3(image_url):
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         data = {
             "max_tokens": 100,
             "stream": False,
@@ -647,7 +647,7 @@ def test_bedrock_claude_3(image_url):
         assert len(response.choices) > 0
         assert len(response.choices[0].message.content) > 0
 
-    except litellm.InternalServerError:
+    except dheera_ai.InternalServerError:
         pass
     except RateLimitError:
         pass
@@ -670,7 +670,7 @@ def test_bedrock_claude_3(image_url):
 )
 def test_bedrock_stop_value(stop, model):
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         data = {
             "max_tokens": 100,
             "stream": False,
@@ -707,7 +707,7 @@ def test_bedrock_stop_value(stop, model):
 )
 def test_bedrock_system_prompt(system, model):
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         data = {
             "max_tokens": 100,
             "stream": False,
@@ -734,8 +734,8 @@ def test_bedrock_system_prompt(system, model):
 
 def test_bedrock_claude_3_tool_calling():
     try:
-        litellm.set_verbose = True
-        litellm._turn_on_debug()
+        dheera_ai.set_verbose = True
+        dheera_ai._turn_on_debug()
         tools = [
             {
                 "type": "function",
@@ -819,12 +819,12 @@ def encode_image(image_path):
 )
 def test_completion_claude_3_base64():
     try:
-        litellm.set_verbose = True
-        litellm.num_retries = 3
+        dheera_ai.set_verbose = True
+        dheera_ai.num_retries = 3
         image_path = "../proxy/cached_logo.jpg"
         # Getting the base64 string
         base64_image = encode_image(image_path)
-        resp = litellm.completion(
+        resp = dheera_ai.completion(
             model="bedrock/anthropic.claude-3-sonnet-20240229-v1:0",
             messages=[
                 {
@@ -856,7 +856,7 @@ def test_completion_bedrock_mistral_completion_auth():
 
     import os
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     # aws_access_key_id = os.environ["AWS_ACCESS_KEY_ID"]
     # aws_secret_access_key = os.environ["AWS_SECRET_ACCESS_KEY"]
@@ -892,19 +892,19 @@ def test_bedrock_ptu():
     """
     Check if a url with 'modelId' passed in, is created correctly
 
-    Reference: https://github.com/BerriAI/litellm/issues/3805
+    Reference: https://github.com/BerriAI/dheera_ai/issues/3805
     """
     client = HTTPHandler()
 
     with patch.object(client, "post", new=Mock()) as mock_client_post:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         from openai.types.chat import ChatCompletion
 
         model_id = (
             "arn:aws:bedrock:us-west-2:888602223428:provisioned-model/8fxff74qyhs3"
         )
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0",
                 messages=[{"role": "user", "content": "What's AWS?"}],
                 model_id=model_id,
@@ -926,17 +926,17 @@ async def test_bedrock_custom_api_base():
     """
     Check if a url with 'modelId' passed in, is created correctly
 
-    Reference: https://github.com/BerriAI/litellm/issues/3805, https://github.com/BerriAI/litellm/issues/5389#issuecomment-2313677977
+    Reference: https://github.com/BerriAI/dheera_ai/issues/3805, https://github.com/BerriAI/dheera_ai/issues/5389#issuecomment-2313677977
 
     """
     client = AsyncHTTPHandler()
 
     with patch.object(client, "post", new=AsyncMock()) as mock_client_post:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         from openai.types.chat import ChatCompletion
 
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="anthropic.claude-3-sonnet-20240229-v1:0",
                 messages=[{"role": "user", "content": "What's AWS?"}],
                 client=client,
@@ -970,16 +970,16 @@ async def test_bedrock_custom_api_base():
 @pytest.mark.asyncio
 async def test_bedrock_extra_headers(model):
     """
-    Relevant Issue: https://github.com/BerriAI/litellm/issues/9106
+    Relevant Issue: https://github.com/BerriAI/dheera_ai/issues/9106
     """
     client = AsyncHTTPHandler()
 
     with patch.object(client, "post", new=AsyncMock()) as mock_client_post:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         from openai.types.chat import ChatCompletion
 
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model=model,
                 messages=[{"role": "user", "content": "What's AWS?"}],
                 client=client,
@@ -1003,7 +1003,7 @@ async def test_bedrock_custom_prompt_template():
     """
     Check if custom prompt template used for bedrock models
 
-    Reference: https://github.com/BerriAI/litellm/issues/4415
+    Reference: https://github.com/BerriAI/dheera_ai/issues/4415
     """
     client = AsyncHTTPHandler()
 
@@ -1011,7 +1011,7 @@ async def test_bedrock_custom_prompt_template():
         import json
 
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="bedrock/mistral.OpenOrca",
                 messages=[{"role": "user", "content": "What's AWS?"}],
                 client=client,
@@ -1059,7 +1059,7 @@ def test_completion_bedrock_external_client_region():
     try:
         import boto3
 
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         bedrock = boto3.client(
             service_name="bedrock-runtime",
@@ -1098,11 +1098,11 @@ def test_completion_bedrock_external_client_region():
 
 def test_bedrock_tool_calling():
     """
-    # related issue: https://github.com/BerriAI/litellm/issues/5007
+    # related issue: https://github.com/BerriAI/dheera_ai/issues/5007
     # Bedrock tool names must satisfy regular expression pattern: [a-zA-Z][a-zA-Z0-9_]* ensure this is true
     """
-    litellm.set_verbose = True
-    response = litellm.completion(
+    dheera_ai.set_verbose = True
+    response = dheera_ai.completion(
         model="bedrock/anthropic.claude-3-sonnet-20240229-v1:0",
         fallbacks=["bedrock/meta.llama3-1-8b-instruct-v1:0"],
         messages=[
@@ -1141,7 +1141,7 @@ def test_bedrock_tool_calling():
 
 def test_bedrock_tools_pt_valid_names():
     """
-    # related issue: https://github.com/BerriAI/litellm/issues/5007
+    # related issue: https://github.com/BerriAI/dheera_ai/issues/5007
     # Bedrock tool names must satisfy regular expression pattern: [a-zA-Z][a-zA-Z0-9_]* ensure this is true
 
     """
@@ -1185,7 +1185,7 @@ def test_bedrock_tools_pt_valid_names():
 
 def test_bedrock_tools_pt_invalid_names():
     """
-    # related issue: https://github.com/BerriAI/litellm/issues/5007
+    # related issue: https://github.com/BerriAI/dheera_ai/issues/5007
     # Bedrock tool names must satisfy regular expression pattern: [a-zA-Z][a-zA-Z0-9_]* ensure this is true
 
     """
@@ -1231,7 +1231,7 @@ def test_bedrock_tools_pt_invalid_names():
 
 
 def test_bedrock_tools_transformation_valid_params():
-    from litellm.types.llms.bedrock import ToolJsonSchemaBlock
+    from dheera_ai.types.llms.bedrock import ToolJsonSchemaBlock
 
     tools = [
         {
@@ -1281,7 +1281,7 @@ def test_bedrock_tools_transformation_valid_params():
 
 
 def test_not_found_error():
-    with pytest.raises(litellm.NotFoundError):
+    with pytest.raises(dheera_ai.NotFoundError):
         completion(
             model="bedrock/bad_model",
             messages=[
@@ -1301,7 +1301,7 @@ def test_not_found_error():
     ],
 )
 def test_bedrock_cross_region_inference(model):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     response = completion(
         model=model,
         messages=messages,
@@ -1320,20 +1320,20 @@ def test_bedrock_cross_region_inference(model):
     ],
 )
 def test_bedrock_get_base_model(model, expected_base_model):
-    from litellm.llms.bedrock.common_utils import BedrockModelInfo
+    from dheera_ai.llms.bedrock.common_utils import BedrockModelInfo
 
     assert BedrockModelInfo.get_base_model(model) == expected_base_model
 
 
-from litellm.litellm_core_utils.prompt_templates.factory import (
+from dheera_ai.dheera_ai_core_utils.prompt_templates.factory import (
     _bedrock_converse_messages_pt,
 )
 
 
 def test_bedrock_converse_translation_tool_message():
-    from litellm.types.utils import ChatCompletionMessageToolCall, Function
+    from dheera_ai.types.utils import ChatCompletionMessageToolCall, Function
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     messages = [
         {
@@ -1385,7 +1385,7 @@ def test_base_aws_llm_get_credentials():
 
     import boto3
 
-    from litellm.llms.bedrock.base_aws_llm import BaseAWSLLM
+    from dheera_ai.llms.bedrock.base_aws_llm import BaseAWSLLM
 
     start_time = time.time()
     session = boto3.Session(
@@ -1419,7 +1419,7 @@ def test_base_aws_llm_get_credentials():
 
 
 def test_bedrock_completion_test_2():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     data = {
         "model": "bedrock/anthropic.claude-3-opus-20240229-v1:0",
         "messages": [
@@ -1644,13 +1644,13 @@ def test_bedrock_completion_test_2():
         ],
     }
 
-    from litellm.llms.bedrock.chat.converse_transformation import AmazonConverseConfig
+    from dheera_ai.llms.bedrock.chat.converse_transformation import AmazonConverseConfig
 
     request = AmazonConverseConfig()._transform_request(
         model=data["model"],
         messages=data["messages"],
         optional_params={"tools": data["tools"]},
-        litellm_params={},
+        dheera_ai_params={},
     )
 
     """
@@ -1667,8 +1667,8 @@ def test_bedrock_completion_test_3():
     """
     Check if content in tool result is formatted correctly
     """
-    from litellm.types.utils import ChatCompletionMessageToolCall, Function, Message
-    from litellm.litellm_core_utils.prompt_templates.factory import (
+    from dheera_ai.types.utils import ChatCompletionMessageToolCall, Function, Message
+    from dheera_ai.dheera_ai_core_utils.prompt_templates.factory import (
         _bedrock_converse_messages_pt,
     )
 
@@ -1724,8 +1724,8 @@ def test_bedrock_completion_test_3():
 @pytest.mark.skip(reason="Skipping this test as Bedrock now supports this behavior.")
 @pytest.mark.parametrize("modify_params", [True, False])
 def test_bedrock_completion_test_4(modify_params):
-    litellm.set_verbose = True
-    litellm.modify_params = modify_params
+    dheera_ai.set_verbose = True
+    dheera_ai.modify_params = modify_params
 
     data = {
         "model": "anthropic.claude-3-opus-20240229-v1:0",
@@ -2006,13 +2006,13 @@ def test_bedrock_completion_test_4(modify_params):
         assert transformed_messages == expected_messages
     else:
         with pytest.raises(Exception) as e:
-            litellm.completion(**data)
-        assert "litellm.modify_params" in str(e.value)
+            dheera_ai.completion(**data)
+        assert "dheera_ai.modify_params" in str(e.value)
 
 
 def test_bedrock_context_window_error():
-    with pytest.raises(litellm.ContextWindowExceededError) as e:
-        litellm.completion(
+    with pytest.raises(dheera_ai.ContextWindowExceededError) as e:
+        dheera_ai.completion(
             model="bedrock/claude-3-5-sonnet-20240620",
             messages=[{"role": "user", "content": "Hello, world!"}],
             mock_response=Exception("prompt is too long"),
@@ -2020,9 +2020,9 @@ def test_bedrock_context_window_error():
 
 
 def test_bedrock_converse_route():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     try:
-        litellm.completion(
+        dheera_ai.completion(
             model="bedrock/converse/us.amazon.nova-pro-v1:0",
             messages=[{"role": "user", "content": "Hello, world!"}],
         )
@@ -2034,18 +2034,18 @@ def test_bedrock_converse_route():
 
 
 def test_bedrock_mapped_converse_models():
-    litellm.set_verbose = True
-    os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-    litellm.model_cost = litellm.get_model_cost_map(url="")
-    litellm.add_known_models()
-    litellm.completion(
+    dheera_ai.set_verbose = True
+    os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+    dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
+    dheera_ai.add_known_models()
+    dheera_ai.completion(
         model="bedrock/us.amazon.nova-pro-v1:0",
         messages=[{"role": "user", "content": "Hello, world!"}],
     )
 
 
 def test_bedrock_base_model_helper():
-    from litellm.llms.bedrock.common_utils import BedrockModelInfo
+    from dheera_ai.llms.bedrock.common_utils import BedrockModelInfo
 
     model = "us.amazon.nova-pro-v1:0"
     base_model = BedrockModelInfo.get_base_model(model)
@@ -2082,7 +2082,7 @@ def test_bedrock_base_model_helper():
 )
 def test_bedrock_route_detection(model, expected_route):
     """Test all scenarios for BedrockModelInfo.get_bedrock_route"""
-    from litellm.llms.bedrock.common_utils import BedrockModelInfo
+    from dheera_ai.llms.bedrock.common_utils import BedrockModelInfo
 
     route = BedrockModelInfo.get_bedrock_route(model)
     assert (
@@ -2129,14 +2129,14 @@ def test_bedrock_route_detection(model, expected_route):
     ],
 )
 def test_bedrock_prompt_caching_message(messages, expected_cache_control):
-    import litellm
+    import dheera_ai
     import json
 
-    transformed_messages = litellm.AmazonConverseConfig()._transform_request(
+    transformed_messages = dheera_ai.AmazonConverseConfig()._transform_request(
         model="bedrock/anthropic.claude-3-5-haiku-20241022-v1:0",
         messages=messages,
         optional_params={},
-        litellm_params={},
+        dheera_ai_params={},
     )
     if expected_cache_control:
         assert "cachePoint" in json.dumps(transformed_messages)
@@ -2158,7 +2158,7 @@ def test_bedrock_prompt_caching_message(messages, expected_cache_control):
 )
 def test_bedrock_supports_tool_call(model, expected_supports_tool_call):
     supported_openai_params = (
-        litellm.AmazonConverseConfig().get_supported_openai_params(model=model)
+        dheera_ai.AmazonConverseConfig().get_supported_openai_params(model=model)
     )
     if expected_supports_tool_call:
         assert "tools" in supported_openai_params
@@ -2168,15 +2168,15 @@ def test_bedrock_supports_tool_call(model, expected_supports_tool_call):
 
 class TestBedrockConverseChatCrossRegion(BaseLLMChatTest):
     def get_base_completion_call_args(self) -> dict:
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
-        litellm.add_known_models()
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
+        dheera_ai.add_known_models()
         return {
             "model": "bedrock/us.anthropic.claude-3-5-sonnet-20241022-v2:0",
         }
 
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
         pass
 
     def test_prompt_caching(self):
@@ -2189,14 +2189,14 @@ class TestBedrockConverseChatCrossRegion(BaseLLMChatTest):
         """
         Test if region models info is correctly used for cost calculation. Using the base model info for cost calculation.
         """
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
         bedrock_model = "us.anthropic.claude-3-5-sonnet-20241022-v2:0"
-        litellm.model_cost.pop(bedrock_model, None)
+        dheera_ai.model_cost.pop(bedrock_model, None)
         model = f"bedrock/{bedrock_model}"
 
-        litellm.set_verbose = True
-        response = litellm.completion(
+        dheera_ai.set_verbose = True
+        response = dheera_ai.completion(
             model=model,
             messages=[{"role": "user", "content": "Hello, how are you?"}],
         )
@@ -2220,31 +2220,31 @@ class TestBedrockConverseAnthropicUnitTests(BaseAnthropicChatTest):
 
 class TestBedrockConverseChatNormal(BaseLLMChatTest):
     def get_base_completion_call_args(self) -> dict:
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
-        litellm.add_known_models()
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
+        dheera_ai.add_known_models()
         return {
             "model": "bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0",
             "aws_region_name": "us-east-1",
         }
 
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
         pass
 
 
 class TestBedrockConverseNovaTestSuite(BaseLLMChatTest):
     def get_base_completion_call_args(self) -> dict:
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
-        litellm.add_known_models()
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
+        dheera_ai.add_known_models()
         return {
             "model": "bedrock/us.amazon.nova-lite-v1:0",
             "aws_region_name": "us-east-1",
         }
 
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
         pass
 
     def test_prompt_caching(self):
@@ -2254,8 +2254,8 @@ class TestBedrockConverseNovaTestSuite(BaseLLMChatTest):
 
 
 class TestBedrockRerank(BaseLLMRerankTest):
-    def get_custom_llm_provider(self) -> litellm.LlmProviders:
-        return litellm.LlmProviders.BEDROCK
+    def get_custom_llm_provider(self) -> dheera_ai.LlmProviders:
+        return dheera_ai.LlmProviders.BEDROCK
 
     def get_base_rerank_call_args(self) -> dict:
         return {
@@ -2264,8 +2264,8 @@ class TestBedrockRerank(BaseLLMRerankTest):
 
 
 class TestBedrockCohereRerank(BaseLLMRerankTest):
-    def get_custom_llm_provider(self) -> litellm.LlmProviders:
-        return litellm.LlmProviders.BEDROCK
+    def get_custom_llm_provider(self) -> dheera_ai.LlmProviders:
+        return dheera_ai.LlmProviders.BEDROCK
 
     def get_base_rerank_call_args(self) -> dict:
         return {
@@ -2297,7 +2297,7 @@ def test_bedrock_empty_content_handling(messages, continue_message_index):
     Test that empty content in messages is handled correctly with default messages
     """
     # Test with default behavior (modify_params=True)
-    litellm.modify_params = True
+    dheera_ai.modify_params = True
     formatted_messages = _bedrock_converse_messages_pt(
         messages=messages,
         model="anthropic.claude-3-sonnet-20240229-v1:0",
@@ -2351,7 +2351,7 @@ def test_bedrock_no_default_message():
         {"role": "assistant", "content": "Valid response"},
     ]
 
-    litellm.modify_params = False
+    dheera_ai.modify_params = False
     formatted_messages = _bedrock_converse_messages_pt(
         messages=messages,
         model="anthropic.claude-3-sonnet-20240229-v1:0",
@@ -2369,13 +2369,13 @@ def test_bedrock_no_default_message():
 
 @pytest.mark.parametrize("top_k_param", ["top_k", "topK"])
 def test_bedrock_nova_topk(top_k_param):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     data = {
         "model": "bedrock/us.amazon.nova-pro-v1:0",
         "messages": [{"role": "user", "content": "Hello, world!"}],
         top_k_param: 10,
     }
-    original_transform = litellm.AmazonConverseConfig()._transform_request
+    original_transform = dheera_ai.AmazonConverseConfig()._transform_request
     captured_data = None
 
     def mock_transform(*args, **kwargs):
@@ -2385,9 +2385,9 @@ def test_bedrock_nova_topk(top_k_param):
         return result
 
     with patch(
-        "litellm.AmazonConverseConfig._transform_request", side_effect=mock_transform
+        "dheera_ai.AmazonConverseConfig._transform_request", side_effect=mock_transform
     ):
-        litellm.completion(**data)
+        dheera_ai.completion(**data)
 
         # Assert that additionalRequestParameters exists and contains topK
         assert "additionalModelRequestFields" in captured_data
@@ -2399,13 +2399,13 @@ def test_bedrock_nova_topk(top_k_param):
 
 
 def test_bedrock_cross_region_inference(monkeypatch):
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
-    monkeypatch.setenv("LITELLM_LOCAL_MODEL_COST_MAP", "True")
-    litellm.model_cost = litellm.get_model_cost_map(url="")
-    litellm.add_known_models()
+    monkeypatch.setenv("DHEERA_AI_LOCAL_MODEL_COST_MAP", "True")
+    dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
+    dheera_ai.add_known_models()
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     client = HTTPHandler()
 
     with patch.object(client, "post") as mock_post:
@@ -2443,7 +2443,7 @@ def test_bedrock_empty_content_real_call():
 
 
 def test_bedrock_process_empty_text_blocks():
-    from litellm.litellm_core_utils.prompt_templates.factory import (
+    from dheera_ai.dheera_ai_core_utils.prompt_templates.factory import (
         process_empty_text_blocks,
     )
 
@@ -2460,9 +2460,9 @@ def test_bedrock_process_empty_text_blocks():
 )
 def test_nova_optional_params_tool_choice():
     try:
-        litellm.drop_params = True
-        litellm.set_verbose = True
-        litellm.completion(
+        dheera_ai.drop_params = True
+        dheera_ai.set_verbose = True
+        dheera_ai.completion(
             messages=[
                 {"role": "user", "content": "A WWII competitive game for 4-8 players"}
             ],
@@ -2532,7 +2532,7 @@ def test_nova_optional_params_tool_choice():
             ],
             tool_choice={"type": "function", "function": {"name": "GameDefinition"}},
         )
-    except litellm.APIConnectionError:
+    except dheera_ai.APIConnectionError:
         pass
 
 
@@ -2542,11 +2542,11 @@ class TestBedrockEmbedding(BaseLLMEmbeddingTest):
             "model": "bedrock/amazon.titan-embed-image-v1",
         }
 
-    def get_custom_llm_provider(self) -> litellm.LlmProviders:
-        return litellm.LlmProviders.BEDROCK
+    def get_custom_llm_provider(self) -> dheera_ai.LlmProviders:
+        return dheera_ai.LlmProviders.BEDROCK
 
     def test_bedrock_image_embedding_transformation(self):
-        from litellm.llms.bedrock.embed.amazon_titan_multimodal_transformation import (
+        from dheera_ai.llms.bedrock.embed.amazon_titan_multimodal_transformation import (
             AmazonTitanMultimodalEmbeddingG1Config,
         )
 
@@ -2565,13 +2565,13 @@ class TestBedrockEmbedding(BaseLLMEmbeddingTest):
 
 @pytest.mark.asyncio
 async def test_bedrock_image_url_sync_client():
-    from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
     import logging
-    from litellm import verbose_logger
+    from dheera_ai import verbose_logger
 
     verbose_logger.setLevel(level=logging.DEBUG)
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     client = AsyncHTTPHandler()
 
     messages = [
@@ -2591,7 +2591,7 @@ async def test_bedrock_image_url_sync_client():
 
     with patch.object(client, "post") as mock_post:
         try:
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="bedrock/us.amazon.nova-pro-v1:0",
                 messages=messages,
                 client=client,
@@ -2602,7 +2602,7 @@ async def test_bedrock_image_url_sync_client():
 
 
 def test_bedrock_error_handling_streaming():
-    from litellm.llms.bedrock.chat.invoke_handler import (
+    from dheera_ai.llms.bedrock.chat.invoke_handler import (
         AWSEventStreamDecoder,
         BedrockError,
     )
@@ -2645,9 +2645,9 @@ def test_bedrock_error_handling_streaming():
 @pytest.mark.flaky(retries=6, delay=2)
 @pytest.mark.asyncio
 async def test_bedrock_document_understanding(image_url):
-    from litellm import acompletion
+    from dheera_ai import acompletion
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     model = "bedrock/us.amazon.nova-pro-v1:0"
 
     image_content = [
@@ -2665,12 +2665,12 @@ async def test_bedrock_document_understanding(image_url):
         )
         assert response is not None
         assert response.choices[0].message.content != ""
-    except litellm.ServiceUnavailableError as e:
+    except dheera_ai.ServiceUnavailableError as e:
         pytest.skip("Skipping test due to ServiceUnavailableError")
 
 
 def test_bedrock_custom_proxy():
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
@@ -2693,10 +2693,10 @@ def test_bedrock_custom_proxy():
 
 
 def test_bedrock_custom_deepseek():
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
     import json
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     client = HTTPHandler()
 
     with patch.object(client, "post") as mock_post:
@@ -2753,11 +2753,11 @@ def test_bedrock_custom_deepseek():
 )
 def test_handle_top_k_value_helper(model, expected_output):
     assert (
-        litellm.AmazonConverseConfig()._handle_top_k_value(model, {"topK": 3})
+        dheera_ai.AmazonConverseConfig()._handle_top_k_value(model, {"topK": 3})
         == expected_output
     )
     assert (
-        litellm.AmazonConverseConfig()._handle_top_k_value(model, {"top_k": 3})
+        dheera_ai.AmazonConverseConfig()._handle_top_k_value(model, {"top_k": 3})
         == expected_output
     )
 
@@ -2803,7 +2803,7 @@ def test_bedrock_top_k_param(model, expected_params):
         mock_response.json = lambda: json.loads(mock_response.text)
         mock_post.return_value = mock_response
 
-        litellm.completion(
+        dheera_ai.completion(
             model=model,
             messages=[{"role": "user", "content": "Hello, world!"}],
             top_k=2,
@@ -2818,25 +2818,25 @@ def test_bedrock_top_k_param(model, expected_params):
 
 def test_bedrock_invoke_provider():
     assert (
-        litellm.AmazonInvokeConfig().get_bedrock_invoke_provider(
+        dheera_ai.AmazonInvokeConfig().get_bedrock_invoke_provider(
             "bedrock/invoke/us.anthropic.claude-3-5-sonnet-20240620-v1:0"
         )
         == "anthropic"
     )
     assert (
-        litellm.AmazonInvokeConfig().get_bedrock_invoke_provider(
+        dheera_ai.AmazonInvokeConfig().get_bedrock_invoke_provider(
             "bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0"
         )
         == "anthropic"
     )
     assert (
-        litellm.AmazonInvokeConfig().get_bedrock_invoke_provider(
+        dheera_ai.AmazonInvokeConfig().get_bedrock_invoke_provider(
             "bedrock/llama/arn:aws:bedrock:us-east-1:086734376398:imported-model/r4c4kewx2s0n"
         )
         == "llama"
     )
     assert (
-        litellm.AmazonInvokeConfig().get_bedrock_invoke_provider(
+        dheera_ai.AmazonInvokeConfig().get_bedrock_invoke_provider(
             "us.amazon.nova-pro-v1:0"
         )
         == "nova"
@@ -2844,8 +2844,8 @@ def test_bedrock_invoke_provider():
 
 
 def test_bedrock_description_param():
-    from litellm import completion
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai import completion
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
@@ -2891,8 +2891,8 @@ def test_bedrock_description_param():
 )
 @pytest.mark.asyncio
 async def test_bedrock_thinking_in_assistant_message(sync_mode):
-    litellm._turn_on_debug()
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
+    dheera_ai._turn_on_debug()
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
 
     if sync_mode:
         client = HTTPHandler()
@@ -2925,9 +2925,9 @@ async def test_bedrock_thinking_in_assistant_message(sync_mode):
     with patch.object(client, "post") as mock_post:
         try:
             if sync_mode:
-                response = litellm.completion(**params, client=client)
+                response = dheera_ai.completion(**params, client=client)
             else:
-                response = await litellm.acompletion(**params, client=client)
+                response = await dheera_ai.acompletion(**params, client=client)
         except Exception as e:
             print(e)
 
@@ -2958,7 +2958,7 @@ async def test_bedrock_stream_thinking_content_openwebui():
 
     ```
     """
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0",
         messages=[{"role": "user", "content": "Hello who is this?"}],
         stream=True,
@@ -3012,7 +3012,7 @@ async def test_bedrock_stream_thinking_content_openwebui():
 
 
 def test_bedrock_application_inference_profile():
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
 
     client = HTTPHandler()
     client2 = HTTPHandler()
@@ -3102,9 +3102,9 @@ async def test_bedrock_max_completion_tokens(model: str):
     Tests that:
     - max_completion_tokens is passed as max_tokens to bedrock models
     """
-    from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     client = AsyncHTTPHandler()
 
@@ -3114,7 +3114,7 @@ async def test_bedrock_max_completion_tokens(model: str):
 
     with patch.object(client, "post") as mock_client:
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model=model,
                 max_completion_tokens=10,
                 messages=[{"role": "user", "content": "Hello!"}],
@@ -3141,8 +3141,8 @@ def test_bedrock_meta_llama_function_calling():
     Tests that:
     - meta llama models support function calling
     """
-    from litellm.utils import return_raw_request
-    from litellm.types.utils import CallTypes
+    from dheera_ai.utils import return_raw_request
+    from dheera_ai.types.utils import CallTypes
 
     tools = [
         {
@@ -3190,9 +3190,9 @@ def test_bedrock_meta_llama_function_calling():
 @pytest.mark.asyncio
 @pytest.mark.parametrize("sync_mode", [True, False])
 async def test_bedrock_passthrough(sync_mode: bool):
-    import litellm
+    import dheera_ai
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     data = {
         "max_tokens": 512,
@@ -3212,14 +3212,14 @@ async def test_bedrock_passthrough(sync_mode: bool):
     }
 
     if sync_mode:
-        response = litellm.llm_passthrough_route(
+        response = dheera_ai.llm_passthrough_route(
             model="bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
             method="POST",
             endpoint="/model/us.anthropic.claude-3-5-sonnet-20240620-v1:0/invoke",
             data=data,
         )
     else:
-        response = await litellm.allm_passthrough_route(
+        response = await dheera_ai.allm_passthrough_route(
             model="bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
             method="POST",
             endpoint="/model/us.anthropic.claude-3-5-sonnet-20240620-v1:0/invoke",
@@ -3234,21 +3234,21 @@ async def test_bedrock_passthrough(sync_mode: bool):
 @pytest.mark.asyncio
 async def test_bedrock_passthrough_router():
     """
-    Test bedrock passthrough using litellm.Router with async mode.
+    Test bedrock passthrough using dheera_ai.Router with async mode.
     Tests that the router:
     1. Resolves the router model name to the actual deployment
     2. Replaces the router model name in the endpoint with the actual deployment model
     """
-    import litellm
-    from litellm import Router
+    import dheera_ai
+    from dheera_ai import Router
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     router = Router(
         model_list=[
             {
                 "model_name": "special-bedrock-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
                 },
             }
@@ -3287,17 +3287,17 @@ async def test_bedrock_passthrough_router():
 
 @pytest.mark.asyncio
 async def test_bedrock_converse__streaming_passthrough(monkeypatch):
-    import litellm
-    from litellm.integrations.custom_logger import CustomLogger
+    import dheera_ai
+    from dheera_ai.integrations.custom_logger import CustomLogger
     import asyncio
 
     class MockCustomLogger(CustomLogger):
         pass
 
     mock_custom_logger = MockCustomLogger()
-    monkeypatch.setattr(litellm, "callbacks", [mock_custom_logger])
+    monkeypatch.setattr(dheera_ai, "callbacks", [mock_custom_logger])
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     data = {
         "messages": [
@@ -3314,7 +3314,7 @@ async def test_bedrock_converse__streaming_passthrough(monkeypatch):
         "inferenceConfig": {"maxTokens": 100, "temperature": 0.5},
     }
     with patch.object(mock_custom_logger, "async_log_success_event") as mock_callback:
-        response = await litellm.allm_passthrough_route(
+        response = await dheera_ai.allm_passthrough_route(
             model="bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
             method="POST",
             endpoint="/model/us.anthropic.claude-3-5-sonnet-20240620-v1:0/converse-stream",
@@ -3334,19 +3334,19 @@ async def test_bedrock_converse__streaming_passthrough(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_bedrock_streaming_passthrough_test2(monkeypatch):
-    import litellm
+    import dheera_ai
     import time
     import asyncio
     from unittest.mock import MagicMock
-    from litellm.integrations.custom_logger import CustomLogger
+    from dheera_ai.integrations.custom_logger import CustomLogger
 
     class MockCustomLogger(CustomLogger):
         pass
 
     mock_custom_logger = MockCustomLogger()
-    monkeypatch.setattr(litellm, "callbacks", [mock_custom_logger])
+    monkeypatch.setattr(dheera_ai, "callbacks", [mock_custom_logger])
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     data = {
         "max_tokens": 512,
@@ -3366,7 +3366,7 @@ async def test_bedrock_streaming_passthrough_test2(monkeypatch):
     }
 
     with patch.object(mock_custom_logger, "async_log_success_event") as mock_callback:
-        response = await litellm.allm_passthrough_route(
+        response = await dheera_ai.allm_passthrough_route(
             model="bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
             method="POST",
             endpoint="/model/us.anthropic.claude-3-5-sonnet-20240620-v1:0/invoke-with-response-stream",
@@ -3386,19 +3386,19 @@ async def test_bedrock_streaming_passthrough_test2(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_bedrock_streaming_passthrough_test1(monkeypatch):
-    import litellm
+    import dheera_ai
     import time
     import asyncio
     from unittest.mock import MagicMock
-    from litellm.integrations.custom_logger import CustomLogger
+    from dheera_ai.integrations.custom_logger import CustomLogger
 
     class MockCustomLogger(CustomLogger):
         pass
 
     mock_custom_logger = MockCustomLogger()
-    monkeypatch.setattr(litellm, "callbacks", [mock_custom_logger])
+    monkeypatch.setattr(dheera_ai, "callbacks", [mock_custom_logger])
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     data = {
         "max_tokens": 512,
@@ -3418,7 +3418,7 @@ async def test_bedrock_streaming_passthrough_test1(monkeypatch):
     }
 
     with patch.object(mock_custom_logger, "async_log_success_event") as mock_callback:
-        response = await litellm.allm_passthrough_route(
+        response = await dheera_ai.allm_passthrough_route(
             model="bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
             method="POST",
             endpoint="/model/us.anthropic.claude-3-5-sonnet-20240620-v1:0/invoke-with-response-stream",
@@ -3445,7 +3445,7 @@ def test_bedrock_openai_imported_model():
     2. The URL is correctly constructed for Bedrock invoke endpoint
     3. Messages with system, user roles and image_url content are preserved
     """
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
@@ -3536,7 +3536,7 @@ def test_bedrock_openai_provider_detection():
     """
     Test that the OpenAI provider is correctly detected from model strings.
     """
-    from litellm.llms.bedrock.base_aws_llm import BaseAWSLLM
+    from dheera_ai.llms.bedrock.base_aws_llm import BaseAWSLLM
     
     # Test various OpenAI model formats
     test_cases = [
@@ -3554,7 +3554,7 @@ def test_bedrock_openai_model_id_extraction():
     """
     Test that the model ID (ARN) is correctly extracted and encoded for OpenAI models.
     """
-    from litellm.llms.bedrock.base_aws_llm import BaseAWSLLM
+    from dheera_ai.llms.bedrock.base_aws_llm import BaseAWSLLM
     
     model = "openai/arn:aws:bedrock:us-east-1:123456789012:imported-model/test-model-123"
     provider = BaseAWSLLM.get_bedrock_invoke_provider(model)
@@ -3575,7 +3575,7 @@ def test_bedrock_openai_convert_messages_to_prompt():
     """
     Test that convert_messages_to_prompt returns empty string for OpenAI models.
     """
-    from litellm.llms.bedrock.chat.invoke_handler import BedrockLLM
+    from dheera_ai.llms.bedrock.chat.invoke_handler import BedrockLLM
     
     bedrock_llm = BedrockLLM()
     messages = [
@@ -3600,8 +3600,8 @@ def test_bedrock_openai_response_parsing():
     """
     Test that OpenAI responses are correctly parsed.
     """
-    from litellm.llms.bedrock.chat.invoke_handler import BedrockLLM
-    from litellm import ModelResponse
+    from dheera_ai.llms.bedrock.chat.invoke_handler import BedrockLLM
+    from dheera_ai import ModelResponse
     from unittest.mock import Mock
     import json
     
@@ -3665,7 +3665,7 @@ def test_bedrock_openai_request_transformation():
     """
     Test that the request is correctly transformed for OpenAI models.
     """
-    from litellm.llms.bedrock.chat.invoke_transformations.base_invoke_transformation import AmazonInvokeConfig
+    from dheera_ai.llms.bedrock.chat.invoke_transformations.base_invoke_transformation import AmazonInvokeConfig
     
     config = AmazonInvokeConfig()
     
@@ -3682,7 +3682,7 @@ def test_bedrock_openai_request_transformation():
         "stream": False
     }
     
-    litellm_params = {}
+    dheera_ai_params = {}
     headers = {}
     
     with patch.object(config, 'get_bedrock_invoke_provider', return_value="openai"):
@@ -3690,7 +3690,7 @@ def test_bedrock_openai_request_transformation():
             model=model,
             messages=messages,
             optional_params=optional_params.copy(),
-            litellm_params=litellm_params,
+            dheera_ai_params=dheera_ai_params,
             headers=headers
         )
     
@@ -3711,7 +3711,7 @@ def test_bedrock_openai_parameter_filtering():
     """
     Test that only supported OpenAI parameters are included in the request.
     """
-    from litellm.llms.bedrock.chat.invoke_transformations.amazon_openai_transformation import AmazonBedrockOpenAIConfig
+    from dheera_ai.llms.bedrock.chat.invoke_transformations.amazon_openai_transformation import AmazonBedrockOpenAIConfig
     
     config = AmazonBedrockOpenAIConfig()
     model = "test-model"
@@ -3733,7 +3733,7 @@ def test_bedrock_openai_route_detection():
     """
     Test that the OpenAI route is correctly detected.
     """
-    from litellm.llms.bedrock.common_utils import BedrockModelInfo
+    from dheera_ai.llms.bedrock.common_utils import BedrockModelInfo
     
     test_cases = [
         ("openai/arn:aws:bedrock:us-east-1:123:imported-model/test", "openai"),
@@ -3750,7 +3750,7 @@ def test_bedrock_openai_explicit_route_check():
     """
     Test the explicit OpenAI route checker helper method.
     """
-    from litellm.llms.bedrock.common_utils import BedrockModelInfo
+    from dheera_ai.llms.bedrock.common_utils import BedrockModelInfo
     
     # Test with openai/ prefix
     assert BedrockModelInfo._explicit_openai_route("openai/arn:aws:bedrock:us-east-1:123:imported-model/test") is True
@@ -3767,7 +3767,7 @@ def test_bedrock_openai_config_initialization():
     """
     Test that AmazonBedrockOpenAIConfig can be properly initialized.
     """
-    from litellm.llms.bedrock.chat.invoke_transformations.amazon_openai_transformation import AmazonBedrockOpenAIConfig
+    from dheera_ai.llms.bedrock.chat.invoke_transformations.amazon_openai_transformation import AmazonBedrockOpenAIConfig
     
     config = AmazonBedrockOpenAIConfig()
     
@@ -3784,7 +3784,7 @@ def test_bedrock_openai_multiple_message_types():
     """
     Test that various message content types are handled correctly.
     """
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
     
     client = HTTPHandler()
     
@@ -3830,9 +3830,9 @@ def test_bedrock_openai_error_handling():
     """
     Test that errors from OpenAI models are properly handled.
     """
-    from litellm.llms.bedrock.chat.invoke_handler import BedrockLLM
-    from litellm import ModelResponse
-    from litellm.llms.bedrock.common_utils import BedrockError
+    from dheera_ai.llms.bedrock.chat.invoke_handler import BedrockLLM
+    from dheera_ai import ModelResponse
+    from dheera_ai.llms.bedrock.common_utils import BedrockError
     from unittest.mock import Mock
     import json
     

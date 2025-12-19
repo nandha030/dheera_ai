@@ -11,14 +11,14 @@ os.environ['DASHSCOPE_API_KEY']
 
 ## Sample Usage
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['DASHSCOPE_API_KEY'] = ""
 response = completion(
     model="dashscope/qwen-turbo", 
     messages=[
-       {"role": "user", "content": "hello from litellm"}
+       {"role": "user", "content": "hello from dheera_ai"}
    ],
 )
 print(response)
@@ -26,14 +26,14 @@ print(response)
 
 ## Sample Usage - Streaming
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['DASHSCOPE_API_KEY'] = ""
 response = completion(
     model="dashscope/qwen-turbo", 
     messages=[
-       {"role": "user", "content": "hello from litellm"}
+       {"role": "user", "content": "hello from dheera_ai"}
    ],
     stream=True
 )

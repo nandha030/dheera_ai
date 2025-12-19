@@ -22,7 +22,7 @@ Follow this complete workflow: create JSONL file → upload file → create batc
 
 #### 1. Create a JSONL file of batch requests
 
-LiteLLM expects the file to follow the **[OpenAI batches files format](https://platform.openai.com/docs/guides/batch)**.
+Dheera AI expects the file to follow the **[OpenAI batches files format](https://platform.openai.com/docs/guides/batch)**.
 
 Each `body` in the file should be an **OpenAI API request**.
 
@@ -43,8 +43,8 @@ Upload your JSONL file. For `vertex_ai`, the file will be stored in your configu
 from openai import OpenAI
 
 oai_client = OpenAI(
-    api_key="sk-1234",               # litellm proxy API key
-    base_url="http://localhost:4000" # litellm proxy base url
+    api_key="sk-1234",               # dheera_ai proxy API key
+    base_url="http://localhost:4000" # dheera_ai proxy base url
 )
 
 file_obj = oai_client.files.create(
@@ -75,10 +75,10 @@ curl --request POST \
 
 ```json
 {
-    "id": "gs://my-batch-bucket/litellm-vertex-files/publishers/google/models/gemini-2.5-flash-lite/abc123-def4-5678-9012-34567890abcd",
+    "id": "gs://my-batch-bucket/dheera_ai-vertex-files/publishers/google/models/gemini-2.5-flash-lite/abc123-def4-5678-9012-34567890abcd",
     "bytes": 416,
     "created_at": 1758303684,
-    "filename": "litellm-vertex-files/publishers/google/models/gemini-2.5-flash-lite/abc123-def4-5678-9012-34567890abcd",
+    "filename": "dheera_ai-vertex-files/publishers/google/models/gemini-2.5-flash-lite/abc123-def4-5678-9012-34567890abcd",
     "object": "file",
     "purpose": "batch",
     "status": "uploaded",
@@ -99,7 +99,7 @@ batch_input_file_id = file_obj.id # from step 2
 create_batch_response = oai_client.batches.create(
     completion_window="24h",
     endpoint="/v1/chat/completions",
-    input_file_id=batch_input_file_id, # e.g. "gs://my-batch-bucket/litellm-vertex-files/publishers/google/models/gemini-2.5-flash-lite/abc123-def4-5678-9012-34567890abcd"
+    input_file_id=batch_input_file_id, # e.g. "gs://my-batch-bucket/dheera_ai-vertex-files/publishers/google/models/gemini-2.5-flash-lite/abc123-def4-5678-9012-34567890abcd"
     extra_headers={"custom-llm-provider": "vertex_ai"}
 )
 
@@ -115,7 +115,7 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --header 'custom-llm-provider: vertex_ai' \
   --data '{         
-    "input_file_id": "gs://my-batch-bucket/litellm-vertex-files/publishers/google/models/gemini-2.5-flash-lite/abc123-def4-5678-9012-34567890abcd",
+    "input_file_id": "gs://my-batch-bucket/dheera_ai-vertex-files/publishers/google/models/gemini-2.5-flash-lite/abc123-def4-5678-9012-34567890abcd",
     "endpoint": "/v1/chat/completions",
     "completion_window": "24h"
 }'
@@ -132,7 +132,7 @@ curl --request POST \
     "completion_window": "24hrs",
     "created_at": 1758328011,
     "endpoint": "",
-    "input_file_id": "gs://my-batch-bucket/litellm-vertex-files/publishers/google/models/gemini-2.5-flash-lite/abc123-def4-5678-9012-34567890abcd",
+    "input_file_id": "gs://my-batch-bucket/dheera_ai-vertex-files/publishers/google/models/gemini-2.5-flash-lite/abc123-def4-5678-9012-34567890abcd",
     "object": "batch",
     "status": "validating",
     "cancelled_at": null,
@@ -146,7 +146,7 @@ curl --request POST \
     "finalizing_at": null,
     "in_progress_at": null,
     "metadata": null,
-    "output_file_id": "gs://my-batch-bucket/litellm-vertex-files/publishers/google/models/gemini-2.5-flash-lite",
+    "output_file_id": "gs://my-batch-bucket/dheera_ai-vertex-files/publishers/google/models/gemini-2.5-flash-lite",
     "request_counts": null,
     "usage": null
 }
@@ -190,7 +190,7 @@ curl --request GET \
     "completion_window": "24hrs",
     "created_at": 1758328011,
     "endpoint": "",
-    "input_file_id": "gs://my-batch-bucket/litellm-vertex-files/publishers/google/models/gemini-2.5-flash-lite/abc123-def4-5678-9012-34567890abcd",
+    "input_file_id": "gs://my-batch-bucket/dheera_ai-vertex-files/publishers/google/models/gemini-2.5-flash-lite/abc123-def4-5678-9012-34567890abcd",
     "object": "batch",
     "status": "completed",
     "cancelled_at": null,
@@ -204,7 +204,7 @@ curl --request GET \
     "finalizing_at": null,
     "in_progress_at": null,
     "metadata": null,
-    "output_file_id": "gs://my-batch-bucket/litellm-vertex-files/publishers/google/models/gemini-2.5-flash-lite/prediction-model-2025-09-19T21:26:51.569037Z/predictions.jsonl",
+    "output_file_id": "gs://my-batch-bucket/dheera_ai-vertex-files/publishers/google/models/gemini-2.5-flash-lite/prediction-model-2025-09-19T21:26:51.569037Z/predictions.jsonl",
     "request_counts": null,
     "usage": null
 }
@@ -247,7 +247,7 @@ for line in file_content.text.strip().split('\n'):
 ```bash showLineNumbers title="Get File Content"
 # Note: The file ID must be URL encoded
 curl --request GET \
-  --url 'http://localhost:4000/files/gs%253A%252F%252Fmy-batch-bucket%252Flitellm-vertex-files%252Fpublishers%252Fgoogle%252Fmodels%252Fgemini-2.5-flash-lite%252Fprediction-model-2025-09-19T21%253A26%253A51.569037Z%252Fpredictions.jsonl/content?provider=vertex_ai' \
+  --url 'http://localhost:4000/files/gs%253A%252F%252Fmy-batch-bucket%252Fdheera_ai-vertex-files%252Fpublishers%252Fgoogle%252Fmodels%252Fgemini-2.5-flash-lite%252Fprediction-model-2025-09-19T21%253A26%253A51.569037Z%252Fpredictions.jsonl/content?provider=vertex_ai' \
   --header 'Authorization: Bearer sk-1234'
 ```
 

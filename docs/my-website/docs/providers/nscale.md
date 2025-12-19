@@ -7,14 +7,14 @@ https://docs.nscale.com/docs/inference/chat
 
 :::tip
 
-**We support ALL Nscale models, just set `model=nscale/<any-model-on-nscale>` as a prefix when sending litellm requests**
+**We support ALL Nscale models, just set `model=nscale/<any-model-on-nscale>` as a prefix when sending dheera_ai requests**
 
 :::
 
 | Property | Details |
 |-------|-------|
 | Description | European-domiciled full-stack AI cloud platform for LLMs and image generation. |
-| Provider Route on LiteLLM | `nscale/` |
+| Provider Route on Dheera AI | `nscale/` |
 | Supported Endpoints | `/chat/completions`, `/images/generations` |
 | API Reference | [Nscale docs](https://docs.nscale.com/docs/getting-started/overview) |
 
@@ -37,30 +37,30 @@ Explore our full list of text and multimodal AI models — all available at high
 - **No Setup Required**: Instant access to compute without infrastructure management
 - **Full Control**: Your data remains private and isolated
 
-## Usage - LiteLLM Python SDK
+## Usage - Dheera AI Python SDK
 
 ### Text Generation
 
 ```python showLineNumbers title="Nscale Text Generation"
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["NSCALE_API_KEY"] = ""  # your Nscale API key
 response = completion(
     model="nscale/meta-llama/Llama-4-Scout-17B-16E-Instruct",
-    messages=[{"role": "user", "content": "What is LiteLLM?"}]
+    messages=[{"role": "user", "content": "What is Dheera AI?"}]
 )
 print(response)
 ```
 
 ```python showLineNumbers title="Nscale Text Generation - Streaming"
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ["NSCALE_API_KEY"] = ""  # your Nscale API key
 stream = completion(
     model="nscale/meta-llama/Llama-4-Scout-17B-16E-Instruct",
-    messages=[{"role": "user", "content": "What is LiteLLM?"}],
+    messages=[{"role": "user", "content": "What is Dheera AI?"}],
     stream=True
 )
 
@@ -72,7 +72,7 @@ for chunk in stream:
 ### Image Generation
 
 ```python showLineNumbers title="Nscale Image Generation"
-from litellm import image_generation
+from dheera_ai import image_generation
 import os
 
 os.environ["NSCALE_API_KEY"] = ""  # your Nscale API key
@@ -85,30 +85,30 @@ response = image_generation(
 print(response)
 ```
 
-## Usage - LiteLLM Proxy
+## Usage - Dheera AI Proxy
 
-Add the following to your LiteLLM Proxy configuration file:
+Add the following to your Dheera AI Proxy configuration file:
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: nscale/meta-llama/Llama-4-Scout-17B-16E-Instruct
-    litellm_params:
+    dheera_ai_params:
       model: nscale/meta-llama/Llama-4-Scout-17B-16E-Instruct
       api_key: os.environ/NSCALE_API_KEY
   - model_name: nscale/meta-llama/Llama-3.3-70B-Instruct
-    litellm_params:
+    dheera_ai_params:
       model: nscale/meta-llama/Llama-3.3-70B-Instruct
       api_key: os.environ/NSCALE_API_KEY
   - model_name: nscale/stabilityai/stable-diffusion-xl-base-1.0
-    litellm_params:
+    dheera_ai_params:
       model: nscale/stabilityai/stable-diffusion-xl-base-1.0
       api_key: os.environ/NSCALE_API_KEY
 ```
 
-Start your LiteLLM Proxy server:
+Start your Dheera AI Proxy server:
 
-```bash showLineNumbers title="Start LiteLLM Proxy"
-litellm --config config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy"
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -128,7 +128,7 @@ client = OpenAI(
 # Non-streaming response
 response = client.chat.completions.create(
     model="nscale/meta-llama/Llama-4-Scout-17B-16E-Instruct",
-    messages=[{"role": "user", "content": "What is LiteLLM?"}]
+    messages=[{"role": "user", "content": "What is Dheera AI?"}]
 )
 
 print(response.choices[0].message.content)
@@ -136,15 +136,15 @@ print(response.choices[0].message.content)
 
 </TabItem>
 
-<TabItem value="litellm-sdk" label="LiteLLM SDK">
+<TabItem value="dheera_ai-sdk" label="Dheera AI SDK">
 
-```python showLineNumbers title="Nscale via Proxy - LiteLLM SDK"
-import litellm
+```python showLineNumbers title="Nscale via Proxy - Dheera AI SDK"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy
-response = litellm.completion(
-    model="litellm_proxy/nscale/meta-llama/Llama-4-Scout-17B-16E-Instruct",
-    messages=[{"role": "user", "content": "What is LiteLLM?"}],
+# Configure Dheera AI to use your proxy
+response = dheera_ai.completion(
+    model="dheera_ai_proxy/nscale/meta-llama/Llama-4-Scout-17B-16E-Instruct",
+    messages=[{"role": "user", "content": "What is Dheera AI?"}],
     api_base="http://localhost:4000",
     api_key="your-proxy-api-key"
 )
@@ -162,7 +162,7 @@ curl http://localhost:4000/v1/chat/completions \
   -H "Authorization: Bearer your-proxy-api-key" \
   -d '{
     "model": "nscale/meta-llama/Llama-4-Scout-17B-16E-Instruct",
-    "messages": [{"role": "user", "content": "What is LiteLLM?"}]
+    "messages": [{"role": "user", "content": "What is Dheera AI?"}]
   }'
 ```
 
@@ -173,7 +173,7 @@ curl http://localhost:4000/v1/chat/completions \
 1. Create an account at [console.nscale.com](https://console.nscale.com)
 2. Claim free credit
 3. Create an API key in settings
-4. Start making API calls using LiteLLM
+4. Start making API calls using Dheera AI
 
 ## Additional Resources
 - [Nscale Documentation](https://docs.nscale.com/docs/getting-started/overview)

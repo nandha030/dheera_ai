@@ -1,8 +1,8 @@
 # Contributing to Documentation
 
-Clone litellm 
+Clone dheera_ai 
 ```
-git clone https://github.com/BerriAI/litellm.git
+git clone https://github.com/BerriAI/dheera_ai.git
 ```
 
 ### Local setup for locally running docs
@@ -28,7 +28,7 @@ This command builds your Markdown files into HTML and starts a development serve
 ### Making changes to Docs
 - All the docs are placed under the `docs` directory
 - If you are adding a new `.md` file or editing the hierarchy edit `mkdocs.yml` in the root of the project
-- After testing your changes, make a change to the `main` branch of [github.com/BerriAI/litellm](https://github.com/BerriAI/litellm)
+- After testing your changes, make a change to the `main` branch of [github.com/BerriAI/dheera_ai](https://github.com/BerriAI/dheera_ai)
 
 
 

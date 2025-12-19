@@ -2,7 +2,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 # Oracle Cloud Infrastructure (OCI)
-LiteLLM supports the following models for OCI on-demand GenAI API.
+Dheera AI supports the following models for OCI on-demand GenAI API.
 
 Check the [OCI Models List](https://docs.oracle.com/en-us/iaas/Content/generative-ai/pretrained-models.htm) to see if the model is available for your region.
 
@@ -29,10 +29,10 @@ Check the [OCI Models List](https://docs.oracle.com/en-us/iaas/Content/generativ
 
 ## Authentication
 
-LiteLLM supports two authentication methods for OCI:
+Dheera AI supports two authentication methods for OCI:
 
 ### Method 1: Manual Credentials
-Provide individual OCI credentials directly to LiteLLM. Follow the [official Oracle tutorial](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm) to create a signing key and obtain the following parameters:
+Provide individual OCI credentials directly to Dheera AI. Follow the [official Oracle tutorial](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm) to create a signing key and obtain the following parameters:
 
 - `user`
 - `fingerprint`
@@ -41,7 +41,7 @@ Provide individual OCI credentials directly to LiteLLM. Follow the [official Ora
 - `key_file` or `key`
 - `compartment_id`
 
-This is the default method for LiteLLM AI Gateway (LLM Proxy) access to OCI GenAI models.
+This is the default method for Dheera AI AI Gateway (LLM Proxy) access to OCI GenAI models.
 
 ### Method 2: OCI SDK Signer
 Use an OCI SDK `Signer` object for authentication. This method:
@@ -53,7 +53,7 @@ To use this method, install the OCI SDK:
 pip install oci
 ```
 
-This method is an alternative when using the LiteLLM SDK on Oracle Cloud Infrastructure (instances or Oracle Kubernetes Engine).
+This method is an alternative when using the Dheera AI SDK on Oracle Cloud Infrastructure (instances or Oracle Kubernetes Engine).
 
 ## Usage
 
@@ -63,7 +63,7 @@ This method is an alternative when using the LiteLLM SDK on Oracle Cloud Infrast
 Input the parameters obtained from the OCI signing key creation process into the `completion` function:
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 messages = [{"role": "user", "content": "Hey! how's it going?"}]
 response = completion(
@@ -90,7 +90,7 @@ print(response)
 Use the OCI SDK `Signer` for authentication:
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 from oci.signer import Signer
 
 # Create an OCI Signer
@@ -119,7 +119,7 @@ print(response)
 The OCI SDK can automatically load credentials from `~/.oci/config`:
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 from oci.config import from_file
 from oci.signer import Signer
 
@@ -149,7 +149,7 @@ print(response)
 For applications running on OCI compute instances:
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 from oci.auth.signers import InstancePrincipalsSecurityTokenSigner
 
 # Use instance principal authentication
@@ -171,7 +171,7 @@ print(response)
 For applications running in Oracle Kubernetes Engine (OKE):
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 from oci.auth.signers import get_oke_workload_identity_resource_principal_signer
 
 # Use workload identity authentication
@@ -197,7 +197,7 @@ Just set `stream=True` when calling completion.
 <TabItem value="manual-stream" label="Manual Credentials" default>
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 messages = [{"role": "user", "content": "Hey! how's it going?"}]
 response = completion(
@@ -224,7 +224,7 @@ for chunk in response:
 <TabItem value="oci-sdk-stream" label="OCI SDK Signer">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 from oci.signer import Signer
 
 signer = Signer(
@@ -258,7 +258,7 @@ for chunk in response:
 <TabItem value="cohere-manual" label="Manual Credentials" default>
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 messages = [{"role": "user", "content": "Explain quantum computing"}]
 response = completion(
@@ -278,7 +278,7 @@ print(response)
 <TabItem value="cohere-sdk" label="OCI SDK Signer">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 from oci.signer import Signer
 
 signer = Signer(
@@ -310,7 +310,7 @@ OCI supports dedicated endpoints for hosting models. Use the `oci_serving_mode="
 <TabItem value="dedicated-manual" label="Manual Credentials" default>
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 messages = [{"role": "user", "content": "Hey! how's it going?"}]
 response = completion(
@@ -332,7 +332,7 @@ print(response)
 <TabItem value="dedicated-sdk" label="OCI SDK Signer">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 from oci.signer import Signer
 
 signer = Signer(

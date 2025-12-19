@@ -3,7 +3,7 @@
 :::tip
 
 This is community maintained, Please make an issue if you run into a bug
-https://github.com/BerriAI/litellm
+https://github.com/BerriAI/dheera_ai
 
 :::
 
@@ -35,7 +35,7 @@ create table
     response_time real null default '0'::real,
     total_cost real null,
     additional_details json null default '{}'::json,
-    litellm_call_id text unique,
+    dheera_ai_call_id text unique,
     primary key (id)
   ) tablespace pg_default;
 ```
@@ -44,13 +44,13 @@ create table
 Use just 2 lines of code, to instantly see costs and log your responses **across all providers** with Supabase: 
 
 ```python
-litellm.success_callback=["supabase"]
-litellm.failure_callback=["supabase"]
+dheera_ai.success_callback=["supabase"]
+dheera_ai.failure_callback=["supabase"]
 ```
 
 Complete code
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 ## set env variables
 ### SUPABASE
@@ -61,8 +61,8 @@ os.environ["SUPABASE_KEY"] = "your-supabase-key"
 os.environ["OPENAI_API_KEY"] = ""
 
 # set callbacks
-litellm.success_callback=["supabase"]
-litellm.failure_callback=["supabase"]
+dheera_ai.success_callback=["supabase"]
+dheera_ai.failure_callback=["supabase"]
 
 # openai call
 response = completion(
@@ -83,7 +83,7 @@ response = completion(
 
 **Identify end-user**
 
-Pass `user` to `litellm.completion` to map your llm call to an end-user 
+Pass `user` to `dheera_ai.completion` to map your llm call to an end-user 
 
 ```python
 response = completion(
@@ -98,12 +98,12 @@ response = completion(
 If you modified your table name, here's how to pass the new name.
 
 ```python 
-litellm.modify_integration("supabase",{"table_name": "litellm_logs"})
+dheera_ai.modify_integration("supabase",{"table_name": "dheera_ai_logs"})
 ```
 
 ## Support & Talk to Founders
 
-- [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-litellm-hosted-version)
+- [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-dheera_ai-hosted-version)
 - [Community Discord 💭](https://discord.gg/wuPM9dRgDw)
 - Our numbers 📞 +1 (770) 8783-106 / ‭+1 (412) 618-6238‬
 - Our emails ✉️ ishaan@berri.ai / krrish@berri.ai

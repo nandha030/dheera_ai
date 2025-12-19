@@ -9,22 +9,22 @@ HuggingFace Rerank allows you to use reranking models hosted on Hugging Face inf
 | Property | Details |
 |----------|---------|
 | Description | HuggingFace Rerank enables semantic reranking of documents using models hosted on Hugging Face infrastructure or custom endpoints. |
-| Provider Route on LiteLLM | `huggingface/` in model name |
+| Provider Route on Dheera AI | `huggingface/` in model name |
 | Provider Doc | [Hugging Face Hub ↗](https://huggingface.co/models?pipeline_tag=sentence-similarity) |
 
 ## Quick Start
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
-```python showLineNumbers title="Example using LiteLLM Python SDK"
-import litellm
+```python showLineNumbers title="Example using Dheera AI Python SDK"
+import dheera_ai
 import os
 
 # Set your HuggingFace token
 os.environ["HF_TOKEN"] = "hf_xxxxxx"
 
 # Basic rerank usage
-response = litellm.rerank(
+response = dheera_ai.rerank(
     model="huggingface/BAAI/bge-reranker-base",
     query="What is the capital of the United States?",
     documents=[
@@ -42,9 +42,9 @@ print(response)
 ### Custom Endpoint Usage
 
 ```python showLineNumbers title="Using custom HuggingFace endpoint"
-import litellm
+import dheera_ai
 
-response = litellm.rerank(
+response = dheera_ai.rerank(
     model="huggingface/BAAI/bge-reranker-base",
     query="hello",
     documents=["hello", "world"],
@@ -59,14 +59,14 @@ print(response)
 ### Async Usage
 
 ```python showLineNumbers title="Async rerank example"
-import litellm
+import dheera_ai
 import asyncio
 import os
 
 os.environ["HF_TOKEN"] = "hf_xxxxxx"
 
 async def async_rerank_example():
-    response = await litellm.arerank(
+    response = await dheera_ai.arerank(
         model="huggingface/BAAI/bge-reranker-base",
         query="What is the capital of the United States?",
         documents=[
@@ -82,7 +82,7 @@ async def async_rerank_example():
 asyncio.run(async_rerank_example())
 ```
 
-## LiteLLM Proxy
+## Dheera AI Proxy
 
 ### 1. Configure your model in config.yaml
 
@@ -92,15 +92,15 @@ asyncio.run(async_rerank_example())
 ```yaml
 model_list:
   - model_name: bge-reranker-base
-    litellm_params:
+    dheera_ai_params:
       model: huggingface/BAAI/bge-reranker-base
       api_key: os.environ/HF_TOKEN
   - model_name: bge-reranker-large  
-    litellm_params:
+    dheera_ai_params:
       model: huggingface/BAAI/bge-reranker-large
       api_key: os.environ/HF_TOKEN
   - model_name: custom-reranker
-    litellm_params:
+    dheera_ai_params:
       model: huggingface/BAAI/bge-reranker-base
       api_base: https://my-custom-hf-endpoint.com
       api_key: your-custom-api-key
@@ -113,7 +113,7 @@ model_list:
 
 ```bash
 export HF_TOKEN="hf_xxxxxx"
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -126,7 +126,7 @@ litellm --config /path/to/config.yaml
 ```bash
 curl http://localhost:4000/rerank \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "model": "bge-reranker-base",
     "query": "What is the capital of the United States?",
@@ -145,10 +145,10 @@ curl http://localhost:4000/rerank \
 <TabItem value="python-sdk" label="Python SDK">
 
 ```python
-import litellm
+import dheera_ai
 
-# Initialize with your LiteLLM proxy URL
-response = litellm.rerank(
+# Initialize with your Dheera AI proxy URL
+response = dheera_ai.rerank(
     model="bge-reranker-base",
     query="What is the capital of the United States?",
     documents=[
@@ -159,7 +159,7 @@ response = litellm.rerank(
     ],
     top_n=3,
     api_base="http://localhost:4000",
-    api_key="your-litellm-api-key"
+    api_key="your-dheera_ai-api-key"
 )
 
 print(response)
@@ -174,7 +174,7 @@ import requests
 
 url = "http://localhost:4000/rerank"
 headers = {
-    "Authorization": "Bearer your-litellm-api-key",
+    "Authorization": "Bearer your-dheera_ai-api-key",
     "Content-Type": "application/json"
 }
 
@@ -209,7 +209,7 @@ import os
 os.environ["HF_TOKEN"] = "hf_xxxxxx"
 
 # Or pass directly
-litellm.rerank(
+dheera_ai.rerank(
     model="huggingface/BAAI/bge-reranker-base",
     api_key="hf_xxxxxx",
     # ... other params
@@ -218,7 +218,7 @@ litellm.rerank(
 
 #### Using Custom Endpoint
 ```python
-litellm.rerank(
+dheera_ai.rerank(
     model="huggingface/BAAI/bge-reranker-base",
     api_base="https://your-custom-endpoint.com",
     api_key="your-custom-key",

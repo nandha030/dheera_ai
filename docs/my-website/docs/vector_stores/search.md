@@ -16,16 +16,16 @@ Search a vector store for relevant chunks based on a query and file attributes f
 
 ## Usage
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 <Tabs>
 <TabItem value="basic" label="Basic Usage">
 
 #### Non-streaming example
 ```python showLineNumbers title="Search Vector Store - Basic"
-import litellm
+import dheera_ai
 
-response = await litellm.vector_stores.asearch(
+response = await dheera_ai.vector_stores.asearch(
     vector_store_id="vs_abc123",
     query="What is the capital of France?"
 )
@@ -34,9 +34,9 @@ print(response)
 
 #### Synchronous example
 ```python showLineNumbers title="Search Vector Store - Sync"
-import litellm
+import dheera_ai
 
-response = litellm.vector_stores.search(
+response = dheera_ai.vector_stores.search(
     vector_store_id="vs_abc123",
     query="What is the capital of France?"
 )
@@ -49,9 +49,9 @@ print(response)
 
 #### With filters and ranking options
 ```python showLineNumbers title="Search Vector Store - Advanced"
-import litellm
+import dheera_ai
 
-response = await litellm.vector_stores.asearch(
+response = await dheera_ai.vector_stores.asearch(
     vector_store_id="vs_abc123",
     query="What is the capital of France?",
     filters={
@@ -72,9 +72,9 @@ print(response)
 
 #### Searching with multiple queries
 ```python showLineNumbers title="Search Vector Store - Multiple Queries"
-import litellm
+import dheera_ai
 
-response = await litellm.vector_stores.asearch(
+response = await dheera_ai.vector_stores.asearch(
     vector_store_id="vs_abc123",
     query=[
         "What is the capital of France?",
@@ -91,13 +91,13 @@ print(response)
 
 #### Using OpenAI provider explicitly
 ```python showLineNumbers title="Search Vector Store - OpenAI Provider"
-import litellm
+import dheera_ai
 import os
 
 # Set API key
 os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
 
-response = await litellm.vector_stores.asearch(
+response = await dheera_ai.vector_stores.asearch(
     vector_store_id="vs_abc123",
     query="What is the capital of France?",
     custom_llm_provider="openai"
@@ -111,19 +111,19 @@ print(response)
 
 #### Using Azure AI Search
 ```python showLineNumbers title="Search Vector Store - Azure AI Provider"
-import litellm
+import dheera_ai
 import os
 
 # Set credentials
 os.environ["AZURE_SEARCH_API_KEY"] = "your-search-api-key"
 
-response = await litellm.vector_stores.asearch(
+response = await dheera_ai.vector_stores.asearch(
     vector_store_id="my-vector-index",
     query="What is the capital of France?",
     custom_llm_provider="azure_ai",
     azure_search_service_name="your-search-service",
-    litellm_embedding_model="azure/text-embedding-3-large",
-    litellm_embedding_config={
+    dheera_ai_embedding_model="azure/text-embedding-3-large",
+    dheera_ai_embedding_config={
         "api_base": "your-embedding-endpoint",
         "api_key": "your-embedding-api-key",
     },
@@ -140,19 +140,19 @@ print(response)
 
 #### Using Milvus
 ```python showLineNumbers title="Search Vector Store - Milvus Provider"
-import litellm
+import dheera_ai
 import os
 
 # Set credentials
 os.environ["MILVUS_API_KEY"] = "your-milvus-api-key"
 os.environ["MILVUS_API_BASE"] = "https://your-milvus-instance.milvus.io"
 
-response = await litellm.vector_stores.asearch(
+response = await dheera_ai.vector_stores.asearch(
     vector_store_id="my-collection-name",
     query="What is the capital of France?",
     custom_llm_provider="milvus",
-    litellm_embedding_model="azure/text-embedding-3-large",
-    litellm_embedding_config={
+    dheera_ai_embedding_model="azure/text-embedding-3-large",
+    dheera_ai_embedding_config={
         "api_base": "your-embedding-endpoint",
         "api_key": "your-embedding-api-key",
     },
@@ -170,13 +170,13 @@ print(response)
 
 #### Using Gemini File Search
 ```python showLineNumbers title="Search Vector Store - Gemini Provider"
-import litellm
+import dheera_ai
 import os
 
 # Set credentials
 os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"
 
-response = await litellm.vector_stores.asearch(
+response = await dheera_ai.vector_stores.asearch(
     vector_store_id="fileSearchStores/your-store-id",
     query="What is the capital of France?",
     custom_llm_provider="gemini",
@@ -187,9 +187,9 @@ print(response)
 
 **With Metadata Filter:**
 ```python showLineNumbers title="Search with Metadata Filter"
-response = await litellm.vector_stores.asearch(
+response = await dheera_ai.vector_stores.asearch(
     vector_store_id="fileSearchStores/your-store-id",
-    query="What is LiteLLM?",
+    query="What is Dheera AI?",
     custom_llm_provider="gemini",
     filters={"author": "John Doe", "category": "documentation"},
     max_num_results=5
@@ -202,7 +202,7 @@ print(response)
 </TabItem>
 </Tabs>
 
-### LiteLLM Proxy Server
+### Dheera AI Proxy Server
 
 <Tabs>
 <TabItem value="proxy-setup" label="Setup & Usage">
@@ -212,7 +212,7 @@ print(response)
 ```yaml
 model_list:
   - model_name: gpt-4o
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
 
@@ -223,18 +223,18 @@ general_settings:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it with OpenAI SDK!
 
-```python showLineNumbers title="OpenAI SDK via LiteLLM Proxy"
+```python showLineNumbers title="OpenAI SDK via Dheera AI Proxy"
 from openai import OpenAI
 
-# Point OpenAI SDK to LiteLLM proxy
+# Point OpenAI SDK to Dheera AI proxy
 client = OpenAI(
     base_url="http://0.0.0.0:4000",
-    api_key="sk-1234",  # Your LiteLLM API key
+    api_key="sk-1234",  # Your Dheera AI API key
 )
 
 search_results = client.beta.vector_stores.search(

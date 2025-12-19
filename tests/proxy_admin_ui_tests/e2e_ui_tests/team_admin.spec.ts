@@ -163,7 +163,7 @@ import { loginToUI } from "../utils/login";
 //       .filter({ hasText: "Invite User" });
 //     await expect(inviteModal).toBeVisible();
 
-//     testEmail = `test-${Date.now()}@litellm.ai`; // Use a unique email
+//     testEmail = `test-${Date.now()}@dheera_ai.ai`; // Use a unique email
 //     // Assuming the email input is the first one with 'base-input' test id inside the modal
 //     await inviteModal.getByTestId("base-input").first().fill(testEmail);
 

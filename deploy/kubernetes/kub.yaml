@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: litellm-deployment
+  name: dheera_ai-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: litellm
+      app: dheera_ai
   template:
     metadata:
       labels:
-        app: litellm
+        app: dheera_ai
     spec:
       containers:
-        - name: litellm-container
-          image: ghcr.io/berriai/litellm:main-latest
+        - name: dheera_ai-container
+          image: ghcr.io/berriai/dheera_ai:main-latest
           imagePullPolicy: Always
           env:
             - name: AZURE_API_KEY
               value: "d6f****"
             - name: AZURE_API_BASE
               value: "https://openai"
-            - name: LITELLM_MASTER_KEY
+            - name: DHEERA_AI_MASTER_KEY
               value: "sk-1234"
             - name: DATABASE_URL
               value: "postgresql://ishaan*********"
@@ -53,4 +53,4 @@ spec:
       volumes:  # Define volume to mount proxy_config.yaml
         - name: config-volume
           configMap:
-            name: litellm-config  
+            name: dheera_ai-config  

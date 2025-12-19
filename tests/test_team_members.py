@@ -3,7 +3,7 @@ import requests
 import time
 from typing import Dict, List
 import logging
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

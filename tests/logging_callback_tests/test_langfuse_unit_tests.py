@@ -8,14 +8,14 @@ sys.path.insert(
 )  # Adds the parent directory to the system-path
 
 import pytest
-from litellm.integrations.langfuse.langfuse import (
+from dheera_ai.integrations.langfuse.langfuse import (
     LangFuseLogger,
 )
-from litellm.integrations.langfuse.langfuse_handler import LangFuseHandler
-from litellm.litellm_core_utils.litellm_logging import DynamicLoggingCache
+from dheera_ai.integrations.langfuse.langfuse_handler import LangFuseHandler
+from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import DynamicLoggingCache
 from unittest.mock import Mock, patch
 from respx import MockRouter
-from litellm.types.utils import (
+from dheera_ai.types.utils import (
     StandardLoggingPayload,
     StandardLoggingModelInformation,
     StandardLoggingMetadata,
@@ -322,15 +322,15 @@ def test_get_langfuse_flush_interval():
 
 
 def test_langfuse_e2e_sync(monkeypatch):
-    from litellm import completion
-    import litellm
+    from dheera_ai import completion
+    import dheera_ai
     import respx
     import httpx
     import time
-    litellm.disable_aiohttp_transport = True # since this uses respx, we need to set use_aiohttp_transport to False
+    dheera_ai.disable_aiohttp_transport = True # since this uses respx, we need to set use_aiohttp_transport to False
 
-    litellm._turn_on_debug()
-    monkeypatch.setattr(litellm, "success_callback", ["langfuse"])
+    dheera_ai._turn_on_debug()
+    monkeypatch.setattr(dheera_ai, "success_callback", ["langfuse"])
 
     with respx.mock:
         # Mock Langfuse
@@ -340,9 +340,9 @@ def test_langfuse_e2e_sync(monkeypatch):
         ).mock(return_value=httpx.Response(200))
         completion(
             model="openai/my-fake-endpoint",
-            messages=[{"role": "user", "content": "hello from litellm"}],
+            messages=[{"role": "user", "content": "hello from dheera_ai"}],
             stream=False,
-            mock_response="Hello from litellm 2",
+            mock_response="Hello from dheera_ai 2",
         )
 
         time.sleep(3)
@@ -467,13 +467,13 @@ def test_masking_function_isolated_from_other_loggers():
     Test that langfuse_masking_function is extracted from metadata and stored separately.
     This ensures the callable doesn't leak to other logging integrations.
     """
-    from litellm.litellm_core_utils.litellm_logging import scrub_sensitive_keys_in_metadata
+    from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import scrub_sensitive_keys_in_metadata
 
     def my_masking_fn(data):
         return data
 
-    # Simulate litellm_params with masking function in metadata
-    litellm_params = {
+    # Simulate dheera_ai_params with masking function in metadata
+    dheera_ai_params = {
         "metadata": {
             "langfuse_masking_function": my_masking_fn,
             "other_key": "other_value",
@@ -481,7 +481,7 @@ def test_masking_function_isolated_from_other_loggers():
     }
 
     # Scrub should extract the function
-    result = scrub_sensitive_keys_in_metadata(litellm_params)
+    result = scrub_sensitive_keys_in_metadata(dheera_ai_params)
 
     # Function should be removed from metadata (won't leak to other loggers)
     assert "langfuse_masking_function" not in result["metadata"]
@@ -497,15 +497,15 @@ def test_masking_function_not_in_metadata_when_not_provided():
     """
     Test that scrub_sensitive_keys_in_metadata works normally when no masking function is provided.
     """
-    from litellm.litellm_core_utils.litellm_logging import scrub_sensitive_keys_in_metadata
+    from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import scrub_sensitive_keys_in_metadata
 
-    litellm_params = {
+    dheera_ai_params = {
         "metadata": {
             "some_key": "some_value",
         }
     }
 
-    result = scrub_sensitive_keys_in_metadata(litellm_params)
+    result = scrub_sensitive_keys_in_metadata(dheera_ai_params)
 
     # No _langfuse_masking_function should be added
     assert "_langfuse_masking_function" not in result

@@ -4,9 +4,9 @@
             "id": "7d33d536-2730-4815-8957-80866c09c053",
             "type": "trace-create",
             "body": {
-                "id": "litellm-test-72861437-ff5b-4c48-89c0-a143534d9e7a",
+                "id": "dheera_ai-test-72861437-ff5b-4c48-89c0-a143534d9e7a",
                 "timestamp": "2025-05-26T21:15:40.610459Z",
-                "name": "litellm-acompletion",
+                "name": "dheera_ai-acompletion",
                 "input": {
                     "messages": [
                         {
@@ -23,8 +23,8 @@
             "id": "ebb5079c-7726-4adb-9616-e1862735e1d8",
             "type": "generation-create",
             "body": {
-                "traceId": "litellm-test-72861437-ff5b-4c48-89c0-a143534d9e7a",
-                "name": "litellm-acompletion",
+                "traceId": "dheera_ai-test-72861437-ff5b-4c48-89c0-a143534d9e7a",
+                "name": "dheera_ai-acompletion",
                 "startTime": "2025-05-26T14:15:40.349639-07:00",
                 "metadata": {
                     "hidden_params": {
@@ -33,12 +33,12 @@
                         "api_base": null,
                         "response_cost": 7.5e-06,
                         "additional_headers": {},
-                        "litellm_overhead_time_ms": null,
+                        "dheera_ai_overhead_time_ms": null,
                         "batch_models": null,
-                        "litellm_model_name": "vertex_ai/gemini-2.0-flash-001",
+                        "dheera_ai_model_name": "vertex_ai/gemini-2.0-flash-001",
                         "usage_object": null
                     },
-                    "litellm_response_cost": 7.5e-06,
+                    "dheera_ai_response_cost": 7.5e-06,
                     "cache_hit": false,
                     "requester_metadata": {}
                 },
@@ -75,7 +75,7 @@
     ],
     "metadata": {
         "batch_size": 2,
-        "sdk_integration": "litellm",
+        "sdk_integration": "dheera_ai",
         "sdk_name": "python",
         "sdk_version": "2.44.1",
         "public_key": "pk-lf-3bfc4db9-217f-48e9-92e0-142566e3c204"

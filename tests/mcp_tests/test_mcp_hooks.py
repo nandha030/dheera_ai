@@ -10,15 +10,15 @@ import pytest
 from datetime import datetime
 from typing import Optional
 
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.mcp import (
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.mcp import (
     MCPPreCallRequestObject,
     MCPPreCallResponseObject,
     MCPDuringCallRequestObject,
     MCPDuringCallResponseObject,
     MCPPostCallResponseObject,
 )
-from litellm.types.llms.base import HiddenParams
+from dheera_ai.types.llms.base import HiddenParams
 
 
 class TestMCPAccessControlHook(CustomLogger):

@@ -3,12 +3,12 @@ import TabItem from '@theme/TabItem';
 
 # Gemini Video Generation (Veo)
 
-LiteLLM supports Google's Veo video generation models through a unified API interface.
+Dheera AI supports Google's Veo video generation models through a unified API interface.
 
 | Property | Details |
 |-------|-------|
 | Description | Google's Veo AI video generation models |
-| Provider Route on LiteLLM | `gemini/` |
+| Provider Route on Dheera AI | `gemini/` |
 | Supported Models | `veo-3.0-generate-preview`, `veo-3.1-generate-preview` |
 | Cost Tracking | ✅ Duration-based pricing |
 | Logging Support | ✅ Full request/response logging |
@@ -30,7 +30,7 @@ os.environ["GOOGLE_API_KEY"] = "your-google-api-key"
 ### Basic Usage
 
 ```python
-from litellm import video_generation, video_status, video_content
+from dheera_ai import video_generation, video_status, video_content
 import os
 import time
 
@@ -82,7 +82,7 @@ print("Video downloaded successfully!")
 
 ## Video Generation Parameters
 
-LiteLLM automatically maps OpenAI-style parameters to Veo's format:
+Dheera AI automatically maps OpenAI-style parameters to Veo's format:
 
 | OpenAI Parameter | Veo Parameter | Description | Example |
 |------------------|---------------|-------------|---------|
@@ -94,7 +94,7 @@ LiteLLM automatically maps OpenAI-style parameters to Veo's format:
 
 ### Size to Aspect Ratio Mapping
 
-LiteLLM automatically converts size dimensions to Veo's aspect ratio format:
+Dheera AI automatically converts size dimensions to Veo's aspect ratio format:
 - `"1280x720"`, `"1920x1080"` → `"16:9"` (landscape)
 - `"720x1280"`, `"1080x1920"` → `"9:16"` (portrait)
 
@@ -112,7 +112,7 @@ Based on Veo's API:
 ## Complete Workflow Example
 
 ```python
-import litellm
+import dheera_ai
 import time
 
 def generate_and_download_veo_video(
@@ -136,7 +136,7 @@ def generate_and_download_veo_video(
     print(f"🎬 Generating video: {prompt}")
     
     # Step 1: Initiate generation
-    response = litellm.video_generation(
+    response = dheera_ai.video_generation(
         model="gemini/veo-3.0-generate-preview",
         prompt=prompt,
         size=size,      # Maps to aspectRatio
@@ -151,7 +151,7 @@ def generate_and_download_veo_video(
     start_time = time.time()
     
     while time.time() - start_time < max_wait_time:
-        status_response = litellm.video_status(video_id=video_id)
+        status_response = dheera_ai.video_status(video_id=video_id)
         
         if status_response.status == "completed":
             print("✓ Video generation completed!")
@@ -168,7 +168,7 @@ def generate_and_download_veo_video(
     
     # Step 3: Download video
     print("⬇️  Downloading video...")
-    video_bytes = litellm.video_content(video_id=video_id)
+    video_bytes = dheera_ai.video_content(video_id=video_id)
     
     with open(output_file, "wb") as f:
         f.write(video_bytes)
@@ -186,7 +186,7 @@ generate_and_download_veo_video(
 ## Async Usage
 
 ```python
-from litellm import avideo_generation, avideo_status, avideo_content
+from dheera_ai import avideo_generation, avideo_status, avideo_content
 import asyncio
 
 async def async_video_workflow():
@@ -213,7 +213,7 @@ async def async_video_workflow():
 asyncio.run(async_video_workflow())
 ```
 
-## LiteLLM Proxy Usage
+## Dheera AI Proxy Usage
 
 ### Configuration
 
@@ -222,7 +222,7 @@ Add Veo models to your `config.yaml`:
 ```yaml
 model_list:
   - model_name: veo-3
-    litellm_params:
+    dheera_ai_params:
       model: gemini/veo-3.0-generate-preview
       api_key: os.environ/GEMINI_API_KEY
 ```
@@ -230,7 +230,7 @@ model_list:
 Start the proxy:
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 # Server running on http://0.0.0.0:4000
 ```
 
@@ -253,11 +253,11 @@ curl --location 'http://0.0.0.0:4000/v1/videos' \
 
 # Step 2: Check status
 curl --location 'http://localhost:4000/v1/videos/{video_id}' \
---header 'x-litellm-api-key: sk-1234'
+--header 'x-dheera_ai-api-key: sk-1234'
 
 # Step 3: Download video (when status is "completed")
 curl --location 'http://localhost:4000/v1/videos/{video_id}/content' \
---header 'x-litellm-api-key: sk-1234' \
+--header 'x-dheera_ai-api-key: sk-1234' \
 --output video.mp4
 ```
 
@@ -265,13 +265,13 @@ curl --location 'http://localhost:4000/v1/videos/{video_id}/content' \
 <TabItem value="python" label="Python SDK">
 
 ```python
-import litellm
+import dheera_ai
 
-litellm.api_base = "http://0.0.0.0:4000"
-litellm.api_key = "sk-1234"
+dheera_ai.api_base = "http://0.0.0.0:4000"
+dheera_ai.api_key = "sk-1234"
 
 # Generate video
-response = litellm.video_generation(
+response = dheera_ai.video_generation(
     model="veo-3",
     prompt="A cat playing with a ball of yarn in a sunny garden"
 )
@@ -279,13 +279,13 @@ response = litellm.video_generation(
 # Check status
 import time
 while True:
-    status = litellm.video_status(video_id=response.id)
+    status = dheera_ai.video_status(video_id=response.id)
     if status.status == "completed":
         break
     time.sleep(10)
 
 # Download video
-video_bytes = litellm.video_content(video_id=response.id)
+video_bytes = dheera_ai.video_content(video_id=response.id)
 with open("video.mp4", "wb") as f:
     f.write(video_bytes)
 ```
@@ -295,10 +295,10 @@ with open("video.mp4", "wb") as f:
 
 ## Cost Tracking
 
-LiteLLM automatically tracks costs for Veo video generation:
+Dheera AI automatically tracks costs for Veo video generation:
 
 ```python
-response = litellm.video_generation(
+response = dheera_ai.video_generation(
     model="gemini/veo-3.0-generate-preview",
     prompt="A beautiful sunset"
 )
@@ -324,8 +324,8 @@ response = litellm.video_generation(
 ## Error Handling
 
 ```python
-from litellm import video_generation, video_status, video_content
-from litellm.exceptions import APIError, Timeout
+from dheera_ai import video_generation, video_status, video_content
+from dheera_ai.exceptions import APIError, Timeout
 
 try:
     response = video_generation(

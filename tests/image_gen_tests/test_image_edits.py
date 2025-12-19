@@ -15,10 +15,10 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm.utils import ImageResponse
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.utils import StandardLoggingPayload
+import dheera_ai
+from dheera_ai.utils import ImageResponse
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.utils import StandardLoggingPayload
 
 # Configure pytest marks to avoid warnings
 pytestmark = pytest.mark.asyncio
@@ -39,11 +39,11 @@ class BaseLLMImageEditTest(ABC):
 
     @property
     def image_edit_function(self):
-        return litellm.image_edit
+        return dheera_ai.image_edit
 
     @property
     def async_image_edit_function(self):
-        return litellm.aimage_edit
+        return dheera_ai.aimage_edit
 
     @abstractmethod
     def get_base_image_edit_call_args(self) -> dict:
@@ -55,19 +55,19 @@ class BaseLLMImageEditTest(ABC):
         """Fixture to handle rate limit errors for all test methods"""
         try:
             yield
-        except litellm.RateLimitError:
+        except dheera_ai.RateLimitError:
             pytest.skip("Rate limit exceeded")
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
     @pytest.mark.parametrize("sync_mode", [True, False])
     @pytest.mark.flaky(retries=3, delay=2)
     @pytest.mark.asyncio
-    async def test_openai_image_edit_litellm_sdk(self, sync_mode):
+    async def test_openai_image_edit_dheera_ai_sdk(self, sync_mode):
         """
         Test image edit functionality with both sync and async modes.
         """
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         try:
             prompt = """
             Create a studio ghibli style image that combines all the reference images. Make sure the person looks like a CTO.
@@ -94,7 +94,7 @@ class BaseLLMImageEditTest(ABC):
                     # Save the image to a file
                     with open("test_image_edit.png", "wb") as f:
                         f.write(image_bytes)
-        except litellm.ContentPolicyViolationError as e:
+        except dheera_ai.ContentPolicyViolationError as e:
             pass
 
 # Get the current directory of the file being run
@@ -102,7 +102,7 @@ pwd = os.path.dirname(os.path.realpath(__file__))
 
 TEST_IMAGES = [
     open(os.path.join(pwd, "ishaan_github.png"), "rb"),
-    open(os.path.join(pwd, "litellm_site.png"), "rb"),
+    open(os.path.join(pwd, "dheera_ai_site.png"), "rb"),
 ]
 
 SINGLE_TEST_IMAGE = open(os.path.join(pwd, "ishaan_github.png"), "rb")
@@ -110,7 +110,7 @@ SINGLE_TEST_IMAGE = open(os.path.join(pwd, "ishaan_github.png"), "rb")
 def get_test_images_as_bytesio():
     """Helper function to get test images as BytesIO objects"""
     bytesio_images = []
-    for image_path in ["ishaan_github.png", "litellm_site.png"]:
+    for image_path in ["ishaan_github.png", "dheera_ai_site.png"]:
         with open(os.path.join(pwd, image_path), "rb") as f:
             image_bytes = f.read()
             bytesio_images.append(BytesIO(image_bytes))
@@ -145,17 +145,17 @@ class TestOpenAIImageEditDallE2(BaseLLMImageEditTest):
 
 @pytest.mark.flaky(retries=3, delay=2)
 @pytest.mark.asyncio
-async def test_openai_image_edit_litellm_router():
-    litellm._turn_on_debug()
+async def test_openai_image_edit_dheera_ai_router():
+    dheera_ai._turn_on_debug()
     try:
         prompt = """
         Create a studio ghibli style image that combines all the reference images. Make sure the person looks like a CTO.
         """
-        router = litellm.Router(
+        router = dheera_ai.Router(
             model_list=[
                 {
                     "model_name": "gpt-image-1",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "model": "gpt-image-1",
                     },
                 }
@@ -179,15 +179,15 @@ async def test_openai_image_edit_litellm_router():
                 # Save the image to a file
                 with open("test_image_edit.png", "wb") as f:
                     f.write(image_bytes)
-    except litellm.ContentPolicyViolationError as e:
+    except dheera_ai.ContentPolicyViolationError as e:
         pass
 
 @pytest.mark.flaky(retries=3, delay=2)
 @pytest.mark.asyncio
 async def test_openai_image_edit_with_bytesio():
     """Test image editing using BytesIO objects instead of file readers"""
-    from litellm import image_edit, aimage_edit
-    litellm._turn_on_debug()
+    from dheera_ai import image_edit, aimage_edit
+    dheera_ai._turn_on_debug()
     try:
         prompt = """
         Create a studio ghibli style image that combines all the reference images. Make sure the person looks like a CTO.
@@ -214,14 +214,14 @@ async def test_openai_image_edit_with_bytesio():
                 # Save the image to a file
                 with open("test_image_edit_bytesio.png", "wb") as f:
                     f.write(image_bytes)
-    except litellm.ContentPolicyViolationError as e:
+    except dheera_ai.ContentPolicyViolationError as e:
         pass
 
 
 @pytest.mark.asyncio
-async def test_azure_image_edit_litellm_sdk():
+async def test_azure_image_edit_dheera_ai_sdk():
     """Test Azure image edit with mocked httpx request to validate request body and URL"""
-    from litellm import image_edit, aimage_edit
+    from dheera_ai import image_edit, aimage_edit
     
     # Mock response for Azure image edit
     mock_response = {
@@ -243,13 +243,13 @@ async def test_azure_image_edit_litellm_sdk():
             return self._json_data
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         # Configure the mock to return our response
         mock_post.return_value = MockResponse(mock_response, 200)
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         
         prompt = """
         Create a studio ghibli style image that combines all the reference images. Make sure the person looks like a CTO.
@@ -317,10 +317,10 @@ async def test_azure_image_edit_litellm_sdk():
 @pytest.mark.asyncio
 async def test_openai_image_edit_cost_tracking():
     """Test OpenAI image edit cost tracking with custom logger"""
-    from litellm import image_edit, aimage_edit
+    from dheera_ai import image_edit, aimage_edit
     test_custom_logger = TestCustomLogger()
-    litellm.logging_callback_manager._reset_all_callbacks()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.logging_callback_manager._reset_all_callbacks()
+    dheera_ai.callbacks = [test_custom_logger]
     
     # Mock response for Azure image edit
     mock_response = {
@@ -342,13 +342,13 @@ async def test_openai_image_edit_cost_tracking():
             return self._json_data
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         # Configure the mock to return our response
         mock_post.return_value = MockResponse(mock_response, 200)
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         
         prompt = """
         Create a studio ghibli style image that combines all the reference images. Make sure the person looks like a CTO.
@@ -396,10 +396,10 @@ async def test_openai_image_edit_cost_tracking():
 @pytest.mark.asyncio
 async def test_azure_image_edit_cost_tracking():
     """Test Azure image edit cost tracking with custom logger"""
-    from litellm import image_edit, aimage_edit
+    from dheera_ai import image_edit, aimage_edit
     test_custom_logger = TestCustomLogger()
-    litellm.logging_callback_manager._reset_all_callbacks()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.logging_callback_manager._reset_all_callbacks()
+    dheera_ai.callbacks = [test_custom_logger]
     
     # Mock response for Azure image edit
     mock_response = {
@@ -421,13 +421,13 @@ async def test_azure_image_edit_cost_tracking():
             return self._json_data
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         # Configure the mock to return our response
         mock_post.return_value = MockResponse(mock_response, 200)
 
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         
         prompt = """
         Create a studio ghibli style image that combines all the reference images. Make sure the person looks like a CTO.
@@ -474,9 +474,9 @@ async def test_azure_image_edit_cost_tracking():
 @pytest.mark.asyncio
 @pytest.mark.skip(reason="Recraft image edit API only tested locally")
 async def test_recraft_image_edit_api():
-    from litellm import aimage_edit
+    from dheera_ai import aimage_edit
     import requests
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     global TEST_IMAGES
     try:
         prompt = """
@@ -499,7 +499,7 @@ async def test_recraft_image_edit_api():
             image_bytes = requests.get(image_url).content
             with open("test_image_edit.png", "wb") as f:
                 f.write(image_bytes)
-    except litellm.ContentPolicyViolationError as e:
+    except dheera_ai.ContentPolicyViolationError as e:
         pass
 
 
@@ -507,9 +507,9 @@ def test_recraft_image_edit_config():
     """
     Test Recraft image edit configuration parameter mapping and request transformation.
     """
-    from litellm.llms.recraft.image_edit.transformation import RecraftImageEditConfig
-    from litellm.types.images.main import ImageEditOptionalRequestParams
-    from litellm.types.router import GenericLiteLLMParams
+    from dheera_ai.llms.recraft.image_edit.transformation import RecraftImageEditConfig
+    from dheera_ai.types.images.main import ImageEditOptionalRequestParams
+    from dheera_ai.types.router import GenericDheeraAIParams
     
     config = RecraftImageEditConfig()
     
@@ -539,14 +539,14 @@ def test_recraft_image_edit_config():
     # Test request transformation (reuses OpenAI file handling)
     mock_image = b"fake_image_data"
     prompt = "winter landscape"
-    litellm_params = GenericLiteLLMParams(api_key="test_key")
+    dheera_ai_params = GenericDheeraAIParams(api_key="test_key")
     
     data, files = config.transform_image_edit_request(
         model="recraftv3",
         prompt=prompt,
         image=mock_image,
         image_edit_optional_request_params={"strength": 0.7, "n": 1},
-        litellm_params=litellm_params,
+        dheera_ai_params=dheera_ai_params,
         headers={}
     )
     
@@ -567,8 +567,8 @@ def test_recraft_image_edit_config():
 @pytest.mark.asyncio
 async def test_multiple_vs_single_image_edit(sync_mode):
     """Test that both single and multiple image editing work correctly"""
-    from litellm import image_edit, aimage_edit
-    litellm._turn_on_debug()
+    from dheera_ai import image_edit, aimage_edit
+    dheera_ai._turn_on_debug()
     
     try:
         prompt = "Add a soft blue tint to the image(s)"
@@ -615,7 +615,7 @@ async def test_multiple_vs_single_image_edit(sync_mode):
         assert len(single_result.data) > 0
         assert len(multiple_result.data) > 0
         
-    except litellm.ContentPolicyViolationError as e:
+    except dheera_ai.ContentPolicyViolationError as e:
         pytest.skip(f"Content policy violation: {e}")
 
 
@@ -623,8 +623,8 @@ async def test_multiple_vs_single_image_edit(sync_mode):
 @pytest.mark.asyncio
 async def test_multiple_image_edit_with_different_formats():
     """Test multiple images editing with different file formats and types"""
-    from litellm import aimage_edit
-    litellm._turn_on_debug()
+    from dheera_ai import aimage_edit
+    dheera_ai._turn_on_debug()
     
     try:
         prompt = "Create a cohesive artistic style across all images"
@@ -654,7 +654,7 @@ async def test_multiple_image_edit_with_different_formats():
             with open("test_multiple_image_edit_mixed.png", "wb") as f:
                 f.write(image_bytes)
         
-    except litellm.ContentPolicyViolationError as e:
+    except dheera_ai.ContentPolicyViolationError as e:
         pytest.skip(f"Content policy violation: {e}")
 
 
@@ -662,7 +662,7 @@ async def test_multiple_image_edit_with_different_formats():
 @pytest.mark.asyncio
 async def test_image_edit_array_handling():
     """Test that the image parameter correctly handles both single items and arrays"""
-    from litellm import aimage_edit
+    from dheera_ai import aimage_edit
     
     # Mock response
     mock_response = {
@@ -684,7 +684,7 @@ async def test_image_edit_array_handling():
             return self._json_data
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         mock_post.return_value = MockResponse(mock_response, 200)

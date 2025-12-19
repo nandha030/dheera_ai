@@ -66,9 +66,9 @@ def transform_openrouter_data(data):
         if "pricing" in row and "image" in row["pricing"] and float(row["pricing"]["image"]) != 0.0:
             obj['input_cost_per_image'] = float(row["pricing"]["image"])
 
-        # Add the fields 'litellm_provider' and 'mode'
+        # Add the fields 'dheera_ai_provider' and 'mode'
         obj.update({
-            "litellm_provider": "openrouter",
+            "dheera_ai_provider": "openrouter",
             "mode": "chat"
         })
 
@@ -103,7 +103,7 @@ def transform_vercel_ai_gateway_data(data):
 
         mode = "embedding" if "embedding" in row["id"].lower() else "chat"
         
-        obj.update({"litellm_provider": "vercel_ai_gateway", "mode": mode})
+        obj.update({"dheera_ai_provider": "vercel_ai_gateway", "mode": mode})
 
         transformed[f'vercel_ai_gateway/{row["id"]}'] = obj
 

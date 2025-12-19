@@ -12,7 +12,7 @@ os.environ['PERPLEXITYAI_API_KEY']
 
 ## Sample Usage
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['PERPLEXITYAI_API_KEY'] = ""
@@ -25,7 +25,7 @@ print(response)
 
 ## Sample Usage - Streaming
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['PERPLEXITYAI_API_KEY'] = ""
@@ -45,7 +45,7 @@ Requires v1.72.6+
 
 :::info
 
-See full guide on Reasoning with LiteLLM [here](../reasoning_content)
+See full guide on Reasoning with Dheera AI [here](../reasoning_content)
 
 :::
 
@@ -55,7 +55,7 @@ You can set the reasoning effort by setting the `reasoning_effort` parameter.
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['PERPLEXITYAI_API_KEY'] = ""
@@ -74,7 +74,7 @@ print(response)
 ```yaml
 model_list:
   - model_name: perplexity-sonar-reasoning-model
-    litellm_params:
+    dheera_ai_params:
         model: perplexity/sonar-reasoning
         api_key: os.environ/PERPLEXITYAI_API_KEY
 ```
@@ -82,12 +82,12 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
 
-Replace `anything` with your LiteLLM Proxy Virtual Key, if [setup](../proxy/virtual_keys).
+Replace `anything` with your Dheera AI Proxy Virtual Key, if [setup](../proxy/virtual_keys).
 
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \

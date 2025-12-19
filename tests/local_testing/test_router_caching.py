@@ -12,9 +12,9 @@ import pytest
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm import Router
-from litellm.caching import RedisCache, RedisClusterCache
+import dheera_ai
+from dheera_ai import Router
+from dheera_ai.caching import RedisCache, RedisClusterCache
 
 
 ## Scenarios
@@ -32,7 +32,7 @@ async def test_router_async_caching_with_ssl_url():
             model_list=[
                 {
                     "model_name": "gpt-3.5-turbo",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "model": "gpt-3.5-turbo",
                         "api_key": os.getenv("OPENAI_API_KEY"),
                     },
@@ -59,7 +59,7 @@ def test_router_sync_caching_with_ssl_url():
             model_list=[
                 {
                     "model_name": "gpt-3.5-turbo",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "model": "gpt-3.5-turbo",
                         "api_key": os.getenv("OPENAI_API_KEY"),
                     },
@@ -82,11 +82,11 @@ def test_router_sync_caching_with_ssl_url():
 async def test_acompletion_caching_on_router():
     # tests acompletion + caching on router
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         model_list = [
             {
                 "model_name": "gpt-4.1-nano",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4.1-nano",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                     "mock_response": "Hello world",
@@ -125,7 +125,7 @@ async def test_acompletion_caching_on_router():
             response1.choices[0].message.content == response2.choices[0].message.content
         )
         router.reset()
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         end_time = time.time()
         print(f"timeout error occurred: {end_time - start_time}")
         pass
@@ -139,11 +139,11 @@ async def test_acompletion_caching_on_router():
 async def test_completion_caching_on_router():
     # tests completion + caching on router
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
@@ -178,7 +178,7 @@ async def test_completion_caching_on_router():
         assert len(response2.choices[0].message.content) > 0
 
         router.reset()
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         pass
     except Exception as e:
         traceback.print_exc()
@@ -189,11 +189,11 @@ async def test_completion_caching_on_router():
 async def test_acompletion_caching_with_ttl_on_router():
     # tests acompletion + caching on router
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         model_list = [
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
@@ -202,7 +202,7 @@ async def test_acompletion_caching_with_ttl_on_router():
             },
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4.1-nano",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                 },
@@ -239,7 +239,7 @@ async def test_acompletion_caching_with_ttl_on_router():
             response1.choices[0].message.content != response2.choices[0].message.content
         )
         router.reset()
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         end_time = time.time()
         print(f"timeout error occurred: {end_time - start_time}")
         pass
@@ -252,11 +252,11 @@ async def test_acompletion_caching_with_ttl_on_router():
 async def test_acompletion_caching_on_router_caching_groups():
     # tests acompletion + caching on router
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         model_list = [
             {
                 "model_name": "openai-gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_key": os.getenv("OPENAI_API_KEY"),
                     "mock_response": "Hello world",
@@ -266,7 +266,7 @@ async def test_acompletion_caching_on_router_caching_groups():
             },
             {
                 "model_name": "azure-gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "azure/gpt-4.1-mini",
                     "api_key": os.getenv("AZURE_API_KEY"),
                     "api_base": os.getenv("AZURE_API_BASE"),
@@ -306,7 +306,7 @@ async def test_acompletion_caching_on_router_caching_groups():
             response1.choices[0].message.content == response2.choices[0].message.content
         )
         router.reset()
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         end_time = time.time()
         print(f"timeout error occurred: {end_time - start_time}")
         pass

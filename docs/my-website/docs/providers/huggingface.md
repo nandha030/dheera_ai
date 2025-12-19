@@ -3,7 +3,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 # Hugging Face
-LiteLLM supports running inference across multiple services for models hosted on the Hugging Face Hub.
+Dheera AI supports running inference across multiple services for models hosted on the Hugging Face Hub.
 
 - **Serverless Inference Providers** - Hugging Face offers an easy and unified access to serverless AI inference through multiple inference providers, like [Together AI](https://together.ai) and [Sambanova](https://sambanova.ai). This is the fastest way to integrate AI in your products with a maintenance-free and scalable solution. More details in the [Inference Providers documentation](https://huggingface.co/docs/inference-providers/index).
 - **Dedicated Inference Endpoints** - which is a product to easily deploy models to production. Inference is run by Hugging Face in a dedicated, fully managed infrastructure on a cloud provider of your choice. You can deploy your model on Hugging Face Inference Endpoints by following [these steps](https://huggingface.co/docs/inference-endpoints/guides/create_endpoint).
@@ -47,7 +47,7 @@ To use a Hugging Face model, specify both the provider and model you want to use
 huggingface/<provider>/<hf_org_or_user>/<hf_model>
 ```
 Where `<hf_org_or_user>/<hf_model>` is the Hugging Face model ID and `<provider>` is the inference provider.  
-By default, if you don't specify a provider, LiteLLM will use the [HF Inference API](https://huggingface.co/docs/api-inference/en/index).
+By default, if you don't specify a provider, Dheera AI will use the [HF Inference API](https://huggingface.co/docs/api-inference/en/index).
 
 Examples:
 
@@ -63,7 +63,7 @@ completion(model="huggingface/meta-llama/Llama-3.3-70B-Instruct",...)
 ```
 
 
-<a target="_blank" href="https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/LiteLLM_HuggingFace.ipynb">
+<a target="_blank" href="https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/Dheera AI_HuggingFace.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 
@@ -72,7 +72,7 @@ Here's an example of chat completion using the DeepSeek-R1 model through Togethe
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["HF_TOKEN"] = "hf_xxxxxx"
 
@@ -93,7 +93,7 @@ Now, let's see what a streaming request looks like.
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["HF_TOKEN"] = "hf_xxxxxx"
 
@@ -117,7 +117,7 @@ for chunk in response:
 You can also pass images when the model supports it. Here is an example using [Llama-3.2-11B-Vision-Instruct](https://huggingface.co/meta-llama/Llama-3.2-11B-Vision-Instruct) model through Sambanova.
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # Set your Hugging Face Token
 os.environ["HF_TOKEN"] = "hf_xxxxxx"
@@ -149,7 +149,7 @@ You can extend the model's capabilities by giving them access to tools. Here is 
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # Set your Hugging Face Token
 os.environ["HF_TOKEN"] = "hf_xxxxxx"
@@ -194,7 +194,7 @@ print(response)
 
 <TabItem value="endpoints" label="Inference Endpoints">
 
-<a target="_blank" href="https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/LiteLLM_HuggingFace.ipynb">
+<a target="_blank" href="https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/Dheera AI_HuggingFace.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 
@@ -203,7 +203,7 @@ After you have [deployed your Hugging Face Inference Endpoint](https://endpoints
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["HF_TOKEN"] = "hf_xxxxxx"
 
@@ -219,7 +219,7 @@ print(response)
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["HF_TOKEN"] = "hf_xxxxxx"
 
@@ -238,7 +238,7 @@ for chunk in response:
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["HF_TOKEN"] = "hf_xxxxxx"
 
@@ -268,7 +268,7 @@ print(response.choices[0])
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["HF_TOKEN"] = "hf_xxxxxx"
 
@@ -299,8 +299,8 @@ print(response)
 </TabItem>
 </Tabs>
 
-## LiteLLM Proxy Server with Hugging Face models
-You can set up a [LiteLLM Proxy Server](https://docs.litellm.ai/#litellm-proxy-server-llm-gateway) to serve Hugging Face models through any of the supported Inference Providers. Here's how to do it:
+## Dheera AI Proxy Server with Hugging Face models
+You can set up a [Dheera AI Proxy Server](https://docs.dheera_ai.ai/#dheera_ai-proxy-server-llm-gateway) to serve Hugging Face models through any of the supported Inference Providers. Here's how to do it:
 
 ### Step 1. Setup the config file
 
@@ -309,14 +309,14 @@ In this case, we are configuring a proxy to serve `DeepSeek R1` from Hugging Fac
 ```yaml
 model_list:
   - model_name: my-r1-model
-    litellm_params:
+    dheera_ai_params:
       model: huggingface/together/deepseek-ai/DeepSeek-R1
       api_key: os.environ/HF_TOKEN # ensure you have `HF_TOKEN` in your .env
 ```
 
 ### Step 2. Start the server
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 ### Step 3. Make a request to the server
@@ -364,15 +364,15 @@ print(response)
 
 ## Embedding
 
-LiteLLM supports Hugging Face's [text-embedding-inference](https://github.com/huggingface/text-embeddings-inference) models as well.
+Dheera AI supports Hugging Face's [text-embedding-inference](https://github.com/huggingface/text-embeddings-inference) models as well.
 
 ```python
-from litellm import embedding
+from dheera_ai import embedding
 import os
 os.environ['HF_TOKEN'] = "hf_xxxxxx"
 response = embedding(
     model='huggingface/microsoft/codebert-base',
-    input=["good morning from litellm"]
+    input=["good morning from dheera_ai"]
 )
 ```
 
@@ -390,4 +390,4 @@ response = embedding(
 
 > Yes! New inference providers (and models) are being added gradually.
 
-We welcome any suggestions for improving our Hugging Face integration - Create an [issue](https://github.com/BerriAI/litellm/issues/new/choose)/[Join the Discord](https://discord.com/invite/wuPM9dRgDw)!
+We welcome any suggestions for improving our Hugging Face integration - Create an [issue](https://github.com/BerriAI/dheera_ai/issues/new/choose)/[Join the Discord](https://discord.com/invite/wuPM9dRgDw)!

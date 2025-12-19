@@ -1515,7 +1515,7 @@ This release brings accurate multi-instance rate limiting across keys/users/team
 This is currently behind a feature flag, and we plan to have this be the default by next week. To enable this today, just add this environment variable:
 
 ```codeBlockLines_e6Vv
-export LITELLM_RATE_LIMIT_ACCURACY=true
+export DHEERA_AI_RATE_LIMIT_ACCURACY=true
 
 ```
 

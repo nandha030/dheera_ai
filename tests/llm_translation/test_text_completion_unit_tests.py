@@ -12,8 +12,8 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm.types.utils import TextCompletionResponse
+import dheera_ai
+from dheera_ai.types.utils import TextCompletionResponse
 
 
 def test_convert_dict_to_text_completion_response():
@@ -76,9 +76,9 @@ def test_convert_dict_to_text_completion_response():
 @pytest.mark.respx
 async def test_huggingface_text_completion_logprobs():
     """Test text completion with Hugging Face, focusing on logprobs structure"""
-    litellm.set_verbose = True
-    litellm.disable_aiohttp_transport = True # since this uses respx, we need to set use_aiohttp_transport to False
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
+    dheera_ai.set_verbose = True
+    dheera_ai.disable_aiohttp_transport = True # since this uses respx, we need to set use_aiohttp_transport to False
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
 
     mock_response = [
         {
@@ -102,7 +102,7 @@ async def test_huggingface_text_completion_logprobs():
 
     client = AsyncHTTPHandler()
     with patch.object(client, "post", return_value=return_val) as mock_post:
-        response = await litellm.atext_completion(
+        response = await dheera_ai.atext_completion(
             model="huggingface/mistralai/Mistral-7B-Instruct-v0.3",
             prompt="good morning",
             client=client,
@@ -147,12 +147,12 @@ async def test_huggingface_text_completion_logprobs():
 async def test_acompletion_uses_optimized_http_client():
     """
     Test that OpenAITextCompletion.acompletion uses BaseOpenAILLM._get_async_http_client()
-    instead of litellm.aclient_session directly.
+    instead of dheera_ai.aclient_session directly.
 
-    Related issue: https://github.com/BerriAI/litellm/issues/17676
+    Related issue: https://github.com/BerriAI/dheera_ai/issues/17676
     """
-    from litellm.llms.openai.completion.handler import OpenAITextCompletion
-    from litellm.llms.openai.common_utils import BaseOpenAILLM
+    from dheera_ai.llms.openai.completion.handler import OpenAITextCompletion
+    from dheera_ai.llms.openai.common_utils import BaseOpenAILLM
 
     mock_http_client = MagicMock()
     mock_async_openai = AsyncMock()
@@ -189,7 +189,7 @@ async def test_acompletion_uses_optimized_http_client():
         BaseOpenAILLM, "_get_async_http_client", return_value=mock_http_client
     ) as mock_get_client:
         with patch(
-            "litellm.llms.openai.completion.handler.AsyncOpenAI",
+            "dheera_ai.llms.openai.completion.handler.AsyncOpenAI",
             return_value=mock_async_openai,
         ) as mock_openai_class:
             handler = OpenAITextCompletion()

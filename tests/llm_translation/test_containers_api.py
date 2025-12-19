@@ -1,7 +1,7 @@
 """
 E2E Test for Container Files API.
 
-Tests the container files endpoints using LiteLLM SDK methods.
+Tests the container files endpoints using DheeraAI SDK methods.
 """
 
 import os
@@ -12,11 +12,11 @@ import pytest
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-from litellm.containers import (
+from dheera_ai.containers import (
     create_container,
     delete_container,
 )
-from litellm.containers.endpoint_factory import (
+from dheera_ai.containers.endpoint_factory import (
     list_container_files,
     retrieve_container_file,
     retrieve_container_file_content,

@@ -6,7 +6,7 @@ import TabItem from '@theme/TabItem';
 
 Create keys, track spend, add models without worrying about the config / CRUD endpoints.
 
-<Image img={require('../../img/litellm_ui_create_key.png')} />
+<Image img={require('../../img/dheera_ai_ui_create_key.png')} />
 
 ## Quick Start
 
@@ -18,7 +18,7 @@ Follow [setup](./virtual_keys.md#setup)
 ### 1. Start the proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 #INFO: Proxy running on http://0.0.0.0:4000
 ```
@@ -40,12 +40,12 @@ Your Proxy Swagger is available on the root of the Proxy: e.g.: `http://localhos
 Set the following in your .env on the Proxy
 
 ```shell
-LITELLM_MASTER_KEY="sk-1234" # this is your master key for using the proxy server
-UI_USERNAME=ishaan-litellm   # username to sign in on UI
+DHEERA_AI_MASTER_KEY="sk-1234" # this is your master key for using the proxy server
+UI_USERNAME=ishaan-dheera_ai   # username to sign in on UI
 UI_PASSWORD=langchain        # password to sign in on UI
 ```
 
-On accessing the LiteLLM UI, you will be prompted to enter your username, password
+On accessing the Dheera AI UI, you will be prompted to enter your username, password
 
 ### 5. Configure Root Redirect URL
 

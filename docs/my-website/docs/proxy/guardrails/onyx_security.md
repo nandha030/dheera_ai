@@ -11,20 +11,20 @@ import TabItem from '@theme/TabItem';
 Go to [Onyx's platform](https://app.onyx.security) and create a new AI Guard policy.
 After creating the policy, copy the generated API key.
 
-### 2. Define Guardrails on your LiteLLM config.yaml
+### 2. Define Guardrails on your Dheera AI config.yaml
 
 Define your guardrails under the `guardrails` section:
 
-```yaml showLineNumbers title="litellm config.yaml"
+```yaml showLineNumbers title="dheera_ai config.yaml"
 model_list:
   - model_name: gpt-4o-mini
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o-mini
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "onyx-ai-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: onyx
       mode: ["pre_call", "post_call", "during_call"] # Run at multiple stages
       default_on: true
@@ -38,10 +38,10 @@ guardrails:
 - `post_call` Run **after** LLM call, on **input & output**
 - `during_call` Run **during** LLM call, on **input**. Same as `pre_call` but runs in parallel with the LLM call. Response not returned until guardrail check completes
 
-### 3. Start LiteLLM Gateway
+### 3. Start Dheera AI Gateway
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 ### 4. Test request
@@ -123,7 +123,7 @@ Expected response
 ```yaml
 guardrails:
   - guardrail_name: "onyx-ai-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: onyx
       mode: ["pre_call", "post_call", "during_call"] # Run at multiple stages
       api_key: os.environ/ONYX_API_KEY

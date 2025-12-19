@@ -5,7 +5,7 @@ sys.path.insert(
     0, os.path.abspath("../../..")
 )  # Adds the parent directory to the system path
 import pytest
-import litellm
+import dheera_ai
 import unittest.mock
 import json
 
@@ -21,8 +21,8 @@ class TestGoogleGenAIStudio(BaseGoogleGenAITest):
 @pytest.mark.asyncio
 async def test_mock_stream_generate_content_with_tools():
     """Test streaming function call response parsing and validation"""
-    from litellm.types.google_genai.main import ToolConfigDict
-    litellm._turn_on_debug()
+    from dheera_ai.types.google_genai.main import ToolConfigDict
+    dheera_ai._turn_on_debug()
     contents = [
         {
             "role": "user",
@@ -70,7 +70,7 @@ async def test_mock_stream_generate_content_with_tools():
     ]
 
     # Mock the HTTP handler
-    with unittest.mock.patch("litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post", new_callable=unittest.mock.AsyncMock) as mock_post:
+    with unittest.mock.patch("dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post", new_callable=unittest.mock.AsyncMock) as mock_post:
         # Create mock response object
         mock_response = unittest.mock.MagicMock()
         mock_response.status_code = 200
@@ -85,7 +85,7 @@ async def test_mock_stream_generate_content_with_tools():
         mock_post.return_value = mock_response
 
         print("\n--- Testing async agenerate_content_stream with function call parsing ---")
-        response = await litellm.google_genai.agenerate_content_stream(
+        response = await dheera_ai.google_genai.agenerate_content_stream(
             model="gemini/gemini-2.5-flash-lite",
             contents=contents,
             tools=[
@@ -230,7 +230,7 @@ async def test_validate_post_request_parameters():
         2. contents
         3. tools
     """
-    from litellm.types.google_genai.main import ToolConfigDict
+    from dheera_ai.types.google_genai.main import ToolConfigDict
     
     contents = [
         {
@@ -281,7 +281,7 @@ async def test_validate_post_request_parameters():
     ]
 
     # Mock the HTTP handler to capture the request
-    with unittest.mock.patch("litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post", new_callable=unittest.mock.AsyncMock) as mock_post:
+    with unittest.mock.patch("dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post", new_callable=unittest.mock.AsyncMock) as mock_post:
         # Create mock response object
         mock_response = unittest.mock.MagicMock()
         mock_response.status_code = 200
@@ -298,7 +298,7 @@ async def test_validate_post_request_parameters():
         print("\n--- Testing POST request parameters validation ---")
         
         # Make the API call
-        response = await litellm.google_genai.agenerate_content_stream(
+        response = await dheera_ai.google_genai.agenerate_content_stream(
             model="gemini/gemini-2.5-flash-lite",
             contents=contents,
             tools=tools

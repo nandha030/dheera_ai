@@ -6,8 +6,8 @@ import sys
 sys.path.insert(0, os.path.abspath("../.."))
 
 import asyncio
-import litellm
-import litellm.vector_stores.main
+import dheera_ai
+import dheera_ai.vector_stores.main
 import gzip
 import json
 import logging
@@ -17,14 +17,14 @@ from unittest.mock import AsyncMock, patch, Mock
 
 import pytest
 
-import litellm
-from litellm import completion
-from litellm._logging import verbose_logger
-from litellm.integrations.vector_store_integrations.vector_store_pre_call_hook import VectorStorePreCallHook
-from litellm.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.utils import StandardLoggingPayload, StandardLoggingVectorStoreRequest
-from litellm.types.vector_stores import (
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai._logging import verbose_logger
+from dheera_ai.integrations.vector_store_integrations.vector_store_pre_call_hook import VectorStorePreCallHook
+from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.utils import StandardLoggingPayload, StandardLoggingVectorStoreRequest
+from dheera_ai.types.vector_stores import (
     VectorStoreSearchResponse,
     VectorStoreResultContent,
     VectorStoreSearchResult,
@@ -51,11 +51,11 @@ def add_aws_region_to_env(monkeypatch):
 
 @pytest.fixture
 def setup_vector_store_registry():
-    from litellm.vector_stores.vector_store_registry import VectorStoreRegistry, LiteLLM_ManagedVectorStore
+    from dheera_ai.vector_stores.vector_store_registry import VectorStoreRegistry, DheeraAI_ManagedVectorStore
     # Init vector store registry
-    litellm.vector_store_registry = VectorStoreRegistry(
+    dheera_ai.vector_store_registry = VectorStoreRegistry(
         vector_stores=[
-            LiteLLM_ManagedVectorStore(
+            DheeraAI_ManagedVectorStore(
                 vector_store_id="T37J8R4WTM",
                 custom_llm_provider="bedrock"
             )
@@ -65,9 +65,9 @@ def setup_vector_store_registry():
 
 @pytest.mark.asyncio
 async def test_e2e_bedrock_knowledgebase_retrieval_with_completion(setup_vector_store_registry):
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     client = AsyncHTTPHandler()
-    print("value of litellm.vector_store_registry:", litellm.vector_store_registry)
+    print("value of dheera_ai.vector_store_registry:", dheera_ai.vector_store_registry)
 
     with patch.object(client, "post") as mock_post:
         # Mock the response for the LLM call
@@ -79,7 +79,7 @@ async def test_e2e_bedrock_knowledgebase_retrieval_with_completion(setup_vector_
             "id": "msg_01ABC123",
             "type": "message",
             "role": "assistant",
-            "content": [{"type": "text", "text": "LiteLLM is a library that simplifies LLM API access."}],
+            "content": [{"type": "text", "text": "DheeraAI is a library that simplifies LLM API access."}],
             "model": "claude-3.5-sonnet",
             "stop_reason": "end_turn",
             "stop_sequence": None,
@@ -92,9 +92,9 @@ async def test_e2e_bedrock_knowledgebase_retrieval_with_completion(setup_vector_
         mock_post.return_value = mock_response
         
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="anthropic/claude-3.5-sonnet",
-                messages=[{"role": "user", "content": "what is litellm?"}],
+                messages=[{"role": "user", "content": "what is dheera_ai?"}],
                 vector_store_ids = [
                     "T37J8R4WTM"
                 ],
@@ -132,11 +132,11 @@ async def test_e2e_bedrock_knowledgebase_retrieval_with_llm_api_call(setup_vecto
     """
     
     # Init client
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     async_client = AsyncHTTPHandler()
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
-        messages=[{"role": "user", "content": "what is litellm?"}],
+        messages=[{"role": "user", "content": "what is dheera_ai?"}],
         vector_store_ids = [
             "T37J8R4WTM"
         ],
@@ -178,11 +178,11 @@ async def test_e2e_bedrock_knowledgebase_retrieval_with_llm_api_call_streaming(s
     """
     
     # Init client
-    # litellm._turn_on_debug()
+    # dheera_ai._turn_on_debug()
     async_client = AsyncHTTPHandler()
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="anthropic/claude-3-5-haiku-latest",
-        messages=[{"role": "user", "content": "what is litellm?"}],
+        messages=[{"role": "user", "content": "what is dheera_ai?"}],
         vector_store_ids = [
             "T37J8R4WTM"
         ],
@@ -230,10 +230,10 @@ async def test_e2e_bedrock_knowledgebase_retrieval_with_llm_api_call_with_tools(
     """
     
     # Init client
-    litellm._turn_on_debug()
-    response = await litellm.acompletion(
+    dheera_ai._turn_on_debug()
+    response = await dheera_ai.acompletion(
         model="anthropic/claude-3-5-haiku-latest",
-        messages=[{"role": "user", "content": "what is litellm?"}],
+        messages=[{"role": "user", "content": "what is dheera_ai?"}],
         max_tokens=10,
         tools=[
             {
@@ -252,11 +252,11 @@ async def test_e2e_bedrock_knowledgebase_retrieval_with_llm_api_call_with_tools_
 
     In this case we filter for a non-existent user_id, which should return no results.
     """
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="anthropic/claude-3-5-haiku-latest",
-        messages=[{"role": "user", "content": "what is litellm?"}],
+        messages=[{"role": "user", "content": "what is dheera_ai?"}],
         max_tokens=10,
         tools=[
             {
@@ -284,7 +284,7 @@ async def test_e2e_bedrock_knowledgebase_retrieval_with_llm_api_call_with_tools_
     assert search_results is not None and len(search_results) > 0, "No search results found"
     
     # The search was performed - this confirms filters were passed through
-    # The logs above show:  litellm.asearch(... filters={'key': 'user_id', 'value': 'fake-user-id', 'operator': 'eq'})
+    # The logs above show:  dheera_ai.asearch(... filters={'key': 'user_id', 'value': 'fake-user-id', 'operator': 'eq'})
     # And the Bedrock API request contains: {'filter': {'equals': {'key': 'user_id', 'value': 'fake-user-id'}}}
     
     print("✅ Filters were successfully passed through to vector store search")
@@ -304,7 +304,7 @@ async def test_bedrock_kb_request_body_has_transformed_filters(setup_vector_stor
         vector_store_search_optional_params,
         vector_store_provider_config,
         custom_llm_provider,
-        litellm_params,
+        dheera_ai_params,
         logging_obj,
         extra_headers=None,
         extra_body=None,
@@ -312,14 +312,14 @@ async def test_bedrock_kb_request_body_has_transformed_filters(setup_vector_stor
         client=None,
         _is_async=False,
     ):
-        litellm_params_dict = (
-            litellm_params.model_dump(exclude_none=False)
-            if hasattr(litellm_params, "model_dump")
-            else dict(litellm_params)
+        dheera_ai_params_dict = (
+            dheera_ai_params.model_dump(exclude_none=False)
+            if hasattr(dheera_ai_params, "model_dump")
+            else dict(dheera_ai_params)
         )
         api_base = vector_store_provider_config.get_complete_url(
-            api_base=litellm_params_dict.get("api_base"),
-            litellm_params=litellm_params_dict,
+            api_base=dheera_ai_params_dict.get("api_base"),
+            dheera_ai_params=dheera_ai_params_dict,
         )
 
         url, request_body = vector_store_provider_config.transform_search_vector_store_request(
@@ -327,8 +327,8 @@ async def test_bedrock_kb_request_body_has_transformed_filters(setup_vector_stor
             query=query,
             vector_store_search_optional_params=vector_store_search_optional_params,
             api_base=api_base,
-            litellm_logging_obj=logging_obj,
-            litellm_params=litellm_params_dict,
+            dheera_ai_logging_obj=logging_obj,
+            dheera_ai_params=dheera_ai_params_dict,
         )
         captured_request_body["url"] = url
         captured_request_body["body"] = request_body
@@ -339,19 +339,19 @@ async def test_bedrock_kb_request_body_has_transformed_filters(setup_vector_stor
             data=[
                 VectorStoreSearchResult(
                     score=0.9,
-                    content=[VectorStoreResultContent(text="LiteLLM is a library", type="text")],
+                    content=[VectorStoreResultContent(text="DheeraAI is a library", type="text")],
                 )
             ],
         )
 
     with patch.object(
-        litellm.vector_stores.main.base_llm_http_handler,
+        dheera_ai.vector_stores.main.base_llm_http_handler,
         "async_vector_store_search_handler",
         new=AsyncMock(side_effect=fake_async_vector_store_search_handler),
     ):
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="anthropic/claude-3-5-haiku-latest",
-            messages=[{"role": "user", "content": "what is litellm?"}],
+            messages=[{"role": "user", "content": "what is dheera_ai?"}],
             max_tokens=10,
             tools=[
                 {
@@ -383,7 +383,7 @@ async def test_openai_with_knowledge_base_mock_openai(setup_vector_store_registr
     """
     Tests that knowledge base content is correctly passed to the OpenAI API call
     """
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     from openai import AsyncOpenAI
 
     client = AsyncOpenAI(api_key="fake-api-key")
@@ -417,9 +417,9 @@ async def test_openai_with_knowledge_base_mock_openai(setup_vector_store_registr
         mock_client.side_effect = mock_create
         
         try:
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="gpt-4",
-                messages=[{"role": "user", "content": "what is litellm?"}],
+                messages=[{"role": "user", "content": "what is dheera_ai?"}],
                 vector_store_ids = [
                     "T37J8R4WTM"
                 ],
@@ -455,7 +455,7 @@ async def test_openai_with_vector_store_ids_in_tool_call_mock_openai(setup_vecto
 
     This is the OpenAI format
     """
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     from openai import AsyncOpenAI
 
     client = AsyncOpenAI(api_key="fake-api-key")
@@ -489,9 +489,9 @@ async def test_openai_with_vector_store_ids_in_tool_call_mock_openai(setup_vecto
         mock_client.side_effect = mock_create
         
         try:
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="gpt-4",
-                messages=[{"role": "user", "content": "what is litellm?"}],
+                messages=[{"role": "user", "content": "what is dheera_ai?"}],
                 tools=[{
                     "type": "file_search",
                     "vector_store_ids": ["T37J8R4WTM"]
@@ -521,7 +521,7 @@ async def test_openai_with_vector_store_ids_in_tool_call_mock_openai(setup_vecto
         assert messages[0]["role"] == "user"
         assert VectorStorePreCallHook.CONTENT_PREFIX_STRING in messages[0]["content"]
 
-        # assert that the tool call was not sent to the upstream llm API if it's a litellm vector store
+        # assert that the tool call was not sent to the upstream llm API if it's a dheera_ai vector store
         assert "tools" not in request_body
 
 
@@ -561,9 +561,9 @@ async def test_openai_with_mixed_tool_call_mock_openai(setup_vector_store_regist
         mock_client.side_effect = mock_create
         
         try:
-            await litellm.acompletion(
+            await dheera_ai.acompletion(
                 model="gpt-4",
-                messages=[{"role": "user", "content": "what is litellm?"}],
+                messages=[{"role": "user", "content": "what is dheera_ai?"}],
                 tools=[
                     {"type": "file_search", "vector_store_ids": ["T37J8R4WTM"]},
                     {"type": "file_search", "vector_store_ids": ["unknownVS"]},
@@ -594,10 +594,10 @@ async def test_openai_with_mixed_tool_call_mock_openai(setup_vector_store_regist
 #     Test that the knowledge base request was logged in standard logging payload
 #     """
 #     test_custom_logger = MockCustomLogger()
-#     litellm.set_verbose = True
-#     await litellm.acompletion(
+#     dheera_ai.set_verbose = True
+#     await dheera_ai.acompletion(
 #         model="gpt-4",
-#         messages=[{"role": "user", "content": "what is litellm?"}],
+#         messages=[{"role": "user", "content": "what is dheera_ai?"}],
 #         vector_store_ids = [
 #             "T37J8R4WTM"
 #         ],
@@ -622,13 +622,13 @@ async def test_openai_with_mixed_tool_call_mock_openai(setup_vector_store_regist
 #     # expect the vector store request metadata object to have the correct values
 #     vector_store_request_metadata = standard_logging_vector_store_request_metadata[0]
 #     assert vector_store_request_metadata.get("vector_store_id") == "T37J8R4WTM"
-#     assert vector_store_request_metadata.get("query") == "what is litellm?"
+#     assert vector_store_request_metadata.get("query") == "what is dheera_ai?"
 #     assert vector_store_request_metadata.get("custom_llm_provider") == "bedrock"
 
 
 #     vector_store_search_response: VectorStoreSearchResponse = vector_store_request_metadata.get("vector_store_search_response")
 #     assert vector_store_search_response is not None
-#     assert vector_store_search_response.get("search_query") == "what is litellm?"
+#     assert vector_store_search_response.get("search_query") == "what is dheera_ai?"
 #     assert len(vector_store_search_response.get("data", [])) >=0
 #     for item in vector_store_search_response.get("data", []):
 #         assert item.get("score") is not None
@@ -644,9 +644,9 @@ async def test_openai_with_mixed_tool_call_mock_openai(setup_vector_store_regist
 
 @pytest.mark.asyncio
 async def test_e2e_bedrock_knowledgebase_retrieval_without_vector_store_registry(setup_vector_store_registry):
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     client = AsyncHTTPHandler()
-    litellm.vector_store_registry = None
+    dheera_ai.vector_store_registry = None
 
     with patch.object(client, "post") as mock_post:
         # Mock the response for the LLM call
@@ -658,7 +658,7 @@ async def test_e2e_bedrock_knowledgebase_retrieval_without_vector_store_registry
             "id": "msg_01ABC123",
             "type": "message",
             "role": "assistant",
-            "content": [{"type": "text", "text": "LiteLLM is a library that simplifies LLM API access."}],
+            "content": [{"type": "text", "text": "DheeraAI is a library that simplifies LLM API access."}],
             "model": "claude-3.5-sonnet",
             "stop_reason": "end_turn",
             "stop_sequence": None,
@@ -670,9 +670,9 @@ async def test_e2e_bedrock_knowledgebase_retrieval_without_vector_store_registry
         mock_response.json = lambda: json.loads(mock_response.text)
         mock_post.return_value = mock_response
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="anthropic/claude-3.5-sonnet",
-                messages=[{"role": "user", "content": "what is litellm?"}],
+                messages=[{"role": "user", "content": "what is dheera_ai?"}],
                 vector_store_ids = [
                     "T37J8R4WTM"
                 ],
@@ -708,11 +708,11 @@ async def test_e2e_bedrock_knowledgebase_retrieval_with_vector_store_not_in_regi
 
     In this test newUnknownVectorStoreId is not in the registry, so no vector store request is made
     """
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     client = AsyncHTTPHandler()
 
-    if litellm.vector_store_registry is not None:
-        print("Registry iniitalized:", litellm.vector_store_registry.vector_stores)
+    if dheera_ai.vector_store_registry is not None:
+        print("Registry iniitalized:", dheera_ai.vector_store_registry.vector_stores)
     else:
         print("Registry is None")
 
@@ -727,7 +727,7 @@ async def test_e2e_bedrock_knowledgebase_retrieval_with_vector_store_not_in_regi
             "id": "msg_01ABC123",
             "type": "message",
             "role": "assistant",
-            "content": [{"type": "text", "text": "LiteLLM is a library that simplifies LLM API access."}],
+            "content": [{"type": "text", "text": "DheeraAI is a library that simplifies LLM API access."}],
             "model": "claude-3.5-sonnet",
             "stop_reason": "end_turn",
             "stop_sequence": None,
@@ -739,9 +739,9 @@ async def test_e2e_bedrock_knowledgebase_retrieval_with_vector_store_not_in_regi
         mock_response.json = lambda: json.loads(mock_response.text)
         mock_post.return_value = mock_response
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="anthropic/claude-3.5-sonnet",
-                messages=[{"role": "user", "content": "what is litellm?"}],
+                messages=[{"role": "user", "content": "what is dheera_ai?"}],
                 vector_store_ids = [
                     "newUnknownVectorStoreId"
                 ],
@@ -777,9 +777,9 @@ async def test_provider_specific_fields_in_proxy_http_response(setup_vector_stor
     provider_specific_fields from the HTTP response.
     """
     from fastapi.testclient import TestClient
-    from litellm.proxy.proxy_server import app, initialize
-    from litellm.proxy.utils import ProxyLogging
-    import litellm.proxy.proxy_server as proxy_server
+    from dheera_ai.proxy.proxy_server import app, initialize
+    from dheera_ai.proxy.utils import ProxyLogging
+    import dheera_ai.proxy.proxy_server as proxy_server
     from unittest.mock import patch as mock_patch
     
     # Initialize proxy
@@ -805,7 +805,7 @@ async def test_provider_specific_fields_in_proxy_http_response(setup_vector_stor
     client = TestClient(app)
     
     # Create mock response with provider_specific_fields
-    mock_response = litellm.ModelResponse(
+    mock_response = dheera_ai.ModelResponse(
         id="test-123",
         model="gpt-3.5-turbo",
         created=1234567890,
@@ -813,13 +813,13 @@ async def test_provider_specific_fields_in_proxy_http_response(setup_vector_stor
     )
     
     # Create message with provider_specific_fields
-    mock_message = litellm.Message(
-        content="LiteLLM is a tool that simplifies working with multiple LLMs.",
+    mock_message = dheera_ai.Message(
+        content="DheeraAI is a tool that simplifies working with multiple LLMs.",
         role="assistant",
         provider_specific_fields={
             "search_results": [{
                 "object": "vector_store.search_results.page",
-                "search_query": "what is litellm?",
+                "search_query": "what is dheera_ai?",
                 "data": [{
                     "score": 0.95,
                     "content": [{"text": "Test content", "type": "text"}],
@@ -830,27 +830,27 @@ async def test_provider_specific_fields_in_proxy_http_response(setup_vector_stor
         }
     )
     
-    mock_choice = litellm.Choices(
+    mock_choice = dheera_ai.Choices(
         finish_reason="stop",
         index=0,
         message=mock_message
     )
     
     mock_response.choices = [mock_choice]
-    mock_response.usage = litellm.Usage(
+    mock_response.usage = dheera_ai.Usage(
         prompt_tokens=10,
         completion_tokens=20,
         total_tokens=30
     )
     
     # Patch the completion call at the proxy level
-    with mock_patch("litellm.acompletion", new=AsyncMock(return_value=mock_response)):
+    with mock_patch("dheera_ai.acompletion", new=AsyncMock(return_value=mock_response)):
         # Make HTTP request to proxy
         response = client.post(
             "/v1/chat/completions",
             json={
                 "model": "gpt-3.5-turbo",
-                "messages": [{"role": "user", "content": "What is litellm?"}]
+                "messages": [{"role": "user", "content": "What is dheera_ai?"}]
             }
         )
         

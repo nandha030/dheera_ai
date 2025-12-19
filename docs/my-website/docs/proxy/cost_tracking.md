@@ -6,17 +6,17 @@ import Image from '@theme/IdealImage';
 
 Track spend for keys, users, and teams across 100+ LLMs.
 
-LiteLLM automatically tracks spend for all known models. See our [model cost map](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json)
+Dheera AI automatically tracks spend for all known models. See our [model cost map](https://github.com/BerriAI/dheera_ai/blob/main/model_prices_and_context_window.json)
 
 :::tip Keep Pricing Data Updated
 [Sync model pricing data from GitHub](./sync_models_github.md) to ensure accurate cost tracking.
 :::
 
-### How to Track Spend with LiteLLM
+### How to Track Spend with Dheera AI
 
 **Step 1**
 
-👉 [Setup LiteLLM with a Database](https://docs.litellm.ai/docs/proxy/virtual_keys#setup)
+👉 [Setup Dheera AI with a Database](https://docs.dheera_ai.ai/docs/proxy/virtual_keys#setup)
 
 **Step2** Send `/chat/completions` request
 
@@ -105,7 +105,7 @@ messages = [
         content="You are a helpful assistant that im using to make a test request to."
     ),
     HumanMessage(
-        content="test from litellm. tell me why it's amazing in 1 sentence"
+        content="test from dheera_ai. tell me why it's amazing in 1 sentence"
     ),
 ]
 response = chat(messages)
@@ -122,24 +122,24 @@ That's IT. Now Verify your spend was tracked
 <Tabs>
 <TabItem value="curl" label="Response Headers">
 
-Expect to see `x-litellm-response-cost` in the response headers with calculated cost
+Expect to see `x-dheera_ai-response-cost` in the response headers with calculated cost
 
 <Image img={require('../../img/response_cost_img.png')} />
 
 </TabItem>
 <TabItem value="db" label="DB + UI">
 
-The following spend gets tracked in Table `LiteLLM_SpendLogs`
+The following spend gets tracked in Table `Dheera AI_SpendLogs`
 
 ```json title="Spend Log Entry Format" showLineNumbers
 {
   "api_key": "fe6b0cab4ff5a5a8df823196cc8a450*****",                            # Hash of API Key used
-  "user": "default_user",                                                       # Internal User (LiteLLM_UserTable) that owns `api_key=sk-1234`.
-  "team_id": "e8d1460f-846c-45d7-9b43-55f3cc52ac32",                            # Team (LiteLLM_TeamTable) that owns `api_key=sk-1234`
+  "user": "default_user",                                                       # Internal User (Dheera AI_UserTable) that owns `api_key=sk-1234`.
+  "team_id": "e8d1460f-846c-45d7-9b43-55f3cc52ac32",                            # Team (Dheera AI_TeamTable) that owns `api_key=sk-1234`
   "request_tags": ["jobID:214590dsff09fds", "taskName:run_page_classification"],# Tags sent in request
   "end_user": "palantir",                                                       # Customer - the `user` sent in the request
-  "model_group": "llama3",                                                      # "model" passed to LiteLLM
-  "api_base": "https://api.groq.com/openai/v1/",                                # "api_base" of model used by LiteLLM
+  "model_group": "llama3",                                                      # "model" passed to Dheera AI
+  "api_base": "https://api.groq.com/openai/v1/",                                # "api_base" of model used by Dheera AI
   "spend": 0.000002,                                                            # Spend in $
   "total_tokens": 100,
   "completion_tokens": 80,
@@ -148,7 +148,7 @@ The following spend gets tracked in Table `LiteLLM_SpendLogs`
 }
 ```
 
-Navigate to the Usage Tab on the LiteLLM UI (found on https://your-proxy-endpoint/ui) and verify you see spend tracked under `Usage`
+Navigate to the Usage Tab on the Dheera AI UI (found on https://your-proxy-endpoint/ui) and verify you see spend tracked under `Usage`
 
 <Image img={require('../../img/admin_ui_spend.png')} />
 
@@ -161,7 +161,7 @@ Use this when you want non-proxy admins to access `/spend` endpoints
 
 :::info
 
-Schedule a [meeting with us to get your Enterprise License](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+Schedule a [meeting with us to get your Enterprise License](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
@@ -191,13 +191,13 @@ curl -X GET 'http://localhost:4000/global/spend/report?start_date=2024-04-01&end
 
 Use `/global/spend/reset` if you want to:
 
-- Reset the Spend for all API Keys, Teams. The `spend` for ALL Teams and Keys in `LiteLLM_TeamTable` and `LiteLLM_VerificationToken` will be set to `spend=0`
+- Reset the Spend for all API Keys, Teams. The `spend` for ALL Teams and Keys in `Dheera AI_TeamTable` and `Dheera AI_VerificationToken` will be set to `spend=0`
 
-- LiteLLM will maintain all the logs in `LiteLLMSpendLogs` for Auditing Purposes
+- Dheera AI will maintain all the logs in `Dheera AISpendLogs` for Auditing Purposes
 
 ##### Request
 
-Only the `LITELLM_MASTER_KEY` you set can access this route
+Only the `DHEERA_AI_MASTER_KEY` you set can access this route
 
 ```shell
 curl -X POST \
@@ -260,8 +260,8 @@ curl -L -X GET 'http://localhost:4000/user/info?user_id=jane_smith' \
       "created_by": "582b168f-fc11-4e14-ad6a-cf4bb3656ddc",
       "updated_at": "2025-07-24T19:14:13.970000Z",
       "updated_by": "582b168f-fc11-4e14-ad6a-cf4bb3656ddc",
-      "litellm_budget_table": null,
-      "litellm_organization_table": null,
+      "dheera_ai_budget_table": null,
+      "dheera_ai_organization_table": null,
       "object_permission": null,
       "team_alias": null
     }
@@ -322,15 +322,15 @@ curl -L -X GET 'http://localhost:4000/user/daily/activity?start_date=2025-03-20&
 
 ### API Reference
 
-See our [Swagger API](https://litellm-api.up.railway.app/#/Budget%20%26%20Spend%20Tracking/get_user_daily_activity_user_daily_activity_get) for more details on the `/user/daily/activity` endpoint
+See our [Swagger API](https://dheera_ai-api.up.railway.app/#/Budget%20%26%20Spend%20Tracking/get_user_daily_activity_user_daily_activity_get) for more details on the `/user/daily/activity` endpoint
 
 ## Custom Tags
 
 Requirements:
 
-- Virtual Keys & a database should be set up, see [virtual keys](https://docs.litellm.ai/docs/proxy/virtual_keys)
+- Virtual Keys & a database should be set up, see [virtual keys](https://docs.dheera_ai.ai/docs/proxy/virtual_keys)
 
-**Note:** By default, LiteLLM will track `User-Agent` as a custom tag for cost tracking. This enables viewing usage for tools like Claude Code, Gemini CLI, etc.
+**Note:** By default, Dheera AI will track `User-Agent` as a custom tag for cost tracking. This enables viewing usage for tools like Claude Code, Gemini CLI, etc.
 
 <Image img={require('../../img/claude_cli_tag_usage.png')} />
 
@@ -485,7 +485,7 @@ messages = [
         content="You are a helpful assistant that im using to make a test request to."
     ),
     HumanMessage(
-        content="test from litellm. tell me why it's amazing in 1 sentence"
+        content="test from dheera_ai. tell me why it's amazing in 1 sentence"
     ),
 ]
 response = chat(messages)
@@ -501,17 +501,17 @@ print(response)
 You can add custom headers to the request to track spend and usage.
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   extra_spend_tag_headers:
     - "x-custom-header"
 ```
 
 ### Disable user-agent tracking
 
-You can disable user-agent tracking by setting `litellm_settings.disable_add_user_agent_to_request_tags` to `true`.
+You can disable user-agent tracking by setting `dheera_ai_settings.disable_add_user_agent_to_request_tags` to `true`.
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   disable_add_user_agent_to_request_tags: true
 ```
 
@@ -649,9 +649,9 @@ Output from script
 
 :::info
 
-Customer [this is `user` passed to `/chat/completions` request](#how-to-track-spend-with-litellm)
+Customer [this is `user` passed to `/chat/completions` request](#how-to-track-spend-with-dheera_ai)
 
-- [LiteLLM API key](virtual_keys.md)
+- [Dheera AI API key](virtual_keys.md)
 
 :::
 
@@ -750,7 +750,7 @@ curl -X GET 'http://localhost:4000/global/spend/report?start_date=2024-04-01&end
 
 :::info
 
-Internal User (Key Owner): This is the value of `user_id` passed when calling [`/key/generate`](https://litellm-api.up.railway.app/#/key%20management/generate_key_fn_key_generate_post)
+Internal User (Key Owner): This is the value of `user_id` passed when calling [`/key/generate`](https://dheera_ai-api.up.railway.app/#/key%20management/generate_key_fn_key_generate_post)
 
 :::
 
@@ -869,7 +869,7 @@ Logging specific key,value pairs in spend logs metadata is an enterprise feature
 
 Requirements: 
 
-- Virtual Keys & a database should be set up, see [virtual keys](https://docs.litellm.ai/docs/proxy/virtual_keys)
+- Virtual Keys & a database should be set up, see [virtual keys](https://docs.dheera_ai.ai/docs/proxy/virtual_keys)
 
 #### Usage - /chat/completions requests with special spend logs metadata 
 
@@ -923,7 +923,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages = [
@@ -963,7 +963,7 @@ response = client.chat.completions.create(
         }
     ],
     extra_headers={
-        "x-litellm-spend-logs-metadata": '{"user_id": "12345", "project_id": "proj_abc", "request_type": "chat_completion"}'
+        "x-dheera_ai-spend-logs-metadata": '{"user_id": "12345", "project_id": "proj_abc", "request_type": "chat_completion"}'
     }
 )
 
@@ -1032,7 +1032,7 @@ async function runOpenAI() {
       ]
     }, {
       headers: {
-        'x-litellm-spend-logs-metadata': '{"user_id": "12345", "project_id": "proj_abc", "request_type": "chat_completion"}'
+        'x-dheera_ai-spend-logs-metadata': '{"user_id": "12345", "project_id": "proj_abc", "request_type": "chat_completion"}'
       }
     });
     console.log(response);
@@ -1075,13 +1075,13 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 
 <TabItem value="headers" label="Using Headers">
 
-Pass `x-litellm-spend-logs-metadata` as a request header with JSON string
+Pass `x-dheera_ai-spend-logs-metadata` as a request header with JSON string
 
 ```shell
 curl --location 'http://0.0.0.0:4000/chat/completions' \
     --header 'Content-Type: application/json' \
     --header 'Authorization: Bearer sk-1234' \
-    --header 'x-litellm-spend-logs-metadata: {"user_id": "12345", "project_id": "proj_abc", "request_type": "chat_completion"}' \
+    --header 'x-dheera_ai-spend-logs-metadata: {"user_id": "12345", "project_id": "proj_abc", "request_type": "chat_completion"}' \
     --data '{
     "model": "gpt-3.5-turbo",
     "messages": [
@@ -1123,7 +1123,7 @@ messages = [
         content="You are a helpful assistant that im using to make a test request to."
     ),
     HumanMessage(
-        content="test from litellm. tell me why it's amazing in 1 sentence"
+        content="test from dheera_ai. tell me why it's amazing in 1 sentence"
     ),
 ]
 response = chat(messages)

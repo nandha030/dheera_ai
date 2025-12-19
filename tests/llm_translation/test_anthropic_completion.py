@@ -8,9 +8,9 @@ import traceback
 
 from dotenv import load_dotenv
 
-import litellm.types
-import litellm.types.utils
-from litellm.llms.anthropic.chat import ModelResponseIterator
+import dheera_ai.types
+import dheera_ai.types.utils
+from dheera_ai.llms.anthropic.chat import ModelResponseIterator
 
 load_dotenv()
 import io
@@ -24,17 +24,17 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-import litellm
-from litellm import (
+import dheera_ai
+from dheera_ai import (
     AnthropicConfig,
     Router,
     adapter_completion,
 )
-from litellm.types.llms.anthropic import AnthropicResponse
-from litellm.types.utils import GenericStreamingChunk, ChatCompletionToolCallChunk
-from litellm.types.llms.openai import ChatCompletionToolCallFunctionChunk
-from litellm.llms.anthropic.common_utils import process_anthropic_headers
-from litellm.llms.anthropic.chat.handler import AnthropicChatCompletion
+from dheera_ai.types.llms.anthropic import AnthropicResponse
+from dheera_ai.types.utils import GenericStreamingChunk, ChatCompletionToolCallChunk
+from dheera_ai.types.llms.openai import ChatCompletionToolCallFunctionChunk
+from dheera_ai.llms.anthropic.common_utils import process_anthropic_headers
+from dheera_ai.llms.anthropic.chat.handler import AnthropicChatCompletion
 from httpx import Headers
 from base_llm_unit_tests import BaseLLMChatTest, BaseAnthropicChatTest
 
@@ -248,7 +248,7 @@ def test_anthropic_tool_streaming():
     Anthropic gives tool_use indexes starting at the first chunk, meaning they often start at 1
     when they should start at 0
     """
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     response_iter = ModelResponseIterator([], False)
 
     # First index is 0, we'll start earlier because incrementing is easier
@@ -360,9 +360,9 @@ def test_process_anthropic_headers_with_no_matching_headers():
 )
 def test_anthropic_tool_use(tool_type, tool_config, message_content):
     """Test Anthropic tool use with computer use and web fetch tools."""
-    from litellm import completion
+    from dheera_ai import completion
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     tools = [tool_config]
     model = "claude-sonnet-4-5-20250929"
@@ -377,7 +377,7 @@ def test_anthropic_tool_use(tool_type, tool_config, message_content):
         print(f"Tool type: {tool_type}")
         print(resp)
         assert resp is not None
-    except litellm.InternalServerError:
+    except dheera_ai.InternalServerError:
         pass
 
 
@@ -393,7 +393,7 @@ def test_anthropic_tool_use(tool_type, tool_config, message_content):
 def test_anthropic_beta_header(
     computer_tool_used, prompt_caching_set, expected_beta_header
 ):
-    headers = litellm.AnthropicConfig().get_anthropic_headers(
+    headers = dheera_ai.AnthropicConfig().get_anthropic_headers(
         api_key="fake-api-key",
         computer_tool_used=computer_tool_used,
         prompt_caching_set=prompt_caching_set,
@@ -413,7 +413,7 @@ def test_anthropic_beta_header(
     ],
 )
 def test_anthropic_tool_helper(cache_control_location):
-    from litellm.llms.anthropic.chat.transformation import AnthropicConfig
+    from dheera_ai.llms.anthropic.chat.transformation import AnthropicConfig
 
     tool = {
         "type": "function",
@@ -480,7 +480,7 @@ def test_create_json_tool_call_for_response_format():
     assert "additionalProperties" not in _input_schema
 
 
-from litellm import completion
+from dheera_ai import completion
 
 
 class TestAnthropicCompletion(BaseLLMChatTest, BaseAnthropicChatTest):
@@ -494,8 +494,8 @@ class TestAnthropicCompletion(BaseLLMChatTest, BaseAnthropicChatTest):
         }
 
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
-        from litellm.litellm_core_utils.prompt_templates.factory import (
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
+        from dheera_ai.dheera_ai_core_utils.prompt_templates.factory import (
             convert_to_anthropic_tool_invoke,
         )
 
@@ -506,12 +506,12 @@ class TestAnthropicCompletion(BaseLLMChatTest, BaseAnthropicChatTest):
         """
         Test that the tool call and JSON response format is supported by the LLM API
         """
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         from pydantic import BaseModel
-        from litellm.utils import supports_response_schema
+        from dheera_ai.utils import supports_response_schema
 
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         class RFormat(BaseModel):
             question: str
@@ -522,7 +522,7 @@ class TestAnthropicCompletion(BaseLLMChatTest, BaseAnthropicChatTest):
             pytest.skip("Model does not support response schema")
 
         try:
-            res = litellm.completion(
+            res = dheera_ai.completion(
                 **base_completion_call_args,
                 messages=[
                     {
@@ -560,7 +560,7 @@ class TestAnthropicCompletion(BaseLLMChatTest, BaseAnthropicChatTest):
             assert res is not None
 
             assert res.choices[0].message.tool_calls is not None
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
 
@@ -590,7 +590,7 @@ def test_convert_tool_response_to_message_without_values():
 
     Anthropic API returns the JSON schema in the tool call, OpenAI Spec expects it in the message. This test ensures that the tool call is converted to a message correctly.
 
-    Relevant issue: https://github.com/BerriAI/litellm/issues/6741
+    Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6741
     """
     tool_calls = [
         ChatCompletionToolCallChunk(
@@ -645,7 +645,7 @@ def test_convert_tool_response_to_message_no_arguments():
 
 
 def test_anthropic_tool_with_image():
-    from litellm.litellm_core_utils.prompt_templates.factory import prompt_factory
+    from dheera_ai.dheera_ai_core_utils.prompt_templates.factory import prompt_factory
     import json
 
     b64_data = "iVBORw0KGgoAAAANSUhEu6U3//C9t/fKv5wDgpP1r5796XwC4zyH1D565bHGDqbY85AMb0nIQe+u3J390Xbtb9XgXxcK0/aqRXpdYcwgARbCN03FJk"
@@ -758,7 +758,7 @@ def test_anthropic_map_openai_params_tools_and_json_schema():
         }
     }
 
-    mapped_params = litellm.AnthropicConfig().map_openai_params(
+    mapped_params = dheera_ai.AnthropicConfig().map_openai_params(
         non_default_params=args["non_default_params"],
         optional_params={},
         model="claude-3-5-sonnet-20240620",
@@ -800,7 +800,7 @@ def test_anthropic_map_openai_params_tools_with_defs():
         }
     }
 
-    mapped_params = litellm.AnthropicConfig().map_openai_params(
+    mapped_params = dheera_ai.AnthropicConfig().map_openai_params(
         non_default_params=args["non_default_params"],
         optional_params={},
         model="claude-3-5-sonnet-20240620",
@@ -814,7 +814,7 @@ def test_anthropic_map_openai_params_tools_with_defs():
     )
 
 
-from litellm.constants import RESPONSE_FORMAT_TOOL_NAME
+from dheera_ai.constants import RESPONSE_FORMAT_TOOL_NAME
 
 
 @pytest.mark.parametrize(
@@ -870,7 +870,7 @@ from litellm.constants import RESPONSE_FORMAT_TOOL_NAME
 def test_anthropic_json_mode_and_tool_call_response(
     json_mode, tool_calls, expect_null_response
 ):
-    result = litellm.AnthropicConfig()._transform_response_for_json_mode(
+    result = dheera_ai.AnthropicConfig()._transform_response_for_json_mode(
         json_mode=json_mode,
         tool_calls=tool_calls,
     )
@@ -910,7 +910,7 @@ def test_anthropic_json_mode_and_tool_call_response(
 )
 def test_map_stop_sequences(stop_input, expected_output, drop_params):
     """Test the _map_stop_sequences method of AnthropicConfig"""
-    litellm.drop_params = drop_params
+    dheera_ai.drop_params = drop_params
     config = AnthropicConfig()
     result = config._map_stop_sequences(stop_input)
     assert result == expected_output
@@ -921,9 +921,9 @@ async def test_anthropic_structured_output():
     """
     Test the _transform_response_for_structured_output
 
-    Relevant Issue: https://github.com/BerriAI/litellm/issues/8291
+    Relevant Issue: https://github.com/BerriAI/dheera_ai/issues/8291
     """
-    from litellm import acompletion
+    from dheera_ai import acompletion
 
     args = {
         "model": "claude-sonnet-4-5-20250929",
@@ -951,7 +951,7 @@ def test_anthropic_citations_api():
     """
     Test the citations API
     """
-    from litellm import completion
+    from dheera_ai import completion
 
     try:
         resp = completion(
@@ -980,7 +980,7 @@ def test_anthropic_citations_api():
             ],
         )
 
-    except litellm.InternalServerError:
+    except dheera_ai.InternalServerError:
         pytest.skip("Anthropic overloaded")
 
     citations = resp.choices[0].message.provider_specific_fields["citations"]
@@ -997,7 +997,7 @@ def test_anthropic_citations_api():
 
 
 def test_anthropic_citations_api_streaming():
-    from litellm import completion
+    from dheera_ai import completion
 
     resp = completion(
         model="claude-sonnet-4-5-20250929",
@@ -1044,9 +1044,9 @@ def test_anthropic_citations_api_streaming():
     ],
 )
 def test_anthropic_thinking_output(model):
-    from litellm import completion
+    from dheera_ai import completion
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     resp = completion(
         model=model,
@@ -1074,10 +1074,10 @@ def test_anthropic_thinking_output(model):
     ],
 )
 def test_anthropic_thinking_output_stream(model):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     try:
-        # litellm._turn_on_debug()
-        resp = litellm.completion(
+        # dheera_ai._turn_on_debug()
+        resp = dheera_ai.completion(
             model=model,
             messages=[{"role": "user", "content": "Tell me a joke."}],
             stream=True,
@@ -1106,13 +1106,13 @@ def test_anthropic_thinking_output_stream(model):
                     )
         assert reasoning_content_exists
         assert signature_block_exists
-    except litellm.Timeout:
+    except dheera_ai.Timeout:
         pytest.skip("Model is timing out")
 
 
 def test_anthropic_custom_headers():
-    from litellm import completion
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai import completion
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
@@ -1157,7 +1157,7 @@ def test_anthropic_custom_headers():
     ],
 )
 def test_anthropic_thinking_in_assistant_message(model):
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     params = {
         "model": model,
         "messages": [
@@ -1181,7 +1181,7 @@ def test_anthropic_thinking_in_assistant_message(model):
         "thinking": {"type": "enabled", "budget_tokens": 30720},
     }
 
-    response = litellm.completion(**params)
+    response = dheera_ai.completion(**params)
 
     assert response is not None
 
@@ -1194,7 +1194,7 @@ def test_anthropic_thinking_in_assistant_message(model):
     ],
 )
 def test_anthropic_redacted_thinking_in_assistant_message(model):
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     params = {
         "model": model,
         "messages": [
@@ -1217,20 +1217,20 @@ def test_anthropic_redacted_thinking_in_assistant_message(model):
         "thinking": {"type": "enabled", "budget_tokens": 30720},
     }
 
-    response = litellm.completion(**params)
+    response = dheera_ai.completion(**params)
 
     assert response is not None
 
 
 def test_just_system_message():
-    litellm._turn_on_debug()
-    litellm.modify_params = True
+    dheera_ai._turn_on_debug()
+    dheera_ai.modify_params = True
     params = {
         "model": "anthropic/claude-3-7-sonnet-20250219",
         "messages": [{"role": "system", "content": "You are a helpful assistant."}],
     }
 
-    response = litellm.completion(**params)
+    response = dheera_ai.completion(**params)
 
     assert response is not None
 
@@ -1245,8 +1245,8 @@ async def test_anthropic_api_max_completion_tokens(model: str):
     Tests that:
     - max_completion_tokens is passed as max_tokens to anthropic models
     """
-    litellm.set_verbose = True
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    dheera_ai.set_verbose = True
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     mock_response = {
         "content": [{"text": "Hi! My name is Claude.", "type": "text"}],
@@ -1265,7 +1265,7 @@ async def test_anthropic_api_max_completion_tokens(model: str):
 
     with patch.object(client, "post") as mock_client:
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model=model,
                 max_completion_tokens=10,
                 messages=[{"role": "user", "content": "Hello!"}],
@@ -1301,7 +1301,7 @@ async def test_anthropic_api_max_completion_tokens(model: str):
     ],
 )
 def test_anthropic_websearch(optional_params: dict):
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     params = {
         "model": "anthropic/claude-sonnet-4-5-20250929",
         "messages": [
@@ -1314,8 +1314,8 @@ def test_anthropic_websearch(optional_params: dict):
     }
 
     try:
-        response = litellm.completion(**params)
-    except litellm.InternalServerError as e:
+        response = dheera_ai.completion(**params)
+    except dheera_ai.InternalServerError as e:
         print(e)
 
     assert response is not None
@@ -1327,7 +1327,7 @@ def test_anthropic_websearch(optional_params: dict):
 
 
 def test_anthropic_text_editor():
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     params = {
         "model": "anthropic/claude-sonnet-4-5-20250929",
         "messages": [
@@ -1342,8 +1342,8 @@ def test_anthropic_text_editor():
     }
 
     try:
-        response = litellm.completion(**params)
-    except litellm.InternalServerError as e:
+        response = dheera_ai.completion(**params)
+    except dheera_ai.InternalServerError as e:
         print(e)
 
     assert response is not None
@@ -1351,7 +1351,7 @@ def test_anthropic_text_editor():
 
 @pytest.mark.parametrize("spec", ["anthropic", "openai"])
 def test_anthropic_mcp_server_tool_use(spec: str):
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     if spec == "anthropic":
         tools = [
@@ -1382,9 +1382,9 @@ def test_anthropic_mcp_server_tool_use(spec: str):
     }
 
     try:
-        response = litellm.completion(**params)
+        response = dheera_ai.completion(**params)
         assert response is not None
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         pytest.skip(f"Skipping test due to internal server error: {e}")
 
 
@@ -1392,9 +1392,9 @@ def test_anthropic_mcp_server_tool_use(spec: str):
     "model", ["openai/gpt-4.1", "anthropic/claude-sonnet-4-20250514"]
 )
 def test_anthropic_mcp_server_responses_api(model: str):
-    from litellm import responses
+    from dheera_ai import responses
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     tools = [
         {
             "type": "mcp",
@@ -1407,7 +1407,7 @@ def test_anthropic_mcp_server_responses_api(model: str):
         },
     ]
 
-    response = litellm.responses(
+    response = dheera_ai.responses(
         model=model,
         input="Who won the World Cup in 2022?",
         max_output_tokens=100,
@@ -1426,7 +1426,7 @@ def test_anthropic_prefix_prompt():
         ],
     }
 
-    response = litellm.completion(**params)
+    response = dheera_ai.completion(**params)
     print(f"response: {response}")
     assert response is not None
     assert response.choices[0].message.content.startswith("Argentina")
@@ -1434,7 +1434,7 @@ def test_anthropic_prefix_prompt():
 
 @pytest.mark.asyncio
 async def test_claude_tool_use_with_anthropic_acreate():
-    response = await litellm.anthropic.messages.acreate(
+    response = await dheera_ai.anthropic.messages.acreate(
         messages=[
             {"role": "user", "content": "Hello, can you tell me the weather in Boston?"}
         ],
@@ -1458,8 +1458,8 @@ async def test_claude_tool_use_with_anthropic_acreate():
 
 
 def test_anthropic_tool_cache_control():
-    from litellm.utils import return_raw_request
-    from litellm.types.utils import CallTypes
+    from dheera_ai.utils import return_raw_request
+    from dheera_ai.types.utils import CallTypes
     import json
 
     tool_content = "Result: 4. " * 1000  # ~10k chars
@@ -1522,7 +1522,7 @@ def test_anthropic_tool_cache_control():
 
 
 def test_anthropic_streaming():
-    from litellm import completion
+    from dheera_ai import completion
 
     request_data = {
         "messages": [
@@ -1578,9 +1578,9 @@ def test_anthropic_streaming():
 
 
 def test_anthropic_via_responses_api():
-    from litellm.types.llms.openai import ResponsesAPIStreamEvents
+    from dheera_ai.types.llms.openai import ResponsesAPIStreamEvents
 
-    response = litellm.responses(
+    response = dheera_ai.responses(
         model="anthropic/claude-sonnet-4-5",
         input="Who won the World Cup in 2022?",
         max_output_tokens=100,
@@ -1724,7 +1724,7 @@ def test_anthropic_strict_parameter_passthrough():
         }
     }
 
-    mapped_params = litellm.AnthropicConfig().map_openai_params(
+    mapped_params = dheera_ai.AnthropicConfig().map_openai_params(
         non_default_params=args["non_default_params"],
         optional_params={},
         model="claude-sonnet-4-5-20250929",
@@ -1762,7 +1762,7 @@ def test_anthropic_strict_not_present():
         }
     }
 
-    mapped_params = litellm.AnthropicConfig().map_openai_params(
+    mapped_params = dheera_ai.AnthropicConfig().map_openai_params(
         non_default_params=args["non_default_params"],
         optional_params={},
         model="claude-sonnet-4-5-20250929",
@@ -1778,7 +1778,7 @@ def test_anthropic_strict_not_present():
 
 
 def test_anthropic_structured_output_chat_completion_api():
-    response = litellm.completion(
+    response = dheera_ai.completion(
         model="claude-sonnet-4-5-20250929",
         messages=[{"role": "user", "content": "What is the capital of France?"}],
         response_format={

@@ -38,7 +38,7 @@ You can compare up to 3 models simultaneously. For each comparison panel:
 
 - Click on the model dropdown to see available models
 - Select a model from your configured endpoints
-- Models are loaded from your LiteLLM proxy configuration
+- Models are loaded from your Dheera AI proxy configuration
 
 <Image img={require('../../img/ui_model_compare_select_model.png')} />
 
@@ -140,7 +140,7 @@ Complete time from request to final response, including streaming time.
 
 ### Cost
 
-If cost tracking is enabled in your LiteLLM configuration, you'll see:
+If cost tracking is enabled in your Dheera AI configuration, you'll see:
 
 - Cost per request
 - Cost breakdown by input/output tokens

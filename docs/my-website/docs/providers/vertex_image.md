@@ -8,7 +8,7 @@ Vertex AI supports two types of image generation:
 | Property | Details |
 |----------|---------|
 | Description | Vertex AI Image Generation supports both Gemini image generation models |
-| Provider Route on LiteLLM | `vertex_ai/` |
+| Provider Route on Dheera AI | `vertex_ai/` |
 | Provider Doc | [Google Cloud Vertex AI Image Generation ↗](https://cloud.google.com/vertex-ai/docs/generative-ai/image/generate-images) |
 | Gemini Image Generation Docs | [Gemini Image Generation ↗](https://ai.google.dev/gemini-api/docs/image-generation) |
 
@@ -24,10 +24,10 @@ Gemini image generation models support conversational image creation with featur
 - Up to 4K resolution (Gemini 3 Pro)
 
 ```python showLineNumbers title="Gemini 2.5 Flash Image"
-import litellm
+import dheera_ai
 
 # Generate a single image
-response = await litellm.aimage_generation(
+response = await dheera_ai.aimage_generation(
     prompt="A nano banana dish in a fancy restaurant with a Gemini theme",
     model="vertex_ai/gemini-2.5-flash-image",
     vertex_ai_project="your-project-id",
@@ -40,10 +40,10 @@ print(response.data[0].b64_json)  # Gemini returns base64 images
 ```
 
 ```python showLineNumbers title="Gemini 3 Pro Image Preview (4K output)"
-import litellm
+import dheera_ai
 
 # Generate high-resolution image
-response = await litellm.aimage_generation(
+response = await dheera_ai.aimage_generation(
     prompt="Da Vinci style anatomical sketch of a dissected Monarch butterfly",
     model="vertex_ai/gemini-3-pro-image-preview",
     vertex_ai_project="your-project-id",
@@ -60,10 +60,10 @@ print(response.data[0].b64_json)
 ### Imagen Models
 
 ```python showLineNumbers title="Imagen Image Generation"
-import litellm
+import dheera_ai
 
 # Generate a single image
-response = await litellm.aimage_generation(
+response = await dheera_ai.aimage_generation(
     prompt="An olympic size swimming pool with crystal clear water and modern architecture",
     model="vertex_ai/imagen-4.0-generate-001",
     vertex_ai_project="your-project-id",
@@ -75,24 +75,24 @@ response = await litellm.aimage_generation(
 print(response.data[0].b64_json)  # Imagen also returns base64 images
 ```
 
-### LiteLLM Proxy
+### Dheera AI Proxy
 
 #### 1. Configure your config.yaml
 
 ```yaml showLineNumbers title="Vertex AI Image Generation Configuration"
 model_list:
   - model_name: vertex-imagen
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/imagen-4.0-generate-001
       vertex_ai_project: "your-project-id"
       vertex_ai_location: "us-central1"
       vertex_ai_credentials: "path/to/service-account.json"  # Optional if using environment auth
 ```
 
-#### 2. Start LiteLLM Proxy Server
+#### 2. Start Dheera AI Proxy Server
 
-```bash title="Start LiteLLM Proxy Server"
-litellm --config /path/to/config.yaml
+```bash title="Start Dheera AI Proxy Server"
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -134,9 +134,9 @@ print(response.data[0].url)
 
 :::tip
 
-**We support ALL Vertex AI Image Generation models, just set `model=vertex_ai/<any-model-on-vertex_ai>` as a prefix when sending litellm requests**
+**We support ALL Vertex AI Image Generation models, just set `model=vertex_ai/<any-model-on-vertex_ai>` as a prefix when sending dheera_ai requests**
 
 :::
 
-For the complete and up-to-date list of supported models, visit: [https://models.litellm.ai/](https://models.litellm.ai/)
+For the complete and up-to-date list of supported models, visit: [https://models.dheera_ai.ai/](https://models.dheera_ai.ai/)
 

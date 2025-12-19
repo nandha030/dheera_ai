@@ -22,7 +22,7 @@ Useful to pass in large media files to Gemini's `/generateContent` endpoint.
 ```python
 import base64
 import requests
-from litellm import completion, create_file
+from dheera_ai import completion, create_file
 import os
 
 
@@ -83,7 +83,7 @@ print(completion.choices[0].message)
 ```yaml
 model_list:
     - model_name: "gemini-2.0-flash"
-      litellm_params:
+      dheera_ai_params:
         model: gemini/gemini-2.0-flash
         api_key: os.environ/GEMINI_API_KEY
 ```
@@ -91,7 +91,7 @@ model_list:
 2. Start proxy
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 3. Test it
@@ -161,7 +161,7 @@ print(completion.choices[0].message)
 
 ## Azure Blob Storage Integration
 
-LiteLLM supports using Azure Blob Storage as a target storage backend for Gemini file uploads. This allows you to store files in Azure Data Lake Storage Gen2 instead of Google's managed storage.
+Dheera AI supports using Azure Blob Storage as a target storage backend for Gemini file uploads. This allows you to store files in Azure Data Lake Storage Gen2 instead of Google's managed storage.
 
 ### Step 1: Setup Azure Blob Storage
 
@@ -198,7 +198,7 @@ Azure Blob Storage supports all Gemini-compatible file types:
 ```yaml
 model_list:
     - model_name: "gemini-2.5-flash"
-      litellm_params:
+      dheera_ai_params:
         model: gemini/gemini-2.5-flash
         api_key: os.environ/GEMINI_API_KEY
 ```
@@ -215,7 +215,7 @@ or add them in your `.env`
 3. Start proxy
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 4. Upload file with Azure Blob Storage

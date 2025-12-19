@@ -20,11 +20,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-import litellm
-from litellm.types.rerank import RerankResponse
-from litellm import RateLimitError, Timeout, completion, completion_cost, embedding
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
+import dheera_ai
+from dheera_ai.types.rerank import RerankResponse
+from dheera_ai import RateLimitError, Timeout, completion, completion_cost, embedding
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
 
 
 def assert_response_shape(response, custom_llm_provider):
@@ -76,9 +76,9 @@ def assert_response_shape(response, custom_llm_provider):
 @pytest.mark.parametrize("sync_mode", [True, False])
 @pytest.mark.flaky(retries=3, delay=1)
 async def test_basic_rerank(sync_mode):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     if sync_mode is True:
-        response = litellm.rerank(
+        response = dheera_ai.rerank(
             model="cohere/rerank-english-v3.0",
             query="hello",
             documents=["hello", "world"],
@@ -92,7 +92,7 @@ async def test_basic_rerank(sync_mode):
 
         assert_response_shape(response, custom_llm_provider="cohere")
     else:
-        response = await litellm.arerank(
+        response = await dheera_ai.arerank(
             model="cohere/rerank-english-v3.0",
             query="hello",
             documents=["hello", "world"],
@@ -115,7 +115,7 @@ async def test_basic_rerank(sync_mode):
 async def test_basic_rerank_together_ai(sync_mode):
     try:
         if sync_mode is True:
-            response = litellm.rerank(
+            response = dheera_ai.rerank(
                 model="together_ai/Salesforce/Llama-Rank-V1",
                 query="hello",
                 documents=["hello", "world"],
@@ -129,7 +129,7 @@ async def test_basic_rerank_together_ai(sync_mode):
 
             assert_response_shape(response, custom_llm_provider="together_ai")
         else:
-            response = await litellm.arerank(
+            response = await dheera_ai.arerank(
                 model="together_ai/Salesforce/Llama-Rank-V1",
                 query="hello",
                 documents=["hello", "world"],
@@ -154,10 +154,10 @@ async def test_basic_rerank_together_ai(sync_mode):
 async def test_basic_rerank_azure_ai(sync_mode):
     import os
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     if sync_mode is True:
-        response = litellm.rerank(
+        response = dheera_ai.rerank(
             model="azure_ai/Cohere-rerank-v3-multilingual-ko",
             query="hello",
             documents=["hello", "world"],
@@ -173,7 +173,7 @@ async def test_basic_rerank_azure_ai(sync_mode):
 
         assert_response_shape(response, custom_llm_provider="together_ai")
     else:
-        response = await litellm.arerank(
+        response = await dheera_ai.arerank(
             model="azure_ai/Cohere-rerank-v3-multilingual-ko",
             query="hello",
             documents=["hello", "world"],
@@ -194,7 +194,7 @@ async def test_basic_rerank_azure_ai(sync_mode):
 @pytest.mark.parametrize("version", ["v1", "v2"])
 async def test_rerank_custom_api_base(version):
     mock_response = AsyncMock()
-    litellm.cohere_key = "test_api_key"
+    dheera_ai.cohere_key = "test_api_key"
 
     def return_val():
         return {
@@ -222,10 +222,10 @@ async def test_rerank_custom_api_base(version):
         api_base += "v1/rerank"
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        response = await litellm.arerank(
+        response = await dheera_ai.arerank(
             model="cohere/Salesforce/Llama-Rank-V1",
             query="hello",
             documents=["hello", "world"],
@@ -276,12 +276,12 @@ class TestLogger(CustomLogger):
 @pytest.mark.asyncio()
 @pytest.mark.flaky(retries=3, delay=1)
 async def test_rerank_custom_callbacks():
-    os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-    litellm.model_cost = litellm.get_model_cost_map(url="")
+    os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+    dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
     custom_logger = TestLogger()
-    litellm.callbacks = [custom_logger]
-    response = await litellm.arerank(
+    dheera_ai.callbacks = [custom_logger]
+    response = await dheera_ai.arerank(
         model="cohere/rerank-english-v3.0",
         query="hello",
         documents=["hello", "world"],
@@ -298,12 +298,12 @@ async def test_rerank_custom_callbacks():
 
 
 def test_complete_base_url_cohere():
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
-    litellm.api_base = "http://localhost:4000"
-    litellm.cohere_key = "test_api_key"
-    litellm.set_verbose = True
+    dheera_ai.api_base = "http://localhost:4000"
+    dheera_ai.cohere_key = "test_api_key"
+    dheera_ai.set_verbose = True
 
     text = "Hello there!"
     list_texts = ["Hello there!", "How are you?", "How do you do?"]
@@ -312,7 +312,7 @@ def test_complete_base_url_cohere():
 
     with patch.object(client, "post") as mock_post:
         try:
-            litellm.rerank(
+            dheera_ai.rerank(
                 model=rerank_model,
                 query=text,
                 documents=list_texts,
@@ -339,10 +339,10 @@ def test_complete_base_url_cohere():
 )
 @pytest.mark.flaky(retries=3, delay=1)
 async def test_basic_rerank_caching(sync_mode, top_n_1, top_n_2, expect_cache_hit):
-    from litellm.caching.caching import Cache
+    from dheera_ai.caching.caching import Cache
 
-    litellm.set_verbose = True
-    litellm.cache = Cache(type="local")
+    dheera_ai.set_verbose = True
+    dheera_ai.cache = Cache(type="local")
 
     if sync_mode is True:
         for idx in range(2):
@@ -350,7 +350,7 @@ async def test_basic_rerank_caching(sync_mode, top_n_1, top_n_2, expect_cache_hi
                 top_n = top_n_1
             else:
                 top_n = top_n_2
-            response = litellm.rerank(
+            response = dheera_ai.rerank(
                 model="cohere/rerank-english-v3.0",
                 query="hello",
                 documents=["hello", "world"],
@@ -362,7 +362,7 @@ async def test_basic_rerank_caching(sync_mode, top_n_1, top_n_2, expect_cache_hi
                 top_n = top_n_1
             else:
                 top_n = top_n_2
-            response = await litellm.arerank(
+            response = await dheera_ai.arerank(
                 model="cohere/rerank-english-v3.0",
                 query="hello",
                 documents=["hello", "world"],
@@ -413,11 +413,11 @@ def test_rerank_response_assertions():
 
 
 def test_cohere_rerank_v2_client():
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
-    litellm.api_base = "http://localhost:4000"
-    litellm.set_verbose = True
+    dheera_ai.api_base = "http://localhost:4000"
+    dheera_ai.set_verbose = True
 
     text = "Hello there!"
     list_texts = ["Hello there!", "How are you?", "How do you do?"]
@@ -443,7 +443,7 @@ def test_cohere_rerank_v2_client():
 
         mock_post.return_value = mock_response
 
-        response = litellm.rerank(
+        response = dheera_ai.rerank(
             model=rerank_model,
             query=text,
             documents=list_texts,
@@ -465,13 +465,13 @@ def test_cohere_rerank_v2_client():
         assert request_data["max_tokens_per_doc"] == 3
         assert request_data["top_n"] == 2
 
-        # Ensure litellm response is what we expect
+        # Ensure dheera_ai response is what we expect
         assert response["results"] == mock_response.json()["results"]
 
 
 @pytest.mark.flaky(retries=3, delay=1)
 def test_rerank_cohere_api():
-    response = litellm.rerank(
+    response = dheera_ai.rerank(
         model="cohere/rerank-english-v3.0",
         query="hello",
         documents=["hello", "world"],
@@ -511,7 +511,7 @@ def test_rerank_infer_region_from_model_arn(monkeypatch):
     client = HTTPHandler()
 
     with patch.object(client, "post", return_value=mock_response) as mock_post:
-        litellm.rerank(
+        dheera_ai.rerank(
             model=args["model"],
             query=args["query"],
             documents=args["documents"],

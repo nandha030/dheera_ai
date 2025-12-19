@@ -1,11 +1,11 @@
 import pytest
-from litellm import acompletion
-from litellm import completion
+from dheera_ai import acompletion
+from dheera_ai import completion
 
 
 def test_acompletion_params():
     import inspect
-    from litellm.types.completion import CompletionRequest
+    from dheera_ai.types.completion import CompletionRequest
 
     acompletion_params_odict = inspect.signature(acompletion).parameters
     completion_params_dict = inspect.signature(completion).parameters
@@ -29,7 +29,7 @@ def test_acompletion_params():
     # Assert that the parameters are the same
     if keys_acompletion != keys_completion:
         pytest.fail(
-            "The parameters of the litellm.acompletion function and litellm.completion are not the same. "
+            "The parameters of the dheera_ai.acompletion function and dheera_ai.completion are not the same. "
             f"Completion has extra keys: {keys_completion - keys_acompletion}"
         )
 
@@ -39,11 +39,11 @@ def test_acompletion_params():
 
 @pytest.mark.asyncio
 async def test_langfuse_double_logging():
-    import litellm
+    import dheera_ai
 
-    litellm.set_verbose = True
-    litellm.success_callback = ["langfuse"]
-    litellm.failure_callback = ["langfuse"]  # logs errors to langfuse
+    dheera_ai.set_verbose = True
+    dheera_ai.success_callback = ["langfuse"]
+    dheera_ai.failure_callback = ["langfuse"]  # logs errors to langfuse
 
     models = ["gpt-4o-mini", "claude-3-5-haiku-20241022"]
 
@@ -51,11 +51,11 @@ async def test_langfuse_double_logging():
         {"role": "user", "content": "Hello, how are you?"},
     ]
 
-    resp = await litellm.acompletion(
+    resp = await dheera_ai.acompletion(
         model=models[0],
         messages=messages,
         temperature=0.0,
         fallbacks=models[1:],
-        # metadata={"generation_name": "test-gen", "project": "litellm-test"},
+        # metadata={"generation_name": "test-gen", "project": "dheera_ai-test"},
     )
     return resp

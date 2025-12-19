@@ -10,9 +10,9 @@ import pytest
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-import litellm
-from litellm import completion, embedding
-from litellm.integrations.custom_logger import CustomLogger
+import dheera_ai
+from dheera_ai import completion, embedding
+from dheera_ai.integrations.custom_logger import CustomLogger
 
 
 class MyCustomHandler(CustomLogger):
@@ -125,11 +125,11 @@ def test_get_callback_env_vars():
 async def test_async_chat_openai_stream():
     try:
         tmp_function = TmpFunction()
-        litellm.set_verbose = True
-        litellm.success_callback = [tmp_function.async_test_logging_fn]
+        dheera_ai.set_verbose = True
+        dheera_ai.success_callback = [tmp_function.async_test_logging_fn]
         complete_streaming_response = ""
 
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hi 👋 - i'm openai"}],
             stream=True,
@@ -168,7 +168,7 @@ async def test_async_chat_openai_stream():
 def test_completion_azure_stream_moderation_failure():
     try:
         customHandler = MyCustomHandler()
-        litellm.callbacks = [customHandler]
+        dheera_ai.callbacks = [customHandler]
         messages = [
             {"role": "system", "content": "You are a helpful assistant."},
             {
@@ -199,20 +199,20 @@ def test_async_custom_handler_stream():
         # [PROD Test] - Do not DELETE
         # checks if the model response available in the async + stream callbacks is equal to the received response
         customHandler2 = MyCustomHandler()
-        litellm.callbacks = [customHandler2]
-        litellm.set_verbose = False
+        dheera_ai.callbacks = [customHandler2]
+        dheera_ai.set_verbose = False
         messages = [
             {"role": "system", "content": "You are a helpful assistant."},
             {
                 "role": "user",
-                "content": "write 1 sentence about litellm being amazing",
+                "content": "write 1 sentence about dheera_ai being amazing",
             },
         ]
         complete_streaming_response = ""
 
         async def test_1():
             nonlocal complete_streaming_response
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="azure/gpt-4.1-mini", messages=messages, stream=True
             )
             async for chunk in response:
@@ -245,18 +245,18 @@ def test_azure_completion_stream():
     try:
         # checks if the model response available in the async + stream callbacks is equal to the received response
         customHandler2 = MyCustomHandler()
-        litellm.callbacks = [customHandler2]
-        litellm.set_verbose = True
+        dheera_ai.callbacks = [customHandler2]
+        dheera_ai.set_verbose = True
         messages = [
             {"role": "system", "content": "You are a helpful assistant."},
             {
                 "role": "user",
-                "content": f"write 1 sentence about litellm being amazing {time.time()}",
+                "content": f"write 1 sentence about dheera_ai being amazing {time.time()}",
             },
         ]
         complete_streaming_response = ""
 
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="azure/gpt-4.1-mini", messages=messages, stream=True
         )
         for chunk in response:
@@ -279,18 +279,18 @@ def test_azure_completion_stream():
 @pytest.mark.asyncio
 async def test_async_custom_handler_completion():
     try:
-        litellm._turn_on_debug
+        dheera_ai._turn_on_debug
         customHandler_success = MyCustomHandler()
         customHandler_failure = MyCustomHandler()
         # success
         assert customHandler_success.async_success == False
-        litellm.callbacks = [customHandler_success]
-        response = await litellm.acompletion(
+        dheera_ai.callbacks = [customHandler_success]
+        response = await dheera_ai.acompletion(
             model="gpt-3.5-turbo",
             messages=[
                 {
                     "role": "user",
-                    "content": "hello from litellm test",
+                    "content": "hello from dheera_ai test",
                 }
             ],
         )
@@ -303,8 +303,8 @@ async def test_async_custom_handler_completion():
             == "gpt-3.5-turbo"
         )
         # failure
-        litellm.logging_callback_manager._reset_all_callbacks()
-        litellm.callbacks = [customHandler_failure]
+        dheera_ai.logging_callback_manager._reset_all_callbacks()
+        dheera_ai.callbacks = [customHandler_failure]
         messages = [
             {"role": "system", "content": "You are a helpful assistant."},
             {
@@ -315,7 +315,7 @@ async def test_async_custom_handler_completion():
 
         assert customHandler_failure.async_failure == False
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=messages,
                 api_key="my-bad-key",
@@ -334,8 +334,8 @@ async def test_async_custom_handler_completion():
                 str(customHandler_failure.async_completion_kwargs_fail.get("exception"))
             )
             > 10
-        )  # expect APIError("OpenAIException - Error code: 401 - {'error': {'message': 'Incorrect API key provided: test. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}"), 'traceback_exception': 'Traceback (most recent call last):\n  File "/Users/ishaanjaffer/Github/litellm/litellm/llms/openai.py", line 269, in acompletion\n    response = await openai_aclient.chat.completions.create(**data)\n  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/openai/resources/chat/completions.py", line 119
-        litellm.callbacks = []
+        )  # expect APIError("OpenAIException - Error code: 401 - {'error': {'message': 'Incorrect API key provided: test. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}"), 'traceback_exception': 'Traceback (most recent call last):\n  File "/Users/ishaanjaffer/Github/dheera_ai/dheera_ai/llms/openai.py", line 269, in acompletion\n    response = await openai_aclient.chat.completions.create(**data)\n  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/openai/resources/chat/completions.py", line 119
+        dheera_ai.callbacks = []
         print("Passed setting async failure")
     except Exception as e:
         pytest.fail(f"An exception occurred - {str(e)}")
@@ -348,10 +348,10 @@ async def test_async_custom_handler_completion():
 async def test_async_custom_handler_embedding():
     try:
         customHandler_embedding = MyCustomHandler()
-        litellm.callbacks = [customHandler_embedding]
+        dheera_ai.callbacks = [customHandler_embedding]
         # success
         assert customHandler_embedding.async_success_embedding == False
-        response = await litellm.aembedding(
+        response = await dheera_ai.aembedding(
             model="text-embedding-ada-002",
             input=["hello world"],
         )
@@ -371,7 +371,7 @@ async def test_async_custom_handler_embedding():
         # failure
         assert customHandler_embedding.async_failure_embedding == False
         try:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 model="text-embedding-ada-002",
                 input=["hello world"],
                 api_key="my-bad-key",
@@ -392,7 +392,7 @@ async def test_async_custom_handler_embedding():
                 )
             )
             > 10
-        )  # exppect APIError("OpenAIException - Error code: 401 - {'error': {'message': 'Incorrect API key provided: test. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}"), 'traceback_exception': 'Traceback (most recent call last):\n  File "/Users/ishaanjaffer/Github/litellm/litellm/llms/openai.py", line 269, in acompletion\n    response = await openai_aclient.chat.completions.create(**data)\n  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/openai/resources/chat/completions.py", line 119
+        )  # exppect APIError("OpenAIException - Error code: 401 - {'error': {'message': 'Incorrect API key provided: test. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}"), 'traceback_exception': 'Traceback (most recent call last):\n  File "/Users/ishaanjaffer/Github/dheera_ai/dheera_ai/llms/openai.py", line 269, in acompletion\n    response = await openai_aclient.chat.completions.create(**data)\n  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/openai/resources/chat/completions.py", line 119
     except Exception as e:
         pytest.fail(f"An exception occurred - {str(e)}")
 
@@ -406,10 +406,10 @@ async def test_async_custom_handler_embedding_optional_param():
     Tests if the openai optional params for embedding - user + encoding_format,
     are logged
     """
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     customHandler_optional_params = MyCustomHandler()
-    litellm.callbacks = [customHandler_optional_params]
-    response = await litellm.aembedding(
+    dheera_ai.callbacks = [customHandler_optional_params]
+    response = await dheera_ai.aembedding(
         model="text-embedding-ada-002", input=["hello world"], user="John"
     )
     await asyncio.sleep(1)  # success callback is async
@@ -432,11 +432,11 @@ async def test_async_custom_handler_embedding_optional_param_bedrock():
 
     but makes sure these are not sent to the non-openai/azure endpoint (raises errors).
     """
-    litellm.drop_params = True
-    litellm.set_verbose = True
+    dheera_ai.drop_params = True
+    dheera_ai.set_verbose = True
     customHandler_optional_params = MyCustomHandler()
-    litellm.callbacks = [customHandler_optional_params]
-    response = await litellm.aembedding(
+    dheera_ai.callbacks = [customHandler_optional_params]
+    response = await dheera_ai.aembedding(
         model="bedrock/amazon.titan-embed-text-v1", input=["hello world"], user="John"
     )
     await asyncio.sleep(1)  # success callback is async
@@ -450,24 +450,24 @@ async def test_cost_tracking_with_caching():
     """
     Important Test - This tests if that cost is 0 for cached responses
     """
-    from litellm import Cache
+    from dheera_ai import Cache
 
-    litellm.set_verbose = True
-    litellm.cache = Cache(
+    dheera_ai.set_verbose = True
+    dheera_ai.cache = Cache(
         type="redis",
         host=os.environ["REDIS_HOST"],
         port=os.environ["REDIS_PORT"],
         password=os.environ["REDIS_PASSWORD"],
     )
     customHandler_optional_params = MyCustomHandler()
-    litellm.callbacks = [customHandler_optional_params]
+    dheera_ai.callbacks = [customHandler_optional_params]
     messages = [
         {
             "role": "user",
             "content": f"write a one sentence poem about: {time.time()}",
         }
     ]
-    response1 = await litellm.acompletion(
+    response1 = await dheera_ai.acompletion(
         model="gpt-3.5-turbo",
         messages=messages,
         max_tokens=40,
@@ -478,7 +478,7 @@ async def test_cost_tracking_with_caching():
     await asyncio.sleep(3)  # success callback is async
     response_cost = customHandler_optional_params.response_cost
     assert response_cost > 0
-    response2 = await litellm.acompletion(
+    response2 = await dheera_ai.acompletion(
         model="gpt-3.5-turbo",
         messages=messages,
         max_tokens=40,
@@ -494,11 +494,11 @@ def test_redis_cache_completion_stream():
     # Important Test - This tests if we can add to streaming cache, when custom callbacks are set
     import random
 
-    from litellm import Cache
+    from dheera_ai import Cache
 
     try:
         print("\nrunning test_redis_cache_completion_stream")
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         random_number = random.randint(
             1, 100000
         )  # add a random number to ensure it's always adding / reading from cache
@@ -508,7 +508,7 @@ def test_redis_cache_completion_stream():
                 "content": f"write a one sentence poem about: {random_number}",
             }
         ]
-        litellm.cache = Cache(
+        dheera_ai.cache = Cache(
             type="redis",
             host=os.environ["REDIS_HOST"],
             port=os.environ["REDIS_PORT"],
@@ -556,12 +556,12 @@ def test_redis_cache_completion_stream():
         # assert (
         #     response_1_content == response_2_content
         # ), f"Response 1 != Response 2. Same params, Response 1{response_1_content} != Response 2{response_2_content}"
-        litellm.success_callback = []
-        litellm._async_success_callback = []
-        litellm.cache = None
+        dheera_ai.success_callback = []
+        dheera_ai._async_success_callback = []
+        dheera_ai.cache = None
     except Exception as e:
         print(e)
-        litellm.success_callback = []
+        dheera_ai.success_callback = []
         raise e
 
 

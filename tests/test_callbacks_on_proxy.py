@@ -65,11 +65,11 @@ async def get_active_callbacks(session):
 
         _num_callbacks = _json_response["num_callbacks"]
         _num_alerts = _json_response["num_alerting"]
-        all_litellm_callbacks = _json_response["all_litellm_callbacks"]
+        all_dheera_ai_callbacks = _json_response["all_dheera_ai_callbacks"]
 
         print("current number of callbacks: ", _num_callbacks)
         print("current number of alerts: ", _num_alerts)
-        return _num_callbacks, _num_alerts, all_litellm_callbacks
+        return _num_callbacks, _num_alerts, all_dheera_ai_callbacks
 
 
 async def get_current_routing_strategy(session):
@@ -108,38 +108,38 @@ async def test_check_num_callbacks():
     -> sleep for 30 seconds
     -> check current callbacks
     """
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     async with aiohttp.ClientSession() as session:
         await asyncio.sleep(30)
-        num_callbacks_1, _, all_litellm_callbacks_1 = await get_active_callbacks(
+        num_callbacks_1, _, all_dheera_ai_callbacks_1 = await get_active_callbacks(
             session=session
         )
         assert num_callbacks_1 > 0
         await asyncio.sleep(30)
 
-        num_callbacks_2, _, all_litellm_callbacks_2 = await get_active_callbacks(
+        num_callbacks_2, _, all_dheera_ai_callbacks_2 = await get_active_callbacks(
             session=session
         )
 
-        print("all_litellm_callbacks_1", all_litellm_callbacks_1)
+        print("all_dheera_ai_callbacks_1", all_dheera_ai_callbacks_1)
 
         print(
             "diff in callbacks=",
-            set(all_litellm_callbacks_1) - set(all_litellm_callbacks_2),
+            set(all_dheera_ai_callbacks_1) - set(all_dheera_ai_callbacks_2),
         )
 
         assert abs(num_callbacks_1 - num_callbacks_2) <= 4
 
         await asyncio.sleep(30)
 
-        num_callbacks_3, _, all_litellm_callbacks_3 = await get_active_callbacks(
+        num_callbacks_3, _, all_dheera_ai_callbacks_3 = await get_active_callbacks(
             session=session
         )
 
         print(
-            "diff in callbacks = all_litellm_callbacks3 - all_litellm_callbacks2 ",
-            set(all_litellm_callbacks_3) - set(all_litellm_callbacks_2),
+            "diff in callbacks = all_dheera_ai_callbacks3 - all_dheera_ai_callbacks2 ",
+            set(all_dheera_ai_callbacks_3) - set(all_dheera_ai_callbacks_2),
         )
 
         assert abs(num_callbacks_3 - num_callbacks_2) <= 4
@@ -158,7 +158,7 @@ async def test_check_num_callbacks_on_lowest_latency():
     -> check current callbacks
     -> update back to original routing-strategy
     """
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     async with aiohttp.ClientSession() as session:
         await asyncio.sleep(30)
@@ -168,32 +168,32 @@ async def test_check_num_callbacks_on_lowest_latency():
 
         await asyncio.sleep(30)
 
-        num_callbacks_1, num_alerts_1, all_litellm_callbacks_1 = (
+        num_callbacks_1, num_alerts_1, all_dheera_ai_callbacks_1 = (
             await get_active_callbacks(session=session)
         )
 
         await asyncio.sleep(30)
 
-        num_callbacks_2, num_alerts_2, all_litellm_callbacks_2 = (
+        num_callbacks_2, num_alerts_2, all_dheera_ai_callbacks_2 = (
             await get_active_callbacks(session=session)
         )
 
         print(
-            "diff in callbacks all_litellm_callbacks_2 - all_litellm_callbacks_1 =",
-            set(all_litellm_callbacks_2) - set(all_litellm_callbacks_1),
+            "diff in callbacks all_dheera_ai_callbacks_2 - all_dheera_ai_callbacks_1 =",
+            set(all_dheera_ai_callbacks_2) - set(all_dheera_ai_callbacks_1),
         )
 
         assert abs(num_callbacks_1 - num_callbacks_2) <= 4
 
         await asyncio.sleep(30)
 
-        num_callbacks_3, num_alerts_3, all_litellm_callbacks_3 = (
+        num_callbacks_3, num_alerts_3, all_dheera_ai_callbacks_3 = (
             await get_active_callbacks(session=session)
         )
 
         print(
-            "diff in callbacks all_litellm_callbacks_3 - all_litellm_callbacks_2 =",
-            set(all_litellm_callbacks_3) - set(all_litellm_callbacks_2),
+            "diff in callbacks all_dheera_ai_callbacks_3 - all_dheera_ai_callbacks_2 =",
+            set(all_dheera_ai_callbacks_3) - set(all_dheera_ai_callbacks_2),
         )
 
         assert abs(num_callbacks_2 - num_callbacks_3) <= 4

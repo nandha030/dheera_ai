@@ -1,9 +1,0 @@
-model_list:
-  - model_name: gemini/*
-    litellm_params:
-      model: gemini/*
-
-
-
-litellm_settings:
-  callbacks: ["langfuse"]

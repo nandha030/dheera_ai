@@ -18,10 +18,10 @@ import TabItem from '@theme/TabItem';
 
 ### Usage
 <Tabs>
-<TabItem value="python" label="LiteLLM Python SDK">
+<TabItem value="python" label="Dheera AI Python SDK">
 
 ```python
-from litellm import text_completion
+from dheera_ai import text_completion
 
 response = text_completion(
     model="gpt-3.5-turbo-instruct",
@@ -31,26 +31,26 @@ response = text_completion(
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy Server">
+<TabItem value="proxy" label="Dheera AI Proxy Server">
 
 1. Define models on config.yaml
 
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo-instruct
-    litellm_params:
+    dheera_ai_params:
       model: text-completion-openai/gpt-3.5-turbo-instruct # The `text-completion-openai/` prefix will call openai.completions.create
       api_key: os.environ/OPENAI_API_KEY
   - model_name: text-davinci-003
-    litellm_params:
+    dheera_ai_params:
       model: text-completion-openai/text-davinci-003
       api_key: os.environ/OPENAI_API_KEY
 ```
 
-2. Start litellm proxy server 
+2. Start dheera_ai proxy server 
 
 ```
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 <Tabs>
@@ -93,7 +93,7 @@ curl --location 'http://0.0.0.0:4000/completions' \
 
 ## Input Params
 
-LiteLLM accepts and translates the [OpenAI Text Completion params](https://platform.openai.com/docs/api-reference/completions) across all supported providers.
+Dheera AI accepts and translates the [OpenAI Text Completion params](https://platform.openai.com/docs/api-reference/completions) across all supported providers.
 
 ### Required Fields
 

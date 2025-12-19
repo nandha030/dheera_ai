@@ -4,7 +4,7 @@ import Image from '@theme/IdealImage';
 
 # MCP Guardrails
 
-LiteLLM supports applying guardrails to MCP tool calls to ensure security and compliance. You can configure guardrails to run before or during MCP calls to validate inputs and block or mask sensitive information.
+Dheera AI supports applying guardrails to MCP tool calls to ensure security and compliance. You can configure guardrails to run before or during MCP calls to validate inputs and block or mask sensitive information.
 
 ### Supported MCP Guardrail Modes
 
@@ -20,7 +20,7 @@ Configure guardrails to run before MCP tool calls to validate and sanitize input
 ```yaml title="config.yaml" showLineNumbers
 guardrails:
   - guardrail_name: "mcp-input-validation"
-    litellm_params:
+    dheera_ai_params:
       guardrail: presidio  # or other supported guardrails
       mode: "pre_mcp_call" # or during_mcp_call
       pii_entities_config:
@@ -72,14 +72,14 @@ response = client.chat.completions.create(
     messages=[
         {"role": "user", "content": "Send an email to 555-123-4567 with my SSN 123-45-6789"}
     ],
-    tools=[{"type": "mcp", "server_label": "litellm", "server_url": "litellm_proxy"}],
+    tools=[{"type": "mcp", "server_label": "dheera_ai", "server_url": "dheera_ai_proxy"}],
     guardrails=["mcp-input-validation"]
 )
 ```
 
 ### Supported Guardrail Providers
 
-MCP guardrails work with all LiteLLM-supported guardrail providers:
+MCP guardrails work with all Dheera AI-supported guardrail providers:
 
 - **Presidio**: PII detection and masking
 - **Bedrock**: AWS Bedrock guardrails

@@ -10,17 +10,17 @@ sys.path.insert(
     0, os.path.abspath("../../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm.google_genai import (
+import dheera_ai
+from dheera_ai.google_genai import (
     generate_content,
     agenerate_content,
     generate_content_stream,
     agenerate_content_stream,
 )
 from google.genai.types import ContentDict, PartDict
-from litellm.types.google_genai.main import GenerateContentResponse
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.utils import StandardLoggingPayload
+from dheera_ai.types.google_genai.main import GenerateContentResponse
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.utils import StandardLoggingPayload
 
 
 def load_vertex_ai_credentials(model: str):
@@ -171,7 +171,7 @@ class BaseGoogleGenAITest:
         if temp_file_path:
             self._temp_files_to_cleanup.append(temp_file_path)
             
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
 
         print(f"Testing {'async' if is_async else 'sync'} non-streaming with model config: {request_params}")
         print(f"Contents: {contents}")
@@ -242,11 +242,11 @@ class BaseGoogleGenAITest:
     @pytest.mark.asyncio
     async def test_async_non_streaming_with_logging(self):
         """Test async non-streaming Google GenAI generate content with logging"""
-        litellm._turn_on_debug()
-        litellm.logging_callback_manager._reset_all_callbacks()
-        litellm.set_verbose = True
+        dheera_ai._turn_on_debug()
+        dheera_ai.logging_callback_manager._reset_all_callbacks()
+        dheera_ai.set_verbose = True
         test_custom_logger = TestCustomLogger()
-        litellm.callbacks = [test_custom_logger]
+        dheera_ai.callbacks = [test_custom_logger]
         
         request_params = self.model_config
         temp_file_path = load_vertex_ai_credentials(model=request_params["model"])
@@ -286,11 +286,11 @@ class BaseGoogleGenAITest:
     @pytest.mark.asyncio
     async def test_async_streaming_with_logging(self):
         """Test async streaming Google GenAI generate content with logging"""
-        litellm._turn_on_debug()
-        litellm.set_verbose = True
-        litellm.logging_callback_manager._reset_all_callbacks()
+        dheera_ai._turn_on_debug()
+        dheera_ai.set_verbose = True
+        dheera_ai.logging_callback_manager._reset_all_callbacks()
         test_custom_logger = TestCustomLogger()
-        litellm.callbacks = [test_custom_logger]
+        dheera_ai.callbacks = [test_custom_logger]
         
         request_params = self.model_config
         temp_file_path = load_vertex_ai_credentials(model=request_params["model"])

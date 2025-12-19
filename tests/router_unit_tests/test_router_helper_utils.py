@@ -8,13 +8,13 @@ from datetime import datetime
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-from litellm import Router
+from dheera_ai import Router
 import pytest
-import litellm
+import dheera_ai
 from unittest.mock import patch, MagicMock, AsyncMock
 from create_mock_standard_logging_payload import create_standard_logging_payload
-from litellm.types.utils import StandardLoggingPayload
-from litellm.types.router import Deployment, LiteLLM_Params
+from dheera_ai.types.utils import StandardLoggingPayload
+from dheera_ai.types.router import Deployment, DheeraAI_Params
 
 
 @pytest.fixture
@@ -22,7 +22,7 @@ def model_list():
     return [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-3.5-turbo",
                 "api_key": os.getenv("OPENAI_API_KEY"),
                 "tpm": 1000,  # Add TPM limit so async method doesn't return early
@@ -34,28 +34,28 @@ def model_list():
         },
         {
             "model_name": "gpt-4o",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-4o",
                 "api_key": os.getenv("OPENAI_API_KEY"),
             },
         },
         {
             "model_name": "dall-e-3",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "dall-e-3",
                 "api_key": os.getenv("OPENAI_API_KEY"),
             },
         },
         {
             "model_name": "*",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "openai/*",
                 "api_key": os.getenv("OPENAI_API_KEY"),
             },
         },
         {
             "model_name": "claude-*",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "anthropic/*",
                 "api_key": os.getenv("ANTHROPIC_API_KEY"),
             },
@@ -70,7 +70,7 @@ def test_validate_fallbacks(model_list):
 
 def test_routing_strategy_init(model_list):
     """Test if all routing strategies are initialized correctly"""
-    from litellm.types.router import RoutingStrategy
+    from dheera_ai.types.router import RoutingStrategy
 
     router = Router(model_list=model_list)
     for strategy in RoutingStrategy._member_names_:
@@ -85,23 +85,23 @@ def test_print_deployment(model_list):
     router = Router(model_list=model_list)
     deployment = {
         "model_name": "gpt-3.5-turbo",
-        "litellm_params": {
+        "dheera_ai_params": {
             "model": "gpt-3.5-turbo",
             "api_key": os.getenv("OPENAI_API_KEY"),
         },
     }
     printed_deployment = router.print_deployment(deployment)
-    assert 10 * "*" in printed_deployment["litellm_params"]["api_key"]
+    assert 10 * "*" in printed_deployment["dheera_ai_params"]["api_key"]
 
 
 def test_print_deployment_with_redact_enabled(model_list):
     """Test if sensitive credentials are masked when redact_user_api_key_info is enabled"""
-    import litellm
+    import dheera_ai
 
     router = Router(model_list=model_list)
     deployment = {
         "model_name": "bedrock-claude",
-        "litellm_params": {
+        "dheera_ai_params": {
             "model": "bedrock/anthropic.claude-v2",
             "aws_access_key_id": "AKIAIOSFODNN7EXAMPLE",
             "aws_secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
@@ -109,16 +109,16 @@ def test_print_deployment_with_redact_enabled(model_list):
         },
     }
 
-    original_setting = litellm.redact_user_api_key_info
+    original_setting = dheera_ai.redact_user_api_key_info
     try:
-        litellm.redact_user_api_key_info = True
+        dheera_ai.redact_user_api_key_info = True
         printed_deployment = router.print_deployment(deployment)
 
-        assert "*" in printed_deployment["litellm_params"]["aws_access_key_id"]
-        assert "*" in printed_deployment["litellm_params"]["aws_secret_access_key"]
-        assert "us-west-2" == printed_deployment["litellm_params"]["aws_region_name"]
+        assert "*" in printed_deployment["dheera_ai_params"]["aws_access_key_id"]
+        assert "*" in printed_deployment["dheera_ai_params"]["aws_secret_access_key"]
+        assert "us-west-2" == printed_deployment["dheera_ai_params"]["aws_region_name"]
     finally:
-        litellm.redact_user_api_key_info = original_setting
+        dheera_ai.redact_user_api_key_info = original_setting
 
 
 def test_completion(model_list):
@@ -137,7 +137,7 @@ def test_completion(model_list):
 @pytest.mark.asyncio
 async def test_image_generation(model_list, sync_mode):
     """Test if the underlying '_image_generation' function is working correctly"""
-    from litellm.types.utils import ImageResponse
+    from dheera_ai.types.utils import ImageResponse
 
     router = Router(model_list=model_list)
     if sync_mode:
@@ -199,7 +199,7 @@ async def test_router_schedule_acompletion(model_list):
 @pytest.mark.asyncio
 async def test_router_schedule_atext_completion(model_list):
     """Test if the 'schedule_atext_completion' function is working correctly"""
-    from litellm.types.utils import TextCompletionResponse
+    from dheera_ai.types.utils import TextCompletionResponse
 
     router = Router(model_list=model_list)
     with patch.object(
@@ -218,7 +218,7 @@ async def test_router_schedule_atext_completion(model_list):
 @pytest.mark.asyncio
 async def test_router_schedule_factory(model_list):
     """Test if the 'schedule_atext_completion' function is working correctly"""
-    from litellm.types.utils import TextCompletionResponse
+    from dheera_ai.types.utils import TextCompletionResponse
 
     router = Router(model_list=model_list)
     with patch.object(
@@ -339,14 +339,14 @@ def test_update_kwargs_with_deployment(model_list):
     assert all(field in kwargs["metadata"] for field in set_fields)
 
 
-def test_update_kwargs_with_default_litellm_params(model_list):
-    """Test if the '_update_kwargs_with_default_litellm_params' function is working correctly"""
+def test_update_kwargs_with_default_dheera_ai_params(model_list):
+    """Test if the '_update_kwargs_with_default_dheera_ai_params' function is working correctly"""
     router = Router(
         model_list=model_list,
-        default_litellm_params={"api_key": "test", "metadata": {"key": "value"}},
+        default_dheera_ai_params={"api_key": "test", "metadata": {"key": "value"}},
     )
     kwargs: dict = {"metadata": {"key2": "value2"}}
-    router._update_kwargs_with_default_litellm_params(kwargs=kwargs)
+    router._update_kwargs_with_default_dheera_ai_params(kwargs=kwargs)
     assert kwargs["api_key"] == "test"
     assert kwargs["metadata"]["key"] == "value"
     assert kwargs["metadata"]["key2"] == "value2"
@@ -362,9 +362,9 @@ def test_get_timeout(model_list):
 @pytest.mark.parametrize(
     "fallback_kwarg, expected_error",
     [
-        ("mock_testing_fallbacks", litellm.InternalServerError),
-        ("mock_testing_context_fallbacks", litellm.ContextWindowExceededError),
-        ("mock_testing_content_policy_fallbacks", litellm.ContentPolicyViolationError),
+        ("mock_testing_fallbacks", dheera_ai.InternalServerError),
+        ("mock_testing_context_fallbacks", dheera_ai.ContextWindowExceededError),
+        ("mock_testing_content_policy_fallbacks", dheera_ai.ContentPolicyViolationError),
     ],
 )
 def test_handle_mock_testing_fallbacks(model_list, fallback_kwarg, expected_error):
@@ -382,7 +382,7 @@ def test_handle_mock_testing_fallbacks(model_list, fallback_kwarg, expected_erro
 def test_handle_mock_testing_rate_limit_error(model_list):
     """Test if the '_handle_mock_testing_rate_limit_error' function is working correctly"""
     router = Router(model_list=model_list)
-    with pytest.raises(litellm.RateLimitError):
+    with pytest.raises(dheera_ai.RateLimitError):
         data = {
             "mock_testing_rate_limit_error": True,
         }
@@ -410,7 +410,7 @@ async def test_deployment_callback_on_success(sync_mode):
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-3.5-turbo",
                 "api_key": os.getenv("OPENAI_API_KEY"),
                 "rpm": 100,
@@ -427,7 +427,7 @@ async def test_deployment_callback_on_success(sync_mode):
     standard_logging_payload["total_tokens"] = 100
     standard_logging_payload["model_id"] = "100"
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "gpt-3.5-turbo",
             },
@@ -435,7 +435,7 @@ async def test_deployment_callback_on_success(sync_mode):
         },
         "standard_logging_object": standard_logging_payload,
     }
-    response = litellm.ModelResponse(
+    response = dheera_ai.ModelResponse(
         model="gpt-3.5-turbo",
         usage={"total_tokens": 100},
     )
@@ -463,7 +463,7 @@ async def test_deployment_callback_on_failure(model_list):
 
     router = Router(model_list=model_list)
     kwargs = {
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {
                 "model_group": "gpt-3.5-turbo",
             },
@@ -507,14 +507,14 @@ def test_deployment_callback_respects_cooldown_time(model_list):
 
     kwargs = {
         "exception": FakeException(),
-        "litellm_params": {
+        "dheera_ai_params": {
             "metadata": {"model_group": "gpt-3.5-turbo"},
             "model_info": {"id": 100},
             "cooldown_time": 0,
         },
     }
 
-    with patch("litellm.router._set_cooldown_deployments") as mock_set:
+    with patch("dheera_ai.router._set_cooldown_deployments") as mock_set:
         router.deployment_callback_on_failure(
             kwargs=kwargs,
             completion_response=None,
@@ -574,7 +574,7 @@ def test_should_raise_content_policy_error(
     assert (
         router._should_raise_content_policy_error(
             model="gpt-3.5-turbo",
-            response=litellm.ModelResponse(
+            response=dheera_ai.ModelResponse(
                 model="gpt-3.5-turbo",
                 choices=[
                     {
@@ -609,11 +609,11 @@ def test_get_healthy_deployments(model_list):
 @pytest.mark.asyncio
 async def test_routing_strategy_pre_call_checks(model_list, sync_mode):
     """Test if the '_routing_strategy_pre_call_checks' function is working correctly"""
-    from litellm.integrations.custom_logger import CustomLogger
-    from litellm.litellm_core_utils.litellm_logging import Logging
+    from dheera_ai.integrations.custom_logger import CustomLogger
+    from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging
 
     callback = CustomLogger()
-    litellm.callbacks = [callback]
+    dheera_ai.callbacks = [callback]
 
     router = Router(model_list=model_list)
 
@@ -621,12 +621,12 @@ async def test_routing_strategy_pre_call_checks(model_list, sync_mode):
         model_group_name="gpt-3.5-turbo"
     )
 
-    litellm_logging_obj = Logging(
+    dheera_ai_logging_obj = Logging(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "hi"}],
         stream=False,
         call_type="acompletion",
-        litellm_call_id="1234",
+        dheera_ai_call_id="1234",
         start_time=datetime.now(),
         function_id="1234",
     )
@@ -635,7 +635,7 @@ async def test_routing_strategy_pre_call_checks(model_list, sync_mode):
     else:
         ## NO EXCEPTION
         await router.async_routing_strategy_pre_call_checks(
-            deployment, litellm_logging_obj
+            deployment, dheera_ai_logging_obj
         )
 
         ## WITH EXCEPTION - rate limit error
@@ -643,7 +643,7 @@ async def test_routing_strategy_pre_call_checks(model_list, sync_mode):
             callback,
             "async_pre_call_check",
             AsyncMock(
-                side_effect=litellm.RateLimitError(
+                side_effect=dheera_ai.RateLimitError(
                     message="Rate limit error",
                     llm_provider="openai",
                     model="gpt-3.5-turbo",
@@ -652,11 +652,11 @@ async def test_routing_strategy_pre_call_checks(model_list, sync_mode):
         ):
             try:
                 await router.async_routing_strategy_pre_call_checks(
-                    deployment, litellm_logging_obj
+                    deployment, dheera_ai_logging_obj
                 )
                 pytest.fail("Exception was not raised")
             except Exception as e:
-                assert isinstance(e, litellm.RateLimitError)
+                assert isinstance(e, dheera_ai.RateLimitError)
 
         ## WITH EXCEPTION - generic error
         with patch.object(
@@ -664,7 +664,7 @@ async def test_routing_strategy_pre_call_checks(model_list, sync_mode):
         ):
             try:
                 await router.async_routing_strategy_pre_call_checks(
-                    deployment, litellm_logging_obj
+                    deployment, dheera_ai_logging_obj
                 )
                 pytest.fail("Exception was not raised")
             except Exception as e:
@@ -682,11 +682,11 @@ def test_create_deployment(
     router = Router(model_list=model_list)
 
     if set_supported_environments:
-        os.environ["LITELLM_ENVIRONMENT"] = "staging"
+        os.environ["DHEERA_AI_ENVIRONMENT"] = "staging"
     deployment = router._create_deployment(
         deployment_info={},
         _model_name="gpt-3.5-turbo",
-        _litellm_params={
+        _dheera_ai_params={
             "model": "gpt-3.5-turbo",
             "api_key": "test",
             "custom_llm_provider": "openai",
@@ -715,7 +715,7 @@ def test_deployment_is_active_for_environment(
         model_group_name="gpt-3.5-turbo"
     )
     if set_supported_environments:
-        os.environ["LITELLM_ENVIRONMENT"] = "staging"
+        os.environ["DHEERA_AI_ENVIRONMENT"] = "staging"
     deployment["model_info"]["supported_environments"] = supported_environments
     if is_supported:
         assert (
@@ -756,7 +756,7 @@ def test_upsert_deployment(model_list):
     deployment = router.get_deployment_by_model_group_name(
         model_group_name="gpt-3.5-turbo"
     )
-    deployment.litellm_params.model = "gpt-4o"
+    deployment.dheera_ai_params.model = "gpt-4o"
     router.upsert_deployment(deployment=deployment)
     assert len(router.model_list) == len(model_list)
 
@@ -864,7 +864,7 @@ def test_filter_cooldown_deployments(model_list):
 
 def test_track_deployment_metrics(model_list):
     """Test if the 'track_deployment_metrics' function is working correctly"""
-    from litellm.types.utils import ModelResponse
+    from dheera_ai.types.utils import ModelResponse
 
     router = Router(model_list=model_list)
     router._track_deployment_metrics(
@@ -882,11 +882,11 @@ def test_track_deployment_metrics(model_list):
 @pytest.mark.parametrize(
     "exception_type, exception_name, num_retries",
     [
-        (litellm.exceptions.BadRequestError, "BadRequestError", 3),
-        (litellm.exceptions.AuthenticationError, "AuthenticationError", 4),
-        (litellm.exceptions.RateLimitError, "RateLimitError", 6),
+        (dheera_ai.exceptions.BadRequestError, "BadRequestError", 3),
+        (dheera_ai.exceptions.AuthenticationError, "AuthenticationError", 4),
+        (dheera_ai.exceptions.RateLimitError, "RateLimitError", 6),
         (
-            litellm.exceptions.ContentPolicyViolationError,
+            dheera_ai.exceptions.ContentPolicyViolationError,
             "ContentPolicyViolationError",
             7,
         ),
@@ -896,7 +896,7 @@ def test_get_num_retries_from_retry_policy(
     model_list, exception_type, exception_name, num_retries
 ):
     """Test if the 'get_num_retries_from_retry_policy' function is working correctly"""
-    from litellm.router import RetryPolicy
+    from dheera_ai.router import RetryPolicy
 
     data = {exception_name + "Retries": num_retries}
     print("data", data)
@@ -916,11 +916,11 @@ def test_get_num_retries_from_retry_policy(
 @pytest.mark.parametrize(
     "exception_type, exception_name, allowed_fails",
     [
-        (litellm.exceptions.BadRequestError, "BadRequestError", 3),
-        (litellm.exceptions.AuthenticationError, "AuthenticationError", 4),
-        (litellm.exceptions.RateLimitError, "RateLimitError", 6),
+        (dheera_ai.exceptions.BadRequestError, "BadRequestError", 3),
+        (dheera_ai.exceptions.AuthenticationError, "AuthenticationError", 4),
+        (dheera_ai.exceptions.RateLimitError, "RateLimitError", 6),
         (
-            litellm.exceptions.ContentPolicyViolationError,
+            dheera_ai.exceptions.ContentPolicyViolationError,
             "ContentPolicyViolationError",
             7,
         ),
@@ -930,7 +930,7 @@ def test_get_allowed_fails_from_policy(
     model_list, exception_type, exception_name, allowed_fails
 ):
     """Test if the 'get_allowed_fails_from_policy' function is working correctly"""
-    from litellm.types.router import AllowedFailsPolicy
+    from dheera_ai.types.router import AllowedFailsPolicy
 
     data = {exception_name + "AllowedFails": allowed_fails}
     router = Router(
@@ -946,8 +946,8 @@ def test_get_allowed_fails_from_policy(
 
 def test_initialize_alerting(model_list):
     """Test if the 'initialize_alerting' function is working correctly"""
-    from litellm.types.router import AlertingConfig
-    from litellm.integrations.SlackAlerting.slack_alerting import SlackAlerting
+    from dheera_ai.types.router import AlertingConfig
+    from dheera_ai.integrations.SlackAlerting.slack_alerting import SlackAlerting
 
     router = Router(
         model_list=model_list, alerting_config=AlertingConfig(webhook_url="test")
@@ -955,7 +955,7 @@ def test_initialize_alerting(model_list):
     router._initialize_alerting()
 
     callback_added = False
-    for callback in litellm.callbacks:
+    for callback in dheera_ai.callbacks:
         if isinstance(callback, SlackAlerting):
             callback_added = True
     assert callback_added is True
@@ -974,25 +974,25 @@ def test_discard(model_list):
     """
     Test that discard properly removes a Router from the callback lists
     """
-    litellm.callbacks = []
-    litellm.success_callback = []
-    litellm._async_success_callback = []
-    litellm.failure_callback = []
-    litellm._async_failure_callback = []
-    litellm.input_callback = []
-    litellm.service_callback = []
+    dheera_ai.callbacks = []
+    dheera_ai.success_callback = []
+    dheera_ai._async_success_callback = []
+    dheera_ai.failure_callback = []
+    dheera_ai._async_failure_callback = []
+    dheera_ai.input_callback = []
+    dheera_ai.service_callback = []
 
     router = Router(model_list=model_list)
     router.discard()
 
     # Verify all callback lists are empty
-    assert len(litellm.callbacks) == 0
-    assert len(litellm.success_callback) == 0
-    assert len(litellm.failure_callback) == 0
-    assert len(litellm._async_success_callback) == 0
-    assert len(litellm._async_failure_callback) == 0
-    assert len(litellm.input_callback) == 0
-    assert len(litellm.service_callback) == 0
+    assert len(dheera_ai.callbacks) == 0
+    assert len(dheera_ai.success_callback) == 0
+    assert len(dheera_ai.failure_callback) == 0
+    assert len(dheera_ai._async_success_callback) == 0
+    assert len(dheera_ai._async_failure_callback) == 0
+    assert len(dheera_ai.input_callback) == 0
+    assert len(dheera_ai.service_callback) == 0
 
 
 def test_initialize_assistants_endpoint(model_list):
@@ -1013,7 +1013,7 @@ def test_pass_through_assistants_endpoint_factory(model_list):
     """Test if the 'pass_through_assistants_endpoint_factory' function is working correctly"""
     router = Router(model_list=model_list)
     router._pass_through_assistants_endpoint_factory(
-        original_function=litellm.acreate_assistants,
+        original_function=dheera_ai.acreate_assistants,
         custom_llm_provider="openai",
         client=None,
         **{},
@@ -1023,7 +1023,7 @@ def test_pass_through_assistants_endpoint_factory(model_list):
 def test_factory_function(model_list):
     """Test if the 'factory_function' function is working correctly"""
     router = Router(model_list=model_list)
-    router.factory_function(litellm.acreate_assistants)
+    router.factory_function(dheera_ai.acreate_assistants)
 
 
 def test_get_model_from_alias(model_list):
@@ -1036,10 +1036,10 @@ def test_get_model_from_alias(model_list):
     assert model == "gpt-3.5-turbo"
 
 
-def test_get_deployment_by_litellm_model(model_list):
-    """Test if the 'get_deployment_by_litellm_model' function is working correctly"""
+def test_get_deployment_by_dheera_ai_model(model_list):
+    """Test if the 'get_deployment_by_dheera_ai_model' function is working correctly"""
     router = Router(model_list=model_list)
-    deployment = router._get_deployment_by_litellm_model(model="gpt-3.5-turbo")
+    deployment = router._get_deployment_by_dheera_ai_model(model="gpt-3.5-turbo")
     assert deployment is not None
 
 
@@ -1062,7 +1062,7 @@ def test_replace_model_in_jsonl(model_list):
 
 
 # def test_pattern_match_deployments(model_list):
-#     from litellm.router_utils.pattern_match_deployments import PatternMatchRouter
+#     from dheera_ai.router_utils.pattern_match_deployments import PatternMatchRouter
 #     import re
 
 #     patter_router = PatternMatchRouter()
@@ -1080,13 +1080,13 @@ def test_replace_model_in_jsonl(model_list):
 #     if match is None:
 #         raise ValueError("Match not found")
 #     updated_model = patter_router.set_deployment_model_name(
-#         matched_pattern=match, litellm_deployment_litellm_model="openai/*"
+#         matched_pattern=match, dheera_ai_deployment_dheera_ai_model="openai/*"
 #     )
 #     assert updated_model == "openai/fo::hi:static::hello"
 
 
 @pytest.mark.parametrize(
-    "user_request_model, model_name, litellm_model, expected_model",
+    "user_request_model, model_name, dheera_ai_model, expected_model",
     [
         ("llmengine/foo", "llmengine/*", "openai/foo", "openai/foo"),
         ("llmengine/foo", "llmengine/*", "openai/*", "openai/foo"),
@@ -1117,10 +1117,10 @@ def test_replace_model_in_jsonl(model_list):
     ],
 )
 def test_pattern_match_deployment_set_model_name(
-    user_request_model, model_name, litellm_model, expected_model
+    user_request_model, model_name, dheera_ai_model, expected_model
 ):
     from re import Match
-    from litellm.router_utils.pattern_match_deployments import PatternMatchRouter
+    from dheera_ai.router_utils.pattern_match_deployments import PatternMatchRouter
 
     pattern_router = PatternMatchRouter()
 
@@ -1136,7 +1136,7 @@ def test_pattern_match_deployment_set_model_name(
         raise ValueError("Match not found")
 
     # Call the set_deployment_model_name function
-    updated_model = pattern_router.set_deployment_model_name(match, litellm_model)
+    updated_model = pattern_router.set_deployment_model_name(match, dheera_ai_model)
 
     print(updated_model)  # Expected output: "openai/fo::hi:static::hello"
     assert updated_model == expected_model
@@ -1146,20 +1146,20 @@ def test_pattern_match_deployment_set_model_name(
         deployments=[
             {
                 "model_name": model_name,
-                "litellm_params": {"model": litellm_model},
+                "dheera_ai_params": {"model": dheera_ai_model},
             }
         ],
     )
 
     for model in updated_models:
-        assert model["litellm_params"]["model"] == expected_model
+        assert model["dheera_ai_params"]["model"] == expected_model
 
 
 @pytest.mark.asyncio
 async def test_pass_through_moderation_endpoint_factory(model_list):
     router = Router(model_list=model_list)
     response = await router._pass_through_moderation_endpoint_factory(
-        original_function=litellm.amoderation,
+        original_function=dheera_ai.amoderation,
         input="this is valid good text",
         model=None,
     )
@@ -1184,12 +1184,12 @@ def test_add_optional_pre_call_checks(model_list):
     router = Router(model_list=model_list)
 
     router.add_optional_pre_call_checks(["prompt_caching"])
-    assert len(litellm.callbacks) > 0
+    assert len(dheera_ai.callbacks) > 0
 
 
 @pytest.mark.asyncio
 async def test_async_callback_filter_deployments(model_list):
-    from litellm.router_strategy.budget_limiter import RouterBudgetLimiting
+    from dheera_ai.router_strategy.budget_limiter import RouterBudgetLimiting
 
     router = Router(model_list=model_list)
 
@@ -1260,7 +1260,7 @@ def test_mock_router_testing_params_str_to_bool_conversion(
     expected_content_policy,
 ):
     """Test if MockRouterTestingParams.from_kwargs correctly converts string values to booleans using str_to_bool"""
-    from litellm.types.router import MockRouterTestingParams
+    from dheera_ai.types.router import MockRouterTestingParams
 
     kwargs = {
         "mock_testing_fallbacks": mock_testing_fallbacks,
@@ -1293,23 +1293,23 @@ def test_is_auto_router_deployment(model_list):
     router = Router(model_list=model_list)
 
     # Test case 1: Model starts with "auto_router/" - should return True
-    litellm_params_auto = LiteLLM_Params(model="auto_router/my-auto-router")
-    assert router._is_auto_router_deployment(litellm_params_auto) is True
+    dheera_ai_params_auto = DheeraAI_Params(model="auto_router/my-auto-router")
+    assert router._is_auto_router_deployment(dheera_ai_params_auto) is True
 
     # Test case 2: Model doesn't start with "auto_router/" - should return False
-    litellm_params_regular = LiteLLM_Params(model="gpt-3.5-turbo")
-    assert router._is_auto_router_deployment(litellm_params_regular) is False
+    dheera_ai_params_regular = DheeraAI_Params(model="gpt-3.5-turbo")
+    assert router._is_auto_router_deployment(dheera_ai_params_regular) is False
 
     # Test case 3: Model is empty string - should return False
-    litellm_params_empty = LiteLLM_Params(model="")
-    assert router._is_auto_router_deployment(litellm_params_empty) is False
+    dheera_ai_params_empty = DheeraAI_Params(model="")
+    assert router._is_auto_router_deployment(dheera_ai_params_empty) is False
 
     # Test case 4: Model contains "auto_router/" but doesn't start with it - should return False
-    litellm_params_contains = LiteLLM_Params(model="prefix_auto_router/something")
-    assert router._is_auto_router_deployment(litellm_params_contains) is False
+    dheera_ai_params_contains = DheeraAI_Params(model="prefix_auto_router/something")
+    assert router._is_auto_router_deployment(dheera_ai_params_contains) is False
 
 
-@patch("litellm.router_strategy.auto_router.auto_router.AutoRouter")
+@patch("dheera_ai.router_strategy.auto_router.auto_router.AutoRouter")
 def test_init_auto_router_deployment_success(mock_auto_router, model_list):
     """Test if the 'init_auto_router_deployment' function successfully initializes auto-router when all params provided"""
     router = Router(model_list=model_list)
@@ -1319,7 +1319,7 @@ def test_init_auto_router_deployment_success(mock_auto_router, model_list):
     mock_auto_router.return_value = mock_auto_router_instance
 
     # Test case: All required parameters provided
-    litellm_params = LiteLLM_Params(
+    dheera_ai_params = DheeraAI_Params(
         model="auto_router/test",
         auto_router_config_path="/path/to/config",
         auto_router_default_model="gpt-3.5-turbo",
@@ -1327,7 +1327,7 @@ def test_init_auto_router_deployment_success(mock_auto_router, model_list):
     )
     deployment = Deployment(
         model_name="test-auto-router",
-        litellm_params=litellm_params,
+        dheera_ai_params=dheera_ai_params,
         model_info={"id": "test-id"},
     )
 
@@ -1341,7 +1341,7 @@ def test_init_auto_router_deployment_success(mock_auto_router, model_list):
         auto_router_config=None,
         default_model="gpt-3.5-turbo",
         embedding_model="text-embedding-ada-002",
-        litellm_router_instance=router,
+        dheera_ai_router_instance=router,
     )
 
     # Verify the auto-router was added to the router's auto_routers dict
@@ -1349,7 +1349,7 @@ def test_init_auto_router_deployment_success(mock_auto_router, model_list):
     assert router.auto_routers["test-auto-router"] == mock_auto_router_instance
 
 
-@patch("litellm.router_strategy.auto_router.auto_router.AutoRouter")
+@patch("dheera_ai.router_strategy.auto_router.auto_router.AutoRouter")
 def test_init_auto_router_deployment_duplicate_model_name(mock_auto_router, model_list):
     """Test if the 'init_auto_router_deployment' function raises ValueError when model_name already exists"""
     router = Router(model_list=model_list)
@@ -1362,7 +1362,7 @@ def test_init_auto_router_deployment_duplicate_model_name(mock_auto_router, mode
     router.auto_routers["test-auto-router"] = mock_auto_router_instance
 
     # Try to add another auto-router with the same name
-    litellm_params = LiteLLM_Params(
+    dheera_ai_params = DheeraAI_Params(
         model="auto_router/test",
         auto_router_config_path="/path/to/config",
         auto_router_default_model="gpt-3.5-turbo",
@@ -1370,7 +1370,7 @@ def test_init_auto_router_deployment_duplicate_model_name(mock_auto_router, mode
     )
     deployment = Deployment(
         model_name="test-auto-router",
-        litellm_params=litellm_params,
+        dheera_ai_params=dheera_ai_params,
         model_info={"id": "test-id"},
     )
 
@@ -1384,9 +1384,9 @@ def test_generate_model_id_with_deployment_model_name(model_list):
     """Test that _generate_model_id works correctly with deployment model_name and handles None values properly"""
     router = Router(model_list=model_list)
 
-    # Test case 1: Normal case with valid model_group and litellm_params
+    # Test case 1: Normal case with valid model_group and dheera_ai_params
     model_group = "gpt-4.1"
-    litellm_params = {
+    dheera_ai_params = {
         "model": "gpt-4.1",
         "api_key": "test_key",
         "api_base": "https://api.openai.com/v1",
@@ -1394,7 +1394,7 @@ def test_generate_model_id_with_deployment_model_name(model_list):
 
     try:
         result = router._generate_model_id(
-            model_group=model_group, litellm_params=litellm_params
+            model_group=model_group, dheera_ai_params=dheera_ai_params
         )
         assert isinstance(result, str)
         assert len(result) > 0
@@ -1405,7 +1405,7 @@ def test_generate_model_id_with_deployment_model_name(model_list):
     # Test case 2: Edge case with None model_group (this should fail as expected - our fix prevents this from happening)
     try:
         result = router._generate_model_id(
-            model_group=None, litellm_params=litellm_params
+            model_group=None, dheera_ai_params=dheera_ai_params
         )
         pytest.fail(
             "Expected TypeError when model_group is None - this confirms our fix is needed"
@@ -1417,8 +1417,8 @@ def test_generate_model_id_with_deployment_model_name(model_list):
     except Exception as e:
         pytest.fail(f"Unexpected error with None model_group: {e}")
 
-    # Test case 3: Edge case with None key in litellm_params
-    litellm_params_with_none_key = {
+    # Test case 3: Edge case with None key in dheera_ai_params
+    dheera_ai_params_with_none_key = {
         "model": "gpt-4.1",
         "api_key": "test_key",
         None: "should_be_skipped",  # This should be handled gracefully
@@ -1426,29 +1426,29 @@ def test_generate_model_id_with_deployment_model_name(model_list):
 
     try:
         result = router._generate_model_id(
-            model_group=model_group, litellm_params=litellm_params_with_none_key
+            model_group=model_group, dheera_ai_params=dheera_ai_params_with_none_key
         )
         assert isinstance(result, str)
         assert len(result) > 0
-        print(f"✓ Success with None key in litellm_params: {result}")
+        print(f"✓ Success with None key in dheera_ai_params: {result}")
     except Exception as e:
-        pytest.fail(f"Failed with None key in litellm_params: {e}")
+        pytest.fail(f"Failed with None key in dheera_ai_params: {e}")
 
-    # Test case 4: Edge case with empty litellm_params
+    # Test case 4: Edge case with empty dheera_ai_params
     try:
-        result = router._generate_model_id(model_group=model_group, litellm_params={})
+        result = router._generate_model_id(model_group=model_group, dheera_ai_params={})
         assert isinstance(result, str)
         assert len(result) > 0
-        print(f"✓ Success with empty litellm_params: {result}")
+        print(f"✓ Success with empty dheera_ai_params: {result}")
     except Exception as e:
-        pytest.fail(f"Failed with empty litellm_params: {e}")
+        pytest.fail(f"Failed with empty dheera_ai_params: {e}")
 
     # Test case 5: Verify that the same inputs produce the same result (deterministic)
     result1 = router._generate_model_id(
-        model_group=model_group, litellm_params=litellm_params
+        model_group=model_group, dheera_ai_params=dheera_ai_params
     )
     result2 = router._generate_model_id(
-        model_group=model_group, litellm_params=litellm_params
+        model_group=model_group, dheera_ai_params=dheera_ai_params
     )
     assert result1 == result2, "Model ID generation should be deterministic"
 
@@ -1462,20 +1462,20 @@ def test_handle_clientside_credential_with_deployment_model_name(model_list):
     # Mock deployment with model_name
     deployment = {
         "model_name": "gpt-4.1",
-        "litellm_params": {"model": "gpt-4.1", "api_key": "test_key"},
+        "dheera_ai_params": {"model": "gpt-4.1", "api_key": "test_key"},
     }
 
     # Mock kwargs with empty metadata (simulating the original issue)
     kwargs = {
         "metadata": {},  # Empty metadata, no model_group
-        "litellm_params": {
+        "dheera_ai_params": {
             "api_key": "client_side_key",
             "api_base": "https://api.openai.com/v1",
         },
     }
 
-    # Mock dynamic_litellm_params that would be returned by get_dynamic_litellm_params
-    dynamic_litellm_params = {
+    # Mock dynamic_dheera_ai_params that would be returned by get_dynamic_dheera_ai_params
+    dynamic_dheera_ai_params = {
         "api_key": "client_side_key",
         "api_base": "https://api.openai.com/v1",
     }
@@ -1489,7 +1489,7 @@ def test_handle_clientside_credential_with_deployment_model_name(model_list):
 
         # Verify that _generate_model_id works with this model_group
         result = router._generate_model_id(
-            model_group=model_group, litellm_params=dynamic_litellm_params
+            model_group=model_group, dheera_ai_params=dynamic_dheera_ai_params
         )
         assert isinstance(result, str)
         assert len(result) > 0
@@ -1505,11 +1505,11 @@ def test_handle_clientside_credential_with_deployment_model_name(model_list):
     "function_name, expected_metadata_key",
     [
         ("acompletion", "metadata"),
-        ("_ageneric_api_call_with_fallbacks", "litellm_metadata"),
-        ("batch", "litellm_metadata"),
+        ("_ageneric_api_call_with_fallbacks", "dheera_ai_metadata"),
+        ("batch", "dheera_ai_metadata"),
         ("completion", "metadata"),
-        ("acreate_file", "litellm_metadata"),
-        ("aget_file", "litellm_metadata"),
+        ("acreate_file", "dheera_ai_metadata"),
+        ("aget_file", "dheera_ai_metadata"),
     ],
 )
 def test_handle_clientside_credential_metadata_loading(
@@ -1521,7 +1521,7 @@ def test_handle_clientside_credential_metadata_loading(
     # Mock deployment
     deployment = {
         "model_name": "gpt-4.1",
-        "litellm_params": {"model": "gpt-4.1", "api_key": "test_key"},
+        "dheera_ai_params": {"model": "gpt-4.1", "api_key": "test_key"},
         "model_info": {"id": "original-id-123"},
     }
 
@@ -1543,9 +1543,9 @@ def test_handle_clientside_credential_metadata_loading(
     # Verify the deployment has the correct model_name (should be the model_group from metadata)
     assert result_deployment.model_name == "gpt-4.1"
 
-    # Verify the litellm_params contain the clientside credentials
-    assert result_deployment.litellm_params.api_key == "client_side_key"
-    assert result_deployment.litellm_params.api_base == "https://api.openai.com/v1"
+    # Verify the dheera_ai_params contain the clientside credentials
+    assert result_deployment.dheera_ai_params.api_key == "client_side_key"
+    assert result_deployment.dheera_ai_params.api_base == "https://api.openai.com/v1"
 
     # Verify the model_info has been updated with a new ID
     assert result_deployment.model_info.id != "original-id-123"
@@ -1556,18 +1556,18 @@ def test_handle_clientside_credential_metadata_loading(
 
     # Test that the function correctly uses the right metadata key
     # For acompletion, it should use "metadata"
-    # For _ageneric_api_call_with_fallbacks/batch, it should use "litellm_metadata"
+    # For _ageneric_api_call_with_fallbacks/batch, it should use "dheera_ai_metadata"
     if function_name == "acompletion":
         assert "metadata" in kwargs
-        assert "litellm_metadata" not in kwargs
+        assert "dheera_ai_metadata" not in kwargs
     elif function_name in [
         "_ageneric_api_call_with_fallbacks",
         "batch",
         "acreate_file",
         "aget_file",
     ]:
-        assert "litellm_metadata" in kwargs
-        # Note: acompletion would not have litellm_metadata, but other functions might have both
+        assert "dheera_ai_metadata" in kwargs
+        # Note: acompletion would not have dheera_ai_metadata, but other functions might have both
 
     print(
         f"✓ Success with function_name '{function_name}' using '{expected_metadata_key}' metadata key"
@@ -1578,14 +1578,14 @@ def test_handle_clientside_credential_metadata_loading(
     "function_name, metadata_key",
     [
         ("acompletion", "metadata"),
-        ("_ageneric_api_call_with_fallbacks", "litellm_metadata"),
+        ("_ageneric_api_call_with_fallbacks", "dheera_ai_metadata"),
     ],
 )
 def test_handle_clientside_credential_metadata_variable_name(
     model_list, function_name, metadata_key
 ):
     """Test that _handle_clientside_credential uses the correct metadata variable name based on function name"""
-    from litellm.router_utils.batch_utils import _get_router_metadata_variable_name
+    from dheera_ai.router_utils.batch_utils import _get_router_metadata_variable_name
 
     router = Router(model_list=model_list)
 
@@ -1598,7 +1598,7 @@ def test_handle_clientside_credential_metadata_variable_name(
     # Mock deployment
     deployment = {
         "model_name": "gpt-4.1",
-        "litellm_params": {"model": "gpt-4.1", "api_key": "test_key"},
+        "dheera_ai_params": {"model": "gpt-4.1", "api_key": "test_key"},
         "model_info": {"id": "original-id-456"},
     }
 
@@ -1618,8 +1618,8 @@ def test_handle_clientside_credential_metadata_variable_name(
     assert result_deployment.model_name == "gpt-4.1"
 
     # Verify the deployment was created with the correct metadata
-    assert result_deployment.litellm_params.api_key == "client_side_key"
-    assert result_deployment.litellm_params.api_base == "https://api.openai.com/v1"
+    assert result_deployment.dheera_ai_params.api_key == "client_side_key"
+    assert result_deployment.dheera_ai_params.api_base == "https://api.openai.com/v1"
 
     print(
         f"✓ Success with function_name '{function_name}' correctly using '{metadata_key}' for metadata"
@@ -1633,7 +1633,7 @@ def test_handle_clientside_credential_no_metadata(model_list):
     # Mock deployment
     deployment = {
         "model_name": "gpt-4.1",
-        "litellm_params": {"model": "gpt-4.1", "api_key": "test_key"},
+        "dheera_ai_params": {"model": "gpt-4.1", "api_key": "test_key"},
         "model_info": {"id": "original-id-789"},
     }
 
@@ -1683,15 +1683,15 @@ def test_handle_clientside_credential_with_responses_function(model_list):
     # Mock deployment
     deployment = {
         "model_name": "gpt-4.1",
-        "litellm_params": {"model": "gpt-4.1", "api_key": "test_key"},
+        "dheera_ai_params": {"model": "gpt-4.1", "api_key": "test_key"},
         "model_info": {"id": "original-id-responses"},
     }
 
-    # Mock kwargs with clientside credentials and litellm_metadata (for responses function)
+    # Mock kwargs with clientside credentials and dheera_ai_metadata (for responses function)
     kwargs = {
         "api_key": "client_side_key",
         "api_base": "https://api.openai.com/v1",
-        "litellm_metadata": {
+        "dheera_ai_metadata": {
             "model_group": "gpt-4.1",
             "responses_field": "responses_value",
         },
@@ -1707,8 +1707,8 @@ def test_handle_clientside_credential_with_responses_function(model_list):
     # Verify the result
     assert isinstance(result_deployment, Deployment)
     assert result_deployment.model_name == "gpt-4.1"
-    assert result_deployment.litellm_params.api_key == "client_side_key"
-    assert result_deployment.litellm_params.api_base == "https://api.openai.com/v1"
+    assert result_deployment.dheera_ai_params.api_key == "client_side_key"
+    assert result_deployment.dheera_ai_params.api_base == "https://api.openai.com/v1"
     assert result_deployment.model_info.id != "original-id-responses"
     assert result_deployment.model_info.original_model_id == "original-id-responses"
 
@@ -1716,7 +1716,7 @@ def test_handle_clientside_credential_with_responses_function(model_list):
     assert len(router.model_list) == len(model_list) + 1
 
     print(
-        "✓ Success with _ageneric_api_call_with_fallbacks function name and litellm_metadata"
+        "✓ Success with _ageneric_api_call_with_fallbacks function name and dheera_ai_metadata"
     )
 
 
@@ -1726,13 +1726,13 @@ def test_get_metadata_variable_name_from_kwargs(model_list):
     """
     router = Router(model_list=model_list)
     
-    # Test case 1: kwargs contains litellm_metadata - should return "litellm_metadata"
-    kwargs_with_litellm_metadata = {
-        "litellm_metadata": {"user": "test"},
+    # Test case 1: kwargs contains dheera_ai_metadata - should return "dheera_ai_metadata"
+    kwargs_with_dheera_ai_metadata = {
+        "dheera_ai_metadata": {"user": "test"},
         "metadata": {"other": "data"}
     }
-    result = router._get_metadata_variable_name_from_kwargs(kwargs_with_litellm_metadata)
-    assert result == "litellm_metadata"
+    result = router._get_metadata_variable_name_from_kwargs(kwargs_with_dheera_ai_metadata)
+    assert result == "dheera_ai_metadata"
     
     # Test case 2: kwargs only contains metadata - should return "metadata"
     kwargs_with_metadata_only = {
@@ -1761,7 +1761,7 @@ def search_tools():
     return [
         {
             "search_tool_name": "test-search-tool",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "search_provider": "perplexity",
                 "api_key": "test-api-key",
                 "api_base": "https://api.perplexity.ai",
@@ -1769,7 +1769,7 @@ def search_tools():
         },
         {
             "search_tool_name": "test-search-tool",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "search_provider": "perplexity",
                 "api_key": "test-api-key-2",
                 "api_base": "https://api.perplexity.ai",
@@ -1788,7 +1788,7 @@ async def test_asearch_with_fallbacks(search_tools):
     - Calls async_function_with_fallbacks with correct configuration
     - Returns SearchResponse
     """
-    from litellm.llms.base_llm.search.transformation import SearchResponse, SearchResult
+    from dheera_ai.llms.base_llm.search.transformation import SearchResponse, SearchResult
     
     router = Router(search_tools=search_tools)
     
@@ -1840,7 +1840,7 @@ async def test_asearch_with_fallbacks_helper(search_tools):
     - Calls the original search function with correct provider parameters
     - Returns SearchResponse
     """
-    from litellm.llms.base_llm.search.transformation import SearchResponse, SearchResult
+    from dheera_ai.llms.base_llm.search.transformation import SearchResponse, SearchResult
     
     router = Router(search_tools=search_tools)
     
@@ -1910,13 +1910,13 @@ async def test_asearch_with_fallbacks_helper_missing_search_provider():
     Test _asearch_with_fallbacks_helper raises error when search_provider not configured.
     
     Tests that the helper method raises a ValueError when a search tool
-    is found but doesn't have search_provider in its litellm_params.
+    is found but doesn't have search_provider in its dheera_ai_params.
     """
     # Create router with misconfigured search tool (missing search_provider)
     search_tools_bad = [
         {
             "search_tool_name": "bad-tool",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "api_key": "test-key"
                 # Missing search_provider
             }
@@ -1929,7 +1929,7 @@ async def test_asearch_with_fallbacks_helper_missing_search_provider():
         return None
     
     # Should raise ValueError for missing search_provider
-    with pytest.raises(ValueError, match="search_provider not found in litellm_params"):
+    with pytest.raises(ValueError, match="search_provider not found in dheera_ai_params"):
         await router._asearch_with_fallbacks_helper(
             model="bad-tool",
             original_generic_function=mock_original_function,
@@ -1943,7 +1943,7 @@ def test_get_first_default_fallback():
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {"model": "gpt-3.5-turbo", "api_key": "fake-key"},
+            "dheera_ai_params": {"model": "gpt-3.5-turbo", "api_key": "fake-key"},
         }
     ]
     
@@ -1989,7 +1989,7 @@ def test_resolve_model_name_from_model_id():
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-3.5-turbo",
                 "api_key": "test-key",
             },
@@ -1999,11 +1999,11 @@ def test_resolve_model_name_from_model_id():
     result = router.resolve_model_name_from_model_id("gpt-3.5-turbo")
     assert result == "gpt-3.5-turbo"
     
-    # Test case 3: model_id matches litellm_params.model exactly
+    # Test case 3: model_id matches dheera_ai_params.model exactly
     model_list = [
         {
             "model_name": "vertex-ai-sora-2",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "vertex_ai/veo-2.0-generate-001",
                 "api_key": "test-key",
             },
@@ -2017,7 +2017,7 @@ def test_resolve_model_name_from_model_id():
     model_list = [
         {
             "model_name": "vertex-ai-sora-2",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "vertex_ai/veo-2.0-generate-001",
                 "api_key": "test-key",
             },
@@ -2035,7 +2035,7 @@ def test_resolve_model_name_from_model_id():
     model_list = [
         {
             "model_name": "vertex-ai-sora-2",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "vertex_ai/veo-2.0-generate-001",
                 "api_key": "test-key",
             },
@@ -2051,7 +2051,7 @@ def test_resolve_model_name_from_model_id():
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-3.5-turbo",
                 "api_key": "test-key",
             },
@@ -2070,14 +2070,14 @@ def test_resolve_model_name_from_model_id():
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-3.5-turbo",
                 "api_key": "test-key",
             },
         },
         {
             "model_name": "vertex-ai-sora-2",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "vertex_ai/veo-2.0-generate-001",
                 "api_key": "test-key",
             },
@@ -2092,7 +2092,7 @@ def test_resolve_model_name_from_model_id():
     model_list = [
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-3.5-turbo",
                 "api_key": "test-key",
             },

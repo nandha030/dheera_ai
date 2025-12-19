@@ -9,9 +9,9 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm import completion
-from litellm.utils import get_optional_params
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai.utils import get_optional_params
 
 
 class TestPerplexityReasoning:
@@ -35,11 +35,11 @@ class TestPerplexityReasoning:
         Test that reasoning_effort parameter is correctly mapped for Perplexity Sonar reasoning models
         """
         # Set up local model cost map
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         # Get provider and optional params
-        _, provider, _, _ = litellm.get_llm_provider(model=model)
+        _, provider, _, _ = dheera_ai.get_llm_provider(model=model)
         
         optional_params = get_optional_params(
             model=model,
@@ -65,7 +65,7 @@ class TestPerplexityReasoning:
         from openai import OpenAI
         from openai.types.chat.chat_completion import ChatCompletion
         
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         
         # Mock successful response with reasoning content
         response_object = {
@@ -134,11 +134,11 @@ class TestPerplexityReasoning:
         """
         Test that Perplexity Sonar reasoning models are correctly identified as supporting reasoning
         """
-        from litellm.utils import supports_reasoning
+        from dheera_ai.utils import supports_reasoning
         
         # Set up local model cost map
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
         
         reasoning_models = [
             "perplexity/sonar-reasoning",
@@ -152,11 +152,11 @@ class TestPerplexityReasoning:
         """
         Test that non-reasoning Perplexity models don't support reasoning
         """
-        from litellm.utils import supports_reasoning
+        from dheera_ai.utils import supports_reasoning
         
         # Set up local model cost map
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
         
         non_reasoning_models = [
             "perplexity/sonar",
@@ -186,7 +186,7 @@ class TestPerplexityReasoning:
         """
         Test that Perplexity reasoning models use the correct API base
         """
-        from litellm.llms.perplexity.chat.transformation import PerplexityChatConfig
+        from dheera_ai.llms.perplexity.chat.transformation import PerplexityChatConfig
         
         config = PerplexityChatConfig()
         api_base, _ = config._get_openai_compatible_provider_info(
@@ -199,7 +199,7 @@ class TestPerplexityReasoning:
         """
         Test that reasoning_effort is in the list of supported parameters for Perplexity
         """
-        from litellm.llms.perplexity.chat.transformation import PerplexityChatConfig
+        from dheera_ai.llms.perplexity.chat.transformation import PerplexityChatConfig
         
         config = PerplexityChatConfig()
         supported_params = config.get_supported_openai_params(model="perplexity/sonar-reasoning")

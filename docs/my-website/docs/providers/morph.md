@@ -1,6 +1,6 @@
 # Morph
 
-LiteLLM supports all models on [Morph](https://morphllm.com)
+Dheera AI supports all models on [Morph](https://morphllm.com)
 
 ## Overview
 
@@ -15,7 +15,7 @@ os.environ["MORPH_API_KEY"] = "your-api-key"
 ## Sample Usage
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # set env variable 
 os.environ["MORPH_API_KEY"] = "your-api-key"
@@ -41,7 +41,7 @@ print(response)
 
 ## Sample Usage - Streaming
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # set env variable
 os.environ["MORPH_API_KEY"] = "your-api-key"
@@ -68,9 +68,9 @@ for chunk in response:
 | morph-v3-fast            | `completion('morph/morph-v3-fast', messages)` | Fastest model, optimized for quick responses | 16k tokens |
 | morph-v3-large           | `completion('morph/morph-v3-large', messages)` | Most capable model for complex tasks | 16k tokens |
 
-## Usage - LiteLLM Proxy Server
+## Usage - Dheera AI Proxy Server
 
-Here's how to use Morph with the LiteLLM Proxy Server:
+Here's how to use Morph with the Dheera AI Proxy Server:
 
 1. Save API key in your environment
 ```bash
@@ -81,24 +81,24 @@ export MORPH_API_KEY="your-api-key"
 ```yaml
 model_list:
   - model_name: morph-v3-fast
-    litellm_params:
+    dheera_ai_params:
       model: morph/morph-v3-fast
       
   - model_name: morph-v3-large
-    litellm_params:
+    dheera_ai_params:
       model: morph/morph-v3-large
 ```
 
 3. Start the proxy server
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 ## Advanced Usage
 
 ### Setting API Base
 ```python
-import litellm 
+import dheera_ai 
 
 # set custom api base
 response = completion(
@@ -111,7 +111,7 @@ print(response)
 
 ### Setting API Key
 ```python 
-import litellm 
+import dheera_ai 
 
 # set api key via completion
 response = completion(

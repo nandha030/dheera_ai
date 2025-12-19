@@ -70,7 +70,7 @@ curl -X POST 'http://0.0.0.0:4000/tag/new' \
 }  
 ```
 
-#### LiteLLM Admin UI
+#### Dheera AI Admin UI
 
 Navigate to the **Tag Management** page and click **Create New Tag**. Fill in the tag details and set your budget:
 
@@ -99,7 +99,7 @@ Add tags to your API requests in the `metadata` field:
 
 :::info Tags Budgets on API Keys
 
-Currently, tag budget enforcement is only supported per request. If you'd like to set tags on API keys so all requests automatically inherit the tags budgets, please [create a feature request on GitHub](https://github.com/BerriAI/litellm/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.yml&title=%5BFeat%5D%3A).
+Currently, tag budget enforcement is only supported per request. If you'd like to set tags on API keys so all requests automatically inherit the tags budgets, please [create a feature request on GitHub](https://github.com/BerriAI/dheera_ai/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.yml&title=%5BFeat%5D%3A).
 
 :::
 
@@ -111,7 +111,7 @@ Currently, tag budget enforcement is only supported per request. If you'd like t
 import openai
 
 client = openai.OpenAI(
-    api_key="sk-1234",  # Your LiteLLM proxy key
+    api_key="sk-1234",  # Your Dheera AI proxy key
     base_url="http://0.0.0.0:4000"
 )
 

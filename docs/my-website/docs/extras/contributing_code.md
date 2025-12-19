@@ -2,7 +2,7 @@
 
 ## **Checklist before submitting a PR**
 
-Here are the core requirements for any PR submitted to LiteLLM
+Here are the core requirements for any PR submitted to Dheera AI
 
 - [ ] Sign the Contributor License Agreement (CLA) - [see details](#contributor-license-agreement-cla)
 - [ ] Add testing, **Adding at least 1 test is a hard requirement** - [see details](#2-adding-testing-to-your-pr)
@@ -13,9 +13,9 @@ Here are the core requirements for any PR submitted to LiteLLM
 
 ## **Contributor License Agreement (CLA)**
 
-Before contributing code to LiteLLM, you must sign our [Contributor License Agreement (CLA)](https://cla-assistant.io/BerriAI/litellm). This is a legal requirement for all contributions to be merged into the main repository. The CLA helps protect both you and the project by clearly defining the terms under which your contributions are made.
+Before contributing code to Dheera AI, you must sign our [Contributor License Agreement (CLA)](https://cla-assistant.io/BerriAI/dheera_ai). This is a legal requirement for all contributions to be merged into the main repository. The CLA helps protect both you and the project by clearly defining the terms under which your contributions are made.
 
-**Important:** We strongly recommend reviewing and signing the CLA before starting work on your contribution to avoid any delays in the PR process. You can find the CLA [here](https://cla-assistant.io/BerriAI/litellm) and sign it through our CLA management system when you submit your first PR.
+**Important:** We strongly recommend reviewing and signing the CLA before starting work on your contribution to avoid any delays in the PR process. You can find the CLA [here](https://cla-assistant.io/BerriAI/dheera_ai) and sign it through our CLA management system when you submit your first PR.
 
 ## Quick start
 
@@ -26,7 +26,7 @@ Here's how to modify the repo locally:
 Step 1: Clone the repo
 
 ```shell
-git clone https://github.com/BerriAI/litellm.git
+git clone https://github.com/BerriAI/dheera_ai.git
 ```
 
 Step 2: Install dev dependencies:
@@ -39,21 +39,21 @@ That's it, your local dev environment is ready!
 
 ## 2. Adding Testing to your PR
 
-- Add your test to the [`tests/test_litellm/` directory](https://github.com/BerriAI/litellm/tree/main/tests/litellm)
+- Add your test to the [`tests/test_dheera_ai/` directory](https://github.com/BerriAI/dheera_ai/tree/main/tests/dheera_ai)
 
-- This directory 1:1 maps the the `litellm/` directory, and can only contain mocked tests.
+- This directory 1:1 maps the the `dheera_ai/` directory, and can only contain mocked tests.
 - Do not add real llm api calls to this directory.
 
-### 2.1 File Naming Convention for `tests/test_litellm/`
+### 2.1 File Naming Convention for `tests/test_dheera_ai/`
 
-The `tests/test_litellm/` directory follows the same directory structure as `litellm/`.
+The `tests/test_dheera_ai/` directory follows the same directory structure as `dheera_ai/`.
 
-- `litellm/proxy/test_caching_routes.py` maps to `litellm/proxy/caching_routes.py`
-- `test_{filename}.py` maps to `litellm/{filename}.py`
+- `dheera_ai/proxy/test_caching_routes.py` maps to `dheera_ai/proxy/caching_routes.py`
+- `test_{filename}.py` maps to `dheera_ai/{filename}.py`
 
 ## 3. Running Unit Tests
 
-run the following command on the root of the litellm directory
+run the following command on the root of the dheera_ai directory
 
 ```shell
 make test-unit
@@ -61,13 +61,13 @@ make test-unit
 
 ## 3.5 Running Linting Tests
 
-run the following command on the root of the litellm directory
+run the following command on the root of the dheera_ai directory
 
 ```shell
 make lint
 ```
 
-LiteLLM uses mypy for linting. On ci/cd we also run `black` for formatting.
+Dheera AI uses mypy for linting. On ci/cd we also run `black` for formatting.
 
 ## 4. Submit a PR with your changes!
 
@@ -76,14 +76,14 @@ LiteLLM uses mypy for linting. On ci/cd we also run `black` for formatting.
 
 ## Advanced
 
-### Building LiteLLM Docker Image
+### Building Dheera AI Docker Image
 
-Some people might want to build the LiteLLM docker image themselves. Follow these instructions if you want to build / run the LiteLLM Docker Image yourself.
+Some people might want to build the Dheera AI docker image themselves. Follow these instructions if you want to build / run the Dheera AI Docker Image yourself.
 
 Step 1: Clone the repo
 
 ```shell
-git clone https://github.com/BerriAI/litellm.git
+git clone https://github.com/BerriAI/dheera_ai.git
 ```
 
 Step 2: Build the Docker Image
@@ -91,28 +91,28 @@ Step 2: Build the Docker Image
 Build using Dockerfile.non_root
 
 ```shell
-docker build -f docker/Dockerfile.non_root -t litellm_test_image .
+docker build -f docker/Dockerfile.non_root -t dheera_ai_test_image .
 ```
 
 Step 3: Run the Docker Image
 
-Make sure config.yaml is present in the root directory. This is your litellm proxy config file.
+Make sure config.yaml is present in the root directory. This is your dheera_ai proxy config file.
 
 ```shell
 docker run \
     -v $(pwd)/proxy_config.yaml:/app/config.yaml \
     -e DATABASE_URL="postgresql://xxxxxxxx" \
-    -e LITELLM_MASTER_KEY="sk-1234" \
+    -e DHEERA_AI_MASTER_KEY="sk-1234" \
     -p 4000:4000 \
-    litellm_test_image \
+    dheera_ai_test_image \
     --config /app/config.yaml --detailed_debug
 ```
-### Running LiteLLM Proxy Locally
+### Running Dheera AI Proxy Locally
 
 1. cd into the `proxy/` directory
 
 ```
-cd litellm/litellm/proxy
+cd dheera_ai/dheera_ai/proxy
 ```
 
 2. Run the proxy

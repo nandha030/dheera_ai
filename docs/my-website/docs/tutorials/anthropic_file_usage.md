@@ -1,12 +1,12 @@
-# Using Anthropic File API with LiteLLM Proxy
+# Using Anthropic File API with Dheera AI Proxy
 
 ## Overview
 
-This tutorial shows how to create and analyze files with Claude-4 on Anthropic via LiteLLM Proxy.
+This tutorial shows how to create and analyze files with Claude-4 on Anthropic via Dheera AI Proxy.
 
 ## Prerequisites
 
-- LiteLLM Proxy running
+- Dheera AI Proxy running
 - Anthropic API key
 
 Add the following to your `.env` file:
@@ -21,7 +21,7 @@ ANTHROPIC_API_KEY=sk-1234
 ```yaml
 model_list:
   - model_name: claude-opus
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-opus-4-20250514
       api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -59,7 +59,7 @@ Expected response:
 ```bash
 curl -L -X POST 'http://0.0.0.0:4000/v1/chat/completions' \
 -H 'Content-Type: application/json' \
--H 'Authorization: Bearer $LITELLM_API_KEY' \
+-H 'Authorization: Bearer $DHEERA_AI_API_KEY' \
 -d '{
     "model": "claude-opus",
     "messages": [

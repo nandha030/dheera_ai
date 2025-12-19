@@ -5,7 +5,7 @@
 Key features:
 - Just 100 lines of Python - radically simple and hackable
 - Uses bash only (no custom tools) for maximum flexibility
-- Built on LiteLLM for model flexibility
+- Built on Dheera AI for model flexibility
 - Comes with CLI and Python bindings
 - Deployable anywhere: local, docker, podman, apptainer
 

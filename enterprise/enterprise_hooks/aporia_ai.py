@@ -8,7 +8,7 @@
 import os
 import sys
 
-from litellm.types.utils import CallTypesLiteral
+from dheera_ai.types.utils import CallTypesLiteral
 
 sys.path.insert(
     0, os.path.abspath("../..")
@@ -19,19 +19,19 @@ from typing import Any, List, Literal, Optional
 
 from fastapi import HTTPException
 
-import litellm
-from litellm._logging import verbose_proxy_logger
-from litellm.integrations.custom_guardrail import CustomGuardrail
-from litellm.litellm_core_utils.logging_utils import (
-    convert_litellm_response_object_to_str,
+import dheera_ai
+from dheera_ai._logging import verbose_proxy_logger
+from dheera_ai.integrations.custom_guardrail import CustomGuardrail
+from dheera_ai.dheera_ai_core_utils.logging_utils import (
+    convert_dheera_ai_response_object_to_str,
 )
-from litellm.llms.custom_httpx.http_handler import (
+from dheera_ai.llms.custom_httpx.http_handler import (
     get_async_httpx_client,
     httpxSpecialProvider,
 )
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.proxy.guardrails.guardrail_helpers import should_proceed_based_on_metadata
-from litellm.types.guardrails import GuardrailEventHooks
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.proxy.guardrails.guardrail_helpers import should_proceed_based_on_metadata
+from dheera_ai.types.guardrails import GuardrailEventHooks
 
 GUARDRAIL_NAME = "aporia"
 
@@ -141,7 +141,7 @@ class AporiaGuardrail(CustomGuardrail):
         user_api_key_dict: UserAPIKeyAuth,
         response,
     ):
-        from litellm.proxy.common_utils.callback_utils import (
+        from dheera_ai.proxy.common_utils.callback_utils import (
             add_guardrail_to_applied_guardrails_header,
         )
 
@@ -152,7 +152,7 @@ class AporiaGuardrail(CustomGuardrail):
         if self.should_run_guardrail(data=data, event_type=event_type) is not True:
             return
 
-        response_str: Optional[str] = convert_litellm_response_object_to_str(response)
+        response_str: Optional[str] = convert_dheera_ai_response_object_to_str(response)
         if response_str is not None:
             await self.make_aporia_api_request(
                 response_string=response_str, new_messages=data.get("messages", [])
@@ -170,7 +170,7 @@ class AporiaGuardrail(CustomGuardrail):
         user_api_key_dict: UserAPIKeyAuth,
         call_type: CallTypesLiteral,
     ):
-        from litellm.proxy.common_utils.callback_utils import (
+        from dheera_ai.proxy.common_utils.callback_utils import (
             add_guardrail_to_applied_guardrails_header,
         )
 

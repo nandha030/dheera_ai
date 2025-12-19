@@ -15,8 +15,8 @@ sys.path.insert(
 
 import pytest
 
-import litellm
-from litellm.types.utils import ModelResponse, ModelResponseStream
+import dheera_ai
+from dheera_ai.types.utils import ModelResponse, ModelResponseStream
 
 MOCK_COMPLETION_RESPONSE = {
     "id": "9115d3daeab10608",
@@ -154,7 +154,7 @@ PROVIDER_MAPPING_RESPONSE = {
 @pytest.fixture
 def mock_provider_mapping():
     with patch(
-        "litellm.llms.huggingface.chat.transformation._fetch_inference_provider_mapping"
+        "dheera_ai.llms.huggingface.chat.transformation._fetch_inference_provider_mapping"
     ) as mock:
         mock.return_value = PROVIDER_MAPPING_RESPONSE
         yield mock
@@ -162,7 +162,7 @@ def mock_provider_mapping():
 
 @pytest.fixture(autouse=True)
 def clear_lru_cache():
-    from litellm.llms.huggingface.common_utils import _fetch_inference_provider_mapping
+    from dheera_ai.llms.huggingface.common_utils import _fetch_inference_provider_mapping
 
     _fetch_inference_provider_mapping.cache_clear()
     yield
@@ -172,7 +172,7 @@ def clear_lru_cache():
 @pytest.fixture
 def mock_http_handler():
     """Fixture to mock the HTTP handler"""
-    with patch("litellm.llms.custom_httpx.http_handler.HTTPHandler.post") as mock:
+    with patch("dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post") as mock:
         print(f"Creating mock HTTP handler: {mock}")  # noqa: T201
 
         mock_response = MagicMock()
@@ -200,7 +200,7 @@ def mock_http_handler():
 def mock_http_async_handler():
     """Fixture to mock the async HTTP handler"""
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock:
         print(f"Creating mock async HTTP handler: {mock}")  # noqa: T201
@@ -235,7 +235,7 @@ class TestHuggingFace(BaseLLMChatTest):
         self.mock_http = mock_http_handler
         self.mock_http_async = mock_http_async_handler
         self.model = "huggingface/together/meta-llama/Meta-Llama-3-8B-Instruct"
-        litellm.set_verbose = False
+        dheera_ai.set_verbose = False
 
     def get_base_completion_call_args(self) -> dict:
         """Implementation of abstract method from BaseLLMChatTest"""
@@ -244,7 +244,7 @@ class TestHuggingFace(BaseLLMChatTest):
     def test_completion_non_streaming(self):
         messages = [{"role": "user", "content": "This is a dummy message"}]
 
-        response = litellm.completion(model=self.model, messages=messages, stream=False)
+        response = dheera_ai.completion(model=self.model, messages=messages, stream=False)
         assert isinstance(response, ModelResponse)
         assert (
             response.choices[0].message.content
@@ -256,7 +256,7 @@ class TestHuggingFace(BaseLLMChatTest):
     def test_completion_streaming(self):
         messages = [{"role": "user", "content": "This is a dummy message"}]
 
-        response = litellm.completion(model=self.model, messages=messages, stream=True)
+        response = dheera_ai.completion(model=self.model, messages=messages, stream=True)
 
         chunks = list(response)
         assert len(chunks) > 0
@@ -279,7 +279,7 @@ class TestHuggingFace(BaseLLMChatTest):
     async def test_async_completion_streaming(self):
         """Test async streaming completion"""
         messages = [{"role": "user", "content": "This is a dummy message"}]
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model=self.model, messages=messages, stream=True
         )
 
@@ -297,7 +297,7 @@ class TestHuggingFace(BaseLLMChatTest):
     async def test_async_completion_non_streaming(self):
         """Test async non-streaming completion"""
         messages = [{"role": "user", "content": "This is a dummy message"}]
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model=self.model, messages=messages, stream=False
         )
 
@@ -347,7 +347,7 @@ class TestHuggingFace(BaseLLMChatTest):
                 }
             ]
 
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model=self.model, messages=messages, tools=tools, tool_choice="auto"
             )
 
@@ -385,7 +385,7 @@ class TestHuggingFace(BaseLLMChatTest):
     )
     def test_get_complete_url(self, model, expected_url):
         """Test that the complete URL is constructed correctly for different providers"""
-        from litellm.llms.huggingface.chat.transformation import HuggingFaceChatConfig
+        from dheera_ai.llms.huggingface.chat.transformation import HuggingFaceChatConfig
 
         config = HuggingFaceChatConfig()
         url = config.get_complete_url(
@@ -394,7 +394,7 @@ class TestHuggingFace(BaseLLMChatTest):
             optional_params={},
             stream=False,
             api_key="test_api_key",
-            litellm_params={},
+            dheera_ai_params={},
         )
         assert url == expected_url
 
@@ -434,7 +434,7 @@ class TestHuggingFace(BaseLLMChatTest):
         ],
     )
     def test_get_complete_url_inference_endpoints(self, api_base, model, expected_url):
-        from litellm.llms.huggingface.chat.transformation import HuggingFaceChatConfig
+        from dheera_ai.llms.huggingface.chat.transformation import HuggingFaceChatConfig
 
         config = HuggingFaceChatConfig()
         url = config.get_complete_url(
@@ -443,7 +443,7 @@ class TestHuggingFace(BaseLLMChatTest):
             optional_params={},
             stream=False,
             api_key="test_api_key",
-            litellm_params={},
+            dheera_ai_params={},
         )
         assert url == expected_url
 
@@ -451,7 +451,7 @@ class TestHuggingFace(BaseLLMChatTest):
         messages = [{"role": "user", "content": "This is a test message"}]
         api_base = "https://abcd123.us-east-1.aws.endpoints.huggingface.cloud"
 
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="huggingface/tgi", messages=messages, api_base=api_base, stream=False
         )
 
@@ -473,7 +473,7 @@ class TestHuggingFace(BaseLLMChatTest):
         messages = [{"role": "user", "content": "This is a test message"}]
         api_base = "https://abcd123.us-east-1.aws.endpoints.huggingface.cloud"
 
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="huggingface/tgi", messages=messages, api_base=api_base, stream=False
         )
 
@@ -495,7 +495,7 @@ class TestHuggingFace(BaseLLMChatTest):
         messages = [{"role": "user", "content": "This is a test message"}]
         api_base = "https://abcd123.us-east-1.aws.endpoints.huggingface.cloud"
 
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="huggingface/tgi", messages=messages, api_base=api_base, stream=True
         )
 
@@ -513,7 +513,7 @@ class TestHuggingFace(BaseLLMChatTest):
 
     def test_build_chat_completion_url_function(self):
         """Test the _build_chat_completion_url helper function"""
-        from litellm.llms.huggingface.chat.transformation import (
+        from dheera_ai.llms.huggingface.chat.transformation import (
             _build_chat_completion_url,
         )
 
@@ -544,7 +544,7 @@ class TestHuggingFace(BaseLLMChatTest):
 
     def test_validate_environment(self):
         """Test that the environment is validated correctly"""
-        from litellm.llms.huggingface.chat.transformation import HuggingFaceChatConfig
+        from dheera_ai.llms.huggingface.chat.transformation import HuggingFaceChatConfig
 
         config = HuggingFaceChatConfig()
 
@@ -554,7 +554,7 @@ class TestHuggingFace(BaseLLMChatTest):
             messages=[{"role": "user", "content": "Hello"}],
             optional_params={},
             api_key="test_api_key",
-            litellm_params={},
+            dheera_ai_params={},
         )
 
         assert headers["Authorization"] == "Bearer test_api_key"
@@ -574,7 +574,7 @@ class TestHuggingFace(BaseLLMChatTest):
         ],
     )
     def test_transform_request(self, model, expected_model):
-        from litellm.llms.huggingface.chat.transformation import HuggingFaceChatConfig
+        from dheera_ai.llms.huggingface.chat.transformation import HuggingFaceChatConfig
 
         config = HuggingFaceChatConfig()
         messages = [{"role": "user", "content": "Hello"}]
@@ -583,7 +583,7 @@ class TestHuggingFace(BaseLLMChatTest):
             model=model,
             messages=messages,
             optional_params={},
-            litellm_params={},
+            dheera_ai_params={},
             headers={},
         )
 

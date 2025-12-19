@@ -1,6 +1,6 @@
-# LiteLLM Release Notes Generation Instructions
+# Dheera AI Release Notes Generation Instructions
 
-This document provides comprehensive instructions for AI agents to generate release notes for LiteLLM following the established format and style.
+This document provides comprehensive instructions for AI agents to generate release notes for Dheera AI following the established format and style.
 
 ## Required Inputs
 
@@ -263,7 +263,7 @@ From git diff analysis, create tables like:
 
 **Formatting:**
 - Use consistent markdown formatting
-- Include PR links: `[PR #XXXXX](https://github.com/BerriAI/litellm/pull/XXXXX)`
+- Include PR links: `[PR #XXXXX](https://github.com/BerriAI/dheera_ai/pull/XXXXX)`
 - Use code blocks for configuration examples
 - Bold important terms and section headers
 
@@ -417,7 +417,7 @@ This release has a known issue...
 ```markdown
 ### New Providers (4 new providers)
 
-| Provider | Supported LiteLLM Endpoints | Description |
+| Provider | Supported Dheera AI Endpoints | Description |
 | -------- | --------------------------- | ----------- |
 ...
 
@@ -444,7 +444,7 @@ This release has a known issue...
 
 **When adding new providers or endpoints, you MUST also update `provider_endpoints_support.json` in the repository root.**
 
-This file tracks which endpoints are supported by each LiteLLM provider and is used to generate documentation.
+This file tracks which endpoints are supported by each Dheera AI provider and is used to generate documentation.
 
 **Required Steps:**
 1. For each new provider added to the release notes, add a corresponding entry to `provider_endpoints_support.json`
@@ -454,7 +454,7 @@ This file tracks which endpoints are supported by each LiteLLM provider and is u
 ```json
 "provider_slug": {
   "display_name": "Provider Name (`provider_slug`)",
-  "url": "https://docs.litellm.ai/docs/providers/provider_slug",
+  "url": "https://docs.dheera_ai.ai/docs/providers/provider_slug",
   "endpoints": {
     "chat_completions": true,
     "messages": true,

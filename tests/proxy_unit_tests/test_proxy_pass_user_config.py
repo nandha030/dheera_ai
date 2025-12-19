@@ -5,15 +5,15 @@ from dotenv import load_dotenv
 load_dotenv()
 import os, io
 
-# this file is to test litellm/proxy
+# this file is to test dheera_ai/proxy
 
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 import pytest, logging, asyncio
-import litellm
-from litellm import embedding, completion, completion_cost, Timeout
-from litellm import RateLimitError
+import dheera_ai
+from dheera_ai import embedding, completion, completion_cost, Timeout
+from dheera_ai import RateLimitError
 
 # Configure logging
 logging.basicConfig(
@@ -25,7 +25,7 @@ logging.basicConfig(
 from fastapi.testclient import TestClient
 from fastapi import FastAPI
 import os
-from litellm.proxy.proxy_server import (
+from dheera_ai.proxy.proxy_server import (
     router,
     save_worker_config,
     initialize,
@@ -39,8 +39,8 @@ headers = {"Authorization": f"Bearer {token}"}
 
 @pytest.fixture(scope="function")
 def client_no_auth():
-    # Assuming litellm.proxy.proxy_server is an object
-    from litellm.proxy.proxy_server import cleanup_router_config_variables
+    # Assuming dheera_ai.proxy.proxy_server is an object
+    from dheera_ai.proxy.proxy_server import cleanup_router_config_variables
 
     cleanup_router_config_variables()
     filepath = os.path.dirname(os.path.abspath(__file__))
@@ -56,14 +56,14 @@ def client_no_auth():
 def test_chat_completion(client_no_auth):
     global headers
 
-    from litellm.types.router import RouterConfig, ModelConfig
-    from litellm.types.completion import CompletionRequest
+    from dheera_ai.types.router import RouterConfig, ModelConfig
+    from dheera_ai.types.completion import CompletionRequest
 
     user_config = RouterConfig(
         model_list=[
             ModelConfig(
                 model_name="user-azure-instance",
-                litellm_params=CompletionRequest(
+                dheera_ai_params=CompletionRequest(
                     model="azure/gpt-4.1-mini",
                     api_key=os.getenv("AZURE_API_KEY"),
                     api_version=os.getenv("AZURE_API_VERSION"),
@@ -75,7 +75,7 @@ def test_chat_completion(client_no_auth):
             ),
             ModelConfig(
                 model_name="user-openai-instance",
-                litellm_params=CompletionRequest(
+                dheera_ai_params=CompletionRequest(
                     model="gpt-3.5-turbo",
                     api_key=os.getenv("OPENAI_API_KEY"),
                     timeout=10,
@@ -107,7 +107,7 @@ def test_chat_completion(client_no_auth):
         result = response.json()
         print(f"Received response: {result}")
     except Exception as e:
-        pytest.fail(f"LiteLLM Proxy test failed. Exception - {str(e)}")
+        pytest.fail(f"DheeraAI Proxy test failed. Exception - {str(e)}")
 
 
 # Run the test

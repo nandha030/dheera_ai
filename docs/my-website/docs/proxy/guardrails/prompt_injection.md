@@ -3,20 +3,20 @@ import TabItem from '@theme/TabItem';
 
 # In-memory Prompt Injection Detection
 
-LiteLLM Supports the following methods for detecting prompt injection attacks
+Dheera AI Supports the following methods for detecting prompt injection attacks
 
 - [Similarity Checks](#similarity-checking)
 - [LLM API Call to check](#llm-api-checks)
 
 ## Similarity Checking
 
-LiteLLM supports similarity checking against a pre-generated list of prompt injection attacks, to identify if a request contains an attack. 
+Dheera AI supports similarity checking against a pre-generated list of prompt injection attacks, to identify if a request contains an attack. 
 
-[**See Code**](https://github.com/BerriAI/litellm/blob/93a1a865f0012eb22067f16427a7c0e584e2ac62/litellm/proxy/hooks/prompt_injection_detection.py#L4)
+[**See Code**](https://github.com/BerriAI/dheera_ai/blob/93a1a865f0012eb22067f16427a7c0e584e2ac62/dheera_ai/proxy/hooks/prompt_injection_detection.py#L4)
 
 1. Enable `detect_prompt_injection` in your config.yaml
 ```yaml
-litellm_settings:
+dheera_ai_settings:
     callbacks: ["detect_prompt_injection"]
 ```
 
@@ -57,7 +57,7 @@ Check if user input contains a prompt injection attack, by running it against an
 
 **Step 1. Setup config**
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["detect_prompt_injection"]
   prompt_injection_params:
     heuristics_check: true
@@ -69,7 +69,7 @@ litellm_settings:
 
 model_list:
 - model_name: azure-gpt-3.5 # 👈 same model_name as in prompt_injection_params
-  litellm_params:
+  dheera_ai_params:
       model: azure/chatgpt-v-2
       api_base: os.environ/AZURE_API_BASE
       api_key: os.environ/AZURE_API_KEY
@@ -79,7 +79,7 @@ model_list:
 **Step 2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```

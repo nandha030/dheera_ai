@@ -14,19 +14,19 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-import litellm
-from litellm import completion
-from litellm._logging import verbose_logger
-from litellm.integrations.datadog.datadog import *
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai._logging import verbose_logger
+from dheera_ai.integrations.datadog.datadog import *
 from datetime import datetime, timedelta
-from litellm.types.utils import (
+from dheera_ai.types.utils import (
     StandardLoggingPayload,
     StandardLoggingModelInformation,
     StandardLoggingMetadata,
     StandardLoggingHiddenParams,
-    LiteLLMCommonStrings,
+    DheeraAICommonStrings,
 )
-from litellm.types.integrations.datadog import DatadogInitParams
+from dheera_ai.types.integrations.datadog import DatadogInitParams
 
 verbose_logger.setLevel(logging.DEBUG)
 
@@ -100,8 +100,8 @@ async def test_create_datadog_logging_payload():
     )
 
     # Verify payload structure
-    assert dd_payload["ddsource"] == os.getenv("DD_SOURCE", "litellm")
-    assert dd_payload["service"] == "litellm-server"
+    assert dd_payload["ddsource"] == os.getenv("DD_SOURCE", "dheera_ai")
+    assert dd_payload["service"] == "dheera_ai-server"
     assert dd_payload["status"] == DataDogStatus.INFO
 
     # verify the message field == standard_payload
@@ -149,15 +149,15 @@ async def test_datadog_logging_http_request():
     - each element in a DatadogPayload.message contains all the valid fields
     """
     try:
-        from litellm.integrations.datadog.datadog import DataDogLogger
+        from dheera_ai.integrations.datadog.datadog import DataDogLogger
 
         os.environ["DD_SITE"] = "https://fake.datadoghq.com"
         os.environ["DD_API_KEY"] = "anything"
         dd_logger = DataDogLogger()
 
-        litellm.callbacks = [dd_logger]
+        dheera_ai.callbacks = [dd_logger]
 
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         # Create a mock for the async_client's post method
         mock_post = AsyncMock()
@@ -167,7 +167,7 @@ async def test_datadog_logging_http_request():
 
         # Make the completion call
         for _ in range(5):
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "what llm are u"}],
                 max_tokens=10,
@@ -254,10 +254,10 @@ async def test_datadog_log_redis_failures():
     Test that poorly configured Redis is logged as Warning on DataDog
     """
     try:
-        from litellm.caching.caching import Cache
-        from litellm.integrations.datadog.datadog import DataDogLogger
+        from dheera_ai.caching.caching import Cache
+        from dheera_ai.integrations.datadog.datadog import DataDogLogger
 
-        litellm.cache = Cache(
+        dheera_ai.cache = Cache(
             type="redis", host="badhost", port="6379", password="badpassword"
         )
 
@@ -265,10 +265,10 @@ async def test_datadog_log_redis_failures():
         os.environ["DD_API_KEY"] = "anything"
         dd_logger = DataDogLogger()
 
-        litellm.callbacks = [dd_logger]
-        litellm.service_callback = ["datadog"]
+        dheera_ai.callbacks = [dd_logger]
+        dheera_ai.service_callback = ["datadog"]
 
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         # Create a mock for the async_client's post method
         mock_post = AsyncMock()
@@ -278,7 +278,7 @@ async def test_datadog_log_redis_failures():
 
         # Make the completion call
         for _ in range(3):
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "what llm are u"}],
                 max_tokens=10,
@@ -334,9 +334,9 @@ async def test_datadog_log_redis_failures():
 @pytest.mark.skip(reason="local-only test, to test if everything works fine.")
 async def test_datadog_logging():
     try:
-        litellm.success_callback = ["datadog"]
-        litellm.set_verbose = True
-        response = await litellm.acompletion(
+        dheera_ai.success_callback = ["datadog"]
+        dheera_ai.set_verbose = True
+        response = await dheera_ai.acompletion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "what llm are u"}],
             max_tokens=10,
@@ -452,15 +452,15 @@ def test_datadog_static_methods():
     """Test the static helper methods in DataDogLogger class"""
 
     # Test with default environment variables
-    assert DataDogLogger._get_datadog_source() == "litellm"
-    assert DataDogLogger._get_datadog_service() == "litellm-server"
+    assert DataDogLogger._get_datadog_source() == "dheera_ai"
+    assert DataDogLogger._get_datadog_service() == "dheera_ai-server"
     assert DataDogLogger._get_datadog_hostname() is not None
     assert DataDogLogger._get_datadog_env() == "unknown"
     assert DataDogLogger._get_datadog_pod_name() == "unknown"
 
     # Test tags format with default values
     assert (
-        "env:unknown,service:litellm,version:unknown,HOSTNAME:"
+        "env:unknown,service:dheera_ai,version:unknown,HOSTNAME:"
         in DataDogLogger._get_datadog_tags()
     )
 
@@ -585,11 +585,11 @@ def test_get_datadog_tags():
 async def test_datadog_message_redaction():
     """
     Test that DataDog logger correctly initializes with turn_off_message_logging=True 
-    from litellm.datadog_params
+    from dheera_ai.datadog_params
     """
     try:
-        # Test using litellm.datadog_params pattern
-        litellm.datadog_params = DatadogInitParams(turn_off_message_logging=True)
+        # Test using dheera_ai.datadog_params pattern
+        dheera_ai.datadog_params = DatadogInitParams(turn_off_message_logging=True)
         
         os.environ["DD_SITE"] = "https://fake.datadoghq.com"
         os.environ["DD_API_KEY"] = "anything"
@@ -598,7 +598,7 @@ async def test_datadog_message_redaction():
         with patch("asyncio.create_task"):
             dd_logger = DataDogLogger()
 
-        # Verify that turn_off_message_logging was set correctly from litellm.datadog_params
+        # Verify that turn_off_message_logging was set correctly from dheera_ai.datadog_params
         assert hasattr(dd_logger, 'turn_off_message_logging'), "DataDogLogger should have turn_off_message_logging attribute"
         assert dd_logger.turn_off_message_logging is True, f"Expected turn_off_message_logging=True, got {dd_logger.turn_off_message_logging}"
         
@@ -612,7 +612,7 @@ async def test_datadog_message_redaction():
         
         # Apply redaction using the inherited method
         redacted_details = dd_logger.redact_standard_logging_payload_from_model_call_details(model_call_details)
-        redacted_str = "redacted-by-litellm"
+        redacted_str = "redacted-by-dheera_ai"
         
         # Verify that messages are redacted
         redacted_standard_obj = redacted_details["standard_logging_object"]
@@ -627,20 +627,20 @@ async def test_datadog_message_redaction():
         pytest.fail(f"Test failed with exception: {str(e)}")
     finally:
         # Clean up
-        litellm.datadog_params = None
-        litellm.callbacks = []
+        dheera_ai.datadog_params = None
+        dheera_ai.callbacks = []
 
 
 def test_datadog_agent_configuration():
     """
-    Test that DataDog logger correctly configures agent endpoint when LITELLM_DD_AGENT_HOST is set.
+    Test that DataDog logger correctly configures agent endpoint when DHEERA_AI_DD_AGENT_HOST is set.
     
-    Note: We use LITELLM_DD_AGENT_HOST instead of DD_AGENT_HOST to avoid conflicts
+    Note: We use DHEERA_AI_DD_AGENT_HOST instead of DD_AGENT_HOST to avoid conflicts
     with ddtrace which automatically sets DD_AGENT_HOST for APM tracing.
     """
     test_env = {
-        "LITELLM_DD_AGENT_HOST": "localhost",
-        "LITELLM_DD_AGENT_PORT": "10518",
+        "DHEERA_AI_DD_AGENT_HOST": "localhost",
+        "DHEERA_AI_DD_AGENT_PORT": "10518",
     }
     
     # Remove DD_SITE and DD_API_KEY to verify they're not required for agent mode
@@ -662,18 +662,18 @@ def test_datadog_agent_configuration():
 
 def test_datadog_ignores_ddtrace_agent_host():
     """
-    Regression test: Ensure DD_AGENT_HOST set by ddtrace doesn't interfere with LiteLLM logging.
+    Regression test: Ensure DD_AGENT_HOST set by ddtrace doesn't interfere with DheeraAI logging.
     
     When users have ddtrace installed for APM tracing, it automatically sets DD_AGENT_HOST.
-    LiteLLM should ignore DD_AGENT_HOST and only use LITELLM_DD_AGENT_HOST for agent mode.
+    DheeraAI should ignore DD_AGENT_HOST and only use DHEERA_AI_DD_AGENT_HOST for agent mode.
     
     This prevents the 404 error when ddtrace's DD_AGENT_HOST points to an APM endpoint
     that doesn't support /api/v2/logs.
     
-    Regression test for: https://github.com/BerriAI/litellm/issues/16379
+    Regression test for: https://github.com/BerriAI/dheera_ai/issues/16379
     """
     test_env = {
-        # User's explicit config for LiteLLM logging (direct API)
+        # User's explicit config for DheeraAI logging (direct API)
         "DD_API_KEY": "fake-api-key",
         "DD_SITE": "us5.datadoghq.com",
         # ddtrace automatically sets these for APM tracing
@@ -689,7 +689,7 @@ def test_datadog_ignores_ddtrace_agent_host():
         expected_url = "https://http-intake.logs.us5.datadoghq.com/api/v2/logs"
         assert dd_logger.intake_url == expected_url, (
             f"Expected direct API URL '{expected_url}', got '{dd_logger.intake_url}'. "
-            "DD_AGENT_HOST (set by ddtrace) should be ignored - only LITELLM_DD_AGENT_HOST should trigger agent mode."
+            "DD_AGENT_HOST (set by ddtrace) should be ignored - only DHEERA_AI_DD_AGENT_HOST should trigger agent mode."
         )
         
         # Verify API key is set correctly

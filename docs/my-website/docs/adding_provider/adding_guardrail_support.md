@@ -1,11 +1,11 @@
 # Adding Guardrail Support to Endpoints
 
-This guide explains how to add guardrail translation support to new LiteLLM endpoints (e.g., Chat Completions, Responses API, etc.).
+This guide explains how to add guardrail translation support to new Dheera AI endpoints (e.g., Chat Completions, Responses API, etc.).
 
 ## When to Add Guardrail Support
 
 Add guardrail support when:
-- You're creating a new LiteLLM endpoint (e.g., a new API format)
+- You're creating a new Dheera AI endpoint (e.g., a new API format)
 - You want to enable guardrails for an existing endpoint that doesn't support them
 - You need custom text extraction logic for a specific message format
 
@@ -14,7 +14,7 @@ Add guardrail support when:
 Guardrail handlers follow this structure:
 
 ```
-litellm/llms/{provider}/{endpoint}/guardrail_translation/
+dheera_ai/llms/{provider}/{endpoint}/guardrail_translation/
 ├── __init__.py          # Exports handler and registers call types
 ├── handler.py           # Main handler implementation
 └── README.md            # Documentation (optional but recommended)
@@ -24,7 +24,7 @@ litellm/llms/{provider}/{endpoint}/guardrail_translation/
 
 **OpenAI Chat Completions:**
 ```
-litellm/llms/openai/chat/guardrail_translation/
+dheera_ai/llms/openai/chat/guardrail_translation/
 ├── __init__.py
 ├── handler.py
 └── README.md
@@ -32,7 +32,7 @@ litellm/llms/openai/chat/guardrail_translation/
 
 **OpenAI Responses API:**
 ```
-litellm/llms/openai/responses/guardrail_translation/
+dheera_ai/llms/openai/responses/guardrail_translation/
 ├── __init__.py
 ├── handler.py
 └── README.md
@@ -40,7 +40,7 @@ litellm/llms/openai/responses/guardrail_translation/
 
 **Anthropic Messages:**
 ```
-litellm/llms/anthropic/chat/guardrail_translation/
+dheera_ai/llms/anthropic/chat/guardrail_translation/
 ├── __init__.py
 └── handler.py
 ```
@@ -61,12 +61,12 @@ This module provides guardrail translation support for {Provider}'s {Endpoint} f
 import asyncio
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
 
-from litellm._logging import verbose_proxy_logger
-from litellm.llms.base_llm.guardrail_translation.base_translation import BaseTranslation
+from dheera_ai._logging import verbose_proxy_logger
+from dheera_ai.llms.base_llm.guardrail_translation.base_translation import BaseTranslation
 
 if TYPE_CHECKING:
-    from litellm.integrations.custom_guardrail import CustomGuardrail
-    from litellm.types.utils import ModelResponse  # Or appropriate response type
+    from dheera_ai.integrations.custom_guardrail import CustomGuardrail
+    from dheera_ai.types.utils import ModelResponse  # Or appropriate response type
 
 
 class MyEndpointHandler(BaseTranslation):
@@ -263,10 +263,10 @@ Create `__init__.py` to register the handler with call types:
 ```python
 """My Endpoint handler for Unified Guardrails."""
 
-from litellm.llms.{provider}/{endpoint}/guardrail_translation.handler import (
+from dheera_ai.llms.{provider}/{endpoint}/guardrail_translation.handler import (
     MyEndpointHandler,
 )
-from litellm.types.utils import CallTypes
+from dheera_ai.types.utils import CallTypes
 
 guardrail_translation_mappings = {
     CallTypes.my_endpoint: MyEndpointHandler,
@@ -276,7 +276,7 @@ guardrail_translation_mappings = {
 __all__ = ["guardrail_translation_mappings"]
 ```
 
-**Important:** Make sure your `CallTypes` are defined in `litellm/types/utils.py`.
+**Important:** Make sure your `CallTypes` are defined in `dheera_ai/types/utils.py`.
 
 ### Step 5: Add Documentation
 
@@ -337,7 +337,7 @@ Override these methods to customize behavior:
 
 ### Step 6: Add Unit Tests
 
-Create comprehensive tests in `tests/test_litellm/llms/{provider}/{endpoint}/`:
+Create comprehensive tests in `tests/test_dheera_ai/llms/{provider}/{endpoint}/`:
 
 ```python
 """
@@ -350,12 +350,12 @@ import pytest
 
 sys.path.insert(0, os.path.abspath("../../../../../.."))
 
-from litellm.integrations.custom_guardrail import CustomGuardrail
-from litellm.llms import get_guardrail_translation_mapping
-from litellm.llms.{provider}.{endpoint}.guardrail_translation.handler import (
+from dheera_ai.integrations.custom_guardrail import CustomGuardrail
+from dheera_ai.llms import get_guardrail_translation_mapping
+from dheera_ai.llms.{provider}.{endpoint}.guardrail_translation.handler import (
     MyEndpointHandler,
 )
-from litellm.types.utils import CallTypes
+from dheera_ai.types.utils import CallTypes
 
 
 class MockGuardrail(CustomGuardrail):

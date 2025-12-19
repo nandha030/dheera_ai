@@ -2,7 +2,7 @@ import os
 import sys
 import time
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 
 from dotenv import load_dotenv
 
@@ -18,14 +18,14 @@ import random
 
 import pytest
 
-import litellm
-from litellm import aembedding, completion, embedding
-from litellm.caching.caching import Cache
+import dheera_ai
+from dheera_ai import aembedding, completion, embedding
+from dheera_ai.caching.caching import Cache
 
 from unittest.mock import AsyncMock, patch, MagicMock, call
 import datetime
 from datetime import timedelta
-from litellm.caching import *
+from dheera_ai.caching import *
 
 
 @pytest.mark.parametrize("is_async", [True, False])

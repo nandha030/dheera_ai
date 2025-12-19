@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 | Property | Details |
 |-------|-------|
 | Description | Vercel AI Gateway provides a unified interface to access multiple AI providers through a single endpoint, with built-in caching, rate limiting, and analytics. |
-| Provider Route on LiteLLM | `vercel_ai_gateway/` |
+| Provider Route on Dheera AI | `vercel_ai_gateway/` |
 | Link to Provider Doc | [Vercel AI Gateway Documentation ↗](https://vercel.com/docs/ai-gateway) |
 | Base URL | `https://ai-gateway.vercel.sh/v1` |
 | Supported Operations | `/chat/completions`, `/models` |
@@ -38,14 +38,14 @@ os.environ["VERCEL_APP_NAME"] = ""  # your app name
 
 Note: see the [Vercel AI Gateway docs](https://vercel.com/docs/ai-gateway#using-the-ai-gateway-with-an-api-key) for instructions on obtaining a key.
 
-## Usage - LiteLLM Python SDK
+## Usage - Dheera AI Python SDK
 
 ### Non-streaming
 
 ```python showLineNumbers title="Vercel AI Gateway Non-streaming Completion"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["VERCEL_AI_GATEWAY_API_KEY"] = "your-api-key"
 
@@ -64,8 +64,8 @@ print(response)
 
 ```python showLineNumbers title="Vercel AI Gateway Streaming Completion"
 import os
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 
 os.environ["VERCEL_AI_GATEWAY_API_KEY"] = "your-api-key"
 
@@ -82,27 +82,27 @@ for chunk in response:
     print(chunk)
 ```
 
-## Usage - LiteLLM Proxy
+## Usage - Dheera AI Proxy
 
-Add the following to your LiteLLM Proxy configuration file:
+Add the following to your Dheera AI Proxy configuration file:
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-4o-gateway
-    litellm_params:
+    dheera_ai_params:
       model: vercel_ai_gateway/openai/gpt-4o
       api_key: os.environ/VERCEL_AI_GATEWAY_API_KEY
 
   - model_name: claude-4-sonnet-gateway
-    litellm_params:
+    dheera_ai_params:
       model: vercel_ai_gateway/anthropic/claude-4-sonnet
       api_key: os.environ/VERCEL_AI_GATEWAY_API_KEY
 ```
 
-Start your LiteLLM Proxy server:
+Start your Dheera AI Proxy server:
 
-```bash showLineNumbers title="Start LiteLLM Proxy"
-litellm --config config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy"
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -151,14 +151,14 @@ for chunk in response:
 
 </TabItem>
 
-<TabItem value="litellm-sdk" label="LiteLLM SDK">
+<TabItem value="dheera_ai-sdk" label="Dheera AI SDK">
 
-```python showLineNumbers title="Vercel AI Gateway via Proxy - LiteLLM SDK"
-import litellm
+```python showLineNumbers title="Vercel AI Gateway via Proxy - Dheera AI SDK"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy
-response = litellm.completion(
-    model="litellm_proxy/gpt-4o-gateway",
+# Configure Dheera AI to use your proxy
+response = dheera_ai.completion(
+    model="dheera_ai_proxy/gpt-4o-gateway",
     messages=[{"role": "user", "content": "Hello, how are you?"}],
     api_base="http://localhost:4000",
     api_key="your-proxy-api-key"
@@ -167,12 +167,12 @@ response = litellm.completion(
 print(response.choices[0].message.content)
 ```
 
-```python showLineNumbers title="Vercel AI Gateway via Proxy - LiteLLM SDK Streaming"
-import litellm
+```python showLineNumbers title="Vercel AI Gateway via Proxy - Dheera AI SDK Streaming"
+import dheera_ai
 
-# Configure LiteLLM to use your proxy with streaming
-response = litellm.completion(
-    model="litellm_proxy/gpt-4o-gateway",
+# Configure Dheera AI to use your proxy with streaming
+response = dheera_ai.completion(
+    model="dheera_ai_proxy/gpt-4o-gateway",
     messages=[{"role": "user", "content": "Hello, how are you?"}],
     api_base="http://localhost:4000",
     api_key="your-proxy-api-key",
@@ -212,7 +212,7 @@ curl http://localhost:4000/v1/chat/completions \
 </TabItem>
 </Tabs>
 
-For more detailed information on using the LiteLLM Proxy, see the [LiteLLM Proxy documentation](../providers/litellm_proxy).
+For more detailed information on using the Dheera AI Proxy, see the [Dheera AI Proxy documentation](../providers/dheera_ai_proxy).
 
 ## Additional Resources
 

@@ -1,17 +1,17 @@
 import time, asyncio
 from openai import AsyncOpenAI
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import traceback
 
 
-litellm_client = AsyncOpenAI(api_key="test", base_url="http://0.0.0.0:8000")
+dheera_ai_client = AsyncOpenAI(api_key="test", base_url="http://0.0.0.0:8000")
 
 
-async def litellm_completion():
-    # Your existing code for litellm_completion goes here
+async def dheera_ai_completion():
+    # Your existing code for dheera_ai_completion goes here
     try:
         print("starting embedding calls")
-        response = await litellm_client.embeddings.create(
+        response = await dheera_ai_client.embeddings.create(
             model="text-embedding-ada-002",
             input=[
                 "hello who are you" * 2000,
@@ -32,7 +32,7 @@ async def litellm_completion():
 async def main():
     start = time.time()
     n = 100  # Number of concurrent tasks
-    tasks = [litellm_completion() for _ in range(n)]
+    tasks = [dheera_ai_completion() for _ in range(n)]
 
     chat_completions = await asyncio.gather(*tasks)
 

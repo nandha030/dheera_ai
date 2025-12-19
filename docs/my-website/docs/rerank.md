@@ -2,7 +2,7 @@
 
 :::tip
 
-LiteLLM Follows the [cohere api request / response for the rerank api](https://cohere.com/rerank)
+Dheera AI Follows the [cohere api request / response for the rerank api](https://cohere.com/rerank)
 
 :::
 
@@ -18,11 +18,11 @@ LiteLLM Follows the [cohere api request / response for the rerank api](https://c
 | Guardrails | ✅ | Applies to input query only (not documents) |
 | Supported Providers | Cohere, Together AI, Azure AI, DeepInfra, Nvidia NIM, Infinity, Fireworks AI, Voyage AI | |
 
-## **LiteLLM Python SDK Usage**
+## **Dheera AI Python SDK Usage**
 ### Quick Start 
 
 ```python
-from litellm import rerank
+from dheera_ai import rerank
 import os
 
 os.environ["COHERE_API_KEY"] = "sk-.."
@@ -47,7 +47,7 @@ print(response)
 ### Async Usage 
 
 ```python
-from litellm import arerank
+from dheera_ai import arerank
 import os, asyncio
 
 os.environ["COHERE_API_KEY"] = "sk-.."
@@ -72,30 +72,30 @@ async def test_async_rerank():
 asyncio.run(test_async_rerank())
 ```
 
-## **LiteLLM Proxy Usage**
+## **Dheera AI Proxy Usage**
 
-LiteLLM provides an cohere api compatible `/rerank` endpoint for Rerank calls.
+Dheera AI provides an cohere api compatible `/rerank` endpoint for Rerank calls.
 
 **Setup**
 
-Add this to your litellm proxy config.yaml
+Add this to your dheera_ai proxy config.yaml
 
 ```yaml
 model_list:
   - model_name: Salesforce/Llama-Rank-V1
-    litellm_params:
+    dheera_ai_params:
       model: together_ai/Salesforce/Llama-Rank-V1
       api_key: os.environ/TOGETHERAI_API_KEY
   - model_name: rerank-english-v3.0
-    litellm_params:
+    dheera_ai_params:
       model: cohere/rerank-english-v3.0
       api_key: os.environ/COHERE_API_KEY
 ```
 
-Start litellm
+Start dheera_ai
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -121,7 +121,7 @@ curl http://0.0.0.0:4000/rerank \
 
 ## **Supported Providers**
 
-#### ⚡️See all supported models and providers at [models.litellm.ai](https://models.litellm.ai/)
+#### ⚡️See all supported models and providers at [models.dheera_ai.ai](https://models.dheera_ai.ai/)
 
 | Provider    | Link to Usage      |
 |-------------|--------------------|

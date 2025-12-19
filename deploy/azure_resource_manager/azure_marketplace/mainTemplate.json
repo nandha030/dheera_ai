@@ -4,15 +4,15 @@
     "parameters": {
       "imageName": {
         "type": "string",
-        "defaultValue": "ghcr.io/berriai/litellm:main-latest"
+        "defaultValue": "ghcr.io/berriai/dheera_ai:main-latest"
       },
       "containerName": {
         "type": "string",
-        "defaultValue": "litellm-container"
+        "defaultValue": "dheera_ai-container"
       },
       "dnsLabelName": {
         "type": "string",
-        "defaultValue": "litellm"
+        "defaultValue": "dheera_ai"
       },
       "portNumber": {
         "type": "int",

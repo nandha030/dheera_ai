@@ -6,26 +6,26 @@ import io, asyncio
 # logging.basicConfig(level=logging.DEBUG)
 sys.path.insert(0, os.path.abspath("../.."))
 
-from litellm import completion
-import litellm
+from dheera_ai import completion
+import dheera_ai
 
-litellm.num_retries = 3
-litellm.success_callback = ["wandb"]
+dheera_ai.num_retries = 3
+dheera_ai.success_callback = ["wandb"]
 import time
 import pytest
 
 
 def test_wandb_logging_async():
     try:
-        litellm.set_verbose = False
+        dheera_ai.set_verbose = False
 
         async def _test_langfuse():
-            from litellm import Router
+            from dheera_ai import Router
 
             model_list = [
                 {  # list of model deployments
                     "model_name": "gpt-3.5-turbo",
-                    "litellm_params": {  # params for litellm completion/embedding call
+                    "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                         "model": "gpt-3.5-turbo",
                         "api_key": os.getenv("OPENAI_API_KEY"),
                     },
@@ -38,14 +38,14 @@ def test_wandb_logging_async():
             response = await router.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[
-                    {"role": "user", "content": "this is a test with litellm router ?"}
+                    {"role": "user", "content": "this is a test with dheera_ai router ?"}
                 ],
             )
             print(response)
 
         response = asyncio.run(_test_langfuse())
         print(f"response: {response}")
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         pass
     except Exception as e:
         pass
@@ -63,7 +63,7 @@ def test_wandb_logging():
             temperature=0.2,
         )
         print(response)
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         pass
     except Exception as e:
         print(e)

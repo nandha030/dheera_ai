@@ -1,19 +1,19 @@
-# Call any LiteLLM model in your custom format
+# Call any Dheera AI model in your custom format
 
-Use this to call any LiteLLM supported `.completion()` model, in your custom format. Useful if you have a custom API and want to support any LiteLLM supported model.
+Use this to call any Dheera AI supported `.completion()` model, in your custom format. Useful if you have a custom API and want to support any Dheera AI supported model.
 
 ## How it works
 
-Your request → Adapter translates to OpenAI format → LiteLLM processes it → Adapter translates response back → Your response
+Your request → Adapter translates to OpenAI format → Dheera AI processes it → Adapter translates response back → Your response
 
 ## Create an Adapter
 
 Inherit from `CustomLogger` and implement 3 methods:
 
 ```python
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.llms.openai import ChatCompletionRequest
-from litellm.types.utils import ModelResponse
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.llms.openai import ChatCompletionRequest
+from dheera_ai.types.utils import ModelResponse
 
 class MyAdapter(CustomLogger):
     def translate_completion_input_params(self, kwargs) -> ChatCompletionRequest:
@@ -42,21 +42,21 @@ class MyAdapter(CustomLogger):
 ## Register it
 
 ```python
-import litellm
+import dheera_ai
 
 my_adapter = MyAdapter()
-litellm.adapters = [{"id": "my_provider", "adapter": my_adapter}]
+dheera_ai.adapters = [{"id": "my_provider", "adapter": my_adapter}]
 ```
 
 ## Use it
 
 ```python
-from litellm import adapter_completion
+from dheera_ai import adapter_completion
 
-# Now you can use your provider's format with any LiteLLM model
+# Now you can use your provider's format with any Dheera AI model
 response = adapter_completion(
     adapter_id="my_provider",
-    model="gpt-4",  # or any LiteLLM model
+    model="gpt-4",  # or any Dheera AI model
     messages=[{"role": "user", "content": "hello"}],
     max_tokens=100
 )
@@ -79,7 +79,7 @@ for chunk in stream:
 ### Async
 
 ```python
-from litellm import aadapter_completion
+from dheera_ai import aadapter_completion
 
 response = await aadapter_completion(
     adapter_id="my_provider",
@@ -144,7 +144,7 @@ def translate_completion_output_params(self, response):
 ### Streaming
 
 ```python
-from litellm.types.utils import AdapterCompletionStreamWrapper
+from dheera_ai.types.utils import AdapterCompletionStreamWrapper
 
 class AnthropicStreamWrapper(AdapterCompletionStreamWrapper):
     def __init__(self, completion_stream, model):
@@ -194,13 +194,13 @@ curl http://localhost:4000/v1/messages \
 ## Real Example
 
 Check out the full Anthropic adapter:
-- [transformation.py](https://github.com/BerriAI/litellm/blob/main/litellm/llms/anthropic/experimental_pass_through/adapters/transformation.py)
-- [handler.py](https://github.com/BerriAI/litellm/blob/main/litellm/llms/anthropic/experimental_pass_through/adapters/handler.py)
-- [streaming_iterator.py](https://github.com/BerriAI/litellm/blob/main/litellm/llms/anthropic/experimental_pass_through/adapters/streaming_iterator.py)
+- [transformation.py](https://github.com/BerriAI/dheera_ai/blob/main/dheera_ai/llms/anthropic/experimental_pass_through/adapters/transformation.py)
+- [handler.py](https://github.com/BerriAI/dheera_ai/blob/main/dheera_ai/llms/anthropic/experimental_pass_through/adapters/handler.py)
+- [streaming_iterator.py](https://github.com/BerriAI/dheera_ai/blob/main/dheera_ai/llms/anthropic/experimental_pass_through/adapters/streaming_iterator.py)
 
 ## That's it
 
 1. Create a class that inherits `CustomLogger`
 2. Implement the 3 translation methods
-3. Register with `litellm.adapters = [{"id": "...", "adapter": ...}]`
+3. Register with `dheera_ai.adapters = [{"id": "...", "adapter": ...}]`
 4. Call with `adapter_completion(adapter_id="...")`

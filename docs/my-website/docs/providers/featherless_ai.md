@@ -3,7 +3,7 @@ https://featherless.ai/
 
 :::tip
 
-**We support ALL Featherless AI models, just set `model=featherless_ai/<any-model-on-featherless>` as a prefix when sending litellm requests. For the complete supported model list, visit https://featherless.ai/models **
+**We support ALL Featherless AI models, just set `model=featherless_ai/<any-model-on-featherless>` as a prefix when sending dheera_ai requests. For the complete supported model list, visit https://featherless.ai/models **
 
 :::
 
@@ -16,25 +16,25 @@ os.environ['FEATHERLESS_AI_API_KEY']
 
 ## Sample Usage
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['FEATHERLESS_AI_API_KEY'] = ""
 response = completion(
     model="featherless_ai/featherless-ai/Qwerky-72B", 
-    messages=[{"role": "user", "content": "write code for saying hi from LiteLLM"}]
+    messages=[{"role": "user", "content": "write code for saying hi from Dheera AI"}]
 )
 ```
 
 ## Sample Usage - Streaming
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['FEATHERLESS_AI_API_KEY'] = ""
 response = completion(
     model="featherless_ai/featherless-ai/Qwerky-72B", 
-    messages=[{"role": "user", "content": "write code for saying hi from LiteLLM"}],
+    messages=[{"role": "user", "content": "write code for saying hi from Dheera AI"}],
     stream=True
 )
 

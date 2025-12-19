@@ -264,14 +264,14 @@ async def test_list_batches_with_target_model_names():
 
     # Mock _read_request_body to return our target_model_names
     with patch(
-        "litellm.proxy.batches_endpoints.endpoints._read_request_body"
-    ) as mock_read_body, patch("litellm.proxy.proxy_server.llm_router") as mock_router:
+        "dheera_ai.proxy.batches_endpoints.endpoints._read_request_body"
+    ) as mock_read_body, patch("dheera_ai.proxy.proxy_server.llm_router") as mock_router:
 
         mock_read_body.return_value = {"target_model_names": target_model_names}
         mock_router.alist_batches = AsyncMock(return_value=mock_batch_response)
 
         # Import and call the function directly
-        from litellm.proxy.batches_endpoints.endpoints import list_batches
+        from dheera_ai.proxy.batches_endpoints.endpoints import list_batches
 
         response = await list_batches(
             request=mock_request,

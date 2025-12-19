@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # /batchPredictionJobs
 
-LiteLLM supports Vertex AI batch prediction jobs through passthrough endpoints, allowing you to create and manage batch jobs directly through the proxy server.
+Dheera AI supports Vertex AI batch prediction jobs through passthrough endpoints, allowing you to create and manage batch jobs directly through the proxy server.
 
 ## Features
 
@@ -27,7 +27,7 @@ LiteLLM supports Vertex AI batch prediction jobs through passthrough endpoints, 
 ```yaml
 model_list:
   - model_name: gemini-1.5-flash
-    litellm_params:
+    dheera_ai_params:
       model: vertex_ai/gemini-1.5-flash
       vertex_project: your-project-id
       vertex_location: us-central1
@@ -70,7 +70,7 @@ curl -X GET "http://localhost:4000/v1/projects/your-project/locations/us-central
 When configuring models for batch operations, use these naming conventions:
 
 - **`model_name`**: Base model name (e.g., `gemini-1.5-flash`)
-- **`model`**: Full LiteLLM identifier (e.g., `vertex_ai/gemini-1.5-flash`)
+- **`model`**: Full Dheera AI identifier (e.g., `vertex_ai/gemini-1.5-flash`)
 
 ## Supported Models
 
@@ -125,7 +125,7 @@ curl -X POST "http://localhost:4000/v1/projects/your-project/locations/us-centra
 
 ## Cost Tracking Details
 
-LiteLLM provides comprehensive cost tracking for Vertex AI batch operations:
+Dheera AI provides comprehensive cost tracking for Vertex AI batch operations:
 
 - **Token Usage**: Tracks input and output tokens for each batch request
 - **Cost Calculation**: Automatically calculates costs based on current Vertex AI pricing

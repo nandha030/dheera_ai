@@ -17,10 +17,10 @@ import TabItem from '@theme/TabItem';
 
 ## Quick Start
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 ```python showLineNumbers title="Python SDK Example"
-from litellm import transcription
+from dheera_ai import transcription
 import os 
 
 # set api keys 
@@ -32,7 +32,7 @@ response = transcription(model="whisper", file=audio_file)
 print(f"response: {response}")
 ```
 
-### LiteLLM Proxy
+### Dheera AI Proxy
 
 ### Add model to config 
 
@@ -43,7 +43,7 @@ print(f"response: {response}")
 ```yaml showLineNumbers title="OpenAI Configuration"
 model_list:
 - model_name: whisper
-  litellm_params:
+  dheera_ai_params:
     model: whisper-1
     api_key: os.environ/OPENAI_API_KEY
   model_info:
@@ -58,13 +58,13 @@ general_settings:
 ```yaml showLineNumbers title="OpenAI + Azure Configuration"
 model_list:
 - model_name: whisper
-  litellm_params:
+  dheera_ai_params:
     model: whisper-1
     api_key: os.environ/OPENAI_API_KEY
   model_info:
     mode: audio_transcription
 - model_name: whisper
-  litellm_params:
+  dheera_ai_params:
     model: azure/azure-whisper
     api_version: 2024-02-15-preview
     api_base: os.environ/AZURE_EUROPE_API_BASE
@@ -82,7 +82,7 @@ general_settings:
 ### Start proxy 
 
 ```bash showLineNumbers title="Start Proxy Server"
-litellm --config /path/to/config.yaml 
+dheera_ai --config /path/to/config.yaml 
 
 # RUNNING on http://0.0.0.0:8000
 ```

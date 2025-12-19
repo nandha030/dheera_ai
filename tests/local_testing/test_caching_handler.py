@@ -2,7 +2,7 @@ import os
 import sys
 import time
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 
 from dotenv import load_dotenv
 
@@ -16,16 +16,16 @@ import random
 
 import pytest
 
-import litellm
-from litellm import aembedding, completion, embedding
-from litellm.caching.caching import Cache
+import dheera_ai
+from dheera_ai import aembedding, completion, embedding
+from dheera_ai.caching.caching import Cache
 
 from unittest.mock import AsyncMock, patch, MagicMock
-from litellm.caching.caching_handler import LLMCachingHandler, CachingHandlerResponse
-from litellm.caching.caching import LiteLLMCacheType
-from litellm.types.utils import CallTypes
-from litellm.types.rerank import RerankResponse
-from litellm.types.utils import (
+from dheera_ai.caching.caching_handler import LLMCachingHandler, CachingHandlerResponse
+from dheera_ai.caching.caching import DheeraAICacheType
+from dheera_ai.types.utils import CallTypes
+from dheera_ai.types.rerank import RerankResponse
+from dheera_ai.types.utils import (
     ModelResponse,
     EmbeddingResponse,
     TextCompletionResponse,
@@ -33,32 +33,32 @@ from litellm.types.utils import (
     Embedding,
 )
 from datetime import timedelta, datetime
-from litellm.litellm_core_utils.litellm_logging import Logging as LiteLLMLogging
-from litellm._logging import verbose_logger
+from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging as DheeraAILogging
+from dheera_ai._logging import verbose_logger
 import logging
 
 
 def setup_cache():
     # Set up the cache
-    cache = Cache(type=LiteLLMCacheType.LOCAL)
-    litellm.cache = cache
+    cache = Cache(type=DheeraAICacheType.LOCAL)
+    dheera_ai.cache = cache
     return cache
 
 
-chat_completion_response = litellm.ModelResponse(
+chat_completion_response = dheera_ai.ModelResponse(
     id=str(uuid.uuid4()),
     choices=[
-        litellm.Choices(
-            message=litellm.Message(
+        dheera_ai.Choices(
+            message=dheera_ai.Message(
                 role="assistant", content="Hello, how can I help you today?"
             )
         )
     ],
 )
 
-text_completion_response = litellm.TextCompletionResponse(
+text_completion_response = dheera_ai.TextCompletionResponse(
     id=str(uuid.uuid4()),
-    choices=[litellm.utils.TextChoices(text="Hello, how can I help you today?")],
+    choices=[dheera_ai.utils.TextChoices(text="Hello, how can I help you today?")],
 )
 
 
@@ -67,7 +67,7 @@ text_completion_response = litellm.TextCompletionResponse(
     "response", [chat_completion_response, text_completion_response]
 )
 async def test_async_set_get_cache(response):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     setup_cache()
     verbose_logger.setLevel(logging.DEBUG)
     caching_handler = LLMCachingHandler(
@@ -76,8 +76,8 @@ async def test_async_set_get_cache(response):
 
     messages = [{"role": "user", "content": f"Unique message {datetime.now()}"}]
 
-    logging_obj = LiteLLMLogging(
-        litellm_call_id=str(datetime.now()),
+    logging_obj = DheeraAILogging(
+        dheera_ai_call_id=str(datetime.now()),
         call_type=CallTypes.completion.value,
         model="gpt-3.5-turbo",
         messages=messages,
@@ -90,11 +90,11 @@ async def test_async_set_get_cache(response):
     print("result", result)
 
     original_function = (
-        litellm.acompletion
-        if isinstance(response, litellm.ModelResponse)
-        else litellm.atext_completion
+        dheera_ai.acompletion
+        if isinstance(response, dheera_ai.ModelResponse)
+        else dheera_ai.atext_completion
     )
-    if isinstance(response, litellm.ModelResponse):
+    if isinstance(response, dheera_ai.ModelResponse):
         kwargs = {"messages": messages}
         call_type = CallTypes.acompletion.value
     else:
@@ -210,8 +210,8 @@ def test_convert_cached_result_to_model_response(
     caching_handler = LLMCachingHandler(
         original_function=lambda: None, request_kwargs={}, start_time=datetime.now()
     )
-    logging_obj = LiteLLMLogging(
-        litellm_call_id=str(datetime.now()),
+    logging_obj = DheeraAILogging(
+        dheera_ai_call_id=str(datetime.now()),
         call_type=call_type,
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "Hello, how can I help you today?"}],
@@ -361,8 +361,8 @@ async def test_embedding_cache_model_field_consistency():
     )
 
     # Mock logging object
-    logging_obj = LiteLLMLogging(
-        litellm_call_id=str(datetime.now()),
+    logging_obj = DheeraAILogging(
+        dheera_ai_call_id=str(datetime.now()),
         call_type=CallTypes.aembedding.value,
         model=original_model,
         messages=[],  # Not used for embeddings
@@ -434,8 +434,8 @@ async def test_embedding_cache_model_field_with_vendor_prefix():
     )
 
     # Mock logging object
-    logging_obj = LiteLLMLogging(
-        litellm_call_id=str(datetime.now()),
+    logging_obj = DheeraAILogging(
+        dheera_ai_call_id=str(datetime.now()),
         call_type=CallTypes.aembedding.value,
         model=vendor_model,
         messages=[],

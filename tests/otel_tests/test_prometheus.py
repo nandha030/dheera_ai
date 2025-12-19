@@ -5,7 +5,7 @@ Unit tests for prometheus metrics
 import pytest
 import aiohttp
 import asyncio
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import os
 import sys
 from openai import AsyncOpenAI
@@ -106,7 +106,7 @@ async def test_proxy_failure_metrics():
         print("/metrics", metrics)
 
         # Check if the failure metric is present and correct - use pattern matching for robustness
-        expected_metric_pattern = 'litellm_proxy_failed_requests_metric_total{api_key_alias="None",end_user="None",exception_class="Openai.RateLimitError",exception_status="429",hashed_api_key="88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",requested_model="fake-azure-endpoint",route="/chat/completions",team="None",team_alias="None",user="default_user_id",user_email="None"}'
+        expected_metric_pattern = 'dheera_ai_proxy_failed_requests_metric_total{api_key_alias="None",end_user="None",exception_class="Openai.RateLimitError",exception_status="429",hashed_api_key="88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",requested_model="fake-azure-endpoint",route="/chat/completions",team="None",team_alias="None",user="default_user_id",user_email="None"}'
 
         # Check if the pattern is in metrics (this metric doesn't include user_email field)
         assert any(
@@ -114,7 +114,7 @@ async def test_proxy_failure_metrics():
         ), f"Expected failure metric pattern not found in /metrics. Pattern: {expected_metric_pattern}"
 
         # Check total requests metric which includes user_email
-        total_requests_pattern = 'litellm_proxy_total_requests_metric_total{api_key_alias="None",end_user="None",hashed_api_key="88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",requested_model="fake-azure-endpoint",route="/chat/completions",status_code="429",team="None",team_alias="None",user="default_user_id",user_email="None"}'
+        total_requests_pattern = 'dheera_ai_proxy_total_requests_metric_total{api_key_alias="None",end_user="None",hashed_api_key="88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",requested_model="fake-azure-endpoint",route="/chat/completions",status_code="429",team="None",team_alias="None",user="default_user_id",user_email="None"}'
 
         assert any(
             total_requests_pattern in line for line in metrics.split("\n")
@@ -149,12 +149,12 @@ async def test_proxy_success_metrics():
 
         # Check if the success metric is present and correct
         assert (
-            'litellm_request_total_latency_metric_bucket{api_key_alias="None",end_user="None",hashed_api_key="88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",le="0.005",model="fake",requested_model="fake-openai-endpoint",team="None",team_alias="None",user="default_user_id"}'
+            'dheera_ai_request_total_latency_metric_bucket{api_key_alias="None",end_user="None",hashed_api_key="88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",le="0.005",model="fake",requested_model="fake-openai-endpoint",team="None",team_alias="None",user="default_user_id"}'
             in metrics
         )
 
         assert (
-            'litellm_llm_api_latency_metric_bucket{api_key_alias="None",end_user="None",hashed_api_key="88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",le="0.005",model="fake",requested_model="fake-openai-endpoint",team="None",team_alias="None",user="default_user_id"}'
+            'dheera_ai_llm_api_latency_metric_bucket{api_key_alias="None",end_user="None",hashed_api_key="88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",le="0.005",model="fake",requested_model="fake-openai-endpoint",team="None",team_alias="None",user="default_user_id"}'
             in metrics
         )
 
@@ -164,21 +164,21 @@ async def test_proxy_success_metrics():
 def verify_latency_metrics(metrics: str):
     """
     Assert that LATENCY_BUCKETS distribution is used for
-    - litellm_request_total_latency_metric_bucket
-    - litellm_llm_api_latency_metric_bucket
+    - dheera_ai_request_total_latency_metric_bucket
+    - dheera_ai_llm_api_latency_metric_bucket
 
     Very important to verify that the overhead latency metric is present
     """
-    from litellm.types.integrations.prometheus import LATENCY_BUCKETS
+    from dheera_ai.types.integrations.prometheus import LATENCY_BUCKETS
     import re
     import time
 
     time.sleep(2)
 
     metric_names = [
-        "litellm_request_total_latency_metric_bucket",
-        "litellm_llm_api_latency_metric_bucket",
-        "litellm_overhead_latency_metric_bucket",
+        "dheera_ai_request_total_latency_metric_bucket",
+        "dheera_ai_llm_api_latency_metric_bucket",
+        "dheera_ai_overhead_latency_metric_bucket",
     ]
 
     for metric_name in metric_names:
@@ -225,13 +225,13 @@ async def test_proxy_fallback_metrics():
 
         # Check if successful fallback metric is incremented
         assert (
-            'litellm_deployment_successful_fallbacks_total{api_key_alias="None",exception_class="Openai.RateLimitError",exception_status="429",fallback_model="fake-openai-endpoint",hashed_api_key="88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",requested_model="fake-azure-endpoint",team="None",team_alias="None"} 1.0'
+            'dheera_ai_deployment_successful_fallbacks_total{api_key_alias="None",exception_class="Openai.RateLimitError",exception_status="429",fallback_model="fake-openai-endpoint",hashed_api_key="88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",requested_model="fake-azure-endpoint",team="None",team_alias="None"} 1.0'
             in metrics
         )
 
         # Check if failed fallback metric is incremented
         assert (
-            'litellm_deployment_failed_fallbacks_total{api_key_alias="None",exception_class="Openai.RateLimitError",exception_status="429",fallback_model="unknown-model",hashed_api_key="88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",requested_model="fake-azure-endpoint",team="None",team_alias="None"} 1.0'
+            'dheera_ai_deployment_failed_fallbacks_total{api_key_alias="None",exception_class="Openai.RateLimitError",exception_status="429",fallback_model="unknown-model",hashed_api_key="88dc28d0f030c55ed4ab77ed8faf098196cb1c05df778539800c9f1243fe6b4b",requested_model="fake-azure-endpoint",team="None",team_alias="None"} 1.0'
             in metrics
         )
 
@@ -286,17 +286,17 @@ def extract_budget_metrics(metrics_text: str, team_id: str) -> Dict[str, float]:
     metrics = {}
 
     # Get remaining budget
-    remaining_pattern = f'litellm_remaining_team_budget_metric{{team="{team_id}",team_alias="[^"]*"}} ([0-9.]+)'
+    remaining_pattern = f'dheera_ai_remaining_team_budget_metric{{team="{team_id}",team_alias="[^"]*"}} ([0-9.]+)'
     remaining_match = re.search(remaining_pattern, metrics_text)
     metrics["remaining"] = float(remaining_match.group(1)) if remaining_match else None
 
     # Get total budget
-    total_pattern = f'litellm_team_max_budget_metric{{team="{team_id}",team_alias="[^"]*"}} ([0-9.]+)'
+    total_pattern = f'dheera_ai_team_max_budget_metric{{team="{team_id}",team_alias="[^"]*"}} ([0-9.]+)'
     total_match = re.search(total_pattern, metrics_text)
     metrics["total"] = float(total_match.group(1)) if total_match else None
 
     # Get remaining hours
-    hours_pattern = f'litellm_team_budget_remaining_hours_metric{{team="{team_id}",team_alias="[^"]*"}} ([0-9.]+)'
+    hours_pattern = f'dheera_ai_team_budget_remaining_hours_metric{{team="{team_id}",team_alias="[^"]*"}} ([0-9.]+)'
     hours_match = re.search(hours_pattern, metrics_text)
     metrics["remaining_hours"] = float(hours_match.group(1)) if hours_match else None
 
@@ -449,17 +449,17 @@ def extract_key_budget_metrics(metrics_text: str, key_id: str) -> Dict[str, floa
     metrics = {}
 
     # Get remaining budget
-    remaining_pattern = f'litellm_remaining_api_key_budget_metric{{api_key_alias="[^"]*",hashed_api_key="{key_id}"}} ([0-9.]+)'
+    remaining_pattern = f'dheera_ai_remaining_api_key_budget_metric{{api_key_alias="[^"]*",hashed_api_key="{key_id}"}} ([0-9.]+)'
     remaining_match = re.search(remaining_pattern, metrics_text)
     metrics["remaining"] = float(remaining_match.group(1)) if remaining_match else None
 
     # Get total budget
-    total_pattern = f'litellm_api_key_max_budget_metric{{api_key_alias="[^"]*",hashed_api_key="{key_id}"}} ([0-9.]+)'
+    total_pattern = f'dheera_ai_api_key_max_budget_metric{{api_key_alias="[^"]*",hashed_api_key="{key_id}"}} ([0-9.]+)'
     total_match = re.search(total_pattern, metrics_text)
     metrics["total"] = float(total_match.group(1)) if total_match else None
 
     # Get remaining hours
-    hours_pattern = f'litellm_api_key_budget_remaining_hours_metric{{api_key_alias="[^"]*",hashed_api_key="{key_id}"}} ([0-9.]+)'
+    hours_pattern = f'dheera_ai_api_key_budget_remaining_hours_metric{{api_key_alias="[^"]*",hashed_api_key="{key_id}"}} ([0-9.]+)'
     hours_match = re.search(hours_pattern, metrics_text)
     metrics["remaining_hours"] = float(hours_match.group(1)) if hours_match else None
 
@@ -549,7 +549,7 @@ async def test_user_email_metrics():
     Test user email tracking metrics:
     1. Create a user with user_email
     2. Make chat completion requests using OpenAI SDK with the user's email
-    3. Verify user email is being tracked correctly in `litellm_user_email_metric`
+    3. Verify user email is being tracked correctly in `dheera_ai_user_email_metric`
     """
     async with aiohttp.ClientSession() as session:
         # Create a user with user_email
@@ -583,12 +583,12 @@ async def test_user_email_metrics():
 async def test_user_email_in_all_required_metrics():
     """
     Test that user_email label is present in all the metrics that were requested to have it:
-    - litellm_proxy_total_requests_metric_total
-    - litellm_proxy_failed_requests_metric_total
-    - litellm_input_tokens_metric_total
-    - litellm_output_tokens_metric_total
-    - litellm_requests_metric_total
-    - litellm_spend_metric_total
+    - dheera_ai_proxy_total_requests_metric_total
+    - dheera_ai_proxy_failed_requests_metric_total
+    - dheera_ai_input_tokens_metric_total
+    - dheera_ai_output_tokens_metric_total
+    - dheera_ai_requests_metric_total
+    - dheera_ai_spend_metric_total
     """
     async with aiohttp.ClientSession() as session:
         # Create a user with user_email
@@ -616,11 +616,11 @@ async def test_user_email_in_all_required_metrics():
 
         # Check that user_email appears in all the required metrics
         required_metrics_with_user_email = [
-            # "litellm_proxy_total_requests_metric_total",
-            # "litellm_input_tokens_metric_total",
-            # "litellm_output_tokens_metric_total",
-            # "litellm_requests_metric_total",
-            "litellm_spend_metric_total",
+            # "dheera_ai_proxy_total_requests_metric_total",
+            # "dheera_ai_input_tokens_metric_total",
+            # "dheera_ai_output_tokens_metric_total",
+            # "dheera_ai_requests_metric_total",
+            "dheera_ai_spend_metric_total",
         ]
 
         import re
@@ -651,8 +651,8 @@ async def test_user_email_in_all_required_metrics():
         metrics_text = await get_prometheus_metrics(session)
 
         # Check that failure metric also contains user_email
-        failure_pattern = rf'litellm_proxy_failed_requests_metric_total{{[^}}]*user_email="{re.escape(user_email)}"[^}}]*}}'
+        failure_pattern = rf'dheera_ai_proxy_failed_requests_metric_total{{[^}}]*user_email="{re.escape(user_email)}"[^}}]*}}'
         failure_matches = re.findall(failure_pattern, metrics_text)
         assert (
             len(failure_matches) > 0
-        ), f"litellm_proxy_failed_requests_metric_total should contain user_email={user_email}"
+        ), f"dheera_ai_proxy_failed_requests_metric_total should contain user_email={user_email}"

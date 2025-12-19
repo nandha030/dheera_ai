@@ -54,7 +54,7 @@ Expected Response:
     "spend": 0.001413,
     "allowed_model_region": null,
     "default_model": null,
-    "litellm_budget_table": null
+    "dheera_ai_budget_table": null
 }
 ```
 
@@ -125,7 +125,7 @@ Expected Response
 
 ## Setting Customer Budgets 
 
-Set customer budgets (e.g. monthly budgets, tpm/rpm limits) on LiteLLM Proxy 
+Set customer budgets (e.g. monthly budgets, tpm/rpm limits) on Dheera AI Proxy 
 
 ### Default Budget for All Customers
 
@@ -147,7 +147,7 @@ curl -X POST 'http://localhost:4000/budget/new' \
 **Step 2: Configure the default budget ID**
 
 ```yaml showLineNumbers title="config.yaml"
-litellm_settings:
+dheera_ai_settings:
   max_end_user_budget_id: "budget_id_from_step_1"
 ```
 
@@ -217,7 +217,7 @@ Create and assign customers to pricing tiers.
 </TabItem>
 <TabItem value="api" label="API">
 
-Use the `/budget/new` endpoint for creating a new budget. [API Reference](https://litellm-api.up.railway.app/#/budget%20management/new_budget_budget_new_post)
+Use the `/budget/new` endpoint for creating a new budget. [API Reference](https://dheera_ai-api.up.railway.app/#/budget%20management/new_budget_budget_new_post)
 
 ```bash showLineNumbers title="Create budget via API"
 curl -X POST 'http://localhost:4000/budget/new' \

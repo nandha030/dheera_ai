@@ -82,7 +82,7 @@ async def add_models(
 
     data = {
         "model_name": model_name,
-        "litellm_params": {
+        "dheera_ai_params": {
             "model": "openai/gpt-4.1-nano",
             "api_key": "os.environ/OPENAI_API_KEY",
         },
@@ -116,7 +116,7 @@ async def update_model(
 
     data = {
         "model_name": model_name,
-        "litellm_params": {
+        "dheera_ai_params": {
             "model": "openai/gpt-4.1-nano",
             "api_key": "os.environ/OPENAI_API_KEY",
         },
@@ -136,12 +136,12 @@ async def update_model(
         return response_json
 
 
-async def get_model_info(session, key, litellm_model_id=None):
+async def get_model_info(session, key, dheera_ai_model_id=None):
     """
     Make sure only models user has access to are returned
     """
-    if litellm_model_id:
-        url = f"http://0.0.0.0:4000/model/info?litellm_model_id={litellm_model_id}"
+    if dheera_ai_model_id:
+        url = f"http://0.0.0.0:4000/model/info?dheera_ai_model_id={dheera_ai_model_id}"
     else:
         url = "http://0.0.0.0:4000/model/info"
     headers = {
@@ -232,13 +232,13 @@ async def test_get_specific_model():
         model_specific_info = None
         for idx, m in enumerate(models):
             assert m == "gpt-4"
-            litellm_model_id = response["data"][idx]["model_info"]["id"]
+            dheera_ai_model_id = response["data"][idx]["model_info"]["id"]
             model_specific_info = response["data"][idx]
-        assert litellm_model_id is not None
+        assert dheera_ai_model_id is not None
         response = await get_model_info(
-            session=session, key=key, litellm_model_id=litellm_model_id
+            session=session, key=key, dheera_ai_model_id=dheera_ai_model_id
         )
-        assert response["data"][0]["model_info"]["id"] == litellm_model_id
+        assert response["data"][0]["model_info"]["id"] == dheera_ai_model_id
         assert (
             response["data"][0] == model_specific_info
         ), "Model info is not the same. Got={}, Expected={}".format(
@@ -276,7 +276,7 @@ async def test_add_and_delete_models():
     - Delete model
     - Call model -> expect to fail
     """
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     async with aiohttp.ClientSession() as session:
         key_gen = await generate_key(session=session)
@@ -306,7 +306,7 @@ async def add_model_for_health_checking(session, model_id="123"):
 
     data = {
         "model_name": f"azure-model-health-check-{model_id}",
-        "litellm_params": {
+        "dheera_ai_params": {
             "model": "gpt-4.1-nano",
             "api_key": os.getenv("OPENAI_API_KEY"),
         },
@@ -398,7 +398,7 @@ async def test_add_model_run_health():
     Call /health
     -> Ensure the health check for the endpoint is working as expected
     """
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     async with aiohttp.ClientSession() as session:
         key_gen = await generate_key(session=session)
@@ -522,7 +522,7 @@ async def test_team_model_e2e():
     """
     from tests.test_users import new_user
     from tests.test_team import new_team
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     async with aiohttp.ClientSession() as session:
         # Creat a user

@@ -9,7 +9,7 @@ sys.path.insert(
 )  # Adds the parent directory to the system-path
 
 
-import litellm
+import dheera_ai
 
 import json
 import os
@@ -23,11 +23,11 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system-path
 from test_rerank import assert_response_shape
-import litellm
+import dheera_ai
 
 from base_embedding_unit_tests import BaseLLMEmbeddingTest
-from litellm.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
-from litellm.types.utils import EmbeddingResponse, Usage
+from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
+from dheera_ai.types.utils import EmbeddingResponse, Usage
 
 
 @pytest.mark.asyncio()
@@ -53,10 +53,10 @@ async def test_infinity_rerank():
     }
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        response = await litellm.arerank(
+        response = await dheera_ai.arerank(
             model="infinity/rerank-model",
             query="hello",
             documents=["hello", "world"],
@@ -109,10 +109,10 @@ async def test_infinity_rerank_with_return_documents():
     mock_response.status_code = 200
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        response = await litellm.arerank(
+        response = await dheera_ai.arerank(
             model="infinity/rerank-model",
             query="hello",
             documents=["hello", "world"],
@@ -151,10 +151,10 @@ async def test_infinity_rerank_with_env(monkeypatch):
     }
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        response = await litellm.arerank(
+        response = await dheera_ai.arerank(
             model="infinity/rerank-model",
             query="hello",
             documents=["hello", "world"],
@@ -212,10 +212,10 @@ async def test_infinity_embedding():
     }
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        response = await litellm.aembedding(
+        response = await dheera_ai.aembedding(
             model="infinity/custom-model/embedding-v1",
             input=["hello world"],
             dimensions=512,
@@ -268,10 +268,10 @@ async def test_infinity_embedding_with_env(monkeypatch):
     }
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        response = await litellm.aembedding(
+        response = await dheera_ai.aembedding(
             model="infinity/custom-model/embedding-v1",
             input=["hello world"],
             dimensions=512,
@@ -315,10 +315,10 @@ async def test_infinity_embedding_extra_params():
     mock_response.status_code = 200
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        response = await litellm.aembedding(
+        response = await dheera_ai.aembedding(
             model="infinity/custom-model/embedding-v1",
             input=["test input"],
             dimensions=512,
@@ -355,10 +355,10 @@ async def test_infinity_embedding_prompt_token_mapping():
     mock_response.status_code = 200
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=mock_response,
     ) as mock_post:
-        response = await litellm.aembedding(
+        response = await dheera_ai.aembedding(
             model="infinity/custom-model/embedding-v1",
             input=["a"],
             dimensions=512,

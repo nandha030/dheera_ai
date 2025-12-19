@@ -4,11 +4,11 @@ This walks through how to set the maximum retention period for spend logs. This 
 
 :::info
 
-✨ This is on LiteLLM Enterprise
+✨ This is on Dheera AI Enterprise
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Get free 7-day trial key](https://www.litellm.ai/enterprise#trial)
+[Get free 7-day trial key](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
@@ -30,7 +30,7 @@ general_settings:
   # Optional: set how frequently cleanup should run - default is daily
   maximum_spend_logs_retention_interval: "1d"  # Run cleanup daily
 
-litellm_settings:
+dheera_ai_settings:
   cache: true
   cache_params:
     type: redis
@@ -55,7 +55,7 @@ How often the cleanup job should run. Uses the same format as above. If not set,
 
 ### Step 1. Lock Acquisition (Optional with Redis)
 
-If Redis is enabled, LiteLLM uses it to make sure only one instance runs the cleanup at a time.
+If Redis is enabled, Dheera AI uses it to make sure only one instance runs the cleanup at a time.
 
 - If the lock is acquired:
   - This instance proceeds with cleanup

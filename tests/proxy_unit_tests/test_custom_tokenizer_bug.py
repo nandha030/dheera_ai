@@ -5,11 +5,11 @@ causing token_counter to always use OpenAI tokenizer instead of the configured c
 """
 
 import pytest
-import litellm
-import litellm.proxy.proxy_server
-from litellm.proxy.proxy_server import token_counter
-from litellm.proxy._types import TokenCountRequest
-from litellm import Router
+import dheera_ai
+import dheera_ai.proxy.proxy_server
+from dheera_ai.proxy.proxy_server import token_counter
+from dheera_ai.proxy._types import TokenCountRequest
+from dheera_ai import Router
 
 
 @pytest.mark.asyncio
@@ -37,7 +37,7 @@ async def test_custom_tokenizer_from_model_info():
         model_list=[
             {
                 "model_name": "nikro-llama",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/llama-3.1-8b-instant",
                     "api_base": "https://api.groq.com/openai/v1",
                 },
@@ -53,7 +53,7 @@ async def test_custom_tokenizer_from_model_info():
         ]
     )
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     # Make a token counting request with a multilingual text sample
     # This is realistic for the multilingual-e5 model
@@ -98,7 +98,7 @@ async def test_custom_tokenizer_with_llamacpp():
         model_list=[
             {
                 "model_name": "my-local-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/my-local-llama",
                     "api_base": "http://localhost:8080/v1",
                 },
@@ -113,7 +113,7 @@ async def test_custom_tokenizer_with_llamacpp():
         ]
     )
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     response = await token_counter(
         request=TokenCountRequest(
@@ -144,7 +144,7 @@ async def test_multilingual_e5_embedding_model():
         model_list=[
             {
                 "model_name": "my-embedding-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/custom-embedding-model",
                     "api_base": "http://localhost:8080/v1",
                 },
@@ -160,7 +160,7 @@ async def test_multilingual_e5_embedding_model():
         ]
     )
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     # Test with multilingual content (what e5-large-instruct is designed for)
     response = await token_counter(
@@ -197,7 +197,7 @@ async def test_model_without_custom_tokenizer_uses_default():
         model_list=[
             {
                 "model_name": "gpt-4",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-4",
                 },
                 "model_info": {},  # No custom_tokenizer
@@ -205,7 +205,7 @@ async def test_model_without_custom_tokenizer_uses_default():
         ]
     )
 
-    setattr(litellm.proxy.proxy_server, "llm_router", llm_router)
+    setattr(dheera_ai.proxy.proxy_server, "llm_router", llm_router)
 
     response = await token_counter(
         request=TokenCountRequest(

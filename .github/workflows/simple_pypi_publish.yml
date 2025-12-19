@@ -14,7 +14,7 @@ env:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: github.repository == 'BerriAI/litellm'
+    if: github.repository == 'BerriAI/dheera_ai'
     
     steps:
       - name: Checkout code
@@ -48,7 +48,7 @@ jobs:
 
       - name: Copy model prices file
         run: |
-          cp model_prices_and_context_window.json litellm/model_prices_and_context_window_backup.json
+          cp model_prices_and_context_window.json dheera_ai/model_prices_and_context_window_backup.json
 
       - name: Build package
         run: |
@@ -63,5 +63,5 @@ jobs:
 
       - name: Output success
         run: |
-          echo "✅ Successfully published litellm v${{ github.event.inputs.version }} to PyPI"
-          echo "📦 Package: https://pypi.org/project/litellm/${{ github.event.inputs.version }}/" 
+          echo "✅ Successfully published dheera_ai v${{ github.event.inputs.version }} to PyPI"
+          echo "📦 Package: https://pypi.org/project/dheera_ai/${{ github.event.inputs.version }}/" 

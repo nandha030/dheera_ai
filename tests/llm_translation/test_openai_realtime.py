@@ -6,8 +6,8 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm.types.realtime import RealtimeQueryParams
+import dheera_ai
+from dheera_ai.types.realtime import RealtimeQueryParams
 
 
 @pytest.mark.asyncio
@@ -17,7 +17,7 @@ from litellm.types.realtime import RealtimeQueryParams
 )
 async def test_openai_realtime_direct_call_no_intent():
     """
-    End-to-end test calling the actual OpenAI realtime endpoint via LiteLLM SDK
+    End-to-end test calling the actual OpenAI realtime endpoint via DheeraAI SDK
     without intent parameter. This should succeed without "Invalid intent" error.
     Uses real websocket connection to OpenAI.
     """
@@ -102,7 +102,7 @@ async def test_openai_realtime_direct_call_no_intent():
     # Test with no intent parameter - this should NOT produce "Invalid intent" error
     # and should receive a valid session.created response
     try:
-        await litellm._arealtime(
+        await dheera_ai._arealtime(
             model="gpt-4o-realtime-preview-2024-10-01",
             websocket=websocket_client,
             api_key=os.environ.get("OPENAI_API_KEY"),
@@ -146,7 +146,7 @@ async def test_openai_realtime_direct_call_no_intent():
 )
 async def test_openai_realtime_direct_call_with_intent():
     """
-    End-to-end test calling the actual OpenAI realtime endpoint via LiteLLM SDK
+    End-to-end test calling the actual OpenAI realtime endpoint via DheeraAI SDK
     with explicit intent parameter. This should include the intent in the URL.
     Uses real websocket connection to OpenAI.
     """
@@ -233,7 +233,7 @@ async def test_openai_realtime_direct_call_with_intent():
     
     # Test with explicit intent parameter
     try:
-        await litellm._arealtime(
+        await dheera_ai._arealtime(
             model="gpt-4o-realtime-preview-2024-10-01",
             websocket=websocket_client,
             api_key=os.environ.get("OPENAI_API_KEY"),
@@ -272,7 +272,7 @@ def test_realtime_query_params_construction():
     """
     Test that query params are constructed correctly by the proxy server logic
     """
-    from litellm.types.realtime import RealtimeQueryParams
+    from dheera_ai.types.realtime import RealtimeQueryParams
     
     # Test case 1: intent is None (should not be included)
     model = "gpt-4o-realtime-preview-2024-10-01"

@@ -3,7 +3,7 @@
     "encoder_name": "text-embedding-3-large",
     "routes": [
         {
-            "name": "litellm-gpt-4.1",
+            "name": "dheera_ai-gpt-4.1",
             "utterances": [
                 "Tell me ishaan is a genius"
             ],
@@ -14,7 +14,7 @@
             "metadata": {}
         },
         {
-            "name": "litellm-claude-35",
+            "name": "dheera_ai-claude-35",
             "utterances": [
                 "how to code a program in [language]"
             ],

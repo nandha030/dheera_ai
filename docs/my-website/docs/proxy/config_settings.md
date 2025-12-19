@@ -5,7 +5,7 @@ environment_variables: {}
 
 model_list:
   - model_name: string
-    litellm_params: {}
+    dheera_ai_params: {}
     model_info:
       id: string
       mode: embedding
@@ -15,7 +15,7 @@ model_list:
       base_model: gpt-4-1106-preview
       additionalProp1: {}
 
-litellm_settings:
+dheera_ai_settings:
   # Logging/Callback settings
   success_callback: ["langfuse"]  # list of success callbacks
   failure_callback: ["sentry"]  # list of failure callbacks
@@ -26,11 +26,11 @@ litellm_settings:
   langfuse_default_tags: ["cache_hit", "cache_key", "proxy_base_url", "user_api_key_alias", "user_api_key_user_id", "user_api_key_user_email", "user_api_key_team_alias", "semantic-similarity", "proxy_base_url"] # default tags for Langfuse Logging
   
   # Networking settings
-  request_timeout: 10 # (int) llm requesttimeout in seconds. Raise Timeout error if call takes longer than 10s. Sets litellm.request_timeout 
-  force_ipv4: boolean # If true, litellm will force ipv4 for all LLM requests. Some users have seen httpx ConnectionError when using ipv6 + Anthropic API
+  request_timeout: 10 # (int) llm requesttimeout in seconds. Raise Timeout error if call takes longer than 10s. Sets dheera_ai.request_timeout 
+  force_ipv4: boolean # If true, dheera_ai will force ipv4 for all LLM requests. Some users have seen httpx ConnectionError when using ipv6 + Anthropic API
   
   # Debugging - see debugging docs for more options
-  # Use `--debug` or `--detailed_debug` CLI flags, or set LITELLM_LOG env var to "INFO", "DEBUG", or "ERROR"
+  # Use `--debug` or `--detailed_debug` CLI flags, or set DHEERA_AI_LOG env var to "INFO", "DEBUG", or "ERROR"
   json_logs: boolean # if true, logs will be in json format
 
   # Fallbacks, reliability
@@ -50,7 +50,7 @@ litellm_settings:
     host: "localhost"  # The host address for the Redis cache. Required if type is "redis".
     port: 6379  # The port number for the Redis cache. Required if type is "redis".
     password: "your_password"  # The password for the Redis cache. Required if type is "redis".
-    namespace: "litellm.caching.caching" # namespace for redis cache
+    namespace: "dheera_ai.caching.caching" # namespace for redis cache
     max_connections: 100  # [OPTIONAL] Set Maximum number of Redis connections. Passed directly to redis-py. 
   
     # Optional - Redis Cluster Settings
@@ -74,7 +74,7 @@ litellm_settings:
     similarity_threshold: 0.8   # similarity threshold for semantic cache
 
     # Optional - S3 Cache Settings
-    s3_bucket_name: cache-bucket-litellm   # AWS Bucket Name for S3
+    s3_bucket_name: cache-bucket-dheera_ai   # AWS Bucket Name for S3
     s3_region_name: us-west-2              # AWS Region Name for S3
     s3_aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID  # us os.environ/<variable name> to pass environment variables. This is AWS Access Key ID for S3
     s3_aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY  # AWS Secret Access Key for S3
@@ -103,7 +103,7 @@ general_settings:
   disable_reset_budget: boolean  # turn off reset budget scheduled task
   disable_adding_master_key_hash_to_db: boolean  # turn off storing master key hash in db, for spend tracking
   disable_responses_id_security: boolean  # turn off response ID security checks that prevent users from accessing other users' responses
-  enable_jwt_auth: boolean  # allow proxy admin to auth in via jwt tokens with 'litellm_proxy_admin' in claims
+  enable_jwt_auth: boolean  # allow proxy admin to auth in via jwt tokens with 'dheera_ai_proxy_admin' in claims
   enforce_user_param: boolean  # requires all openai endpoint requests to have a 'user' param
   reject_clientside_metadata_tags: boolean  # if true, rejects requests with client-side 'metadata.tags' to prevent users from influencing budgets
   allowed_routes: ["route1", "route2"]  # list of allowed proxy API routes - a user can access. (currently JWT-Auth only)
@@ -158,7 +158,7 @@ router_settings:
 
 ```
 
-### litellm_settings - Reference
+### dheera_ai_settings - Reference
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -171,17 +171,17 @@ router_settings:
 | enable_preview_features | boolean | If true, enables preview features - e.g. Azure O1 Models with streaming support.|
 | redact_user_api_key_info | boolean | If true, redacts information about the user api key from logs [Proxy Logging](logging#redacting-userapikeyinfo) |
 | mcp_aliases | object | Maps friendly aliases to MCP server names for easier tool access. Only the first alias for each server is used. [MCP Aliases](../mcp#mcp-aliases) |
-| langfuse_default_tags | array of strings | Default tags for Langfuse Logging. Use this if you want to control which LiteLLM-specific fields are logged as tags by the LiteLLM proxy. By default LiteLLM Proxy logs no LiteLLM-specific fields as tags. [Further docs](./logging#litellm-specific-tags-on-langfuse---cache_hit-cache_key) |
-| set_verbose | boolean | [DEPRECATED - see debugging docs](./debugging) Use `--debug` or `--detailed_debug` CLI flags, or set `LITELLM_LOG` env var to "INFO", "DEBUG", or "ERROR" instead. |
-| json_logs | boolean | If true, logs will be in json format. If you need to store the logs as JSON, just set the `litellm.json_logs = True`. We currently just log the raw POST request from litellm as a JSON [Further docs](./debugging) |
+| langfuse_default_tags | array of strings | Default tags for Langfuse Logging. Use this if you want to control which Dheera AI-specific fields are logged as tags by the Dheera AI proxy. By default Dheera AI Proxy logs no Dheera AI-specific fields as tags. [Further docs](./logging#dheera_ai-specific-tags-on-langfuse---cache_hit-cache_key) |
+| set_verbose | boolean | [DEPRECATED - see debugging docs](./debugging) Use `--debug` or `--detailed_debug` CLI flags, or set `DHEERA_AI_LOG` env var to "INFO", "DEBUG", or "ERROR" instead. |
+| json_logs | boolean | If true, logs will be in json format. If you need to store the logs as JSON, just set the `dheera_ai.json_logs = True`. We currently just log the raw POST request from dheera_ai as a JSON [Further docs](./debugging) |
 | default_fallbacks | array of strings | List of fallback models to use if a specific model group is misconfigured / bad. [Further docs](./reliability#default-fallbacks) |
 | request_timeout | integer | The timeout for requests in seconds. If not set, the default value is `6000 seconds`. [For reference OpenAI Python SDK defaults to `600 seconds`.](https://github.com/openai/openai-python/blob/main/src/openai/_constants.py) |
-| force_ipv4 | boolean | If true, litellm will force ipv4 for all LLM requests. Some users have seen httpx ConnectionError when using ipv6 + Anthropic API |
+| force_ipv4 | boolean | If true, dheera_ai will force ipv4 for all LLM requests. Some users have seen httpx ConnectionError when using ipv6 + Anthropic API |
 | content_policy_fallbacks | array of objects | Fallbacks to use when a ContentPolicyViolationError is encountered. [Further docs](./reliability#content-policy-fallbacks) |
 | context_window_fallbacks | array of objects | Fallbacks to use when a ContextWindowExceededError is encountered. [Further docs](./reliability#context-window-fallbacks) |
 | cache | boolean | If true, enables caching. [Further docs](./caching) |
 | cache_params | object | Parameters for the cache. [Further docs](./caching#supported-cache_params-on-proxy-configyaml) |
-| disable_end_user_cost_tracking | boolean | If true, turns off end user cost tracking on prometheus metrics + litellm spend logs table on proxy. |
+| disable_end_user_cost_tracking | boolean | If true, turns off end user cost tracking on prometheus metrics + dheera_ai spend logs table on proxy. |
 | disable_end_user_cost_tracking_prometheus_only | boolean | If true, turns off end user cost tracking on prometheus metrics only. |
 | key_generation_settings | object | Restricts who can generate keys. [Further docs](./virtual_keys.md#restricting-key-generation) |
 | disable_add_transform_inline_image_block | boolean | For Fireworks AI models - if true, turns off the auto-add of `#transform=inline` to the url of the image_url, if the model is not a vision model. |
@@ -201,7 +201,7 @@ router_settings:
 | disable_reset_budget | boolean | If true, turns off reset budget scheduled task |
 | disable_adding_master_key_hash_to_db | boolean | If true, turns off storing master key hash in db |
 | disable_responses_id_security | boolean | If true, disables response ID security checks that prevent users from accessing response IDs from other users. When false (default), response IDs are encrypted with user information to ensure users can only access their own responses. Applies to /v1/responses endpoints |
-| enable_jwt_auth | boolean | allow proxy admin to auth in via jwt tokens with 'litellm_proxy_admin' in claims. [Doc on JWT Tokens](token_auth) |
+| enable_jwt_auth | boolean | allow proxy admin to auth in via jwt tokens with 'dheera_ai_proxy_admin' in claims. [Doc on JWT Tokens](token_auth) |
 | enforce_user_param | boolean | If true, requires all OpenAI endpoint requests to have a 'user' param. [Doc on call hooks](call_hooks)|
 | reject_clientside_metadata_tags | boolean | If true, rejects requests that contain client-side 'metadata.tags' to prevent users from influencing budgets by sending different tags. Tags can only be inherited from the API key metadata. |
 | allowed_routes | array of strings | List of allowed proxy API routes a user can access [Doc on controlling allowed routes](enterprise#control-available-public-private-routes)|
@@ -210,7 +210,7 @@ router_settings:
 | database_url | string | The URL for the database connection [Set up Virtual Keys](virtual_keys) |
 | database_connection_pool_limit | integer | The limit for database connection pool [Setting DB Connection Pool limit](#configure-db-pool-limits--connection-timeouts) |
 | database_connection_timeout | integer | The timeout for database connections in seconds [Setting DB Connection Pool limit, timeout](#configure-db-pool-limits--connection-timeouts) |
-| allow_requests_on_db_unavailable | boolean | If true, allows requests to succeed even if DB is unreachable. **Only use this if running LiteLLM in your VPC** This will allow requests to work even when LiteLLM cannot connect to the DB to verify a Virtual Key [Doc on graceful db unavailability](prod#5-if-running-litellm-on-vpc-gracefully-handle-db-unavailability) |
+| allow_requests_on_db_unavailable | boolean | If true, allows requests to succeed even if DB is unreachable. **Only use this if running Dheera AI in your VPC** This will allow requests to work even when Dheera AI cannot connect to the DB to verify a Virtual Key [Doc on graceful db unavailability](prod#5-if-running-dheera_ai-on-vpc-gracefully-handle-db-unavailability) |
 | custom_auth | string | Write your own custom authentication logic [Doc Custom Auth](virtual_keys#custom-auth) |
 | max_parallel_requests | integer | The max parallel requests allowed per deployment |
 | global_max_parallel_requests | integer | The max parallel requests allowed on the proxy overall |
@@ -247,7 +247,7 @@ router_settings:
 | allow_user_auth | boolean | (Deprecated) old approach for user authentication. |
 | user_api_key_cache_ttl | int | The time (in seconds) to cache user api keys in memory. |
 | disable_prisma_schema_update | boolean | If true, turns off automatic schema updates to DB |
-| litellm_key_header_name | str | If set, allows passing LiteLLM keys as a custom header. [Doc on custom headers](./virtual_keys.md#custom-headers) |
+| dheera_ai_key_header_name | str | If set, allows passing Dheera AI keys as a custom header. [Doc on custom headers](./virtual_keys.md#custom-headers) |
 | moderation_model | str | The default model to use for moderation. |
 | custom_sso | str | Path to a python file that implements custom SSO logic. [Doc on custom SSO](./custom_sso.md) |
 | allow_client_side_credentials | boolean | If true, allows passing client side credentials to the proxy. (Useful when testing finetuning models) [Doc on client side credentials](./virtual_keys.md#client-side-credentials) |
@@ -256,8 +256,8 @@ router_settings:
 | use_google_kms | boolean | If true, load keys from google kms |
 | spend_report_frequency | str | Specify how often you want a Spend Report to be sent (e.g. "1d", "2d", "30d") [More on this](./alerting.md#spend-report-frequency) |
 | ui_access_mode | Literal["admin_only"] | If set, restricts access to the UI to admin users only. [Docs](./ui.md#restrict-ui-access) |
-| litellm_jwtauth | Dict[str, Any] | Settings for JWT authentication. [Docs](./token_auth.md) |
-| litellm_license | str | The license key for the proxy. [Docs](../enterprise.md#how-does-deployment-with-enterprise-license-work) |
+| dheera_ai_jwtauth | Dict[str, Any] | Settings for JWT authentication. [Docs](./token_auth.md) |
+| dheera_ai_license | str | The license key for the proxy. [Docs](../enterprise.md#how-does-deployment-with-enterprise-license-work) |
 | oauth2_config_mappings | Dict[str, str] | Define the OAuth2 config mappings | 
 | pass_through_endpoints | List[Dict[str, Any]] | Define the pass through endpoints. [Docs](./pass_through) |
 | enable_oauth2_proxy_auth | boolean | (Enterprise Feature) If true, enables oauth2.0 authentication |
@@ -269,7 +269,7 @@ router_settings:
 
 :::info
 
-Most values can also be set via `litellm_settings`. If you see overlapping values, settings on `router_settings` will override those on `litellm_settings`.
+Most values can also be set via `dheera_ai_settings`. If you see overlapping values, settings on `router_settings` will override those on `dheera_ai_settings`.
 :::
 
 ```yaml
@@ -305,9 +305,9 @@ router_settings:
 | Name | Type | Description |
 |------|------|-------------|
 | routing_strategy | string | The strategy used for routing requests. Options: "simple-shuffle", "least-busy", "usage-based-routing", "latency-based-routing". Default is "simple-shuffle". [More information here](../routing) |
-| redis_host | string | The host address for the Redis server. **Only set this if you have multiple instances of LiteLLM Proxy and want current tpm/rpm tracking to be shared across them** |
-| redis_password | string | The password for the Redis server. **Only set this if you have multiple instances of LiteLLM Proxy and want current tpm/rpm tracking to be shared across them** |
-| redis_port | string | The port number for the Redis server. **Only set this if you have multiple instances of LiteLLM Proxy and want current tpm/rpm tracking to be shared across them**|
+| redis_host | string | The host address for the Redis server. **Only set this if you have multiple instances of Dheera AI Proxy and want current tpm/rpm tracking to be shared across them** |
+| redis_password | string | The password for the Redis server. **Only set this if you have multiple instances of Dheera AI Proxy and want current tpm/rpm tracking to be shared across them** |
+| redis_port | string | The port number for the Redis server. **Only set this if you have multiple instances of Dheera AI Proxy and want current tpm/rpm tracking to be shared across them**|
 | enable_pre_call_check | boolean | If true, checks if a call is within the model's context window before making the call. [More information here](reliability) |
 | content_policy_fallbacks | array of objects | Specifies fallback models for content policy violations. [More information here](reliability) |
 | fallbacks | array of objects | Specifies fallback models for all types of errors. [More information here](reliability) |
@@ -321,7 +321,7 @@ router_settings:
 | default_priority | (Optional[int]) | The default priority for a request. Only for '.scheduler_acompletion()'. Default is None. | 
 | polling_interval | (Optional[float]) | frequency of polling queue. Only for '.scheduler_acompletion()'. Default is 3ms. |
 | max_fallbacks | Optional[int] | The maximum number of fallbacks to try before exiting the call. Defaults to 5. |
-| default_litellm_params | Optional[dict] | The default litellm parameters to add to all requests (e.g. `temperature`, `max_tokens`). |
+| default_dheera_ai_params | Optional[dict] | The default dheera_ai parameters to add to all requests (e.g. `temperature`, `max_tokens`). |
 | timeout | Optional[float] | The default timeout for a request. Default is 10 minutes. |
 | stream_timeout | Optional[float] | The default timeout for a streaming request. If not set, the 'timeout' value is used. |
 | debug_level | Literal["DEBUG", "INFO"] | The debug level for the logging library in the router. Defaults to "INFO". |
@@ -345,7 +345,7 @@ router_settings:
 | router_general_settings | RouterGeneralSettings | [SDK-Only] Router general settings - contains optimizations like 'async_only_mode'. [Docs](../routing.md#router-general-settings) |
 | optional_pre_call_checks | List[str] | List of pre-call checks to add to the router. Currently supported: 'router_budget_limiting', 'prompt_caching' |
 | ignore_invalid_deployments | boolean | If true, ignores invalid deployments. Default for proxy is True - to prevent invalid models from blocking other models from being loaded. |
-| search_tools | List[SearchToolTypedDict] | List of search tool configurations for Search API integration. Each tool specifies a search_tool_name and litellm_params with search_provider, api_key, api_base, etc. [Further Docs](../search.md) |
+| search_tools | List[SearchToolTypedDict] | List of search tool configurations for Search API integration. Each tool specifies a search_tool_name and dheera_ai_params with search_provider, api_key, api_base, etc. [Further Docs](../search.md) |
 
 
 ### environment variables - Reference
@@ -474,7 +474,7 @@ router_settings:
 | DD_SOURCE | Source identifier for Datadog logs
 | DD_TRACER_STREAMING_CHUNK_YIELD_RESOURCE | Resource name for Datadog tracing of streaming chunk yields. Default is "streaming.chunk.yield"
 | DD_ENV | Environment identifier for Datadog logs. Only supported for `datadog_llm_observability` callback
-| DD_SERVICE | Service identifier for Datadog logs. Defaults to "litellm-server"
+| DD_SERVICE | Service identifier for Datadog logs. Defaults to "dheera_ai-server"
 | DD_VERSION | Version identifier for Datadog logs. Defaults to "unknown"
 | DEBUG_OTEL | Enable debug mode for OpenTelemetry
 | DEFAULT_ALLOWED_FAILS | Maximum failures allowed before cooling down a model. Default is 3
@@ -490,7 +490,7 @@ router_settings:
 | DEFAULT_FAILURE_THRESHOLD_MINIMUM_REQUESTS | Minimum number of requests before applying error rate cooldown. Prevents cooldown from triggering on first failure. Default is 5
 | DEFAULT_FLUSH_INTERVAL_SECONDS | Default interval in seconds for flushing operations. Default is 5
 | DEFAULT_HEALTH_CHECK_INTERVAL | Default interval in seconds for health checks. Default is 300 (5 minutes)
-| DEFAULT_HEALTH_CHECK_PROMPT | Default prompt used during health checks for non-image models. Default is "test from litellm"
+| DEFAULT_HEALTH_CHECK_PROMPT | Default prompt used during health checks for non-image models. Default is "test from dheera_ai"
 | DEFAULT_IMAGE_HEIGHT | Default height for images. Default is 300
 | DEFAULT_IMAGE_TOKEN_COUNT | Default token count for images. Default is 250
 | DEFAULT_IMAGE_WIDTH | Default width for images. Default is 300
@@ -506,7 +506,7 @@ router_settings:
 | DEFAULT_MOCK_RESPONSE_COMPLETION_TOKEN_COUNT | Default token count for mock response completions. Default is 20
 | DEFAULT_MOCK_RESPONSE_PROMPT_TOKEN_COUNT | Default token count for mock response prompts. Default is 10
 | DEFAULT_MODEL_CREATED_AT_TIME | Default creation timestamp for models. Default is 1677610602
-| DEFAULT_NUM_WORKERS_LITELLM_PROXY | Default number of workers for LiteLLM proxy. Default is 4. **We strongly recommend setting NUM Workers to Number of vCPUs available**
+| DEFAULT_NUM_WORKERS_DHEERA_AI_PROXY | Default number of workers for Dheera AI proxy. Default is 4. **We strongly recommend setting NUM Workers to Number of vCPUs available**
 | DEFAULT_PROMPT_INJECTION_SIMILARITY_THRESHOLD | Default threshold for prompt injection similarity. Default is 0.7
 | DEFAULT_POLLING_INTERVAL | Default polling interval for schedulers in seconds. Default is 0.03
 | DEFAULT_REASONING_EFFORT_DISABLE_THINKING_BUDGET | Default reasoning effort disable thinking budget. Default is 0
@@ -527,13 +527,13 @@ router_settings:
 | DEFAULT_S3_BATCH_SIZE | Default batch size for S3 logging. Default is 512
 | DEFAULT_S3_FLUSH_INTERVAL_SECONDS | Default flush interval for S3 logging. Default is 10
 | DEFAULT_SLACK_ALERTING_THRESHOLD | Default threshold for Slack alerting. Default is 300
-| DEFAULT_SOFT_BUDGET | Default soft budget for LiteLLM proxy keys. Default is 50.0
+| DEFAULT_SOFT_BUDGET | Default soft budget for Dheera AI proxy keys. Default is 50.0
 | DEFAULT_TRIM_RATIO | Default ratio of tokens to trim from prompt end. Default is 0.75
 | DEFAULT_GOOGLE_VIDEO_DURATION_SECONDS | Default duration for video generation in seconds in google. Default is 8
 | DIRECT_URL | Direct URL for service endpoint
 | DISABLE_ADMIN_UI | Toggle to disable the admin UI
-| DISABLE_AIOHTTP_TRANSPORT | Flag to disable aiohttp transport. When this is set to True, litellm will use httpx instead of aiohttp. **Default is False**
-| DISABLE_AIOHTTP_TRUST_ENV | Flag to disable aiohttp trust environment. When this is set to True, litellm will not trust the environment for aiohttp eg. `HTTP_PROXY` and `HTTPS_PROXY` environment variables will not be used when this is set to True. **Default is False**
+| DISABLE_AIOHTTP_TRANSPORT | Flag to disable aiohttp transport. When this is set to True, dheera_ai will use httpx instead of aiohttp. **Default is False**
+| DISABLE_AIOHTTP_TRUST_ENV | Flag to disable aiohttp trust environment. When this is set to True, dheera_ai will not trust the environment for aiohttp eg. `HTTP_PROXY` and `HTTPS_PROXY` environment variables will not be used when this is set to True. **Default is False**
 | DISABLE_SCHEMA_UPDATE | Toggle to disable schema updates
 | DYNAMIC_RATE_LIMIT_ERROR_THRESHOLD_PER_MINUTE | Threshold for deployment failures per minute before enforcing rate limits in parallel request limiter. Default is 1
 | DOCS_DESCRIPTION | Description text for documentation pages
@@ -563,8 +563,8 @@ router_settings:
 | GCS_PATH_SERVICE_ACCOUNT | Path to the Google Cloud service account JSON file
 | GCS_FLUSH_INTERVAL | Flush interval for GCS logging (in seconds). Specify how often you want a log to be sent to GCS. **Default is 20 seconds**
 | GCS_BATCH_SIZE | Batch size for GCS logging. Specify after how many logs you want to flush to GCS. If `BATCH_SIZE` is set to 10, logs are flushed every 10 logs. **Default is 2048**
-| GCS_PUBSUB_TOPIC_ID | PubSub Topic ID to send LiteLLM SpendLogs to.
-| GCS_PUBSUB_PROJECT_ID | PubSub Project ID to send LiteLLM SpendLogs to.
+| GCS_PUBSUB_TOPIC_ID | PubSub Topic ID to send Dheera AI SpendLogs to.
+| GCS_PUBSUB_PROJECT_ID | PubSub Project ID to send Dheera AI SpendLogs to.
 | GENERIC_AUTHORIZATION_ENDPOINT | Authorization endpoint for generic OAuth providers
 | GENERIC_CLIENT_ID | Client ID for generic OAuth providers
 | GENERIC_CLIENT_SECRET | Client secret for generic OAuth providers
@@ -618,7 +618,7 @@ router_settings:
 | HCP_VAULT_CERT_ROLE | Role for [Hashicorp Vault Secret Manager Auth](../secret.md#hashicorp-vault)
 | HELICONE_API_KEY | API key for Helicone service
 | HELICONE_API_BASE | Base URL for Helicone service, defaults to `https://api.helicone.ai`
-| HOSTNAME | Hostname for the server, this will be [emitted to `datadog` logs](https://docs.litellm.ai/docs/proxy/logging#datadog)
+| HOSTNAME | Hostname for the server, this will be [emitted to `datadog` logs](https://docs.dheera_ai.ai/docs/proxy/logging#datadog)
 | HOURS_IN_A_DAY | Hours in a day for calculation purposes. Default is 24
 | HIDDENLAYER_API_BASE | Base URL for HiddenLayer API. Defaults to `https://api.hiddenlayer.ai`
 | HIDDENLAYER_AUTH_URL | Authentication URL for HiddenLayer. Defaults to `https://auth.hiddenlayer.ai`
@@ -658,45 +658,45 @@ router_settings:
 | LASSO_API_KEY | API key for Lasso service
 | LASSO_USER_ID | User ID for Lasso service
 | LASSO_CONVERSATION_ID | Conversation ID for Lasso service
-| LENGTH_OF_LITELLM_GENERATED_KEY | Length of keys generated by LiteLLM. Default is 16
+| LENGTH_OF_DHEERA_AI_GENERATED_KEY | Length of keys generated by Dheera AI. Default is 16
 | LEGACY_MULTI_INSTANCE_RATE_LIMITING | Flag to enable legacy multi-instance rate limiting. **Default is False**
 | LITERAL_API_KEY | API key for Literal integration
 | LITERAL_API_URL | API URL for Literal service
 | LITERAL_BATCH_SIZE | Batch size for Literal operations
-| LITELLM_ANTHROPIC_DISABLE_URL_SUFFIX | Disable automatic URL suffix appending for Anthropic API base URLs. When set to `true`, prevents LiteLLM from automatically adding `/v1/messages` or `/v1/complete` to custom Anthropic API endpoints
-| LITELLM_DD_AGENT_HOST | Hostname or IP of DataDog agent for LiteLLM-specific logging. When set, logs are sent to agent instead of direct API
-| LITELLM_DD_AGENT_PORT | Port of DataDog agent for LiteLLM-specific log intake. Default is 10518
-| LITELLM_DONT_SHOW_FEEDBACK_BOX | Flag to hide feedback box in LiteLLM UI
-| LITELLM_DROP_PARAMS | Parameters to drop in LiteLLM requests
-| LITELLM_MODIFY_PARAMS | Parameters to modify in LiteLLM requests
-| LITELLM_EMAIL | Email associated with LiteLLM account
-| LITELLM_GLOBAL_MAX_PARALLEL_REQUEST_RETRIES | Maximum retries for parallel requests in LiteLLM
-| LITELLM_GLOBAL_MAX_PARALLEL_REQUEST_RETRY_TIMEOUT | Timeout for retries of parallel requests in LiteLLM
-| LITELLM_MIGRATION_DIR | Custom migrations directory for prisma migrations, used for baselining db in read-only file systems.
-| LITELLM_HOSTED_UI | URL of the hosted UI for LiteLLM
-| LITELLM_UI_API_DOC_BASE_URL | Optional override for the API Reference base URL (used in sample code/docs) when the admin UI runs on a different host than the proxy. Defaults to `PROXY_BASE_URL` when unset.
-| LITELM_ENVIRONMENT | Environment of LiteLLM Instance, used by logging services. Currently only used by DeepEval.
-| LITELLM_KEY_ROTATION_ENABLED | Enable auto-key rotation for LiteLLM (boolean). Default is false.
-| LITELLM_KEY_ROTATION_CHECK_INTERVAL_SECONDS | Interval in seconds for how often to run job that auto-rotates keys. Default is 86400 (24 hours).
-| LITELLM_LICENSE | License key for LiteLLM usage
-| LITELLM_LOCAL_MODEL_COST_MAP | Local configuration for model cost mapping in LiteLLM
-| LITELLM_LOG | Enable detailed logging for LiteLLM
-| LITELLM_MODEL_COST_MAP_URL | URL for fetching model cost map data. Default is https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json
-| LITELLM_LOG_FILE | File path to write LiteLLM logs to. When set, logs will be written to both console and the specified file
-| LITELLM_LOGGER_NAME | Name for OTEL logger 
-| LITELLM_METER_NAME | Name for OTEL Meter 
-| LITELLM_OTEL_INTEGRATION_ENABLE_EVENTS | Optionally enable semantic logs for OTEL
-| LITELLM_OTEL_INTEGRATION_ENABLE_METRICS | Optionally enable emantic metrics for OTEL
-| LITELLM_MASTER_KEY | Master key for proxy authentication
-| LITELLM_MODE | Operating mode for LiteLLM (e.g., production, development)
-| LITELLM_NON_ROOT | Flag to run LiteLLM in non-root mode for enhanced security in Docker containers
-| LITELLM_RATE_LIMIT_WINDOW_SIZE | Rate limit window size for LiteLLM. Default is 60
-| LITELLM_SALT_KEY | Salt key for encryption in LiteLLM
-| LITELLM_SSL_CIPHERS | SSL/TLS cipher configuration for faster handshakes. Controls cipher suite preferences for OpenSSL connections.
-| LITELLM_SECRET_AWS_KMS_LITELLM_LICENSE | AWS KMS encrypted license for LiteLLM
-| LITELLM_TOKEN | Access token for LiteLLM integration
-| LITELLM_PRINT_STANDARD_LOGGING_PAYLOAD | If true, prints the standard logging payload to the console - useful for debugging
-| LITELM_ENVIRONMENT | Environment for LiteLLM Instance. This is currently only logged to DeepEval to determine the environment for DeepEval integration.
+| DHEERA_AI_ANTHROPIC_DISABLE_URL_SUFFIX | Disable automatic URL suffix appending for Anthropic API base URLs. When set to `true`, prevents Dheera AI from automatically adding `/v1/messages` or `/v1/complete` to custom Anthropic API endpoints
+| DHEERA_AI_DD_AGENT_HOST | Hostname or IP of DataDog agent for Dheera AI-specific logging. When set, logs are sent to agent instead of direct API
+| DHEERA_AI_DD_AGENT_PORT | Port of DataDog agent for Dheera AI-specific log intake. Default is 10518
+| DHEERA_AI_DONT_SHOW_FEEDBACK_BOX | Flag to hide feedback box in Dheera AI UI
+| DHEERA_AI_DROP_PARAMS | Parameters to drop in Dheera AI requests
+| DHEERA_AI_MODIFY_PARAMS | Parameters to modify in Dheera AI requests
+| DHEERA_AI_EMAIL | Email associated with Dheera AI account
+| DHEERA_AI_GLOBAL_MAX_PARALLEL_REQUEST_RETRIES | Maximum retries for parallel requests in Dheera AI
+| DHEERA_AI_GLOBAL_MAX_PARALLEL_REQUEST_RETRY_TIMEOUT | Timeout for retries of parallel requests in Dheera AI
+| DHEERA_AI_MIGRATION_DIR | Custom migrations directory for prisma migrations, used for baselining db in read-only file systems.
+| DHEERA_AI_HOSTED_UI | URL of the hosted UI for Dheera AI
+| DHEERA_AI_UI_API_DOC_BASE_URL | Optional override for the API Reference base URL (used in sample code/docs) when the admin UI runs on a different host than the proxy. Defaults to `PROXY_BASE_URL` when unset.
+| LITELM_ENVIRONMENT | Environment of Dheera AI Instance, used by logging services. Currently only used by DeepEval.
+| DHEERA_AI_KEY_ROTATION_ENABLED | Enable auto-key rotation for Dheera AI (boolean). Default is false.
+| DHEERA_AI_KEY_ROTATION_CHECK_INTERVAL_SECONDS | Interval in seconds for how often to run job that auto-rotates keys. Default is 86400 (24 hours).
+| DHEERA_AI_LICENSE | License key for Dheera AI usage
+| DHEERA_AI_LOCAL_MODEL_COST_MAP | Local configuration for model cost mapping in Dheera AI
+| DHEERA_AI_LOG | Enable detailed logging for Dheera AI
+| DHEERA_AI_MODEL_COST_MAP_URL | URL for fetching model cost map data. Default is https://raw.githubusercontent.com/BerriAI/dheera_ai/main/model_prices_and_context_window.json
+| DHEERA_AI_LOG_FILE | File path to write Dheera AI logs to. When set, logs will be written to both console and the specified file
+| DHEERA_AI_LOGGER_NAME | Name for OTEL logger 
+| DHEERA_AI_METER_NAME | Name for OTEL Meter 
+| DHEERA_AI_OTEL_INTEGRATION_ENABLE_EVENTS | Optionally enable semantic logs for OTEL
+| DHEERA_AI_OTEL_INTEGRATION_ENABLE_METRICS | Optionally enable emantic metrics for OTEL
+| DHEERA_AI_MASTER_KEY | Master key for proxy authentication
+| DHEERA_AI_MODE | Operating mode for Dheera AI (e.g., production, development)
+| DHEERA_AI_NON_ROOT | Flag to run Dheera AI in non-root mode for enhanced security in Docker containers
+| DHEERA_AI_RATE_LIMIT_WINDOW_SIZE | Rate limit window size for Dheera AI. Default is 60
+| DHEERA_AI_SALT_KEY | Salt key for encryption in Dheera AI
+| DHEERA_AI_SSL_CIPHERS | SSL/TLS cipher configuration for faster handshakes. Controls cipher suite preferences for OpenSSL connections.
+| DHEERA_AI_SECRET_AWS_KMS_DHEERA_AI_LICENSE | AWS KMS encrypted license for Dheera AI
+| DHEERA_AI_TOKEN | Access token for Dheera AI integration
+| DHEERA_AI_PRINT_STANDARD_LOGGING_PAYLOAD | If true, prints the standard logging payload to the console - useful for debugging
+| LITELM_ENVIRONMENT | Environment for Dheera AI Instance. This is currently only logged to DeepEval to determine the environment for DeepEval integration.
 | LOGFIRE_TOKEN | Token for Logfire logging service
 | LOGGING_WORKER_CONCURRENCY | Maximum number of concurrent coroutine slots for the logging worker on the asyncio event loop. Default is 100. Setting too high will flood the event loop with logging tasks which will lower the overall latency of the requests.
 | LOGGING_WORKER_MAX_QUEUE_SIZE | Maximum size of the logging worker queue. When the queue is full, the worker aggressively clears tasks to make room instead of dropping logs. Default is 50,000
@@ -718,7 +718,7 @@ router_settings:
 | MAX_TILE_HEIGHT | Maximum height for image tiles. Default is 512
 | MAX_TILE_WIDTH | Maximum width for image tiles. Default is 512
 | MAX_TOKEN_TRIMMING_ATTEMPTS | Maximum number of attempts to trim a token message. Default is 10
-| MAXIMUM_TRACEBACK_LINES_TO_LOG | Maximum number of lines to log in traceback in LiteLLM Logs UI. Default is 100
+| MAXIMUM_TRACEBACK_LINES_TO_LOG | Maximum number of lines to log in traceback in Dheera AI Logs UI. Default is 100
 | MAX_RETRY_DELAY | Maximum delay in seconds for retrying requests. Default is 8.0
 | MAX_LANGFUSE_INITIALIZED_CLIENTS | Maximum number of Langfuse clients to initialize on proxy. Default is 50. This is set since langfuse initializes 1 thread everytime a client is initialized. We've had an incident in the past where we reached 100% cpu utilization because Langfuse was initialized several times.
 | MIN_NON_ZERO_TEMPERATURE | Minimum non-zero temperature value. Default is 0.0001
@@ -728,7 +728,7 @@ router_settings:
 | MICROSOFT_CLIENT_ID | Client ID for Microsoft services
 | MICROSOFT_CLIENT_SECRET | Client secret for Microsoft services
 | MICROSOFT_TENANT | Tenant ID for Microsoft Azure
-| MICROSOFT_SERVICE_PRINCIPAL_ID | Service Principal ID for Microsoft Enterprise Application. (This is an advanced feature if you want litellm to auto-assign members to Litellm Teams based on their Microsoft Entra ID Groups)
+| MICROSOFT_SERVICE_PRINCIPAL_ID | Service Principal ID for Microsoft Enterprise Application. (This is an advanced feature if you want dheera_ai to auto-assign members to Litellm Teams based on their Microsoft Entra ID Groups)
 | NO_DOCS | Flag to disable Swagger UI documentation
 | NO_REDOC | Flag to disable Redoc documentation
 | NO_PROXY | List of addresses to bypass proxy
@@ -766,7 +766,7 @@ router_settings:
 | PILLAR_API_BASE | Base URL for Pillar API Guardrails
 | PILLAR_API_KEY | API key for Pillar API Guardrails
 | PILLAR_ON_FLAGGED_ACTION | Action to take when content is flagged ('block' or 'monitor')
-| POD_NAME | Pod name for the server, this will be [emitted to `datadog` logs](https://docs.litellm.ai/docs/proxy/logging#datadog) as `POD_NAME` 
+| POD_NAME | Pod name for the server, this will be [emitted to `datadog` logs](https://docs.dheera_ai.ai/docs/proxy/logging#datadog) as `POD_NAME` 
 | POSTHOG_API_KEY | API key for PostHog analytics integration
 | POSTHOG_API_URL | Base URL for PostHog API (defaults to https://us.i.posthog.com)
 | PREDIBASE_API_BASE | Base URL for Predibase API
@@ -813,7 +813,7 @@ router_settings:
 | SEND_USER_API_KEY_ALIAS | Flag to send user API key alias to Zscaler AI Guard. Default is False
 | SEND_USER_API_KEY_TEAM_ID | Flag to send user API key team ID to Zscaler AI Guard. Default is False
 | SEND_USER_API_KEY_USER_ID | Flag to send user API key user ID to Zscaler AI Guard. Default is False
-| SET_VERBOSE | [DEPRECATED] Use `LITELLM_LOG` instead with values "INFO", "DEBUG", or "ERROR". See [debugging docs](./debugging)
+| SET_VERBOSE | [DEPRECATED] Use `DHEERA_AI_LOG` instead with values "INFO", "DEBUG", or "ERROR". See [debugging docs](./debugging)
 | SINGLE_DEPLOYMENT_TRAFFIC_FAILURE_THRESHOLD | Minimum number of requests to consider "reasonable traffic" for single-deployment cooldown logic. Default is 1000
 | SLACK_DAILY_REPORT_FREQUENCY | Frequency of daily Slack reports (e.g., daily, weekly)
 | SLACK_WEBHOOK_URL | Webhook URL for Slack integration

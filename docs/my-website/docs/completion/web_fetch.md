@@ -29,11 +29,11 @@ The web fetch tool allows LLMs to retrieve full content from specified web pages
 
 ## Quick Start
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
 
@@ -62,14 +62,14 @@ response = completion(
 print(response)
 ```
 
-### LiteLLM Proxy
+### Dheera AI Proxy
 
 1. Define web fetch models on config.yaml
 
 ```yaml
 model_list:
   - model_name: claude-3-5-sonnet-latest # Anthropic claude-3-5-sonnet-latest
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet-latest
       api_key: os.environ/ANTHROPIC_API_KEY
 ```
@@ -77,7 +77,7 @@ model_list:
 2. Run proxy server
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 3. Test it using the OpenAI Python SDK
@@ -87,7 +87,7 @@ import os
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-1234", # your litellm proxy api key
+    api_key="sk-1234", # your dheera_ai proxy api key
     base_url="http://0.0.0.0:4000"
 )
 
@@ -132,7 +132,7 @@ The web fetch tool currently does not support websites dynamically rendered via 
 
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
 
@@ -164,7 +164,7 @@ print(response)
 
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
 
@@ -196,7 +196,7 @@ print(response)
 
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
 
@@ -230,7 +230,7 @@ You can combine web fetch with other tools like computer use or text editor:
 
 ```python
 import os 
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["ANTHROPIC_API_KEY"] = "your-api-key"
 

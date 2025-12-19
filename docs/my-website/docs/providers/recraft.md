@@ -6,11 +6,11 @@ https://www.recraft.ai/
 | Property | Details |
 |-------|-------|
 | Description | Recraft is an AI-powered design tool that generates high-quality images with precise control over style and content. |
-| Provider Route on LiteLLM | `recraft/` |
+| Provider Route on Dheera AI | `recraft/` |
 | Link to Provider Doc | [Recraft ↗](https://www.recraft.ai/docs) |
 | Supported Operations | [`/images/generations`](#image-generation), [`/images/edits`](#image-edit) |
 
-LiteLLM supports Recraft Image Generation and Image Edit calls.
+Dheera AI supports Recraft Image Generation and Image Edit calls.
 
 ## API Base, Key
 ```python
@@ -21,10 +21,10 @@ os.environ['RECRAFT_API_BASE'] = "https://external.api.recraft.ai"  # [optional]
 
 ## Image Generation
 
-### Usage - LiteLLM Python SDK
+### Usage - Dheera AI Python SDK
 
 ```python showLineNumbers
-from litellm import image_generation
+from dheera_ai import image_generation
 import os
 
 os.environ['RECRAFT_API_KEY'] = "your-api-key"
@@ -37,14 +37,14 @@ response = image_generation(
 print(response)
 ```
 
-### Usage - LiteLLM Proxy Server
+### Usage - Dheera AI Proxy Server
 
 #### 1. Setup config.yaml
 
 ```yaml showLineNumbers
 model_list:
   - model_name: recraft-v3
-    litellm_params:
+    dheera_ai_params:
       model: recraft/recraftv3
       api_key: os.environ/RECRAFT_API_KEY
   model_info:
@@ -57,7 +57,7 @@ general_settings:
 #### 2. Start the proxy
 
 ```bash showLineNumbers
-litellm --config config.yaml
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -77,7 +77,7 @@ curl --location 'http://0.0.0.0:4000/v1/images/generations' \
 ### Advanced Usage - With Additional Parameters
 
 ```python showLineNumbers
-from litellm import image_generation
+from dheera_ai import image_generation
 import os
 
 os.environ['RECRAFT_API_KEY'] = "your-api-key"
@@ -102,14 +102,14 @@ Recraft supports the following OpenAI-compatible parameters:
 
 ### Using Non-OpenAI Parameters
 
-If you want to pass parameters that are not supported by OpenAI, you can pass them in your request body, LiteLLM will automatically route it to recraft.
+If you want to pass parameters that are not supported by OpenAI, you can pass them in your request body, Dheera AI will automatically route it to recraft.
 
 In this example we will pass `style_id` parameter to the recraft image generation call.
 
-**Usage with LiteLLM Python SDK**
+**Usage with Dheera AI Python SDK**
 
 ```python showLineNumbers
-from litellm import image_generation
+from dheera_ai import image_generation
 import os
 
 os.environ['RECRAFT_API_KEY'] = "your-api-key"
@@ -121,7 +121,7 @@ response = image_generation(
 )
 ```
 
-**Usage with LiteLLM Proxy Server + OpenAI Python SDK**
+**Usage with Dheera AI Proxy Server + OpenAI Python SDK**
 
 ```python showLineNumbers
 from openai import OpenAI
@@ -143,7 +143,7 @@ print(response)
 
 ### Supported Image Generation Models
 
-**Note: All recraft models are supported by LiteLLM** Just pass the model name with `recraft/<model_name>` and litellm will route it to recraft.
+**Note: All recraft models are supported by Dheera AI** Just pass the model name with `recraft/<model_name>` and dheera_ai will route it to recraft.
 
 | Model Name | Function Call |
 |------------|---------------|
@@ -154,10 +154,10 @@ For more details on available models and features, see: https://www.recraft.ai/d
 
 ## Image Edit
 
-### Usage - LiteLLM Python SDK
+### Usage - Dheera AI Python SDK
 
 ```python showLineNumbers
-from litellm import image_edit
+from dheera_ai import image_edit
 import os
 
 os.environ['RECRAFT_API_KEY'] = "your-api-key"
@@ -173,14 +173,14 @@ with open("reference_image.png", "rb") as image_file:
 print(response)
 ```
 
-### Usage - LiteLLM Proxy Server
+### Usage - Dheera AI Proxy Server
 
 #### 1. Setup config.yaml
 
 ```yaml showLineNumbers
 model_list:
   - model_name: recraft-v3
-    litellm_params:
+    dheera_ai_params:
       model: recraft/recraftv3
       api_key: os.environ/RECRAFT_API_KEY
   model_info:
@@ -193,7 +193,7 @@ general_settings:
 #### 2. Start the proxy
 
 ```bash showLineNumbers
-litellm --config config.yaml
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -211,7 +211,7 @@ curl --location 'http://0.0.0.0:4000/v1/images/edits' \
 ### Advanced Usage - With Additional Parameters
 
 ```python showLineNumbers
-from litellm import image_edit
+from dheera_ai import image_edit
 import os
 
 os.environ['RECRAFT_API_KEY'] = "your-api-key"
@@ -244,10 +244,10 @@ Recraft supports the following OpenAI-compatible parameters for image editing:
 
 You can pass Recraft-specific parameters that are not part of the OpenAI API by including them in your request:
 
-**Usage with LiteLLM Python SDK**
+**Usage with Dheera AI Python SDK**
 
 ```python showLineNumbers
-from litellm import image_edit
+from dheera_ai import image_edit
 import os
 
 os.environ['RECRAFT_API_KEY'] = "your-api-key"
@@ -262,15 +262,15 @@ with open("reference_image.png", "rb") as image_file:
     )
 ```
 
-**Usage with LiteLLM Proxy Server + OpenAI Python SDK**
+**Usage with Dheera AI Proxy Server + OpenAI Python SDK**
 
 ```python showLineNumbers
 from openai import OpenAI
 import os
 
 client = OpenAI(
-    api_key="sk-1234",  # your LiteLLM proxy master key
-    base_url="http://0.0.0.0:4000"  # your LiteLLM proxy URL
+    api_key="sk-1234",  # your Dheera AI proxy master key
+    base_url="http://0.0.0.0:4000"  # your Dheera AI proxy URL
 )
 
 with open("reference_image.png", "rb") as image_file:
@@ -288,7 +288,7 @@ print(response)
 
 ### Supported Image Edit Models
 
-**Note: All recraft models are supported by LiteLLM** Just pass the model name with `recraft/<model_name>` and litellm will route it to recraft.
+**Note: All recraft models are supported by Dheera AI** Just pass the model name with `recraft/<model_name>` and dheera_ai will route it to recraft.
 
 | Model Name | Function Call |
 |------------|---------------|

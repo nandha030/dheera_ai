@@ -1,5 +1,5 @@
 # What this tests?
-## This tests the litellm support for the openai /generations endpoint
+## This tests the dheera_ai support for the openai /generations endpoint
 
 import logging
 import os
@@ -14,7 +14,7 @@ sys.path.insert(
 
 from dotenv import load_dotenv
 from openai.types.image import Image
-from litellm.caching import InMemoryCache
+from dheera_ai.caching import InMemoryCache
 
 logging.basicConfig(level=logging.DEBUG)
 load_dotenv()
@@ -22,12 +22,12 @@ import asyncio
 import os
 import pytest
 
-import litellm
+import dheera_ai
 import json
 import tempfile
 from base_image_generation_test import BaseImageGenTest
 import logging
-from litellm._logging import verbose_logger
+from dheera_ai._logging import verbose_logger
 
 verbose_logger.setLevel(logging.DEBUG)
 
@@ -110,7 +110,7 @@ class TestVertexImageGeneration(BaseImageGenTest):
         # comment this when running locally
         load_vertex_ai_credentials()
 
-        litellm.in_memory_llm_clients_cache = InMemoryCache()
+        dheera_ai.in_memory_llm_clients_cache = InMemoryCache()
         return {
             "model": "vertex_ai/imagegeneration@006",
             "vertex_ai_project": "pathrise-convert-1606954137718",
@@ -125,7 +125,7 @@ class TestVertexAIGeminiImageGeneration(BaseImageGenTest):
         # comment this when running locally
         load_vertex_ai_credentials()
 
-        litellm.in_memory_llm_clients_cache = InMemoryCache()
+        dheera_ai.in_memory_llm_clients_cache = InMemoryCache()
         return {
             "model": "vertex_ai/gemini-2.5-flash-image",
             "vertex_ai_project": "pathrise-convert-1606954137718",
@@ -137,7 +137,7 @@ class TestVertexAIGeminiImageGeneration(BaseImageGenTest):
 
 class TestBedrockNovaCanvasTextToImage(BaseImageGenTest):
     def get_base_image_generation_call_args(self) -> dict:
-        litellm.in_memory_llm_clients_cache = InMemoryCache()
+        dheera_ai.in_memory_llm_clients_cache = InMemoryCache()
         return {
             "model": "bedrock/amazon.nova-canvas-v1:0",
             "n": 1,
@@ -150,7 +150,7 @@ class TestBedrockNovaCanvasTextToImage(BaseImageGenTest):
 
 class TestBedrockNovaCanvasColorGuidedGeneration(BaseImageGenTest):
     def get_base_image_generation_call_args(self) -> dict:
-        litellm.in_memory_llm_clients_cache = InMemoryCache()
+        dheera_ai.in_memory_llm_clients_cache = InMemoryCache()
         return {
             "model": "bedrock/amazon.nova-canvas-v1:0",
             "n": 1,
@@ -211,16 +211,16 @@ class TestAzureOpenAIDalle3(BaseImageGenTest):
 @pytest.mark.asyncio
 async def test_aimage_generation_bedrock_with_optional_params():
     try:
-        litellm.in_memory_llm_clients_cache = InMemoryCache()
-        response = await litellm.aimage_generation(
+        dheera_ai.in_memory_llm_clients_cache = InMemoryCache()
+        response = await dheera_ai.aimage_generation(
             prompt="A cute baby sea otter",
             model="bedrock/stability.stable-diffusion-xl-v1",
             size="256x256",
         )
         print(f"response: {response}")
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
-    except litellm.ContentPolicyViolationError:
+    except dheera_ai.ContentPolicyViolationError:
         pass  # Azure randomly raises these errors skip when they occur
     except Exception as e:
         if "Your task failed as a result of our safety system." in str(e):
@@ -267,13 +267,13 @@ async def test_aiml_image_generation_with_dynamic_api_key():
         return mock_response
 
     # Mock the HTTP client that actually makes the request (sync version for image generation)
-    with patch("litellm.llms.custom_httpx.http_handler.HTTPHandler.post") as mock_post:
+    with patch("dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post") as mock_post:
         mock_post.side_effect = capture_post_call
 
         # Test with dynamic api_key
         test_api_key = "test-dynamic-api-key-12345"
 
-        response = await litellm.aimage_generation(
+        response = await dheera_ai.aimage_generation(
             prompt="A cute baby sea otter",
             model="aiml/flux-pro/v1.1",
             api_key=test_api_key,  # This should be used instead of env vars
@@ -301,7 +301,7 @@ async def test_aiml_image_generation_with_dynamic_api_key():
 
 @pytest.mark.asyncio
 async def test_azure_image_generation_request_body():
-    from litellm import aimage_generation
+    from dheera_ai import aimage_generation
 
     test_dir = os.path.dirname(__file__)
     expected_path = os.path.join(test_dir, "request_payloads", "azure_gpt_image_1.json")
@@ -309,7 +309,7 @@ async def test_azure_image_generation_request_body():
         expected_body = json.load(f)
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         new_callable=AsyncMock,
     ) as mock_post:
         mock_post.side_effect = Exception("test")

@@ -2,14 +2,14 @@ import Image from '@theme/IdealImage';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Presidio PII Masking with LiteLLM - Complete Tutorial
+# Presidio PII Masking with Dheera AI - Complete Tutorial
 
-This tutorial will guide you through setting up PII (Personally Identifiable Information) masking with Microsoft Presidio and LiteLLM Gateway. By the end of this tutorial, you'll have a production-ready setup that automatically detects and masks sensitive information in your LLM requests.
+This tutorial will guide you through setting up PII (Personally Identifiable Information) masking with Microsoft Presidio and Dheera AI Gateway. By the end of this tutorial, you'll have a production-ready setup that automatically detects and masks sensitive information in your LLM requests.
 
 ## What You'll Learn
 
 - Deploy Presidio containers for PII detection
-- Configure LiteLLM to automatically mask sensitive data
+- Configure Dheera AI to automatically mask sensitive data
 - Test PII masking with real examples
 - Monitor and trace guardrail execution
 - Configure advanced features like output parsing and language support
@@ -30,7 +30,7 @@ PII masking automatically detects and redacts this information before it reaches
 
 Before starting this tutorial, ensure you have:
 - Docker installed on your machine
-- A LiteLLM API key or OpenAI API key for testing
+- A Dheera AI API key or OpenAI API key for testing
 - Basic familiarity with YAML configuration
 - `curl` or a similar HTTP client for testing
 
@@ -103,24 +103,24 @@ You should see a response like:
 
 ✅ **Checkpoint**: Your Presidio containers are now running and ready!
 
-## Part 2: Configure LiteLLM Gateway
+## Part 2: Configure Dheera AI Gateway
 
-Now let's configure LiteLLM to use Presidio for automatic PII masking.
+Now let's configure Dheera AI to use Presidio for automatic PII masking.
 
-### Step 2.1: Create LiteLLM Configuration
+### Step 2.1: Create Dheera AI Configuration
 
 Create a `config.yaml` file:
 
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "presidio-pii-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: presidio
       mode: "pre_call"  # Run before LLM call
       presidio_score_thresholds:  # optional confidence score thresholds for detections
@@ -142,10 +142,10 @@ export PRESIDIO_ANALYZER_API_BASE="http://localhost:5002"
 export PRESIDIO_ANONYMIZER_API_BASE="http://localhost:5001"
 ```
 
-### Step 2.3: Start LiteLLM Gateway
+### Step 2.3: Start Dheera AI Gateway
 
 ```bash
-litellm --config config.yaml --port 4000 --detailed_debug
+dheera_ai --config config.yaml --port 4000 --detailed_debug
 ```
 
 You should see output indicating the guardrails are loaded:
@@ -154,7 +154,7 @@ You should see output indicating the guardrails are loaded:
 Loaded guardrails: ['presidio-pii-guard']
 ```
 
-✅ **Checkpoint**: LiteLLM Gateway is running with PII masking enabled!
+✅ **Checkpoint**: Dheera AI Gateway is running with PII masking enabled!
 
 ## Part 3: Test PII Masking
 
@@ -265,7 +265,7 @@ Instead of masking, you can completely block requests containing specific PII ty
 ```yaml
 guardrails:
   - guardrail_name: "presidio-block-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: presidio
       mode: "pre_call"
       pii_entities_config:
@@ -306,7 +306,7 @@ Enable output parsing to automatically replace masked tokens in LLM responses wi
 ```yaml
 guardrails:
   - guardrail_name: "presidio-output-parse"
-    litellm_params:
+    dheera_ai_params:
       guardrail: presidio
       mode: "pre_call"
       output_parse_pii: true  # Enable output parsing
@@ -329,7 +329,7 @@ Configure PII detection for different languages:
 ```yaml
 guardrails:
   - guardrail_name: "presidio-spanish"
-    litellm_params:
+    dheera_ai_params:
       guardrail: presidio
       mode: "pre_call"
       presidio_language: "es"  # Spanish
@@ -338,7 +338,7 @@ guardrails:
         PERSON: "MASK"
         
   - guardrail_name: "presidio-german"
-    litellm_params:
+    dheera_ai_params:
       guardrail: presidio
       mode: "pre_call"
       presidio_language: "de"  # German
@@ -370,7 +370,7 @@ Apply PII masking only to logs (not to actual LLM requests):
 ```yaml
 guardrails:
   - guardrail_name: "presidio-logging"
-    litellm_params:
+    dheera_ai_params:
       guardrail: presidio
       mode: "logging_only"  # Only mask in logs
       pii_entities_config:
@@ -385,9 +385,9 @@ This is useful when:
 
 ## Part 5: Monitoring and Tracing
 
-### View Guardrail Execution on LiteLLM UI
+### View Guardrail Execution on Dheera AI UI
 
-If you're using the LiteLLM Admin UI, you can see detailed guardrail traces:
+If you're using the Dheera AI Admin UI, you can see detailed guardrail traces:
 
 1. Navigate to the **Logs** page
 2. Click on any request that used the guardrail
@@ -407,7 +407,7 @@ If you're using the LiteLLM Admin UI, you can see detailed guardrail traces:
 If you're logging to Langfuse, guardrail information is automatically included:
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["langfuse"]
 
 environment_variables:
@@ -425,7 +425,7 @@ environment_variables:
 You can access guardrail metadata in custom callbacks:
 
 ```python
-import litellm
+import dheera_ai
 
 def custom_callback(kwargs, result, **callback_kwargs):
     # Access guardrail metadata
@@ -434,7 +434,7 @@ def custom_callback(kwargs, result, **callback_kwargs):
     
     print(f"Masked entities: {guardrail_results}")
     
-litellm.callbacks = [custom_callback]
+dheera_ai.callbacks = [custom_callback]
 ```
 
 ## Part 6: Production Best Practices
@@ -446,7 +446,7 @@ litellm.callbacks = [custom_callback]
 ```yaml
 guardrails:
   - guardrail_name: "presidio-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: presidio
       mode: "during_call"  # Runs in parallel with LLM call
 ```
@@ -534,12 +534,12 @@ Create `custom_recognizers.json`:
 ]
 ```
 
-Configure in LiteLLM:
+Configure in Dheera AI:
 
 ```yaml
 guardrails:
   - guardrail_name: "presidio-custom"
-    litellm_params:
+    dheera_ai_params:
       guardrail: presidio
       mode: "pre_call"
       presidio_ad_hoc_recognizers: "./custom_recognizers.json"
@@ -553,7 +553,7 @@ Create test cases for your PII masking:
 
 ```python
 import pytest
-from litellm import completion
+from dheera_ai import completion
 
 def test_pii_masking_credit_card():
     """Test that credit cards are properly masked"""
@@ -650,7 +650,7 @@ deploy:
 **Solution 3: Enable caching**
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   cache: true
   cache_params:
     type: "redis"
@@ -658,7 +658,7 @@ litellm_settings:
 
 ## Conclusion
 
-Congratulations! 🎉 You've successfully set up PII masking with Presidio and LiteLLM. You now have:
+Congratulations! 🎉 You've successfully set up PII masking with Presidio and Dheera AI. You now have:
 
 ✅ A production-ready PII masking solution  
 ✅ Automatic detection of sensitive information  
@@ -670,7 +670,7 @@ Congratulations! 🎉 You've successfully set up PII masking with Presidio and L
 ## Next Steps
 
 - **[View all supported PII entity types](https://microsoft.github.io/presidio/supported_entities/)**
-- **[Explore other LiteLLM guardrails](../proxy/guardrails/quick_start)**
+- **[Explore other Dheera AI guardrails](../proxy/guardrails/quick_start)**
 - **[Set up multiple guardrails](../proxy/guardrails/quick_start#combining-multiple-guardrails)**
 - **[Configure per-key guardrails](../proxy/virtual_keys#guardrails)**
 - **[Learn about custom guardrails](../proxy/guardrails/custom_guardrail)**
@@ -678,9 +678,9 @@ Congratulations! 🎉 You've successfully set up PII masking with Presidio and L
 ## Additional Resources
 
 - [Presidio Documentation](https://microsoft.github.io/presidio/)
-- [LiteLLM Guardrails Reference](../proxy/guardrails/pii_masking_v2)
-- [LiteLLM GitHub Repository](https://github.com/BerriAI/litellm)
-- [Report Issues](https://github.com/BerriAI/litellm/issues)
+- [Dheera AI Guardrails Reference](../proxy/guardrails/pii_masking_v2)
+- [Dheera AI GitHub Repository](https://github.com/BerriAI/dheera_ai)
+- [Report Issues](https://github.com/BerriAI/dheera_ai/issues)
 
 ---
 

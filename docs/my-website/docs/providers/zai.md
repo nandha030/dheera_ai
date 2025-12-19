@@ -14,14 +14,14 @@ os.environ['ZAI_API_KEY']
 
 ## Sample Usage
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['ZAI_API_KEY'] = ""
 response = completion(
     model="zai/glm-4.6",
     messages=[
-       {"role": "user", "content": "hello from litellm"}
+       {"role": "user", "content": "hello from dheera_ai"}
    ],
 )
 print(response)
@@ -29,14 +29,14 @@ print(response)
 
 ## Sample Usage - Streaming
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['ZAI_API_KEY'] = ""
 response = completion(
     model="zai/glm-4.6",
     messages=[
-       {"role": "user", "content": "hello from litellm"}
+       {"role": "user", "content": "hello from dheera_ai"}
    ],
     stream=True
 )
@@ -73,13 +73,13 @@ We support ALL Z.AI GLM models, just set `zai/` as a prefix when sending complet
 | glm-4-32b-0414-128k | $0.10 | $0.10 | 128K |
 | glm-4.5-flash | **FREE** | **FREE** | 128K |
 
-## Using with LiteLLM Proxy
+## Using with Dheera AI Proxy
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['ZAI_API_KEY'] = ""
@@ -99,11 +99,11 @@ print(response.choices[0].message.content)
 ```yaml
 model_list:
   - model_name: glm-4.6
-    litellm_params:
+    dheera_ai_params:
         model: zai/glm-4.6
         api_key: os.environ/ZAI_API_KEY
   - model_name: glm-4.5-flash  # Free tier
-    litellm_params:
+    dheera_ai_params:
         model: zai/glm-4.5-flash
         api_key: os.environ/ZAI_API_KEY
 ```
@@ -111,7 +111,7 @@ model_list:
 2. Run proxy
 
 ```bash
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 3. Test it!

@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Bedrock Batches
 
-Use Amazon Bedrock Batch Inference API through LiteLLM.
+Use Amazon Bedrock Batch Inference API through Dheera AI.
 
 | Property | Details |
 |----------|---------|
@@ -28,14 +28,14 @@ Here's how to give developers access to your Bedrock Batch models.
 - Specify `mode: batch` for each model: Allows developers to know this is a batch model
 - Configure S3 bucket and AWS credentials for batch operations
 
-```yaml showLineNumbers title="litellm_config.yaml"
+```yaml showLineNumbers title="dheera_ai_config.yaml"
 model_list:
   - model_name: "bedrock-batch-claude"
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0
       #########################################################
       ########## batch specific params ########################
-      s3_bucket_name: litellm-proxy
+      s3_bucket_name: dheera_ai-proxy
       s3_region_name: us-west-2
       s3_access_key_id: os.environ/AWS_ACCESS_KEY_ID
       s3_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
@@ -55,7 +55,7 @@ model_list:
 | `s3_access_key_id` | AWS access key for S3 bucket |
 | `s3_secret_access_key` | AWS secret key for S3 bucket |
 | `aws_batch_role_arn` | IAM role ARN for Bedrock batch operations. Bedrock Batch APIs require an IAM role ARN to be set. |
-| `mode: batch` | Indicates to LiteLLM this is a batch model |
+| `mode: batch` | Indicates to Dheera AI this is a batch model |
 
 **Optional Parameters:**
 
@@ -76,7 +76,7 @@ You can now use the virtual key to access the batch models (See Developer flow).
 
 ## (Developer) Usage
 
-Here's how to create a LiteLLM managed file and execute Bedrock Batch CRUD operations with the file.
+Here's how to create a Dheera AI managed file and execute Bedrock Batch CRUD operations with the file.
 
 ### 1. Create request.jsonl
 
@@ -91,11 +91,11 @@ Here's how to create a LiteLLM managed file and execute Bedrock Batch CRUD opera
 
 Expectation:
 
-- LiteLLM translates this to the bedrock deployment specific value (e.g. `bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0`)
+- Dheera AI translates this to the bedrock deployment specific value (e.g. `bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0`)
 
 ### 2. Upload File
 
-Specify `target_model_names: "<model-name>"` to enable LiteLLM managed files and request validation.
+Specify `target_model_names: "<model-name>"` to enable Dheera AI managed files and request validation.
 
 model-name should be the same as the model-name in the request.jsonl
 
@@ -218,13 +218,13 @@ curl http://localhost:4000/v1/files/{output_file_id}/content \
 ```
 
 </TabItem>
-<TabItem value="litellm-direct" label="LiteLLM Direct">
+<TabItem value="dheera_ai-direct" label="Dheera AI Direct">
 
 ```python showLineNumbers title="bedrock_batch.py"
-import litellm
-from litellm import file_content
+import dheera_ai
+from dheera_ai import file_content
 
-# Download using litellm directly (bypasses proxy managed files)
+# Download using dheera_ai directly (bypasses proxy managed files)
 result = file_content(
     file_id=batch_status.output_file_id,  # Can be S3 URI or unified file ID
     custom_llm_provider="bedrock",
@@ -271,7 +271,7 @@ When a `target_model_names` is specified, the file is written to the S3 bucket c
 
 ### What models are supported?
 
-LiteLLM only supports Bedrock Anthropic Models for Batch API. If you want other bedrock models file an issue [here](https://github.com/BerriAI/litellm/issues/new/choose).
+Dheera AI only supports Bedrock Anthropic Models for Batch API. If you want other bedrock models file an issue [here](https://github.com/BerriAI/dheera_ai/issues/new/choose).
 
 ### How do I use a custom KMS encryption key?
 
@@ -283,7 +283,7 @@ You can set the encryption key in 2 ways:
 ```yaml
 model_list:
   - model_name: "bedrock-batch-claude"
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0
       s3_encryption_key_id: arn:aws:kms:us-west-2:123456789012:key/12345678-1234-1234-1234-123456789012
       # ... other params
@@ -299,5 +299,5 @@ export AWS_S3_ENCRYPTION_KEY_ID=arn:aws:kms:us-west-2:123456789012:key/12345678-
 ## Further Reading
 
 - [AWS Bedrock Batch Inference Documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html)
-- [LiteLLM Managed Batches](../proxy/managed_batches)
-- [LiteLLM Authentication to Bedrock](https://docs.litellm.ai/docs/providers/bedrock#boto3---authentication)
+- [Dheera AI Managed Batches](../proxy/managed_batches)
+- [Dheera AI Authentication to Bedrock](https://docs.dheera_ai.ai/docs/providers/bedrock#boto3---authentication)

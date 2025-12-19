@@ -6,10 +6,10 @@ Pass-through endpoints for Cohere - call provider-specific endpoint, in native f
 |-------|-------|-------|
 | Cost Tracking | ✅ | Supported for `/v1/chat`, and `/v2/chat` |
 | Logging | ✅ | works across all integrations |
-| End-user Tracking | ❌ | [Tell us if you need this](https://github.com/BerriAI/litellm/issues/new) |
+| End-user Tracking | ❌ | [Tell us if you need this](https://github.com/BerriAI/dheera_ai/issues/new) |
 | Streaming | ✅ | |
 
-Just replace `https://api.cohere.com` with `LITELLM_PROXY_BASE_URL/cohere` 🚀
+Just replace `https://api.cohere.com` with `DHEERA_AI_PROXY_BASE_URL/cohere` 🚀
 
 #### **Example Usage**
 ```bash
@@ -42,10 +42,10 @@ Let's call the Cohere [`/rerank` endpoint](https://docs.cohere.com/reference/rer
 export COHERE_API_KEY=""
 ```
 
-2. Start LiteLLM Proxy 
+2. Start Dheera AI Proxy 
 
 ```bash
-litellm
+dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -81,13 +81,13 @@ Key Changes:
 
 | **Original Endpoint**                                | **Replace With**                  |
 |------------------------------------------------------|-----------------------------------|
-| `https://api.cohere.com`          | `http://0.0.0.0:4000/cohere` (LITELLM_PROXY_BASE_URL="http://0.0.0.0:4000")      |
-| `bearer $CO_API_KEY`                                 | `bearer anything` (use `bearer LITELLM_VIRTUAL_KEY` if Virtual Keys are setup on proxy)                    |
+| `https://api.cohere.com`          | `http://0.0.0.0:4000/cohere` (DHEERA_AI_PROXY_BASE_URL="http://0.0.0.0:4000")      |
+| `bearer $CO_API_KEY`                                 | `bearer anything` (use `bearer DHEERA_AI_VIRTUAL_KEY` if Virtual Keys are setup on proxy)                    |
 
 
 ### **Example 1: Rerank endpoint**
 
-#### LiteLLM Proxy Call 
+#### Dheera AI Proxy Call 
 
 ```bash
 curl --request POST \
@@ -129,7 +129,7 @@ curl --request POST \
 
 ### **Example 2: Chat API**
 
-#### LiteLLM Proxy Call 
+#### Dheera AI Proxy Call 
 
 ```bash
 curl --request POST \
@@ -210,12 +210,12 @@ Use this, to avoid giving developers the raw Cohere API key, but still letting t
 
 ```bash
 export DATABASE_URL=""
-export LITELLM_MASTER_KEY=""
+export DHEERA_AI_MASTER_KEY=""
 export COHERE_API_KEY=""
 ```
 
 ```bash
-litellm
+dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```

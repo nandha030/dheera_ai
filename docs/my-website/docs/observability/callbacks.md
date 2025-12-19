@@ -5,10 +5,10 @@
 liteLLM provides `input_callbacks`, `success_callbacks` and `failure_callbacks`, making it easy for you to send data to a particular provider depending on the status of your responses.
 
 :::tip
-**New to LiteLLM Callbacks?**
+**New to Dheera AI Callbacks?**
 
-- For proxy/server logging and observability, see the [Proxy Logging Guide](https://docs.litellm.ai/docs/proxy/logging).
-- To write your own callback logic, see the [Custom Callbacks Guide](https://docs.litellm.ai/docs/observability/custom_callback).
+- For proxy/server logging and observability, see the [Proxy Logging Guide](https://docs.dheera_ai.ai/docs/proxy/logging).
+- To write your own callback logic, see the [Custom Callbacks Guide](https://docs.dheera_ai.ai/docs/observability/custom_callback).
 :::
 
 
@@ -31,21 +31,21 @@ This is **not** an extensive list. Please check the dropdown for all logging int
 ### Related Cookbooks
 Try out our cookbooks for code snippets and interactive demos:
 
-- [Langfuse Callback Example (Colab)](https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/logging_observability/LiteLLM_Langfuse.ipynb)
-- [Lunary Callback Example (Colab)](https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/logging_observability/LiteLLM_Lunary.ipynb)
-- [Arize Callback Example (Colab)](https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/logging_observability/LiteLLM_Arize.ipynb)
-- [Proxy + Langfuse Callback Example (Colab)](https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/logging_observability/LiteLLM_Proxy_Langfuse.ipynb)
-- [PromptLayer Callback Example (Colab)](https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/LiteLLM_PromptLayer.ipynb)
+- [Langfuse Callback Example (Colab)](https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/logging_observability/Dheera AI_Langfuse.ipynb)
+- [Lunary Callback Example (Colab)](https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/logging_observability/Dheera AI_Lunary.ipynb)
+- [Arize Callback Example (Colab)](https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/logging_observability/Dheera AI_Arize.ipynb)
+- [Proxy + Langfuse Callback Example (Colab)](https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/logging_observability/Dheera AI_Proxy_Langfuse.ipynb)
+- [PromptLayer Callback Example (Colab)](https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/Dheera AI_PromptLayer.ipynb)
 
 ### Quick Start
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # set callbacks
-litellm.input_callback=["sentry"] # for sentry breadcrumbing - logs the input being sent to the api
-litellm.success_callback=["posthog", "helicone", "langfuse", "lunary", "athina"]
-litellm.failure_callback=["sentry", "lunary", "langfuse"]
+dheera_ai.input_callback=["sentry"] # for sentry breadcrumbing - logs the input being sent to the api
+dheera_ai.success_callback=["posthog", "helicone", "langfuse", "lunary", "athina"]
+dheera_ai.failure_callback=["sentry", "lunary", "langfuse"]
 
 ## set env variables
 os.environ['LUNARY_PUBLIC_KEY'] = ""

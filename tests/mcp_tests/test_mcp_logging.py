@@ -9,17 +9,17 @@ from unittest.mock import AsyncMock, patch
 sys.path.insert(
     0, os.path.abspath("../../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm.types.utils import StandardLoggingPayload
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.proxy._experimental.mcp_server.server import (
+import dheera_ai
+from dheera_ai.types.utils import StandardLoggingPayload
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.proxy._experimental.mcp_server.server import (
    mcp_server_tool_call,
 )
-from litellm.proxy._experimental.mcp_server.mcp_server_manager import (
+from dheera_ai.proxy._experimental.mcp_server.mcp_server_manager import (
    MCPServerManager,
 )
-from litellm.types.mcp import MCPPostCallResponseObject
-from litellm.types.utils import HiddenParams
+from dheera_ai.types.mcp import MCPPostCallResponseObject
+from dheera_ai.types.utils import HiddenParams
 from mcp.types import Tool as MCPTool, CallToolResult, TextContent
 
 
@@ -37,7 +37,7 @@ class TestMCPLogger(CustomLogger):
 @pytest.mark.asyncio
 async def test_mcp_cost_tracking():
     # Create a mock tool call result
-    litellm.logging_callback_manager._reset_all_callbacks()
+    dheera_ai.logging_callback_manager._reset_all_callbacks()
     mock_result = CallToolResult(
         content=[TextContent(type="text", text="Test response")],
         isError=False
@@ -61,7 +61,7 @@ async def test_mcp_cost_tracking():
     # Initialize the server manager
     local_mcp_server_manager = MCPServerManager()
     
-    with patch('litellm.proxy._experimental.mcp_server.mcp_server_manager.MCPClient', mock_client_constructor):
+    with patch('dheera_ai.proxy._experimental.mcp_server.mcp_server_manager.MCPClient', mock_client_constructor):
         # Load the server config
         await local_mcp_server_manager.load_servers_from_config(
             mcp_servers_config={
@@ -78,14 +78,14 @@ async def test_mcp_cost_tracking():
 
         # Set up the test logger
         test_logger = TestMCPLogger()
-        litellm.callbacks = [test_logger]
+        dheera_ai.callbacks = [test_logger]
 
         # Initialize the tool mapping
         await local_mcp_server_manager._initialize_tool_name_to_mcp_server_name_mapping()
         
         # Patch the global manager in both modules where it's used
-        with patch('litellm.proxy._experimental.mcp_server.mcp_server_manager.global_mcp_server_manager', local_mcp_server_manager), \
-             patch('litellm.proxy._experimental.mcp_server.server.global_mcp_server_manager', local_mcp_server_manager):
+        with patch('dheera_ai.proxy._experimental.mcp_server.mcp_server_manager.global_mcp_server_manager', local_mcp_server_manager), \
+             patch('dheera_ai.proxy._experimental.mcp_server.server.global_mcp_server_manager', local_mcp_server_manager):
 
             print("tool_name_to_mcp_server_name_mapping", local_mcp_server_manager.tool_name_to_mcp_server_name_mapping)
 
@@ -132,7 +132,7 @@ async def test_mcp_cost_tracking():
 async def test_mcp_cost_tracking_per_tool():
     """Test that individual tool costs are tracked correctly when tool_name_to_cost_per_query is configured"""
     # Create a mock tool call result
-    litellm.logging_callback_manager._reset_all_callbacks()
+    dheera_ai.logging_callback_manager._reset_all_callbacks()
     mock_result = CallToolResult(
         content=[TextContent(type="text", text="Test response")],
         isError=False
@@ -161,7 +161,7 @@ async def test_mcp_cost_tracking_per_tool():
     # Initialize the server manager
     local_mcp_server_manager = MCPServerManager()
     
-    with patch('litellm.proxy._experimental.mcp_server.mcp_server_manager.MCPClient', mock_client_constructor):
+    with patch('dheera_ai.proxy._experimental.mcp_server.mcp_server_manager.MCPClient', mock_client_constructor):
         # Load the server config with per-tool costs
         await local_mcp_server_manager.load_servers_from_config(
             mcp_servers_config={
@@ -182,7 +182,7 @@ async def test_mcp_cost_tracking_per_tool():
 
         # Set up the test logger
         test_logger = TestMCPLogger()
-        litellm.callbacks = [test_logger]
+        dheera_ai.callbacks = [test_logger]
 
         # Initialize the tool mapping
         await local_mcp_server_manager._initialize_tool_name_to_mcp_server_name_mapping()
@@ -194,8 +194,8 @@ async def test_mcp_cost_tracking_per_tool():
         local_mcp_server_manager.tool_name_to_mcp_server_name_mapping["test_server-cheap_tool"] = "test_server"
         
         # Patch the global manager in both modules where it's used
-        with patch('litellm.proxy._experimental.mcp_server.mcp_server_manager.global_mcp_server_manager', local_mcp_server_manager), \
-             patch('litellm.proxy._experimental.mcp_server.server.global_mcp_server_manager', local_mcp_server_manager):
+        with patch('dheera_ai.proxy._experimental.mcp_server.mcp_server_manager.global_mcp_server_manager', local_mcp_server_manager), \
+             patch('dheera_ai.proxy._experimental.mcp_server.server.global_mcp_server_manager', local_mcp_server_manager):
 
             print("tool_name_to_mcp_server_name_mapping", local_mcp_server_manager.tool_name_to_mcp_server_name_mapping)
 
@@ -278,7 +278,7 @@ class MCPLoggerHook(CustomLogger):
 @pytest.mark.asyncio
 async def test_mcp_tool_call_hook():
     # Create a mock tool call result
-    litellm.logging_callback_manager._reset_all_callbacks()
+    dheera_ai.logging_callback_manager._reset_all_callbacks()
     mock_result = CallToolResult(
         content=[TextContent(type="text", text="Test response")],
         isError=False
@@ -302,7 +302,7 @@ async def test_mcp_tool_call_hook():
     # Initialize the server manager
     local_mcp_server_manager = MCPServerManager()
     
-    with patch('litellm.proxy._experimental.mcp_server.mcp_server_manager.MCPClient', mock_client_constructor):
+    with patch('dheera_ai.proxy._experimental.mcp_server.mcp_server_manager.MCPClient', mock_client_constructor):
         # Load the server config
         await local_mcp_server_manager.load_servers_from_config(
             mcp_servers_config={
@@ -314,7 +314,7 @@ async def test_mcp_tool_call_hook():
 
         # Set up the test logger
         test_logger = MCPLoggerHook()
-        litellm.callbacks = [test_logger]
+        dheera_ai.callbacks = [test_logger]
 
         # Initialize the tool mapping
         await local_mcp_server_manager._initialize_tool_name_to_mcp_server_name_mapping()
@@ -324,8 +324,8 @@ async def test_mcp_tool_call_hook():
         local_mcp_server_manager.tool_name_to_mcp_server_name_mapping["zapier_gmail_server-add_tools"] = "zapier_gmail_server"
         
         # Patch the global manager in both modules where it's used
-        with patch('litellm.proxy._experimental.mcp_server.mcp_server_manager.global_mcp_server_manager', local_mcp_server_manager), \
-             patch('litellm.proxy._experimental.mcp_server.server.global_mcp_server_manager', local_mcp_server_manager):
+        with patch('dheera_ai.proxy._experimental.mcp_server.mcp_server_manager.global_mcp_server_manager', local_mcp_server_manager), \
+             patch('dheera_ai.proxy._experimental.mcp_server.server.global_mcp_server_manager', local_mcp_server_manager):
 
             print("tool_name_to_mcp_server_name_mapping", local_mcp_server_manager.tool_name_to_mcp_server_name_mapping)
 

@@ -19,10 +19,10 @@ Create a new file called `custom_guardrail.py` and add this code to it:
 ```python
 import os
 from typing import Optional, List
-from litellm.integrations.custom_guardrail import CustomGuardrail
-from litellm.types.guardrails import PiiEntityType
-from litellm._logging import verbose_proxy_logger
-from litellm.llms.custom_httpx.http_handler import (
+from dheera_ai.integrations.custom_guardrail import CustomGuardrail
+from dheera_ai.types.guardrails import PiiEntityType
+from dheera_ai._logging import verbose_proxy_logger
+from dheera_ai.llms.custom_httpx.http_handler import (
     get_async_httpx_client,
     httpxSpecialProvider,
 )
@@ -84,7 +84,7 @@ If you need more fine-grained control, you can implement individual event hooks 
 
 :::
 
-### 2. Pass your custom guardrail class in LiteLLM `config.yaml`
+### 2. Pass your custom guardrail class in Dheera AI `config.yaml`
 
 In the config below, we point the guardrail to our custom guardrail by setting `guardrail: custom_guardrail.myCustomGuardrail`
 
@@ -96,13 +96,13 @@ In the config below, we point the guardrail to our custom guardrail by setting `
 ```yaml
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "my-custom-guardrail"
-    litellm_params:
+    dheera_ai_params:
       guardrail: custom_guardrail.myCustomGuardrail  # 👈 Key change
       mode: "during_call"               # runs apply_guardrail method
       api_key: os.environ/MY_GUARDRAIL_API_KEY
@@ -125,29 +125,29 @@ If you're using individual event hooks, you can configure multiple guardrails wi
 ```yaml
 guardrails:
   - guardrail_name: "custom-pre-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: custom_guardrail.myCustomGuardrail
       mode: "pre_call"                  # runs async_pre_call_hook
   - guardrail_name: "custom-during-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: custom_guardrail.myCustomGuardrail  
       mode: "during_call"               # runs async_moderation_hook
   - guardrail_name: "custom-post-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: custom_guardrail.myCustomGuardrail
       mode: "post_call"                 # runs async_post_call_success_hook
 ```
 
 </details>
 
-### 3. Start LiteLLM Gateway 
+### 3. Start Dheera AI Gateway 
 
 <Tabs>
 <TabItem value="docker" label="Docker Run">
 
-Mount your `custom_guardrail.py` on the LiteLLM Docker container
+Mount your `custom_guardrail.py` on the Dheera AI Docker container
 
-This mounts your `custom_guardrail.py` file from your local directory to the `/app` directory in the Docker container, making it accessible to the LiteLLM Gateway.
+This mounts your `custom_guardrail.py` file from your local directory to the `/app` directory in the Docker container, making it accessible to the Dheera AI Gateway.
 
 
 ```shell
@@ -165,11 +165,11 @@ docker run -d \
 
 </TabItem>
 
-<TabItem value="py" label="litellm pip">
+<TabItem value="py" label="dheera_ai pip">
 
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 </TabItem>
@@ -247,7 +247,7 @@ If you're using individual event hooks, you can test each mode separately:
 <Tabs>
 <TabItem label="Modify input" value = "not-allowed">
 
-Expect this to mask the word `litellm` before sending the request to the LLM API. [This runs the `async_pre_call_hook`](#advanced-individual-event-hooks)
+Expect this to mask the word `dheera_ai` before sending the request to the LLM API. [This runs the `async_pre_call_hook`](#advanced-individual-event-hooks)
 
 ```shell
 curl -i  -X POST http://localhost:4000/v1/chat/completions \
@@ -258,7 +258,7 @@ curl -i  -X POST http://localhost:4000/v1/chat/completions \
     "messages": [
         {
             "role": "user",
-            "content": "say the word - `litellm`"
+            "content": "say the word - `dheera_ai`"
         }
     ],
    "guardrails": ["custom-pre-guard"]
@@ -291,7 +291,7 @@ curl -i http://localhost:4000/v1/chat/completions \
 <Tabs>
 <TabItem label="Unsuccessful call" value = "not-allowed">
 
-Expect this to fail since `litellm` is in the message content. [This runs the `async_moderation_hook`](#advanced-individual-event-hooks)
+Expect this to fail since `dheera_ai` is in the message content. [This runs the `async_moderation_hook`](#advanced-individual-event-hooks)
 
 ```shell
 curl -i  -X POST http://localhost:4000/v1/chat/completions \
@@ -302,7 +302,7 @@ curl -i  -X POST http://localhost:4000/v1/chat/completions \
     "messages": [
         {
             "role": "user",
-            "content": "say the word - `litellm`"
+            "content": "say the word - `dheera_ai`"
         }
     ],
    "guardrails": ["custom-during-guard"]
@@ -314,7 +314,7 @@ Expected response:
 ```json
 {
   "error": {
-    "message": "Guardrail failed words - `litellm` detected",
+    "message": "Guardrail failed words - `dheera_ai` detected",
     "type": "None",
     "param": "None",
     "code": "500"
@@ -409,7 +409,7 @@ curl -i  -X POST http://localhost:4000/v1/chat/completions \
 
 :::info
 
-✨ This is an Enterprise only feature [Contact us to get a free trial](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+✨ This is an Enterprise only feature [Contact us to get a free trial](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
@@ -418,15 +418,15 @@ Use this to pass additional parameters to the guardrail API call. e.g. things li
 
 1. Use `get_guardrail_dynamic_request_body_params`
 
-`get_guardrail_dynamic_request_body_params` is a method of the `litellm.integrations.custom_guardrail.CustomGuardrail` class that fetches the dynamic guardrail params passed in the request body.
+`get_guardrail_dynamic_request_body_params` is a method of the `dheera_ai.integrations.custom_guardrail.CustomGuardrail` class that fetches the dynamic guardrail params passed in the request body.
 
 ```python
 from typing import Any, Dict, List, Literal, Optional, Union
-import litellm
-from litellm._logging import verbose_proxy_logger
-from litellm.caching.caching import DualCache
-from litellm.integrations.custom_guardrail import CustomGuardrail
-from litellm.proxy._types import UserAPIKeyAuth
+import dheera_ai
+from dheera_ai._logging import verbose_proxy_logger
+from dheera_ai.caching.caching import DualCache
+from dheera_ai.integrations.custom_guardrail import CustomGuardrail
+from dheera_ai.proxy._types import UserAPIKeyAuth
 
 class myCustomGuardrail(CustomGuardrail):
     def __init__(self, **kwargs):
@@ -457,7 +457,7 @@ class myCustomGuardrail(CustomGuardrail):
 
 2. Pass parameters in your API requests:
 
-LiteLLM Proxy allows you to pass `guardrails` in the request body, following the [`guardrails` spec](quick_start#spec-guardrails-parameter).
+Dheera AI Proxy allows you to pass `guardrails` in the request body, following the [`guardrails` spec](quick_start#spec-guardrails-parameter).
 
 <Tabs>
 <TabItem value="openai" label="OpenAI Python">
@@ -533,12 +533,12 @@ For more fine-grained control over when and how your guardrail runs, you can imp
 ```python
 from typing import Any, AsyncGenerator, Literal, Optional, Union
 
-import litellm
-from litellm._logging import verbose_proxy_logger
-from litellm.caching.caching import DualCache
-from litellm.integrations.custom_guardrail import CustomGuardrail
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.types.utils import ModelResponseStream, CallTypes
+import dheera_ai
+from dheera_ai._logging import verbose_proxy_logger
+from dheera_ai.caching.caching import DualCache
+from dheera_ai.integrations.custom_guardrail import CustomGuardrail
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.types.utils import ModelResponseStream, CallTypes
 
 
 class myCustomGuardrail(CustomGuardrail):
@@ -564,14 +564,14 @@ class myCustomGuardrail(CustomGuardrail):
         Use this if you want to MODIFY the input
         """
 
-        # In this guardrail, if a user inputs `litellm` we will mask it and then send it to the LLM
+        # In this guardrail, if a user inputs `dheera_ai` we will mask it and then send it to the LLM
         _messages = data.get("messages")
         if _messages:
             for message in _messages:
                 _content = message.get("content")
                 if isinstance(_content, str):
-                    if "litellm" in _content.lower():
-                        _content = _content.replace("litellm", "********")
+                    if "dheera_ai" in _content.lower():
+                        _content = _content.replace("dheera_ai", "********")
                         message["content"] = _content
 
         verbose_proxy_logger.debug(
@@ -594,14 +594,14 @@ class myCustomGuardrail(CustomGuardrail):
         """
 
         # this works the same as async_pre_call_hook, but just runs in parallel as the LLM API Call
-        # In this guardrail, if a user inputs `litellm` we will mask it.
+        # In this guardrail, if a user inputs `dheera_ai` we will mask it.
         _messages = data.get("messages")
         if _messages:
             for message in _messages:
                 _content = message.get("content")
                 if isinstance(_content, str):
-                    if "litellm" in _content.lower():
-                        raise ValueError("Guardrail failed words - `litellm` detected")
+                    if "dheera_ai" in _content.lower():
+                        raise ValueError("Guardrail failed words - `dheera_ai` detected")
 
     async def async_post_call_success_hook(
         self,
@@ -617,9 +617,9 @@ class myCustomGuardrail(CustomGuardrail):
         If a response contains the word "coffee" -> we will raise an exception
         """
         verbose_proxy_logger.debug("async_pre_call_hook response: %s", response)
-        if isinstance(response, litellm.ModelResponse):
+        if isinstance(response, dheera_ai.ModelResponse):
             for choice in response.choices:
-                if isinstance(choice, litellm.Choices):
+                if isinstance(choice, dheera_ai.Choices):
                     verbose_proxy_logger.debug("async_pre_call_hook choice: %s", choice)
                     if (
                         choice.message.content
@@ -639,7 +639,7 @@ class myCustomGuardrail(CustomGuardrail):
 
         This is useful for guardrails that need to see the entire response, such as PII masking.
 
-        See Aim guardrail implementation for an example - https://github.com/BerriAI/litellm/blob/d0e022cfacb8e9ebc5409bb652059b6fd97b45c0/litellm/proxy/guardrails/guardrail_hooks/aim.py#L168
+        See Aim guardrail implementation for an example - https://github.com/BerriAI/dheera_ai/blob/d0e022cfacb8e9ebc5409bb652059b6fd97b45c0/dheera_ai/proxy/guardrails/guardrail_hooks/aim.py#L168
 
         Triggered by mode: 'post_call'
         """
@@ -663,11 +663,11 @@ class myCustomGuardrail(CustomGuardrail):
 
 **Q. Is `apply_guardrail` relevant both in the request and in the response (pre_call, during_call and post_call hooks)?**
 
-**A.** Yes, one function works in both - See implementation [here](https://github.com/BerriAI/litellm/blob/0292b84dc47473ddeff29bd5a86f529bc523034b/litellm/proxy/utils.py#L825)
+**A.** Yes, one function works in both - See implementation [here](https://github.com/BerriAI/dheera_ai/blob/0292b84dc47473ddeff29bd5a86f529bc523034b/dheera_ai/proxy/utils.py#L825)
 
 **Q. What do I get in the inputs of `apply_guardrail`? What does each field represent (what is text, language, entities, request_data)?**
 
-**A.** The main one you should care about is 'text' - this is what you'll want to send to your api for verification - See implementation [here](https://github.com/BerriAI/litellm/blob/0292b84dc47473ddeff29bd5a86f529bc523034b/litellm/llms/anthropic/chat/guardrail_translation/handler.py#L102)
+**A.** The main one you should care about is 'text' - this is what you'll want to send to your api for verification - See implementation [here](https://github.com/BerriAI/dheera_ai/blob/0292b84dc47473ddeff29bd5a86f529bc523034b/dheera_ai/llms/anthropic/chat/guardrail_translation/handler.py#L102)
 
 **Q. Is this function agnostic to the LLM provider? Meaning does it pass the same values for OpenAI and Anthropic for example?
 

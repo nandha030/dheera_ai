@@ -10,12 +10,12 @@ import TabItem from '@theme/TabItem';
 | Loadbalancing | ✅ | Between supported models |
 | Supported Providers | `gemini` | [Google Interactions API](https://ai.google.dev/gemini-api/docs/interactions) |
 
-## **LiteLLM Python SDK Usage**
+## **Dheera AI Python SDK Usage**
 
 ### Quick Start
 
 ```python showLineNumbers title="Create Interaction"
-from litellm import create_interaction
+from dheera_ai import create_interaction
 import os
 
 os.environ["GEMINI_API_KEY"] = "your-api-key"
@@ -31,7 +31,7 @@ print(response.outputs[-1].text)
 ### Async Usage
 
 ```python showLineNumbers title="Async Create Interaction"
-from litellm import acreate_interaction
+from dheera_ai import acreate_interaction
 import os
 import asyncio
 
@@ -50,7 +50,7 @@ asyncio.run(main())
 ### Streaming
 
 ```python showLineNumbers title="Streaming Interaction"
-from litellm import create_interaction
+from dheera_ai import create_interaction
 import os
 
 os.environ["GEMINI_API_KEY"] = "your-api-key"
@@ -65,24 +65,24 @@ for chunk in response:
     print(chunk)
 ```
 
-## **LiteLLM AI Gateway (Proxy) Usage**
+## **Dheera AI AI Gateway (Proxy) Usage**
 
 ### Setup
 
-Add this to your litellm proxy config.yaml:
+Add this to your dheera_ai proxy config.yaml:
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gemini-flash
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.5-flash
       api_key: os.environ/GEMINI_API_KEY
 ```
 
-Start litellm:
+Start dheera_ai:
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -126,15 +126,15 @@ curl "http://localhost:4000/v1beta/interactions/{interaction_id}" \
 
 <TabItem value="google-sdk" label="Google GenAI SDK">
 
-Point the Google GenAI SDK to LiteLLM Proxy:
+Point the Google GenAI SDK to Dheera AI Proxy:
 
-```python showLineNumbers title="Google GenAI SDK with LiteLLM Proxy"
+```python showLineNumbers title="Google GenAI SDK with Dheera AI Proxy"
 from google import genai
 import os
 
-# Point SDK to LiteLLM Proxy
+# Point SDK to Dheera AI Proxy
 os.environ["GOOGLE_GENAI_BASE_URL"] = "http://localhost:4000"
-os.environ["GEMINI_API_KEY"] = "sk-1234"  # Your LiteLLM API key
+os.environ["GEMINI_API_KEY"] = "sk-1234"  # Your Dheera AI API key
 
 client = genai.Client()
 

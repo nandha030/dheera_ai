@@ -362,20 +362,20 @@ async def health():
 
 
 """
-LiteLLM exposes a basic guardrail API with the text extracted from the request and sent to the guardrail API, as well as the received request body for any further processing. 
+DheeraAI exposes a basic guardrail API with the text extracted from the request and sent to the guardrail API, as well as the received request body for any further processing. 
 
-This works across all LiteLLM endpoints (completion, anthropic /v1/messages, responses api, image generation, embedding, etc.)
+This works across all DheeraAI endpoints (completion, anthropic /v1/messages, responses api, image generation, embedding, etc.)
 
-This makes it easy to support your own guardrail API without having to make a PR to LiteLLM.
+This makes it easy to support your own guardrail API without having to make a PR to DheeraAI.
 
-LiteLLM supports passing any provider specific params from LiteLLM config.yaml to the guardrail API.
+DheeraAI supports passing any provider specific params from DheeraAI config.yaml to the guardrail API.
 
 Example:
 
 ```yaml
 guardrails:
   - guardrail_name: "bedrock-content-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: generic_guardrail_api
       mode: "pre_call"
       api_key: os.environ/GUARDRAIL_API_KEY
@@ -396,25 +396,25 @@ class LitellmBasicGuardrailRequest(BaseModel):
     request_data: Dict[str, Any] = Field(default_factory=dict)
     additional_provider_specific_params: Dict[str, Any] = Field(default_factory=dict)
     input_type: Literal["request", "response"]
-    litellm_call_id: Optional[str] = None
-    litellm_trace_id: Optional[str] = None
+    dheera_ai_call_id: Optional[str] = None
+    dheera_ai_trace_id: Optional[str] = None
     structured_messages: Optional[List[Dict[str, Any]]] = None
 
 
 class LitellmBasicGuardrailResponse(BaseModel):
     action: Literal[
         "BLOCKED", "NONE", "GUARDRAIL_INTERVENED"
-    ]  # BLOCKED = litellm will raise an error, NONE = litellm will continue, GUARDRAIL_INTERVENED = litellm will continue, but the text was modified by the guardrail
+    ]  # BLOCKED = dheera_ai will raise an error, NONE = dheera_ai will continue, GUARDRAIL_INTERVENED = dheera_ai will continue, but the text was modified by the guardrail
     blocked_reason: Optional[str] = None  # only if action is BLOCKED, otherwise None
     texts: Optional[List[str]] = None
     images: Optional[List[str]] = None
 
 
 @app.post(
-    "/beta/litellm_basic_guardrail_api",
+    "/beta/dheera_ai_basic_guardrail_api",
     response_model=LitellmBasicGuardrailResponse,
 )
-async def beta_litellm_basic_guardrail_api(
+async def beta_dheera_ai_basic_guardrail_api(
     request: LitellmBasicGuardrailRequest,
 ) -> LitellmBasicGuardrailResponse:
     """

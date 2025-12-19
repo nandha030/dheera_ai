@@ -4,7 +4,7 @@ Base test class for OCR functionality across different providers.
 This follows the same pattern as BaseLLMChatTest in tests/llm_translation/base_llm_unit_tests.py
 """
 import pytest
-import litellm
+import dheera_ai
 import os
 from abc import ABC, abstractmethod
 
@@ -32,14 +32,14 @@ class BaseOCRTest(ABC):
         """Fixture to handle rate limit errors for all test methods"""
         try:
             yield
-        except litellm.RateLimitError as e:
+        except dheera_ai.RateLimitError as e:
             # Check if it's a quota exceeded error
             error_msg = str(e)
             if "Quota exceeded" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
                 pytest.skip(f"Quota exceeded - {error_msg}")
             else:
                 pytest.skip(f"Rate limit exceeded - {error_msg}")
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pytest.skip("Model is overloaded")
 
     @pytest.mark.parametrize("sync_mode", [True, False])
@@ -48,15 +48,15 @@ class BaseOCRTest(ABC):
         """
         Test basic OCR with a public URL.
         """
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         base_ocr_call_args = self.get_base_ocr_call_args()
         print("BASE OCR Call args=", base_ocr_call_args)
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
         try:
             if sync_mode:
-                response = litellm.ocr(
+                response = dheera_ai.ocr(
                     document={
                         "type": "document_url",
                         "document_url": TEST_PDF_URL
@@ -64,7 +64,7 @@ class BaseOCRTest(ABC):
                     **base_ocr_call_args,
                 )
             else:
-                response = await litellm.aocr(
+                response = await dheera_ai.aocr(
                     document={
                         "type": "document_url",
                         "document_url": TEST_PDF_URL
@@ -117,7 +117,7 @@ class BaseOCRTest(ABC):
             assert response_cost > 0, "Response cost should be greater than 0"
             print("response_cost=", response_cost)
             
-        except (litellm.RateLimitError, litellm.InternalServerError):
+        except (dheera_ai.RateLimitError, dheera_ai.InternalServerError):
             # Re-raise these errors so the fixture can handle them
             raise
         except Exception as e:
@@ -127,11 +127,11 @@ class BaseOCRTest(ABC):
         """
         Test that the OCR response has the correct structure.
         """
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         base_ocr_call_args = self.get_base_ocr_call_args()
 
         try:
-            response = litellm.ocr(
+            response = dheera_ai.ocr(
                 document={
                     "type": "document_url",
                     "document_url": TEST_PDF_URL
@@ -163,7 +163,7 @@ class BaseOCRTest(ABC):
                 print(f"  - pages_processed: {response.usage_info.pages_processed}")
                 print(f"  - doc_size_bytes: {response.usage_info.doc_size_bytes}")
         
-        except (litellm.RateLimitError, litellm.InternalServerError):
+        except (dheera_ai.RateLimitError, dheera_ai.InternalServerError):
             # Re-raise these errors so the fixture can handle them
             raise
         except Exception as e:

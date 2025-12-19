@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # IBM watsonx.ai
 
-LiteLLM supports all IBM [watsonx.ai](https://watsonx.ai/) foundational models and embeddings.
+Dheera AI supports all IBM [watsonx.ai](https://watsonx.ai/) foundational models and embeddings.
 
 ## Environment Variables
 ```python
@@ -21,13 +21,13 @@ See [here](https://cloud.ibm.com/apidocs/watsonx-ai#api-authentication) for more
 
 ## Usage
 
-<a target="_blank" href="https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/liteLLM_IBM_Watsonx.ipynb">
+<a target="_blank" href="https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/liteLLM_IBM_Watsonx.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 
 ```python showLineNumbers title="Chat Completion"
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["WATSONX_URL"] = ""
 os.environ["WATSONX_APIKEY"] = ""
@@ -42,7 +42,7 @@ response = completion(
 ## Usage - Streaming
 ```python showLineNumbers title="Streaming"
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["WATSONX_URL"] = ""
 os.environ["WATSONX_APIKEY"] = ""
@@ -62,9 +62,9 @@ for chunk in response:
 Models deployed to a deployment space (e.g.: tuned models) can be called using the `deployment/<deployment_id>` format.
 
 ```python showLineNumbers title="Deployment Space"
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="watsonx/deployment/<deployment_id>",
     messages=[{"content": "Hello, how are you?", "role": "user"}],
     space_id="<deployment_space_id>"
@@ -74,7 +74,7 @@ response = litellm.completion(
 ## Usage - Embeddings
 
 ```python showLineNumbers title="Embeddings"
-from litellm import embedding
+from dheera_ai import embedding
 
 response = embedding(
     model="watsonx/ibm/slate-30m-english-rtrvr",
@@ -83,7 +83,7 @@ response = embedding(
 )
 ```
 
-## LiteLLM Proxy Usage 
+## Dheera AI Proxy Usage 
 
 ### 1. Save keys in your environment
 
@@ -99,7 +99,7 @@ export WATSONX_PROJECT_ID=""
 <TabItem value="cli" label="CLI">
 
 ```bash
-$ litellm --model watsonx/meta-llama/llama-3-8b-instruct
+$ dheera_ai --model watsonx/meta-llama/llama-3-8b-instruct
 ```
 
 </TabItem>
@@ -108,7 +108,7 @@ $ litellm --model watsonx/meta-llama/llama-3-8b-instruct
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: llama-3-8b
-    litellm_params:
+    dheera_ai_params:
       model: watsonx/meta-llama/llama-3-8b-instruct
       api_key: "os.environ/WATSONX_API_KEY"
 ```
@@ -184,7 +184,7 @@ You can use a Zen API key for long-term authentication instead of generating IAM
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # Option 1: Set as environment variable
 os.environ["WATSONX_ZENAPIKEY"] = "your-zen-api-key"
@@ -204,13 +204,13 @@ response = completion(
 )
 ```
 
-**Using with LiteLLM Proxy via OpenAI client:**
+**Using with Dheera AI Proxy via OpenAI client:**
 
 ```python
 import openai
 
 client = openai.OpenAI(
-    api_key="sk-1234",  # LiteLLM proxy key
+    api_key="sk-1234",  # Dheera AI proxy key
     base_url="http://0.0.0.0:4000"
 )
 

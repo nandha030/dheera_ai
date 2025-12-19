@@ -6,7 +6,7 @@ sys.path.insert(
 )  # Adds the parent directory to the system path
 
 import pytest
-from litellm.llms.azure.common_utils import process_azure_headers
+from dheera_ai.llms.azure.common_utils import process_azure_headers
 from httpx import Headers
 from base_embedding_unit_tests import BaseLLMEmbeddingTest
 
@@ -100,8 +100,8 @@ def test_process_azure_headers_with_dict_input():
 from httpx import Client
 from unittest.mock import MagicMock, patch
 from openai import AzureOpenAI
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 import os
 
 
@@ -121,13 +121,13 @@ import os
     ],
 )
 def test_azure_extra_headers(input, call_type, header_value):
-    from litellm import embedding, image_generation
+    from dheera_ai import embedding, image_generation
 
     http_client = Client()
 
     messages = [{"role": "user", "content": "Hello world"}]
     with patch.object(http_client, "send", new=MagicMock()) as mock_client:
-        litellm.client_session = http_client
+        dheera_ai.client_session = http_client
         try:
             if call_type == "completion":
                 func = completion
@@ -183,7 +183,7 @@ def test_azure_extra_headers(input, call_type, header_value):
     ],
 )
 def test_process_azure_endpoint_url(api_base, model, expected_endpoint):
-    from litellm.llms.azure.azure import AzureChatCompletion
+    from dheera_ai.llms.azure.azure import AzureChatCompletion
 
     azure_chat_completion = AzureChatCompletion()
     input_args = {
@@ -209,8 +209,8 @@ class TestAzureEmbedding(BaseLLMEmbeddingTest):
             "api_base": os.getenv("AZURE_API_BASE"),
         }
 
-    def get_custom_llm_provider(self) -> litellm.LlmProviders:
-        return litellm.LlmProviders.AZURE
+    def get_custom_llm_provider(self) -> dheera_ai.LlmProviders:
+        return dheera_ai.LlmProviders.AZURE
 
 
 @patch("azure.identity.UsernamePasswordCredential")
@@ -218,7 +218,7 @@ class TestAzureEmbedding(BaseLLMEmbeddingTest):
 def test_get_azure_ad_token_from_username_password(
     mock_get_bearer_token_provider, mock_credential
 ):
-    from litellm.llms.azure.common_utils import (
+    from dheera_ai.llms.azure.common_utils import (
         get_azure_ad_token_from_username_password,
     )
 
@@ -293,10 +293,10 @@ def test_azure_openai_gpt_4o_naming(monkeypatch):
     ],
 )
 def test_azure_gpt_4o_with_tool_call_and_response_format(api_version):
-    from litellm import completion
+    from dheera_ai import completion
     from typing import Optional
     from pydantic import BaseModel
-    import litellm
+    import dheera_ai
 
     from openai import AzureOpenAI
 
@@ -338,7 +338,7 @@ def test_azure_gpt_4o_with_tool_call_and_response_format(api_version):
     ]
 
     with patch.object(client.chat.completions.with_raw_response, "create") as mock_post:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="azure/gpt-4.1-mini",
             messages=[
                 {
@@ -371,7 +371,7 @@ def test_map_openai_params():
     """
     Ensure response_format does not override tools
     """
-    from litellm.llms.azure.chat.gpt_transformation import AzureOpenAIConfig
+    from dheera_ai.llms.azure.chat.gpt_transformation import AzureOpenAIConfig
 
     azure_openai_config = AzureOpenAIConfig()
     tools = [
@@ -465,12 +465,12 @@ def test_map_openai_params():
 @pytest.mark.parametrize("max_retries", [0, 4])
 @pytest.mark.parametrize("stream", [True, False])
 @patch(
-    "litellm.main.azure_chat_completions.make_sync_azure_openai_chat_completion_request"
+    "dheera_ai.main.azure_chat_completions.make_sync_azure_openai_chat_completion_request"
 )
 def test_azure_max_retries_0(
     mock_make_sync_azure_openai_chat_completion_request, max_retries, stream
 ):
-    from litellm import completion
+    from dheera_ai import completion
 
     try:
         completion(
@@ -493,12 +493,12 @@ def test_azure_max_retries_0(
 
 @pytest.mark.parametrize("max_retries", [0, 4])
 @pytest.mark.parametrize("stream", [True, False])
-@patch("litellm.main.azure_chat_completions.make_azure_openai_chat_completion_request")
+@patch("dheera_ai.main.azure_chat_completions.make_azure_openai_chat_completion_request")
 @pytest.mark.asyncio
 async def test_async_azure_max_retries_0(
     make_azure_openai_chat_completion_request, max_retries, stream
 ):
-    from litellm import acompletion
+    from dheera_ai import acompletion
 
     try:
         await acompletion(
@@ -522,12 +522,12 @@ async def test_async_azure_max_retries_0(
 @pytest.mark.parametrize("max_retries", [0, 4])
 @pytest.mark.parametrize("stream", [True, False])
 @pytest.mark.parametrize("sync_mode", [True, False])
-@patch("litellm.llms.azure.common_utils.select_azure_base_url_or_endpoint")
+@patch("dheera_ai.llms.azure.common_utils.select_azure_base_url_or_endpoint")
 @pytest.mark.asyncio
 async def test_azure_instruct(
     mock_select_azure_base_url_or_endpoint, max_retries, stream, sync_mode
 ):
-    from litellm import completion, acompletion
+    from dheera_ai import completion, acompletion
 
     args = {
         "model": "azure_text/instruct-model",
@@ -557,12 +557,12 @@ async def test_azure_instruct(
 
 @pytest.mark.parametrize("max_retries", [0, 4])
 @pytest.mark.parametrize("sync_mode", [True, False])
-@patch("litellm.llms.azure.common_utils.select_azure_base_url_or_endpoint")
+@patch("dheera_ai.llms.azure.common_utils.select_azure_base_url_or_endpoint")
 @pytest.mark.asyncio
 async def test_azure_embedding_max_retries_0(
     mock_select_azure_base_url_or_endpoint, max_retries, sync_mode
 ):
-    from litellm import aembedding, embedding
+    from dheera_ai import aembedding, embedding
 
     args = {
         "model": "azure/text-embedding-ada-002",
@@ -593,9 +593,9 @@ async def test_azure_embedding_max_retries_0(
 
 def test_azure_safety_result():
     """Bubble up safety result from Azure OpenAI"""
-    from litellm import completion
+    from dheera_ai import completion
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     response = completion(
         model="azure/gpt-4.1-mini",
@@ -607,12 +607,12 @@ def test_azure_safety_result():
 
 
 def test_azure_openai_responses_bridge():
-    from litellm import completion
-    import litellm
+    from dheera_ai import completion
+    import dheera_ai
 
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
-    with patch.object(litellm, "responses") as mock_responses:
+    with patch.object(dheera_ai, "responses") as mock_responses:
         try:
             response = completion(
                 model="azure/responses/test-azure-computer-use-preview",
@@ -636,7 +636,7 @@ def test_completion_azure_deployment_id():
     """
     Ensure deployment_id takes precedence over model.
     """
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     response = completion(
         deployment_id="gpt-4.1-mini",
         model="gpt-3.5-turbo",
@@ -653,9 +653,9 @@ def test_azure_with_content_safety_error():
     """
     Verify user can access innererror from the Azure OpenAI exception
     """
-    from litellm import completion
-    from litellm.exceptions import ContentPolicyViolationError
-    from litellm.litellm_core_utils.exception_mapping_utils import exception_type
+    from dheera_ai import completion
+    from dheera_ai.exceptions import ContentPolicyViolationError
+    from dheera_ai.dheera_ai_core_utils.exception_mapping_utils import exception_type
     from unittest.mock import MagicMock
     
     mock_exception = Exception("The response was filtered due to the prompt triggering Azure OpenAI's content management policy")

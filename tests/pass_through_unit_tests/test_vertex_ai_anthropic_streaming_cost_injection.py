@@ -15,13 +15,13 @@ sys.path.insert(0, os.path.abspath("../.."))
 
 import httpx
 import pytest
-import litellm
-from litellm.litellm_core_utils.litellm_logging import Logging as LiteLLMLoggingObj
-from litellm.types.passthrough_endpoints.pass_through_endpoints import EndpointType
-from litellm.proxy.pass_through_endpoints.success_handler import (
+import dheera_ai
+from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging as DheeraAILoggingObj
+from dheera_ai.types.passthrough_endpoints.pass_through_endpoints import EndpointType
+from dheera_ai.proxy.pass_through_endpoints.success_handler import (
     PassThroughEndpointLogging,
 )
-from litellm.proxy.pass_through_endpoints.streaming_handler import (
+from dheera_ai.proxy.pass_through_endpoints.streaming_handler import (
     PassThroughStreamingHandler,
 )
 
@@ -33,8 +33,8 @@ async def test_vertex_ai_anthropic_streaming_cost_injection_enabled():
     when include_cost_in_streaming_usage is enabled.
     """
     # Enable cost injection
-    original_value = getattr(litellm, "include_cost_in_streaming_usage", False)
-    litellm.include_cost_in_streaming_usage = True
+    original_value = getattr(dheera_ai, "include_cost_in_streaming_usage", False)
+    dheera_ai.include_cost_in_streaming_usage = True
 
     try:
         # Mock response with Anthropic SSE format chunks
@@ -54,9 +54,9 @@ async def test_vertex_ai_anthropic_streaming_cost_injection_enabled():
         response.aiter_bytes = mock_aiter_bytes
 
         # Setup logging object with model info
-        litellm_logging_obj = MagicMock(spec=LiteLLMLoggingObj)
-        litellm_logging_obj.model_call_details = {"model": "claude-sonnet-4@20250514"}
-        litellm_logging_obj.async_success_handler = AsyncMock()
+        dheera_ai_logging_obj = MagicMock(spec=DheeraAILoggingObj)
+        dheera_ai_logging_obj.model_call_details = {"model": "claude-sonnet-4@20250514"}
+        dheera_ai_logging_obj.async_success_handler = AsyncMock()
 
         request_body = {"model": "claude-sonnet-4@20250514"}
         start_time = datetime.now()
@@ -65,12 +65,12 @@ async def test_vertex_ai_anthropic_streaming_cost_injection_enabled():
         url_route = "v1/projects/test-project/locations/us-east5/publishers/anthropic/models/claude-sonnet-4@20250514:streamRawPredict"
 
         # Mock completion_cost to return a test cost value
-        with patch("litellm.completion_cost", return_value=0.00015):
+        with patch("dheera_ai.completion_cost", return_value=0.00015):
             received_chunks = []
             async for chunk in PassThroughStreamingHandler.chunk_processor(
                 response=response,
                 request_body=request_body,
-                litellm_logging_obj=litellm_logging_obj,
+                dheera_ai_logging_obj=dheera_ai_logging_obj,
                 endpoint_type=EndpointType.VERTEX_AI,
                 start_time=start_time,
                 passthrough_success_handler_obj=passthrough_success_handler_obj,
@@ -105,7 +105,7 @@ async def test_vertex_ai_anthropic_streaming_cost_injection_enabled():
 
     finally:
         # Restore original value
-        litellm.include_cost_in_streaming_usage = original_value
+        dheera_ai.include_cost_in_streaming_usage = original_value
 
 
 @pytest.mark.asyncio
@@ -114,8 +114,8 @@ async def test_vertex_ai_anthropic_streaming_cost_injection_disabled():
     Test that cost is NOT injected when include_cost_in_streaming_usage is disabled.
     """
     # Disable cost injection
-    original_value = getattr(litellm, "include_cost_in_streaming_usage", False)
-    litellm.include_cost_in_streaming_usage = False
+    original_value = getattr(dheera_ai, "include_cost_in_streaming_usage", False)
+    dheera_ai.include_cost_in_streaming_usage = False
 
     try:
         # Mock response with Anthropic SSE format chunks
@@ -131,9 +131,9 @@ async def test_vertex_ai_anthropic_streaming_cost_injection_disabled():
 
         response.aiter_bytes = mock_aiter_bytes
 
-        litellm_logging_obj = MagicMock(spec=LiteLLMLoggingObj)
-        litellm_logging_obj.model_call_details = {"model": "claude-sonnet-4@20250514"}
-        litellm_logging_obj.async_success_handler = AsyncMock()
+        dheera_ai_logging_obj = MagicMock(spec=DheeraAILoggingObj)
+        dheera_ai_logging_obj.model_call_details = {"model": "claude-sonnet-4@20250514"}
+        dheera_ai_logging_obj.async_success_handler = AsyncMock()
 
         request_body = {"model": "claude-sonnet-4@20250514"}
         start_time = datetime.now()
@@ -145,7 +145,7 @@ async def test_vertex_ai_anthropic_streaming_cost_injection_disabled():
         async for chunk in PassThroughStreamingHandler.chunk_processor(
             response=response,
             request_body=request_body,
-            litellm_logging_obj=litellm_logging_obj,
+            dheera_ai_logging_obj=dheera_ai_logging_obj,
             endpoint_type=EndpointType.VERTEX_AI,
             start_time=start_time,
             passthrough_success_handler_obj=passthrough_success_handler_obj,
@@ -165,7 +165,7 @@ async def test_vertex_ai_anthropic_streaming_cost_injection_disabled():
 
     finally:
         # Restore original value
-        litellm.include_cost_in_streaming_usage = original_value
+        dheera_ai.include_cost_in_streaming_usage = original_value
 
 
 @pytest.mark.asyncio
@@ -173,8 +173,8 @@ async def test_vertex_ai_anthropic_streaming_cost_injection_no_usage_chunk():
     """
     Test that chunks without usage are not modified.
     """
-    original_value = getattr(litellm, "include_cost_in_streaming_usage", False)
-    litellm.include_cost_in_streaming_usage = True
+    original_value = getattr(dheera_ai, "include_cost_in_streaming_usage", False)
+    dheera_ai.include_cost_in_streaming_usage = True
 
     try:
         response = AsyncMock(spec=httpx.Response)
@@ -191,9 +191,9 @@ async def test_vertex_ai_anthropic_streaming_cost_injection_no_usage_chunk():
 
         response.aiter_bytes = mock_aiter_bytes
 
-        litellm_logging_obj = MagicMock(spec=LiteLLMLoggingObj)
-        litellm_logging_obj.model_call_details = {"model": "claude-sonnet-4@20250514"}
-        litellm_logging_obj.async_success_handler = AsyncMock()
+        dheera_ai_logging_obj = MagicMock(spec=DheeraAILoggingObj)
+        dheera_ai_logging_obj.model_call_details = {"model": "claude-sonnet-4@20250514"}
+        dheera_ai_logging_obj.async_success_handler = AsyncMock()
 
         request_body = {"model": "claude-sonnet-4@20250514"}
         start_time = datetime.now()
@@ -205,7 +205,7 @@ async def test_vertex_ai_anthropic_streaming_cost_injection_no_usage_chunk():
         async for chunk in PassThroughStreamingHandler.chunk_processor(
             response=response,
             request_body=request_body,
-            litellm_logging_obj=litellm_logging_obj,
+            dheera_ai_logging_obj=dheera_ai_logging_obj,
             endpoint_type=EndpointType.VERTEX_AI,
             start_time=start_time,
             passthrough_success_handler_obj=passthrough_success_handler_obj,
@@ -220,7 +220,7 @@ async def test_vertex_ai_anthropic_streaming_cost_injection_no_usage_chunk():
             assert chunk == chunks_without_usage[i]
 
     finally:
-        litellm.include_cost_in_streaming_usage = original_value
+        dheera_ai.include_cost_in_streaming_usage = original_value
 
 
 @pytest.mark.asyncio
@@ -228,8 +228,8 @@ async def test_vertex_ai_anthropic_streaming_model_extraction():
     """
     Test that model name is correctly extracted for cost calculation.
     """
-    original_value = getattr(litellm, "include_cost_in_streaming_usage", False)
-    litellm.include_cost_in_streaming_usage = True
+    original_value = getattr(dheera_ai, "include_cost_in_streaming_usage", False)
+    dheera_ai.include_cost_in_streaming_usage = True
 
     try:
         response = AsyncMock(spec=httpx.Response)
@@ -244,9 +244,9 @@ async def test_vertex_ai_anthropic_streaming_model_extraction():
 
         response.aiter_bytes = mock_aiter_bytes
 
-        litellm_logging_obj = MagicMock(spec=LiteLLMLoggingObj)
-        litellm_logging_obj.model_call_details = {}
-        litellm_logging_obj.async_success_handler = AsyncMock()
+        dheera_ai_logging_obj = MagicMock(spec=DheeraAILoggingObj)
+        dheera_ai_logging_obj.model_call_details = {}
+        dheera_ai_logging_obj.async_success_handler = AsyncMock()
 
         # Test model extraction from request body
         request_body = {"model": "claude-sonnet-4@20250514"}
@@ -255,13 +255,13 @@ async def test_vertex_ai_anthropic_streaming_model_extraction():
         
         url_route = "v1/projects/test-project/locations/us-east5/publishers/anthropic/models/claude-sonnet-4@20250514:streamRawPredict"
 
-        with patch("litellm.completion_cost") as mock_cost:
+        with patch("dheera_ai.completion_cost") as mock_cost:
             mock_cost.return_value = 0.0001
             received_chunks = []
             async for chunk in PassThroughStreamingHandler.chunk_processor(
                 response=response,
                 request_body=request_body,
-                litellm_logging_obj=litellm_logging_obj,
+                dheera_ai_logging_obj=dheera_ai_logging_obj,
                 endpoint_type=EndpointType.VERTEX_AI,
                 start_time=start_time,
                 passthrough_success_handler_obj=passthrough_success_handler_obj,
@@ -275,5 +275,5 @@ async def test_vertex_ai_anthropic_streaming_model_extraction():
             assert call_args[1]["model"] == "claude-sonnet-4@20250514"
 
     finally:
-        litellm.include_cost_in_streaming_usage = original_value
+        dheera_ai.include_cost_in_streaming_usage = original_value
 

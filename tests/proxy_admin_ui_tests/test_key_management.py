@@ -1,7 +1,7 @@
 import os
 import sys
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import datetime as dt
 from datetime import datetime
 
@@ -15,7 +15,7 @@ import io
 import os
 import time
 
-# this file is to test litellm/proxy
+# this file is to test dheera_ai/proxy
 
 sys.path.insert(
     0, os.path.abspath("../..")
@@ -24,17 +24,17 @@ import asyncio
 import logging
 
 import pytest
-import litellm
-from litellm._logging import verbose_proxy_logger
-from litellm.proxy.management_endpoints.team_endpoints import list_team
-from litellm.proxy._types import *
-from litellm.proxy.management_endpoints.internal_user_endpoints import (
+import dheera_ai
+from dheera_ai._logging import verbose_proxy_logger
+from dheera_ai.proxy.management_endpoints.team_endpoints import list_team
+from dheera_ai.proxy._types import *
+from dheera_ai.proxy.management_endpoints.internal_user_endpoints import (
     new_user,
     user_info,
     user_update,
     get_users,
 )
-from litellm.proxy.management_endpoints.key_management_endpoints import (
+from dheera_ai.proxy.management_endpoints.key_management_endpoints import (
     delete_key_fn,
     generate_key_fn,
     generate_key_helper_fn,
@@ -42,12 +42,12 @@ from litellm.proxy.management_endpoints.key_management_endpoints import (
     regenerate_key_fn,
     update_key_fn,
 )
-from litellm.proxy.management_endpoints.team_endpoints import (
+from dheera_ai.proxy.management_endpoints.team_endpoints import (
     new_team,
     team_info,
     update_team,
 )
-from litellm.proxy.proxy_server import (
+from dheera_ai.proxy.proxy_server import (
     LitellmUserRoles,
     audio_transcriptions,
     chat_completion,
@@ -57,10 +57,10 @@ from litellm.proxy.proxy_server import (
     moderations,
     user_api_key_auth,
 )
-from litellm.proxy.management_endpoints.customer_endpoints import (
+from dheera_ai.proxy.management_endpoints.customer_endpoints import (
     new_end_user,
 )
-from litellm.proxy.spend_tracking.spend_management_endpoints import (
+from dheera_ai.proxy.spend_tracking.spend_management_endpoints import (
     global_spend,
     global_spend_logs,
     global_spend_models,
@@ -69,14 +69,14 @@ from litellm.proxy.spend_tracking.spend_management_endpoints import (
     spend_user_fn,
     view_spend_logs,
 )
-from litellm.proxy.utils import PrismaClient, ProxyLogging, hash_token, update_spend
+from dheera_ai.proxy.utils import PrismaClient, ProxyLogging, hash_token, update_spend
 
 verbose_proxy_logger.setLevel(level=logging.DEBUG)
 
 from starlette.datastructures import URL
 
-from litellm.caching.caching import DualCache
-from litellm.proxy._types import (
+from dheera_ai.caching.caching import DualCache
+from dheera_ai.proxy._types import (
     DynamoDBArgs,
     GenerateKeyRequest,
     KeyRequest,
@@ -91,14 +91,14 @@ from litellm.proxy._types import (
     UpdateUserRequest,
     UserAPIKeyAuth,
 )
-from litellm.types.proxy.management_endpoints.ui_sso import LiteLLM_UpperboundKeyGenerateParams
+from dheera_ai.types.proxy.management_endpoints.ui_sso import DheeraAI_UpperboundKeyGenerateParams
 
 proxy_logging_obj = ProxyLogging(user_api_key_cache=DualCache())
 
 
 @pytest.fixture
 def prisma_client():
-    from litellm.proxy.proxy_cli import append_query_params
+    from dheera_ai.proxy.proxy_cli import append_query_params
 
     ### add connection pool + pool timeout args.
     params = {"connection_limit": 100, "pool_timeout": 60}
@@ -111,11 +111,11 @@ def prisma_client():
         database_url=os.environ["DATABASE_URL"], proxy_logging_obj=proxy_logging_obj
     )
 
-    # Reset litellm.proxy.proxy_server.prisma_client to None
-    litellm.proxy.proxy_server.litellm_proxy_budget_name = (
-        f"litellm-proxy-budget-{time.time()}"
+    # Reset dheera_ai.proxy.proxy_server.prisma_client to None
+    dheera_ai.proxy.proxy_server.dheera_ai_proxy_budget_name = (
+        f"dheera_ai-proxy-budget-{time.time()}"
     )
-    litellm.proxy.proxy_server.user_custom_key_generate = None
+    dheera_ai.proxy.proxy_server.user_custom_key_generate = None
 
     return prisma_client
 
@@ -123,10 +123,10 @@ def prisma_client():
 ################ Unit Tests for testing regeneration of keys ###########
 @pytest.mark.asyncio()
 async def test_regenerate_api_key(prisma_client):
-    litellm.set_verbose = True
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    dheera_ai.set_verbose = True
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
     # generate new key
     key_alias = f"test_alias_regenerate_key-{uuid.uuid4()}"
@@ -224,11 +224,11 @@ async def test_regenerate_api_key(prisma_client):
 
 @pytest.mark.asyncio()
 async def test_regenerate_api_key_with_new_alias_and_expiration(prisma_client):
-    litellm.set_verbose = True
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
-    from litellm._uuid import uuid
+    dheera_ai.set_verbose = True
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
+    from dheera_ai._uuid import uuid
 
     # generate new key
     key_alias = f"test_alias_regenerate_key-{uuid.uuid4()}"
@@ -275,11 +275,11 @@ async def test_regenerate_api_key_with_new_alias_and_expiration(prisma_client):
 
 @pytest.mark.asyncio()
 async def test_regenerate_key_ui(prisma_client):
-    litellm.set_verbose = True
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
-    from litellm._uuid import uuid
+    dheera_ai.set_verbose = True
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
+    from dheera_ai._uuid import uuid
 
     # generate new key
     key_alias = f"test_alias_regenerate_key-{uuid.uuid4()}"
@@ -333,10 +333,10 @@ async def test_get_users(prisma_client):
 
     Admin UI calls this endpoint to list all Internal Users
     """
-    litellm.set_verbose = True
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    dheera_ai.set_verbose = True
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
     # Create some test users
     test_users = [
@@ -370,24 +370,24 @@ async def test_get_users(prisma_client):
     assert "users" in result
 
     for user in result["users"]:
-        assert isinstance(user, LiteLLM_UserTable)
+        assert isinstance(user, DheeraAI_UserTable)
 
     # Clean up test users
     for user in test_users:
-        await prisma_client.db.litellm_usertable.delete(where={"user_id": user.user_id})
+        await prisma_client.db.dheera_ai_usertable.delete(where={"user_id": user.user_id})
 
 
 @pytest.mark.asyncio
 async def test_get_users_filters_dashboard_keys(prisma_client):
     """
-    Tests that /users/list endpoint doesn't return keys with team_id='litellm-dashboard'
+    Tests that /users/list endpoint doesn't return keys with team_id='dheera_ai-dashboard'
 
     The dashboard keys should be filtered out from the response
     """
-    litellm.set_verbose = True
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    dheera_ai.set_verbose = True
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
     # Create a test user
     new_user_id = f"test_user_with_keys-{uuid.uuid4()}"
@@ -406,11 +406,11 @@ async def test_get_users_filters_dashboard_keys(prisma_client):
         ),
     )
 
-    # Create two keys for the user - one with team_id="litellm-dashboard" and one without
+    # Create two keys for the user - one with team_id="dheera_ai-dashboard" and one without
     regular_key = await generate_key_helper_fn(
         user_id=test_user.user_id,
         request_type="key",
-        team_id="litellm-dashboard",  # This key should be included in the response
+        team_id="dheera_ai-dashboard",  # This key should be included in the response
         models=[],
         aliases={},
         config={},
@@ -458,7 +458,7 @@ async def test_get_users_filters_dashboard_keys(prisma_client):
     assert user.key_count == 2  # Only count the regular keys, not the UI dashboard key
 
     # Clean up test user and keys
-    await prisma_client.db.litellm_usertable.delete(
+    await prisma_client.db.dheera_ai_usertable.delete(
         where={"user_id": test_user.user_id}
     )
 
@@ -468,10 +468,10 @@ async def test_get_users_key_count(prisma_client):
     """
     Test that verifies the key_count in get_users increases when a new key is created for a user
     """
-    litellm.set_verbose = True
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    dheera_ai.set_verbose = True
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
     # Get initial user list and select the first user
     initial_users = await get_users(role=None, page=1, page_size=20)
@@ -511,7 +511,7 @@ async def test_get_users_key_count(prisma_client):
 
 
 async def cleanup_existing_teams(prisma_client):
-    all_teams = await prisma_client.db.litellm_teamtable.find_many()
+    all_teams = await prisma_client.db.dheera_ai_teamtable.find_many()
     for team in all_teams:
         await prisma_client.delete_data(team_id_list=[team.team_id], table_name="team")
 
@@ -521,10 +521,10 @@ async def test_list_teams(prisma_client):
     """
     Tests /team/list endpoint to verify it returns both keys and members_with_roles
     """
-    litellm.set_verbose = True
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    dheera_ai.set_verbose = True
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
     # Delete all existing teams first
     await cleanup_existing_teams(prisma_client)
@@ -628,24 +628,24 @@ async def test_list_teams(prisma_client):
 
 
 def test_is_team_key():
-    from litellm.proxy.management_endpoints.key_management_endpoints import _is_team_key
+    from dheera_ai.proxy.management_endpoints.key_management_endpoints import _is_team_key
 
     assert _is_team_key(GenerateKeyRequest(team_id="test_team_id"))
     assert not _is_team_key(GenerateKeyRequest(user_id="test_user_id"))
 
 
 def test_team_key_generation_team_member_check():
-    from litellm.proxy.management_endpoints.key_management_endpoints import (
+    from dheera_ai.proxy.management_endpoints.key_management_endpoints import (
         _team_key_generation_check,
     )
     from fastapi import HTTPException
-    from litellm.proxy._types import LiteLLM_TeamTableCachedObj
+    from dheera_ai.proxy._types import DheeraAI_TeamTableCachedObj
 
-    litellm.key_generation_settings = {
+    dheera_ai.key_generation_settings = {
         "team_key_generation": {"allowed_team_member_roles": ["admin"]}
     }
 
-    team_table = LiteLLM_TeamTableCachedObj(
+    team_table = DheeraAI_TeamTableCachedObj(
         team_id="test_team_id",
         team_alias="test_team_alias",
         members_with_roles=[Member(role="admin", user_id="test_user_id")],
@@ -663,7 +663,7 @@ def test_team_key_generation_team_member_check():
         route=KeyManagementRoutes.KEY_GENERATE,
     )
 
-    team_table = LiteLLM_TeamTableCachedObj(
+    team_table = DheeraAI_TeamTableCachedObj(
         team_id="test_team_id",
         team_alias="test_team_alias",
         members_with_roles=[Member(role="user", user_id="test_user_id")],
@@ -699,16 +699,16 @@ def test_team_key_generation_team_member_check():
 def test_key_generation_required_params_check(
     team_key_generation_settings, input_data, expected_result, key_type
 ):
-    from litellm.proxy.management_endpoints.key_management_endpoints import (
+    from dheera_ai.proxy.management_endpoints.key_management_endpoints import (
         _team_key_generation_check,
         _personal_key_generation_check,
     )
-    from litellm.types.utils import (
+    from dheera_ai.types.utils import (
         TeamUIKeyGenerationConfig,
         StandardKeyGenerationConfig,
         PersonalUIKeyGenerationConfig,
     )
-    from litellm.proxy._types import LiteLLM_TeamTableCachedObj
+    from dheera_ai.proxy._types import DheeraAI_TeamTableCachedObj
     from fastapi import HTTPException
 
     user_api_key_dict = UserAPIKeyAuth(
@@ -719,20 +719,20 @@ def test_key_generation_required_params_check(
         team_member=None,
     )
 
-    team_table = LiteLLM_TeamTableCachedObj(
+    team_table = DheeraAI_TeamTableCachedObj(
         team_id="test_team_id",
         team_alias="test_team_alias",
         members_with_roles=[Member(role="admin", user_id="test_user_id")],
     )
 
     if key_type == "team_key":
-        litellm.key_generation_settings = StandardKeyGenerationConfig(
+        dheera_ai.key_generation_settings = StandardKeyGenerationConfig(
             team_key_generation=TeamUIKeyGenerationConfig(
                 **team_key_generation_settings
             )
         )
     elif key_type == "personal_key":
-        litellm.key_generation_settings = StandardKeyGenerationConfig(
+        dheera_ai.key_generation_settings = StandardKeyGenerationConfig(
             personal_key_generation=PersonalUIKeyGenerationConfig(
                 **team_key_generation_settings
             )
@@ -766,12 +766,12 @@ def test_key_generation_required_params_check(
 
 
 def test_personal_key_generation_check():
-    from litellm.proxy.management_endpoints.key_management_endpoints import (
+    from dheera_ai.proxy.management_endpoints.key_management_endpoints import (
         _personal_key_generation_check,
     )
     from fastapi import HTTPException
 
-    litellm.key_generation_settings = {
+    dheera_ai.key_generation_settings = {
         "personal_key_generation": {"allowed_user_roles": ["proxy_admin"]}
     }
 
@@ -819,7 +819,7 @@ def test_personal_key_generation_check():
 def test_prepare_metadata_fields(
     update_request_data, non_default_values, existing_metadata, expected_result
 ):
-    from litellm.proxy.management_endpoints.key_management_endpoints import (
+    from dheera_ai.proxy.management_endpoints.key_management_endpoints import (
         prepare_metadata_fields,
     )
 
@@ -837,14 +837,14 @@ def test_prepare_metadata_fields(
 
 @pytest.mark.asyncio
 async def test_key_update_with_model_specific_params(prisma_client):
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
-    from litellm.proxy.management_endpoints.key_management_endpoints import (
+    from dheera_ai.proxy.management_endpoints.key_management_endpoints import (
         update_key_fn,
     )
-    from litellm.proxy._types import UpdateKeyRequest
+    from dheera_ai.proxy._types import UpdateKeyRequest
 
     new_key = await generate_key_fn(
         data=GenerateKeyRequest(models=["gpt-4"]),
@@ -894,7 +894,7 @@ async def test_key_update_with_model_specific_params(prisma_client):
         "key_name": "sk-...2GWA",
         "expires": None,
         "token_id": token_hash,
-        "litellm_budget_table": None,
+        "dheera_ai_budget_table": None,
         "token": token_hash,
     }
     await update_key_fn(
@@ -918,14 +918,14 @@ async def test_list_key_helper(prisma_client):
     4. Filtering by key_alias
     5. Return full object vs token only
     """
-    from litellm.proxy.management_endpoints.key_management_endpoints import (
+    from dheera_ai.proxy.management_endpoints.key_management_endpoints import (
         _list_key_helper,
     )
 
     # Setup - create multiple test keys
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
     # Create test data
     test_user_id = f"test_user_{uuid.uuid4()}"
@@ -1068,20 +1068,20 @@ async def test_list_key_helper(prisma_client):
 async def test_list_key_helper_team_filtering(prisma_client):
     """
     Test _list_key_helper function's team filtering behavior:
-    1. Create keys with different team_ids (None, litellm-dashboard, other)
-    2. Verify filtering excludes litellm-dashboard keys
+    1. Create keys with different team_ids (None, dheera_ai-dashboard, other)
+    2. Verify filtering excludes dheera_ai-dashboard keys
     3. Verify keys with team_id=None are included
     4. Test with pagination to ensure behavior is consistent across pages
     """
-    from litellm.proxy.management_endpoints.key_management_endpoints import (
+    from dheera_ai.proxy.management_endpoints.key_management_endpoints import (
         _list_key_helper,
     )
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     # Setup
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
     # Create test data with different team_ids
     test_keys = []
@@ -1100,11 +1100,11 @@ async def test_list_key_helper_team_filtering(prisma_client):
         )
         test_keys.append(key)
 
-    # Create 2 keys with team_id=litellm-dashboard
+    # Create 2 keys with team_id=dheera_ai-dashboard
     for i in range(2):
         key = await generate_key_fn(
             data=GenerateKeyRequest(
-                team_id="litellm-dashboard",
+                team_id="dheera_ai-dashboard",
                 key_alias=f"dashboard_key_{i}.{uuid.uuid4()}",
             ),
             user_api_key_dict=UserAPIKeyAuth(
@@ -1132,7 +1132,7 @@ async def test_list_key_helper_team_filtering(prisma_client):
         test_keys.append(key)
 
     try:
-        # Test 1: Get all keys with pagination (exclude litellm-dashboard)
+        # Test 1: Get all keys with pagination (exclude dheera_ai-dashboard)
         all_keys = []
         page = 1
         max_pages_to_check = 3  # Only check the first 3 pages
@@ -1161,9 +1161,9 @@ async def test_list_key_helper_team_filtering(prisma_client):
         for key in all_keys:
             print(f"Key team_id: {key.team_id}, alias: {key.key_alias}")
 
-        # Verify no litellm-dashboard keys are present
-        dashboard_keys = [k for k in all_keys if k.team_id == "litellm-dashboard"]
-        assert len(dashboard_keys) == 0, "Should not include litellm-dashboard keys"
+        # Verify no dheera_ai-dashboard keys are present
+        dashboard_keys = [k for k in all_keys if k.team_id == "dheera_ai-dashboard"]
+        assert len(dashboard_keys) == 0, "Should not include dheera_ai-dashboard keys"
 
         # Verify keys with team_id=None are included
         no_team_keys = [k for k in all_keys if k.team_id is None]
@@ -1185,13 +1185,13 @@ async def test_list_key_helper_team_filtering(prisma_client):
 
 
 @pytest.mark.asyncio
-@patch("litellm.proxy.management_endpoints.key_management_endpoints.get_team_object")
+@patch("dheera_ai.proxy.management_endpoints.key_management_endpoints.get_team_object")
 async def test_key_generate_always_db_team(mock_get_team_object):
-    from litellm.proxy.management_endpoints.key_management_endpoints import (
+    from dheera_ai.proxy.management_endpoints.key_management_endpoints import (
         generate_key_fn,
     )
 
-    setattr(litellm.proxy.proxy_server, "prisma_client", MagicMock())
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", MagicMock())
     mock_get_team_object.return_value = None
     try:
         await generate_key_fn(
@@ -1226,10 +1226,10 @@ async def test_team_model_alias(prisma_client, requested_model, should_pass):
     2. Generate key for that team with model = `gpt-4o`
     3. Verify chat completion request works with aliased model = `gpt-4o`
     """
-    litellm.set_verbose = True
-    setattr(litellm.proxy.proxy_server, "prisma_client", prisma_client)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    await litellm.proxy.proxy_server.prisma_client.connect()
+    dheera_ai.set_verbose = True
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", prisma_client)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    await dheera_ai.proxy.proxy_server.prisma_client.connect()
 
     # Create team with model alias
     team_id = f"test_team_{uuid.uuid4()}"

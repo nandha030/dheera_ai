@@ -1,6 +1,6 @@
 {
     "ignore": [],
-    "exclude": ["**/node_modules", "**/__pycache__", "litellm/types/utils.py", "litellm/proxy/_types.py"],
+    "exclude": ["**/node_modules", "**/__pycache__", "dheera_ai/types/utils.py", "dheera_ai/proxy/_types.py"],
     "reportMissingImports": false,
     "reportPrivateImportUsage": false
 }

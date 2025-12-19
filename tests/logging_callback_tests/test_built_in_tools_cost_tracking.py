@@ -1,7 +1,7 @@
 import os
 import sys
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import pytest
 from dotenv import load_dotenv
 from fastapi import Request
@@ -13,17 +13,17 @@ import os
 import time
 import json
 
-# this file is to test litellm/proxy
+# this file is to test dheera_ai/proxy
 
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
+import dheera_ai
 import asyncio
 from typing import Optional
-from litellm.types.utils import StandardLoggingPayload, Usage, ModelInfoBase
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.litellm_core_utils.llm_cost_calc.tool_call_cost_tracking import StandardBuiltInToolCostTracking
+from dheera_ai.types.utils import StandardLoggingPayload, Usage, ModelInfoBase
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.dheera_ai_core_utils.llm_cost_calc.tool_call_cost_tracking import StandardBuiltInToolCostTracking
 
 
 class TestCustomLogger(CustomLogger):
@@ -49,9 +49,9 @@ class TestCustomLogger(CustomLogger):
 
 async def _setup_web_search_test():
     """Helper function to setup common test requirements"""
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     test_custom_logger = TestCustomLogger()
-    litellm.callbacks = [test_custom_logger]
+    dheera_ai.callbacks = [test_custom_logger]
     return test_custom_logger
 
 
@@ -98,7 +98,7 @@ async def test_openai_web_search_logging_cost_tracking(
 ):
     """Test web search cost tracking with different search context sizes"""
     test_custom_logger = await _setup_web_search_test()
-    from litellm._uuid import uuid
+    from dheera_ai._uuid import uuid
 
     
 
@@ -111,7 +111,7 @@ async def test_openai_web_search_logging_cost_tracking(
     if web_search_options is not None:
         request_kwargs["web_search_options"] = web_search_options
 
-    response = await litellm.acompletion(**request_kwargs)
+    response = await dheera_ai.acompletion(**request_kwargs)
 
     await _verify_web_search_cost(test_custom_logger, expected_context_size)
 
@@ -140,7 +140,7 @@ async def test_openai_responses_api_web_search_cost_tracking(
     """Test web search cost tracking with different search context sizes and streaming options"""
     test_custom_logger = await _setup_web_search_test()
 
-    response = await litellm.aresponses(
+    response = await dheera_ai.aresponses(
         model="openai/gpt-4o",
         input=[
             {"role": "user", "content": "What was a positive news story from today?"}

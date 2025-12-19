@@ -1,6 +1,6 @@
 # /converse
 
-Call Bedrock's `/converse` endpoint through LiteLLM Proxy.
+Call Bedrock's `/converse` endpoint through Dheera AI Proxy.
 
 | Feature | Supported | 
 |---------|-----------|
@@ -16,7 +16,7 @@ Call Bedrock's `/converse` endpoint through LiteLLM Proxy.
 ```yaml showLineNumbers
 model_list:
   - model_name: my-bedrock-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_region_name: us-west-2
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID  # reads from environment
@@ -34,7 +34,7 @@ export AWS_SECRET_ACCESS_KEY="your-secret-key"
 ### 2. Start Proxy
 
 ```bash showLineNumbers
-litellm --config config.yaml
+dheera_ai --config config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -89,7 +89,7 @@ Define multiple deployments with the same `model_name` for automatic load balanc
 model_list:
   # Deployment 1 - us-west-2
   - model_name: my-bedrock-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_region_name: us-west-2
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
@@ -98,7 +98,7 @@ model_list:
   
   # Deployment 2 - us-east-1
   - model_name: my-bedrock-model
-    litellm_params:
+    dheera_ai_params:
       model: bedrock/us.anthropic.claude-3-5-sonnet-20240620-v1:0
       aws_region_name: us-east-1
       aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
@@ -115,12 +115,12 @@ import boto3
 import json
 import os
 
-# Set dummy AWS credentials (required by boto3, but not used by LiteLLM proxy)
+# Set dummy AWS credentials (required by boto3, but not used by Dheera AI proxy)
 os.environ['AWS_ACCESS_KEY_ID'] = 'dummy'
 os.environ['AWS_SECRET_ACCESS_KEY'] = 'dummy'
-os.environ['AWS_BEARER_TOKEN_BEDROCK'] = "sk-1234"  # your litellm proxy api key
+os.environ['AWS_BEARER_TOKEN_BEDROCK'] = "sk-1234"  # your dheera_ai proxy api key
 
-# Point boto3 to the LiteLLM proxy
+# Point boto3 to the Dheera AI proxy
 bedrock_runtime = boto3.client(
     service_name='bedrock-runtime',
     region_name='us-west-2',

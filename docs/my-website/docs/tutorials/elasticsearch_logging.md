@@ -2,7 +2,7 @@ import Image from '@theme/IdealImage';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Elasticsearch Logging with LiteLLM
+# Elasticsearch Logging with Dheera AI
 
 Send your LLM requests, responses, costs, and performance data to Elasticsearch for analytics and monitoring using OpenTelemetry.
 
@@ -75,21 +75,21 @@ docker run -p 4317:4317 -p 4318:4318 \
 pip install opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp
 ```
 
-### 4. Configure LiteLLM
+### 4. Configure Dheera AI
 
 <Tabs>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 Create a `config.yaml` file:
 
 ```yaml
 model_list:
   - model_name: gpt-4.1
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["otel"]
 
 general_settings:
@@ -99,7 +99,7 @@ general_settings:
 Set environment variables and start the proxy:
 ```bash
 export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4317"
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 </TabItem>
@@ -108,17 +108,17 @@ litellm --config config.yaml
 Configure OpenTelemetry in your Python code:
 
 ```python
-import litellm
+import dheera_ai
 import os
 
 # Configure OpenTelemetry
 os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = "http://localhost:4317"
 
 # Enable OTEL logging
-litellm.callbacks = ["otel"]
+dheera_ai.callbacks = ["otel"]
 
 # Make your LLM calls
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gpt-4.1",
     messages=[{"role": "user", "content": "Hello, world!"}]
 )
@@ -140,7 +140,7 @@ curl -X POST "http://localhost:4000/v1/chat/completions" \
   -H "Authorization: Bearer sk-1234" \
   -d '{
     "model": "gpt-4.1",
-    "messages": [{"role": "user", "content": "Hello from LiteLLM!"}]
+    "messages": [{"role": "user", "content": "Hello from Dheera AI!"}]
   }'
 ```
 
@@ -148,11 +148,11 @@ curl -X POST "http://localhost:4000/v1/chat/completions" \
 <TabItem value="python-test" label="Test Python SDK">
 
 ```python
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gpt-4.1",
-    messages=[{"role": "user", "content": "Hello from LiteLLM!"}],
+    messages=[{"role": "user", "content": "Hello from Dheera AI!"}],
     user="test-user"
 )
 print("Response:", response.choices[0].message.content)
@@ -178,7 +178,7 @@ Start Kibana to visualize your LLM telemetry data:
 docker run -d --name kibana --link elasticsearch:elasticsearch -p 5601:5601 docker.elastic.co/kibana/kibana:8.18.2
 ```
 
-Open Kibana at http://localhost:5601 and create an index pattern for your LiteLLM traces:
+Open Kibana at http://localhost:5601 and create an index pattern for your Dheera AI traces:
 
 <Image img={require('../../img/elasticsearch_demo.png')} />
 
@@ -220,8 +220,8 @@ services:
     depends_on:
       - elasticsearch
       
-  litellm:
-    image: docker.litellm.ai/berriai/litellm:main-latest
+  dheera_ai:
+    image: docker.dheera_ai.ai/berriai/dheera_ai:main-latest
     ports:
       - "4000:4000"
     environment:
@@ -238,11 +238,11 @@ services:
 ```yaml
 model_list:
   - model_name: gpt-4.1
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4.1
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["otel"]
 
 general_settings:

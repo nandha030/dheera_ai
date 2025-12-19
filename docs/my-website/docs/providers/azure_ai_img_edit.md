@@ -10,7 +10,7 @@ Azure AI provides powerful image editing capabilities using FLUX models from Bla
 | Property | Details |
 |----------|---------|
 | Description | Azure AI Image Editing uses FLUX models to modify existing images based on text prompts. |
-| Provider Route on LiteLLM | `azure_ai/` |
+| Provider Route on Dheera AI | `azure_ai/` |
 | Provider Doc | [Azure AI FLUX Models ↗](https://techcommunity.microsoft.com/blog/azure-ai-foundry-blog/black-forest-labs-flux-1-kontext-pro-and-flux1-1-pro-now-available-in-azure-ai-f/4434659) |
 | Supported Operations | [`/images/edits`](#image-editing) |
 
@@ -36,7 +36,7 @@ Get your API key and endpoint from [Azure AI Studio](https://ai.azure.com/).
 
 ## Image Editing
 
-### Usage - LiteLLM Python SDK
+### Usage - Dheera AI Python SDK
 
 <Tabs>
 <TabItem value="basic-edit" label="Basic Usage">
@@ -46,7 +46,7 @@ import os
 import base64
 from pathlib import Path
 
-import litellm
+import dheera_ai
 
 # Set your API credentials
 os.environ["AZURE_AI_API_KEY"] = "your-api-key-here"
@@ -54,7 +54,7 @@ os.environ["AZURE_AI_API_BASE"] = "your-azure-ai-endpoint"
 os.environ["AZURE_AI_API_VERSION"] = "2025-04-01-preview"
 
 # Edit an image with a prompt
-response = litellm.image_edit(
+response = dheera_ai.image_edit(
     model="azure_ai/FLUX.1-Kontext-pro",
     image=open("path/to/your/image.png", "rb"),
     prompt="Add a winter theme with snow and cold colors",
@@ -78,7 +78,7 @@ import os
 import base64
 from pathlib import Path
 
-import litellm
+import dheera_ai
 import asyncio
 
 # Set your API credentials
@@ -88,7 +88,7 @@ os.environ["AZURE_AI_API_VERSION"] = "2025-04-01-preview"
 
 async def edit_image():
     # Edit image asynchronously
-    response = await litellm.aimage_edit(
+    response = await dheera_ai.aimage_edit(
         model="azure_ai/FLUX.1-Kontext-pro",
         image=open("path/to/your/image.png", "rb"),
         prompt="Make this image look like a watercolor painting",
@@ -114,7 +114,7 @@ import os
 import base64
 from pathlib import Path
 
-import litellm
+import dheera_ai
 
 # Set your API credentials
 os.environ["AZURE_AI_API_KEY"] = "your-api-key-here"
@@ -122,7 +122,7 @@ os.environ["AZURE_AI_API_BASE"] = "your-azure-ai-endpoint"
 os.environ["AZURE_AI_API_VERSION"] = "2025-04-01-preview"
 
 # Edit image with additional parameters
-response = litellm.image_edit(
+response = dheera_ai.image_edit(
     model="azure_ai/FLUX.1-Kontext-pro",
     image=open("path/to/your/image.png", "rb"),
     prompt="Add magical elements like floating crystals and mystical lighting",
@@ -140,14 +140,14 @@ path.write_bytes(img_bytes)
 </TabItem>
 </Tabs>
 
-### Usage - LiteLLM Proxy Server
+### Usage - Dheera AI Proxy Server
 
 #### 1. Configure your config.yaml
 
 ```yaml showLineNumbers title="Azure AI Image Editing Configuration"
 model_list:
   - model_name: azure-flux-kontext-edit
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/FLUX.1-Kontext-pro
       api_key: os.environ/AZURE_AI_API_KEY
       api_base: os.environ/AZURE_AI_API_BASE
@@ -159,10 +159,10 @@ general_settings:
   master_key: sk-1234
 ```
 
-#### 2. Start LiteLLM Proxy Server
+#### 2. Start Dheera AI Proxy Server
 
-```bash showLineNumbers title="Start LiteLLM Proxy Server"
-litellm --config /path/to/config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy Server"
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -196,14 +196,14 @@ path.write_bytes(img_bytes)
 
 </TabItem>
 
-<TabItem value="litellm-edit-sdk" label="LiteLLM SDK">
+<TabItem value="dheera_ai-edit-sdk" label="Dheera AI SDK">
 
-```python showLineNumbers title="Azure AI Image Editing via Proxy - LiteLLM SDK"
-import litellm
+```python showLineNumbers title="Azure AI Image Editing via Proxy - Dheera AI SDK"
+import dheera_ai
 
 # Edit image through proxy
-response = litellm.image_edit(
-    model="litellm_proxy/azure-flux-kontext-edit",
+response = dheera_ai.image_edit(
+    model="dheera_ai_proxy/azure-flux-kontext-edit",
     image=open("path/to/your/image.png", "rb"),
     prompt="Add a mystical forest background with magical creatures",
     api_base="http://localhost:4000",
@@ -252,7 +252,7 @@ Azure AI Image Editing supports the following OpenAI-compatible parameters:
 3. Get your API key and endpoint from the deployment details
 4. Set your `AZURE_AI_API_KEY`, `AZURE_AI_API_BASE` and `AZURE_AI_API_VERSION` environment variables
 5. Prepare your source image
-6. Use `litellm.image_edit()` to modify your images with text instructions
+6. Use `dheera_ai.image_edit()` to modify your images with text instructions
 
 ## Additional Resources
 

@@ -3,11 +3,11 @@ import TabItem from '@theme/TabItem';
 
 # Caching - In-Memory, Redis, s3, gcs, Redis Semantic Cache, Disk
 
-[**See Code**](https://github.com/BerriAI/litellm/blob/main/litellm/caching/caching.py)
+[**See Code**](https://github.com/BerriAI/dheera_ai/blob/main/dheera_ai/caching/caching.py)
 
 :::info
 
-- For Proxy Server? Doc here: [Caching Proxy Server](https://docs.litellm.ai/docs/proxy/caching)
+- For Proxy Server? Doc here: [Caching Proxy Server](https://docs.dheera_ai.ai/docs/proxy/caching)
 
 - For OpenAI/Anthropic Prompt Caching, go [here](../completion/prompt_caching.md)
 
@@ -31,11 +31,11 @@ For the hosted version you can setup your own Redis DB here: https://redis.io/tr
 **Basic Redis Cache**
 
 ```python
-import litellm
-from litellm import completion
-from litellm.caching.caching import Cache
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai.caching.caching import Cache
 
-litellm.cache = Cache(type="redis", host=<host>, port=<port>, password=<password>)
+dheera_ai.cache = Cache(type="redis", host=<host>, port=<port>, password=<password>)
 
 # Make completion calls
 response1 = completion(
@@ -59,12 +59,12 @@ pip install google-cloud-iam
 ```
 
 ```python
-import litellm
-from litellm import completion
+import dheera_ai
+from dheera_ai import completion
 # For Redis Cluster with GCP IAM
-from litellm.caching.redis_cluster_cache import RedisClusterCache
+from dheera_ai.caching.redis_cluster_cache import RedisClusterCache
 
-litellm.cache = RedisClusterCache(
+dheera_ai.cache = RedisClusterCache(
     startup_nodes=[
         {"host": "10.128.0.2", "port": 6379},
         {"host": "10.128.0.2", "port": 11008},
@@ -102,7 +102,7 @@ export REDIS_SSL="False"
 Then simply initialize:
 
 ```python
-litellm.cache = Cache(type="redis")
+dheera_ai.cache = Cache(type="redis")
 ```
 
 </TabItem>
@@ -117,11 +117,11 @@ GCS_PATH_SERVICE_ACCOUNT="/path/to/service_account.json"
 ```
 
 ```python
-import litellm
-from litellm import completion
-from litellm.caching.caching import Cache
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai.caching.caching import Cache
 
-litellm.cache = Cache(type="gcs", gcs_bucket_name="my-cache-bucket", gcs_path_service_account="/path/to/service_account.json")
+dheera_ai.cache = Cache(type="gcs", gcs_bucket_name="my-cache-bucket", gcs_path_service_account="/path/to/service_account.json")
 
 response1 = completion(
     model="gpt-3.5-turbo",
@@ -153,12 +153,12 @@ AWS_SECRET_ACCESS_KEY = "WOl*****"
 ```
 
 ```python
-import litellm
-from litellm import completion
-from litellm.caching.caching import Cache
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai.caching.caching import Cache
 
 # pass s3-bucket name
-litellm.cache = Cache(type="s3", s3_bucket_name="cache-bucket-litellm", s3_region_name="us-west-2")
+dheera_ai.cache = Cache(type="s3", s3_bucket_name="cache-bucket-dheera_ai", s3_region_name="us-west-2")
 
 # Make completion calls
 response1 = completion(
@@ -183,13 +183,13 @@ pip install azure-storage-blob azure-identity
 ```
 
 ```python
-import litellm
-from litellm import completion
-from litellm.caching.caching import Cache
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai.caching.caching import Cache
 from azure.identity import DefaultAzureCredential
 
 # pass Azure Blob Storage account URL and container name
-litellm.cache = Cache(type="azure-blob", azure_account_url="https://example.blob.core.windows.net", azure_blob_container="litellm")
+dheera_ai.cache = Cache(type="azure-blob", azure_account_url="https://example.blob.core.windows.net", azure_blob_container="dheera_ai")
 
 # Make completion calls
 response1 = completion(
@@ -217,23 +217,23 @@ pip install redisvl==0.4.1
 For the hosted version you can setup your own Redis DB here: https://redis.io/try-free/
 
 ```python
-import litellm
-from litellm import completion
-from litellm.caching.caching import Cache
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai.caching.caching import Cache
 
 random_number = random.randint(
     1, 100000
 )  # add a random number to ensure it's always adding / reading from cache
 
 print("testing semantic caching")
-litellm.cache = Cache(
+dheera_ai.cache = Cache(
     type="redis-semantic",
     host=os.environ["REDIS_HOST"],
     port=os.environ["REDIS_PORT"],
     password=os.environ["REDIS_PASSWORD"],
     similarity_threshold=0.8, # similarity threshold for cache hits, 0 == no similarity, 1 = exact matches, 0.5 == 50% similarity
     ttl=120,
-    redis_semantic_cache_embedding_model="text-embedding-ada-002", # this model is passed to litellm.embedding(), any litellm.embedding() model is supported here
+    redis_semantic_cache_embedding_model="text-embedding-ada-002", # this model is passed to dheera_ai.embedding(), any dheera_ai.embedding() model is supported here
 )
 response1 = completion(
     model="gpt-3.5-turbo",
@@ -272,23 +272,23 @@ You can set up your own cloud Qdrant cluster by following this: https://qdrant.t
 
 To set up a Qdrant cluster locally follow: https://qdrant.tech/documentation/quickstart/
 ```python
-import litellm
-from litellm import completion
-from litellm.caching.caching import Cache
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai.caching.caching import Cache
 
 random_number = random.randint(
     1, 100000
 )  # add a random number to ensure it's always adding / reading from cache
 
 print("testing semantic caching")
-litellm.cache = Cache(
+dheera_ai.cache = Cache(
     type="qdrant-semantic",
     qdrant_api_base=os.environ["QDRANT_API_BASE"], 
     qdrant_api_key=os.environ["QDRANT_API_KEY"],
     qdrant_collection_name="your_collection_name", # any name of your collection
     similarity_threshold=0.7, # similarity threshold for cache hits, 0 == no similarity, 1 = exact matches, 0.5 == 50% similarity
     qdrant_quantization_config ="binary", # can be one of 'binary', 'product' or 'scalar' quantizations that is supported by qdrant
-    qdrant_semantic_cache_embedding_model="text-embedding-ada-002", # this model is passed to litellm.embedding(), any litellm.embedding() model is supported here
+    qdrant_semantic_cache_embedding_model="text-embedding-ada-002", # this model is passed to dheera_ai.embedding(), any dheera_ai.embedding() model is supported here
 )
 
 response1 = completion(
@@ -327,10 +327,10 @@ assert response1.id == response2.id
 ### Quick Start
 
 ```python
-import litellm
-from litellm import completion
-from litellm.caching.caching import Cache
-litellm.cache = Cache()
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai.caching.caching import Cache
+dheera_ai.cache = Cache()
 
 # Make completion calls
 response1 = completion(
@@ -357,16 +357,16 @@ response2 = completion(
 Install the disk caching extra:
 
 ```shell
-pip install "litellm[caching]"
+pip install "dheera_ai[caching]"
 ```
 
 Then you can use the disk cache as follows.
 
 ```python
-import litellm
-from litellm import completion
-from litellm.caching.caching import Cache
-litellm.cache = Cache(type="disk")
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai.caching.caching import Cache
+dheera_ai.cache = Cache(type="disk")
 
 # Make completion calls
 response1 = completion(
@@ -390,23 +390,23 @@ If you run the code two times, response1 will use the cache from the first run t
 
 </Tabs>
 
-## Switch Cache On / Off Per LiteLLM Call 
+## Switch Cache On / Off Per Dheera AI Call 
 
-LiteLLM supports 4 cache-controls:
+Dheera AI supports 4 cache-controls:
 
 - `no-cache`: *Optional(bool)* When `True`, Will not return a cached response, but instead call the actual endpoint. 
 - `no-store`: *Optional(bool)* When `True`, Will not cache the response. 
 - `ttl`: *Optional(int)* - Will cache the response for the user-defined amount of time (in seconds).
 - `s-maxage`: *Optional(int)* Will only accept cached responses that are within user-defined range (in seconds).
 
-[Let us know if you need more](https://github.com/BerriAI/litellm/issues/1218)
+[Let us know if you need more](https://github.com/BerriAI/dheera_ai/issues/1218)
 <Tabs>
 <TabItem value="no-cache" label="No-Cache">
 
 Example usage `no-cache` - When `True`, Will not return a cached response
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
         model="gpt-3.5-turbo",
         messages=[
             {
@@ -425,7 +425,7 @@ response = litellm.completion(
 Example usage `no-store` - When `True`, Will not cache the response. 
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
         model="gpt-3.5-turbo",
         messages=[
             {
@@ -443,7 +443,7 @@ response = litellm.completion(
 Example usage `ttl` - cache the response for 10 seconds
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
         model="gpt-3.5-turbo",
         messages=[
             {
@@ -461,7 +461,7 @@ response = litellm.completion(
 Example usage `s-maxage` - Will only accept cached responses for 60 seconds
 
 ```python
-response = litellm.completion(
+response = dheera_ai.completion(
         model="gpt-3.5-turbo",
         messages=[
             {
@@ -479,19 +479,19 @@ response = litellm.completion(
 </Tabs>
 
 ## Cache Context Manager - Enable, Disable, Update Cache
-Use the context manager for easily enabling, disabling & updating the litellm cache 
+Use the context manager for easily enabling, disabling & updating the dheera_ai cache 
 
 ### Enabling Cache
 
 Quick Start Enable
 ```python
-litellm.enable_cache()
+dheera_ai.enable_cache()
 ```
 
 Advanced Params
 
 ```python
-litellm.enable_cache(
+dheera_ai.enable_cache(
     type: Optional[Literal["local", "redis", "s3", "gcs", "disk"]] = "local",
     host: Optional[str] = None,
     port: Optional[str] = None,
@@ -507,7 +507,7 @@ litellm.enable_cache(
 
 Switch caching off 
 ```python
-litellm.disable_cache()
+dheera_ai.disable_cache()
 ```
 
 ### Updating Cache Params (Redis Host, Port etc)
@@ -515,7 +515,7 @@ litellm.disable_cache()
 Update the Cache params
 
 ```python
-litellm.update_cache(
+dheera_ai.update_cache(
     type: Optional[Literal["local", "redis", "s3", "gcs", "disk"]] = "local",
     host: Optional[str] = None,
     port: Optional[str] = None,
@@ -539,21 +539,21 @@ def custom_get_cache_key(*args, **kwargs):
 
 ```
 
-Set your function as litellm.cache.get_cache_key
+Set your function as dheera_ai.cache.get_cache_key
 ```python
-from litellm.caching.caching import Cache
+from dheera_ai.caching.caching import Cache
 
 cache = Cache(type="redis", host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], password=os.environ['REDIS_PASSWORD'])
 
 cache.get_cache_key = custom_get_cache_key # set get_cache_key function for your cache
 
-litellm.cache = cache # set litellm.cache to your cache 
+dheera_ai.cache = cache # set dheera_ai.cache to your cache 
 
 ```
 ## How to write custom add/get cache functions 
 ### 1. Init Cache 
 ```python
-from litellm.caching.caching import Cache
+from dheera_ai.caching.caching import Cache
 cache = Cache()
 ``` 
 
@@ -638,9 +638,9 @@ Cache hits are logged in success events as `kwarg["cache_hit"]`.
 Here's an example of accessing it: 
 
   ```python
-  import litellm
-from litellm.integrations.custom_logger import CustomLogger
-from litellm import completion, acompletion, Cache
+  import dheera_ai
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai import completion, acompletion, Cache
 
 # create custom callback for success_events
 class MyCustomHandler(CustomLogger):
@@ -651,12 +651,12 @@ class MyCustomHandler(CustomLogger):
 async def test_async_completion_azure_caching():
     # set custom callback
     customHandler_caching = MyCustomHandler()
-    litellm.callbacks = [customHandler_caching]
+    dheera_ai.callbacks = [customHandler_caching]
 
     # init cache 
-    litellm.cache = Cache(type="redis", host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], password=os.environ['REDIS_PASSWORD'])
+    dheera_ai.cache = Cache(type="redis", host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], password=os.environ['REDIS_PASSWORD'])
     unique_time = time.time()
-    response1 = await litellm.acompletion(model="azure/chatgpt-v-2",
+    response1 = await dheera_ai.acompletion(model="azure/chatgpt-v-2",
                             messages=[{
                                 "role": "user",
                                 "content": f"Hi 👋 - i'm async azure {unique_time}"
@@ -664,7 +664,7 @@ async def test_async_completion_azure_caching():
                             caching=True)
     await asyncio.sleep(1)
     print(f"customHandler_caching.states pre-cache hit: {customHandler_caching.states}")
-    response2 = await litellm.acompletion(model="azure/chatgpt-v-2",
+    response2 = await dheera_ai.acompletion(model="azure/chatgpt-v-2",
                             messages=[{
                                 "role": "user",
                                 "content": f"Hi 👋 - i'm async azure {unique_time}"

@@ -1,6 +1,6 @@
-from litellm.integrations.custom_logger import CustomLogger
+from dheera_ai.integrations.custom_logger import CustomLogger
 import inspect
-import litellm
+import dheera_ai
 
 
 class testCustomCallbackProxy(CustomLogger):
@@ -22,7 +22,7 @@ class testCustomCallbackProxy(CustomLogger):
         self.streaming_response_obj = None  # type: ignore
         blue_color_code = "\033[94m"
         reset_color_code = "\033[0m"
-        print(f"{blue_color_code}Initialized LiteLLM custom logger")
+        print(f"{blue_color_code}Initialized DheeraAI custom logger")
         try:
             print(f"Logger Initialized with following methods:")
             methods = [
@@ -79,14 +79,14 @@ class testCustomCallbackProxy(CustomLogger):
         messages = kwargs.get("messages", None)
         user = kwargs.get("user", None)
 
-        # Access litellm_params passed to litellm.completion(), example access `metadata`
-        litellm_params = kwargs.get("litellm_params", {})
-        metadata = litellm_params.get(
+        # Access dheera_ai_params passed to dheera_ai.completion(), example access `metadata`
+        dheera_ai_params = kwargs.get("dheera_ai_params", {})
+        metadata = dheera_ai_params.get(
             "metadata", {}
-        )  # headers passed to LiteLLM proxy, can be found here
+        )  # headers passed to DheeraAI proxy, can be found here
 
-        # Calculate cost using  litellm.completion_cost()
-        cost = litellm.completion_cost(completion_response=response_obj)
+        # Calculate cost using  dheera_ai.completion_cost()
+        cost = dheera_ai.completion_cost(completion_response=response_obj)
         response = response_obj
         # tokens used in response
         usage = response_obj["usage"]

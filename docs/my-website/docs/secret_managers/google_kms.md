@@ -4,9 +4,9 @@
 
 ✨ **This is an Enterprise Feature**
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+[Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
@@ -31,12 +31,12 @@ general_settings:
 Step 3: Start + test proxy
 
 ```
-$ litellm --config /path/to/config.yaml
+$ dheera_ai --config /path/to/config.yaml
 ```
 
 And in another terminal
 ```
-$ litellm --test 
+$ dheera_ai --test 
 ```
 
 [Quick Test Proxy](../proxy/user_keys)

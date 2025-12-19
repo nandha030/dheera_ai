@@ -16,7 +16,7 @@ async def config_update(session):
     url = "http://0.0.0.0:4000/config/update"
     headers = {"Authorization": "Bearer sk-1234", "Content-Type": "application/json"}
     data = {
-        "litellm_settings": {
+        "dheera_ai_settings": {
             "success_callback": ["langfuse"],
         },
         "environment_variables": {
@@ -83,7 +83,7 @@ async def test_team_logging():
             await config_update(session)
 
             # 2. Call /chat/completions with a specific trace id
-            from litellm._uuid import uuid
+            from dheera_ai._uuid import uuid
 
             _trace_id = f"trace-{uuid.uuid4()}"
             _request_metadata = {

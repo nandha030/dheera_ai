@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Azure AI Studio
 
-LiteLLM supports all models on Azure AI Studio
+Dheera AI supports all models on Azure AI Studio
 
 
 ## Usage
@@ -21,7 +21,7 @@ os.environ["AZURE_AI_API_BASE"] = ""
 ### Example Call
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 ## set ENV variables
 os.environ["AZURE_AI_API_KEY"] = "azure ai key"
@@ -42,7 +42,7 @@ response = completion(
   ```yaml
   model_list:
     - model_name: command-r-plus
-      litellm_params:
+      dheera_ai_params:
         model: azure_ai/command-r-plus
         api_key: os.environ/AZURE_AI_API_KEY
         api_base: os.environ/AZURE_AI_API_BASE
@@ -53,10 +53,10 @@ response = completion(
 2. Start the proxy 
 
   ```bash
-  $ litellm --config /path/to/config.yaml --debug
+  $ dheera_ai --config /path/to/config.yaml --debug
   ```
 
-3. Send Request to LiteLLM Proxy Server
+3. Send Request to Dheera AI Proxy Server
 
   <Tabs>
 
@@ -65,8 +65,8 @@ response = completion(
   ```python
   import openai
   client = openai.OpenAI(
-      api_key="sk-1234",             # pass litellm proxy key, if you're using virtual keys
-      base_url="http://0.0.0.0:4000" # litellm-proxy-base url
+      api_key="sk-1234",             # pass dheera_ai proxy key, if you're using virtual keys
+      base_url="http://0.0.0.0:4000" # dheera_ai-proxy-base url
   )
 
   response = client.chat.completions.create(
@@ -118,11 +118,11 @@ response = completion(
 </Tabs>
 
 ## Passing additional params - max_tokens, temperature 
-See all litellm.completion supported params [here](../completion/input.md#translated-openai-params)
+See all dheera_ai.completion supported params [here](../completion/input.md#translated-openai-params)
 
 ```python
-# !pip install litellm
-from litellm import completion
+# !pip install dheera_ai
+from dheera_ai import completion
 import os
 ## set ENV variables
 os.environ["AZURE_AI_API_KEY"] = "azure ai api key"
@@ -142,7 +142,7 @@ response = completion(
 ```yaml
   model_list:
     - model_name: command-r-plus
-      litellm_params:
+      dheera_ai_params:
         model: azure_ai/command-r-plus
         api_key: os.environ/AZURE_AI_API_KEY
         api_base: os.environ/AZURE_AI_API_BASE
@@ -155,10 +155,10 @@ response = completion(
 2. Start the proxy 
 
   ```bash
-  $ litellm --config /path/to/config.yaml
+  $ dheera_ai --config /path/to/config.yaml
   ```
 
-3. Send Request to LiteLLM Proxy Server
+3. Send Request to Dheera AI Proxy Server
 
   <Tabs>
 
@@ -167,8 +167,8 @@ response = completion(
   ```python
   import openai
   client = openai.OpenAI(
-      api_key="sk-1234",             # pass litellm proxy key, if you're using virtual keys
-      base_url="http://0.0.0.0:4000" # litellm-proxy-base url
+      api_key="sk-1234",             # pass dheera_ai proxy key, if you're using virtual keys
+      base_url="http://0.0.0.0:4000" # dheera_ai-proxy-base url
   )
 
   response = client.chat.completions.create(
@@ -211,7 +211,7 @@ response = completion(
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 # set env
 os.environ["AZURE_AI_API_KEY"] = "your-api-key"
@@ -303,7 +303,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 
 ## Supported Models
 
-LiteLLM supports **ALL** azure ai models. Here's a few examples:
+Dheera AI supports **ALL** azure ai models. Here's a few examples:
 
 | Model Name               | Function Call                                                                                                                                                      |
 |--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -314,14 +314,14 @@ LiteLLM supports **ALL** azure ai models. Here's a few examples:
 
 ## Usage - Azure Anthropic (Azure Foundry Claude)
 
-LiteLLM funnels Azure Claude deployments through the `azure_ai/` provider so Claude Opus models on Azure Foundry keep working with Tool Search, Effort, streaming, and the rest of the advanced feature set. Point `AZURE_AI_API_BASE` to `https://<resource>.services.ai.azure.com/anthropic` (LiteLLM appends `/v1/messages` automatically) and authenticate with `AZURE_AI_API_KEY` or an Azure AD token.
+Dheera AI funnels Azure Claude deployments through the `azure_ai/` provider so Claude Opus models on Azure Foundry keep working with Tool Search, Effort, streaming, and the rest of the advanced feature set. Point `AZURE_AI_API_BASE` to `https://<resource>.services.ai.azure.com/anthropic` (Dheera AI appends `/v1/messages` automatically) and authenticate with `AZURE_AI_API_KEY` or an Azure AD token.
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM Python SDK">
+<TabItem value="sdk" label="Dheera AI Python SDK">
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # Configure Azure credentials
 os.environ["AZURE_AI_API_KEY"] = "your-azure-ai-api-key"
@@ -341,7 +341,7 @@ for chunk in response:
 ```
 
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 **1. Set environment variables**
 
@@ -355,16 +355,16 @@ export AZURE_AI_API_BASE="https://my-resource.services.ai.azure.com/anthropic"
 ```yaml
 model_list:
   - model_name: claude-4-azure
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/claude-opus-4-1
       api_key: os.environ/AZURE_AI_API_KEY
       api_base: os.environ/AZURE_AI_API_BASE
 ```
 
-**3. Start LiteLLM**
+**3. Start Dheera AI**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 **4. Test the Azure Claude route**
@@ -372,13 +372,13 @@ litellm --config /path/to/config.yaml
 ```bash
 curl --location 'http://0.0.0.0:4000/chat/completions' \
   --header 'Content-Type: application/json' \
-  --header 'Authorization: Bearer $LITELLM_KEY' \
+  --header 'Authorization: Bearer $DHEERA_AI_KEY' \
   --data '{
     "model": "claude-4-azure",
     "messages": [
       {
         "role": "user",
-        "content": "How do I use Claude Opus 4 via Azure Anthropic in LiteLLM?"
+        "content": "How do I use Claude Opus 4 via Azure Anthropic in Dheera AI?"
       }
     ],
     "max_tokens": 1024
@@ -397,10 +397,10 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 
 
 <Tabs>
-<TabItem value="sdk" label="LiteLLM SDK Usage">
+<TabItem value="sdk" label="Dheera AI SDK Usage">
 
 ```python
-from litellm import rerank
+from dheera_ai import rerank
 import os
 
 os.environ["AZURE_AI_API_KEY"] = "sk-.."
@@ -424,31 +424,31 @@ print(response)
 ```
 </TabItem>
 
-<TabItem value="proxy" label="LiteLLM Proxy Usage">
+<TabItem value="proxy" label="Dheera AI Proxy Usage">
 
-LiteLLM provides an cohere api compatible `/rerank` endpoint for Rerank calls.
+Dheera AI provides an cohere api compatible `/rerank` endpoint for Rerank calls.
 
 **Setup**
 
-Add this to your litellm proxy config.yaml
+Add this to your dheera_ai proxy config.yaml
 
 ```yaml
 model_list:
   - model_name: Salesforce/Llama-Rank-V1
-    litellm_params:
+    dheera_ai_params:
       model: together_ai/Salesforce/Llama-Rank-V1
       api_key: os.environ/TOGETHERAI_API_KEY
   - model_name: cohere-rerank-v3.5
-    litellm_params:
+    dheera_ai_params:
       model: azure_ai/cohere-rerank-v3.5
       api_key: os.environ/AZURE_AI_API_KEY
       api_base: os.environ/AZURE_AI_API_BASE
 ```
 
-Start litellm
+Start dheera_ai
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```

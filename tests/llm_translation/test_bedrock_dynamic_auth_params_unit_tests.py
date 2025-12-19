@@ -10,22 +10,22 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm.llms.custom_httpx.http_handler import HTTPHandler
+import dheera_ai
+from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 from unittest.mock import Mock
-from litellm.llms.bedrock.base_aws_llm import BaseAWSLLM
+from dheera_ai.llms.bedrock.base_aws_llm import BaseAWSLLM
 
 import json
 import pytest
 from unittest.mock import patch, Mock
 
-import litellm
-from litellm.llms.custom_httpx.http_handler import HTTPHandler
-from litellm.llms.bedrock.base_aws_llm import BaseAWSLLM
+import dheera_ai
+from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
+from dheera_ai.llms.bedrock.base_aws_llm import BaseAWSLLM
 
 
 def test_bedrock_completion_with_region_name():
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     client = HTTPHandler()
 
     with patch.object(client, "post") as mock_post:
@@ -52,7 +52,7 @@ def test_bedrock_completion_with_region_name():
         mock_post.return_value = mock_response
 
         # Pass the client so that the HTTP call will be intercepted.
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="cohere.command-r-v1:0",
             messages=[{"role": "user", "content": "Hello, world!"}],
             aws_region_name="us-west-12",
@@ -84,7 +84,7 @@ def test_bedrock_completion_with_region_name():
 
 
 def test_bedrock_completion_with_dynamic_authentication_params():
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     client = HTTPHandler()
 
     with patch.object(client, "post") as mock_post:
@@ -111,7 +111,7 @@ def test_bedrock_completion_with_dynamic_authentication_params():
         mock_post.return_value = mock_response
 
         # Pass the client so that the HTTP call will be intercepted.
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="cohere.command-r-v1:0",
             messages=[{"role": "user", "content": "Hello, world!"}],
             aws_access_key_id="dynamically_generated_access_key_id",
@@ -132,7 +132,7 @@ def test_bedrock_completion_with_dynamic_authentication_params():
 
 
 def test_bedrock_completion_with_dynamic_bedrock_runtime_endpoint():
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     client = HTTPHandler()
 
     with patch.object(client, "post") as mock_post:
@@ -159,7 +159,7 @@ def test_bedrock_completion_with_dynamic_bedrock_runtime_endpoint():
         mock_post.return_value = mock_response
 
         # Pass the client so that the HTTP call will be intercepted.
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="cohere.command-r-v1:0",
             messages=[{"role": "user", "content": "Hello, world!"}],
             aws_bedrock_runtime_endpoint="https://my-fake-endpoint.com",
@@ -212,7 +212,7 @@ class DummyCredentials:
 )
 def test_dynamic_aws_params_propagation(model, param_name, param_value):
     """
-    When passed to litellm.completion, each dynamic AWS authentication parameter
+    When passed to dheera_ai.completion, each dynamic AWS authentication parameter
     should propagate down to the get_credentials() call in BaseAWSLLM.
 
     Also tests different model parameter values.
@@ -286,8 +286,8 @@ def test_dynamic_aws_params_propagation(model, param_name, param_value):
                 mock_response.json = lambda: json.loads(mock_response.text)
                 mock_post.return_value = mock_response
 
-                # Call litellm.completion with our base & dynamic parameters.
-                litellm.completion(**base_params)
+                # Call dheera_ai.completion with our base & dynamic parameters.
+                dheera_ai.completion(**base_params)
 
                 print(
                     "get_credentials.called_kwargs",

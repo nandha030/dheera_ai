@@ -14,27 +14,27 @@ sys.path.insert(
 )  # Adds the parent directory to the system path
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import litellm
-from litellm import completion, completion_cost, embedding
+import dheera_ai
+from dheera_ai import completion, completion_cost, embedding
 
-litellm.set_verbose = False
+dheera_ai.set_verbose = False
 
 
 def test_openai_embedding():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         response = embedding(
             model="text-embedding-ada-002",
-            input=["good morning from litellm", "this is another item"],
+            input=["good morning from dheera_ai", "this is another item"],
             metadata={"anything": "good day"},
         )
-        litellm_response = dict(response)
-        litellm_response_keys = set(litellm_response.keys())
-        litellm_response_keys.discard("_response_ms")
+        dheera_ai_response = dict(response)
+        dheera_ai_response_keys = set(dheera_ai_response.keys())
+        dheera_ai_response_keys.discard("_response_ms")
 
-        print(litellm_response_keys)
-        print("LiteLLM Response\n")
-        # print(litellm_response)
+        print(dheera_ai_response_keys)
+        print("DheeraAI Response\n")
+        # print(dheera_ai_response)
 
         # same request with OpenAI 1.0+
         import openai
@@ -42,18 +42,18 @@ def test_openai_embedding():
         client = openai.OpenAI(api_key=os.environ["OPENAI_API_KEY"])
         response = client.embeddings.create(
             model="text-embedding-ada-002",
-            input=["good morning from litellm", "this is another item"],
+            input=["good morning from dheera_ai", "this is another item"],
         )
 
         response = dict(response)
         openai_response_keys = set(response.keys())
         print(openai_response_keys)
         assert (
-            litellm_response_keys == openai_response_keys
-        )  # ENSURE the Keys in litellm response is exactly what the openai package returns
+            dheera_ai_response_keys == openai_response_keys
+        )  # ENSURE the Keys in dheera_ai response is exactly what the openai package returns
         assert (
-            len(litellm_response["data"]) == 2
-        )  # expect two embedding responses from litellm_response since input had two
+            len(dheera_ai_response["data"]) == 2
+        )  # expect two embedding responses from dheera_ai_response since input had two
         print(openai_response_keys)
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -64,21 +64,21 @@ def test_openai_embedding():
 
 def test_openai_embedding_3():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         response = embedding(
             model="text-embedding-3-small",
-            input=["good morning from litellm", "this is another item"],
+            input=["good morning from dheera_ai", "this is another item"],
             metadata={"anything": "good day"},
             dimensions=5,
         )
         print(f"response:", response)
-        litellm_response = dict(response)
-        litellm_response_keys = set(litellm_response.keys())
-        litellm_response_keys.discard("_response_ms")
+        dheera_ai_response = dict(response)
+        dheera_ai_response_keys = set(dheera_ai_response.keys())
+        dheera_ai_response_keys.discard("_response_ms")
 
-        print(litellm_response_keys)
-        print("LiteLLM Response\n")
-        # print(litellm_response)
+        print(dheera_ai_response_keys)
+        print("DheeraAI Response\n")
+        # print(dheera_ai_response)
 
         # same request with OpenAI 1.0+
         import openai
@@ -86,7 +86,7 @@ def test_openai_embedding_3():
         client = openai.OpenAI(api_key=os.environ["OPENAI_API_KEY"])
         response = client.embeddings.create(
             model="text-embedding-3-small",
-            input=["good morning from litellm", "this is another item"],
+            input=["good morning from dheera_ai", "this is another item"],
             dimensions=5,
         )
 
@@ -94,11 +94,11 @@ def test_openai_embedding_3():
         openai_response_keys = set(response.keys())
         print(openai_response_keys)
         assert (
-            litellm_response_keys == openai_response_keys
-        )  # ENSURE the Keys in litellm response is exactly what the openai package returns
+            dheera_ai_response_keys == openai_response_keys
+        )  # ENSURE the Keys in dheera_ai response is exactly what the openai package returns
         assert (
-            len(litellm_response["data"]) == 2
-        )  # expect two embedding responses from litellm_response since input had two
+            len(dheera_ai_response["data"]) == 2
+        )  # expect two embedding responses from dheera_ai_response since input had two
         print(openai_response_keys)
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -115,20 +115,20 @@ def test_openai_embedding_3():
 @pytest.mark.asyncio
 async def test_together_ai_embedding(model, api_base, api_key, sync_mode):
     try:
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
-        # litellm.set_verbose = True
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
+        # dheera_ai.set_verbose = True
         if sync_mode:
             response = embedding(
                 model=model,
-                input=["good morning from litellm"],
+                input=["good morning from dheera_ai"],
                 api_base=api_base,
                 api_key=api_key,
             )
         else:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 model=model,
-                input=["good morning from litellm"],
+                input=["good morning from dheera_ai"],
                 api_base=api_base,
                 api_key=api_key,
             )
@@ -139,16 +139,16 @@ async def test_together_ai_embedding(model, api_base, api_key, sync_mode):
         response_keys.discard("_response_ms")
         assert set(["usage", "model", "object", "data"]) == set(
             response_keys
-        )  # assert litellm response has expected keys from OpenAI embedding response
+        )  # assert dheera_ai response has expected keys from OpenAI embedding response
 
-        request_cost = litellm.completion_cost(
+        request_cost = dheera_ai.completion_cost(
             completion_response=response, call_type="embedding"
         )
 
         print("Calculated request cost=", request_cost)
 
-        assert isinstance(response.usage, litellm.Usage)
-    except litellm.BadRequestError:
+        assert isinstance(response.usage, dheera_ai.Usage)
+    except dheera_ai.BadRequestError:
         print(
             "Bad request error occurred - Together AI raises 404s for their embedding models"
         )
@@ -163,7 +163,7 @@ import base64
 
 import requests
 
-litellm.set_verbose = True
+dheera_ai.set_verbose = True
 url = "https://dummyimage.com/100/100/fff&text=Test+image"
 response = requests.get(url)
 file_data = response.content
@@ -203,8 +203,8 @@ def _azure_ai_image_mock_response(*args, **kwargs):
 @pytest.mark.asyncio
 async def test_azure_ai_embedding_image(model, api_base, api_key, sync_mode):
     try:
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
         input = base64_image
         if sync_mode:
             client = HTTPHandler()
@@ -222,7 +222,7 @@ async def test_azure_ai_embedding_image(model, api_base, api_key, sync_mode):
                     client=client,
                 )
             else:
-                response = await litellm.aembedding(
+                response = await dheera_ai.aembedding(
                     model=model,
                     input=[input],
                     api_base=api_base,
@@ -238,13 +238,13 @@ async def test_azure_ai_embedding_image(model, api_base, api_key, sync_mode):
         response_keys.discard("_response_ms")
         assert set(["usage", "model", "object", "data"]) == set(
             response_keys
-        )  # assert litellm response has expected keys from OpenAI embedding response
+        )  # assert dheera_ai response has expected keys from OpenAI embedding response
 
-        request_cost = litellm.completion_cost(completion_response=response)
+        request_cost = dheera_ai.completion_cost(completion_response=response)
 
         print("Calculated request cost=", request_cost)
 
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
 
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -254,7 +254,7 @@ def test_openai_azure_embedding_timeouts():
     try:
         response = embedding(
             model="azure/text-embedding-ada-002",
-            input=["good morning from litellm"],
+            input=["good morning from dheera_ai"],
             timeout=0.00001,
         )
         print(response)
@@ -274,7 +274,7 @@ def test_openai_embedding_timeouts():
     try:
         response = embedding(
             model="text-embedding-ada-002",
-            input=["good morning from litellm"],
+            input=["good morning from dheera_ai"],
             timeout=0.00001,
         )
         print(response)
@@ -302,7 +302,7 @@ def test_openai_azure_embedding():
 
         response = embedding(
             model="azure/text-embedding-ada-002",
-            input=["good morning from litellm", "this is another item"],
+            input=["good morning from dheera_ai", "this is another item"],
             api_key=api_key,
             api_base=api_base,
             api_version=api_version,
@@ -334,7 +334,7 @@ def test_aaaaaa_openai_azure_embedding_with_oidc_and_cf():
             model="azure/text-embedding-ada-002",
             input=["Hello"],
             azure_ad_token="oidc/circleci/",
-            api_base="https://eastus2-litellm.openai.azure.com/",
+            api_base="https://eastus2-dheera_ai.openai.azure.com/",
             api_version="2024-06-01",
         )
         print(response)
@@ -372,7 +372,7 @@ def test_openai_azure_embedding_optional_arg():
         "create",
         side_effect=_openai_mock_response,
     ) as mock_client:
-        _ = litellm.embedding(
+        _ = dheera_ai.embedding(
             model="azure/test",
             input=["test"],
             api_version="test",
@@ -407,21 +407,21 @@ def test_openai_azure_embedding_optional_arg():
 @pytest.mark.asyncio
 async def test_cohere_embedding(sync_mode, model, api_base):
     try:
-        # litellm.set_verbose=True
+        # dheera_ai.set_verbose=True
         data = {
             "model": model,
-            "input": ["good morning from litellm", "this is another item"],
+            "input": ["good morning from dheera_ai", "this is another item"],
             "input_type": "search_query",
             "api_base": api_base,
         }
         if sync_mode:
             response = embedding(**data)
         else:
-            response = await litellm.aembedding(**data)
+            response = await dheera_ai.aembedding(**data)
 
         print(f"response:", response)
 
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
 
@@ -433,10 +433,10 @@ async def test_cohere_embedding(sync_mode, model, api_base):
 @pytest.mark.asyncio()
 async def test_cohere_embedding3(custom_llm_provider):
     try:
-        litellm.set_verbose = True
-        response = await litellm.aembedding(
+        dheera_ai.set_verbose = True
+        response = await dheera_ai.aembedding(
             model=f"{custom_llm_provider}/embed-english-v3.0",
-            input=["good morning from litellm", "this is another item"],
+            input=["good morning from dheera_ai", "this is another item"],
             timeout=None,
             max_retries=0,
         )
@@ -462,8 +462,8 @@ async def test_cohere_embedding3(custom_llm_provider):
 async def test_bedrock_embedding_titan(model, sync_mode):
     try:
         # this tests if we support str input for bedrock embedding
-        litellm.set_verbose = True
-        litellm.enable_cache()
+        dheera_ai.set_verbose = True
+        dheera_ai.enable_cache()
         import time
 
         current_time = str(time.time())
@@ -471,13 +471,13 @@ async def test_bedrock_embedding_titan(model, sync_mode):
         if sync_mode:
             response = embedding(
                 model=model,
-                input=f"good morning from litellm, attempting to embed data {current_time}",  # input should always be a string in this test
+                input=f"good morning from dheera_ai, attempting to embed data {current_time}",  # input should always be a string in this test
                 aws_region_name="us-west-2",
             )
         else:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 model=model,
-                input=f"good morning from litellm, attempting to embed data {current_time}",  # input should always be a string in this test
+                input=f"good morning from dheera_ai, attempting to embed data {current_time}",  # input should always be a string in this test
                 aws_region_name="us-west-2",
             )
         print("response:", response)
@@ -505,8 +505,8 @@ async def test_bedrock_embedding_titan(model, sync_mode):
 async def test_bedrock_embedding_titan_caching(model, sync_mode):
     try:
         # this tests if we support str input for bedrock embedding
-        litellm.set_verbose = True
-        litellm.enable_cache()
+        dheera_ai.set_verbose = True
+        dheera_ai.enable_cache()
         import time
 
         current_time = str(time.time())
@@ -514,13 +514,13 @@ async def test_bedrock_embedding_titan_caching(model, sync_mode):
         if sync_mode:
             response = embedding(
                 model=model,
-                input=f"good morning from litellm, attempting to embed data {current_time}",  # input should always be a string in this test
+                input=f"good morning from dheera_ai, attempting to embed data {current_time}",  # input should always be a string in this test
                 aws_region_name="us-west-2",
             )
         else:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 model=model,
-                input=f"good morning from litellm, attempting to embed data {current_time}",  # input should always be a string in this test
+                input=f"good morning from dheera_ai, attempting to embed data {current_time}",  # input should always be a string in this test
                 aws_region_name="us-west-2",
             )
         print("response:", response)
@@ -540,12 +540,12 @@ async def test_bedrock_embedding_titan_caching(model, sync_mode):
         if sync_mode:
             response = embedding(
                 model=model,
-                input=f"good morning from litellm, attempting to embed data {current_time}",  # input should always be a string in this test
+                input=f"good morning from dheera_ai, attempting to embed data {current_time}",  # input should always be a string in this test
             )
         else:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 model=model,
-                input=f"good morning from litellm, attempting to embed data {current_time}",  # input should always be a string in this test
+                input=f"good morning from dheera_ai, attempting to embed data {current_time}",  # input should always be a string in this test
             )
         print(response)
 
@@ -554,9 +554,9 @@ async def test_bedrock_embedding_titan_caching(model, sync_mode):
         print(f"Embedding 2 response time: {end_time - start_time} seconds")
 
         assert end_time - start_time < 0.1
-        litellm.disable_cache()
+        dheera_ai.disable_cache()
 
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
 
@@ -566,11 +566,11 @@ async def test_bedrock_embedding_titan_caching(model, sync_mode):
 
 def test_bedrock_embedding_cohere():
     try:
-        litellm.set_verbose = False
+        dheera_ai.set_verbose = False
         response = embedding(
             model="cohere.embed-multilingual-v3",
             input=[
-                "good morning from litellm, attempting to embed data",
+                "good morning from dheera_ai, attempting to embed data",
                 "lets test a second string for good measure",
             ],
             aws_region_name="os.environ/AWS_REGION_NAME_2",
@@ -584,7 +584,7 @@ def test_bedrock_embedding_cohere():
         ), "Expected response to be a list of floats"
         # print(f"response:", response)
 
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
 
@@ -593,19 +593,19 @@ def test_bedrock_embedding_cohere():
 
 
 def test_demo_tokens_as_input_to_embeddings_fails_for_titan():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     with pytest.raises(
-        litellm.BadRequestError,
-        match='litellm.BadRequestError: BedrockException - {"message":"Malformed input request: expected type: String, found: JSONArray, please reformat your input and try again."}',
+        dheera_ai.BadRequestError,
+        match='dheera_ai.BadRequestError: BedrockException - {"message":"Malformed input request: expected type: String, found: JSONArray, please reformat your input and try again."}',
     ):
-        litellm.embedding(model="amazon.titan-embed-text-v1", input=[[1]])
+        dheera_ai.embedding(model="amazon.titan-embed-text-v1", input=[[1]])
 
     with pytest.raises(
-        litellm.BadRequestError,
-        match='litellm.BadRequestError: BedrockException - {"message":"Malformed input request: expected type: String, found: Integer, please reformat your input and try again."}',
+        dheera_ai.BadRequestError,
+        match='dheera_ai.BadRequestError: BedrockException - {"message":"Malformed input request: expected type: String, found: Integer, please reformat your input and try again."}',
     ):
-        litellm.embedding(
+        dheera_ai.embedding(
             model="amazon.titan-embed-text-v1",
             input=[1],
         )
@@ -618,11 +618,11 @@ def test_hf_embedding():
         # huggingface/facebook/bart-large
         response = embedding(
             model="huggingface/sentence-transformers/all-MiniLM-L6-v2",
-            input=["good morning from litellm", "this is another item"],
+            input=["good morning from dheera_ai", "this is another item"],
         )
         print(f"response:", response)
 
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
     except Exception as e:
         # Note: Huggingface inference API is unstable and fails with "model loading errors all the time"
         pass
@@ -638,7 +638,7 @@ def tgi_mock_post(*args, **kwargs):
 
     expected_data = {
         "inputs": {
-            "source_sentence": "good morning from litellm",
+            "source_sentence": "good morning from dheera_ai",
             "sentences": ["this is another item"],
         }
     }
@@ -652,14 +652,14 @@ def tgi_mock_post(*args, **kwargs):
     return mock_response
 
 
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
 
 
 @pytest.mark.asyncio
 @patch(
-    "litellm.llms.huggingface.embedding.handler.async_get_hf_task_embedding_for_model"
+    "dheera_ai.llms.huggingface.embedding.handler.async_get_hf_task_embedding_for_model"
 )
-@patch("litellm.llms.huggingface.embedding.handler.get_hf_task_embedding_for_model")
+@patch("dheera_ai.llms.huggingface.embedding.handler.get_hf_task_embedding_for_model")
 @pytest.mark.parametrize("sync_mode", [True, False])
 async def test_hf_embedding_sentence_sim(
     mock_async_get_hf_task_embedding_for_model,
@@ -678,19 +678,19 @@ async def test_hf_embedding_sentence_sim(
         with patch.object(client, "post", side_effect=tgi_mock_post) as mock_client:
             data = {
                 "model": "huggingface/sentence-transformers/TaylorAI/bge-micro-v2",
-                "input": ["good morning from litellm", "this is another item"],
+                "input": ["good morning from dheera_ai", "this is another item"],
                 "client": client,
             }
             if sync_mode is True:
                 response = embedding(**data)
             else:
-                response = await litellm.aembedding(**data)
+                response = await dheera_ai.aembedding(**data)
 
             print(f"response:", response)
 
             mock_client.assert_called_once()
 
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
 
     except Exception as e:
         # Note: Huggingface inference API is unstable and fails with "model loading errors all the time"
@@ -704,9 +704,9 @@ def test_aembedding():
 
         async def embedding_call():
             try:
-                response = await litellm.aembedding(
+                response = await dheera_ai.aembedding(
                     model="text-embedding-ada-002",
-                    input=["good morning from litellm", "this is another item"],
+                    input=["good morning from dheera_ai", "this is another item"],
                 )
                 print(response)
                 return response
@@ -716,7 +716,7 @@ def test_aembedding():
         response = asyncio.run(embedding_call())
         print("Before caclulating cost, response", response)
 
-        cost = litellm.completion_cost(completion_response=response)
+        cost = dheera_ai.completion_cost(completion_response=response)
 
         print("COST=", cost)
         assert cost == float("1e-06")
@@ -733,9 +733,9 @@ def test_aembedding_azure():
 
         async def embedding_call():
             try:
-                response = await litellm.aembedding(
+                response = await dheera_ai.aembedding(
                     model="azure/text-embedding-ada-002",
-                    input=["good morning from litellm", "this is another item"],
+                    input=["good morning from dheera_ai", "this is another item"],
                 )
                 print(response)
 
@@ -745,7 +745,7 @@ def test_aembedding_azure():
                 )
                 assert response._hidden_params["custom_llm_provider"] == "azure"
 
-                assert isinstance(response.usage, litellm.Usage)
+                assert isinstance(response.usage, dheera_ai.Usage)
             except Exception as e:
                 pytest.fail(f"Error occurred: {e}")
 
@@ -760,9 +760,9 @@ def test_aembedding_azure():
 @pytest.mark.skip(reason="AWS Suspended Account")
 def test_sagemaker_embeddings():
     try:
-        response = litellm.embedding(
+        response = dheera_ai.embedding(
             model="sagemaker/berri-benchmarking-gpt-j-6b-fp16",
-            input=["good morning from litellm", "this is another item"],
+            input=["good morning from dheera_ai", "this is another item"],
             input_cost_per_second=0.000420,
         )
         print(f"response: {response}")
@@ -778,9 +778,9 @@ def test_sagemaker_embeddings():
 @pytest.mark.asyncio
 async def test_sagemaker_aembeddings():
     try:
-        response = await litellm.aembedding(
+        response = await dheera_ai.aembedding(
             model="sagemaker/berri-benchmarking-gpt-j-6b-fp16",
-            input=["good morning from litellm", "this is another item"],
+            input=["good morning from dheera_ai", "this is another item"],
             input_cost_per_second=0.000420,
         )
         print(f"response: {response}")
@@ -794,14 +794,14 @@ async def test_sagemaker_aembeddings():
 
 def test_mistral_embeddings():
     try:
-        litellm.set_verbose = True
-        response = litellm.embedding(
+        dheera_ai.set_verbose = True
+        response = dheera_ai.embedding(
             model="mistral/mistral-embed",
-            input=["good morning from litellm"],
+            input=["good morning from dheera_ai"],
         )
         print(f"response: {response}")
-        assert isinstance(response.usage, litellm.Usage)
-    except litellm.RateLimitError as e:
+        assert isinstance(response.usage, dheera_ai.Usage)
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -809,28 +809,28 @@ def test_mistral_embeddings():
 
 def test_fireworks_embeddings():
     try:
-        litellm.set_verbose = True
-        response = litellm.embedding(
+        dheera_ai.set_verbose = True
+        response = dheera_ai.embedding(
             model="fireworks_ai/nomic-ai/nomic-embed-text-v1.5",
-            input=["good morning from litellm"],
+            input=["good morning from dheera_ai"],
         )
         print(f"response: {response}")
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
         cost = completion_cost(completion_response=response)
         print("cost", cost)
         assert cost > 0.0
         print(response._hidden_params)
         assert response._hidden_params["response_cost"] > 0.0
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
 
 
 def test_watsonx_embeddings(monkeypatch):
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     # Mock the IAM token generation to avoid actual API calls
     monkeypatch.setenv("WATSONX_API_KEY", "mock-api-key")
@@ -861,22 +861,22 @@ def test_watsonx_embeddings(monkeypatch):
         return mock_response
 
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         with patch.object(client, "post", side_effect=mock_wx_embed_request):
-            response = litellm.embedding(
+            response = dheera_ai.embedding(
                 model="watsonx/ibm/slate-30m-english-rtrvr",
-                input=["good morning from litellm"],
+                input=["good morning from dheera_ai"],
                 client=client,
             )
 
         print(f"response: {response}")
-        assert isinstance(response.usage, litellm.Usage)
+        assert isinstance(response.usage, dheera_ai.Usage)
         
         # Verify the request was made correctly
         assert "Authorization" in captured_request["headers"]
         assert captured_request["headers"]["Authorization"] == "Bearer mock-watsonx-token"
         assert "us-south.ml.cloud.ibm.com" in captured_request["url"]
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -884,7 +884,7 @@ def test_watsonx_embeddings(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_watsonx_aembeddings(monkeypatch):
-    from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
 
     # Mock the IAM token generation to avoid actual API calls
     monkeypatch.setenv("WATSONX_API_KEY", "mock-api-key")
@@ -916,17 +916,17 @@ async def test_watsonx_aembeddings(monkeypatch):
         return mocked_client
 
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         with patch.object(client, "post", side_effect=mock_async_client) as mock_client:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 model="watsonx/ibm/slate-30m-english-rtrvr",
-                input=["good morning from litellm"],
+                input=["good morning from dheera_ai"],
                 client=client,
             )
             mock_client.assert_called_once()
         print(f"response: {response}")
-        assert isinstance(response.usage, litellm.Usage)
-    except litellm.RateLimitError as e:
+        assert isinstance(response.usage, dheera_ai.Usage)
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -940,10 +940,10 @@ async def test_watsonx_aembeddings(monkeypatch):
 )
 def test_voyage_embeddings():
     try:
-        litellm.set_verbose = True
-        response = litellm.embedding(
+        dheera_ai.set_verbose = True
+        response = dheera_ai.embedding(
             model="voyage/voyage-01",
-            input=["good morning from litellm"],
+            input=["good morning from dheera_ai"],
         )
         print(f"response: {response}")
     except Exception as e:
@@ -952,19 +952,19 @@ def test_voyage_embeddings():
 
 @pytest.mark.parametrize("sync_mode", [True, False])
 @pytest.mark.parametrize(
-    "input", ["good morning from litellm", ["good morning from litellm"]]  #
+    "input", ["good morning from dheera_ai", ["good morning from dheera_ai"]]  #
 )
 @pytest.mark.asyncio
 async def test_gemini_embeddings(sync_mode, input):
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         if sync_mode:
-            response = litellm.embedding(
+            response = dheera_ai.embedding(
                 model="gemini/text-embedding-004",
                 input=input,
             )
         else:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 model="gemini/text-embedding-004",
                 input=input,
             )
@@ -980,10 +980,10 @@ async def test_gemini_embeddings(sync_mode, input):
 # test_voyage_embeddings()
 # def test_xinference_embeddings():
 #     try:
-#         litellm.set_verbose = True
-#         response = litellm.embedding(
+#         dheera_ai.set_verbose = True
+#         response = dheera_ai.embedding(
 #             model="xinference/bge-base-en",
-#             input=["good morning from litellm"],
+#             input=["good morning from dheera_ai"],
 #         )
 #         print(f"response: {response}")
 #     except Exception as e:
@@ -992,10 +992,10 @@ async def test_gemini_embeddings(sync_mode, input):
 
 # test_sagemaker_embeddings()
 # def local_proxy_embeddings():
-#     litellm.set_verbose=True
+#     dheera_ai.set_verbose=True
 #     response = embedding(
 #             model="openai/custom_embedding",
-#             input=["good morning from litellm"],
+#             input=["good morning from dheera_ai"],
 #             api_base="http://0.0.0.0:8000/"
 #         )
 #     print(response)
@@ -1008,7 +1008,7 @@ async def test_gemini_embeddings(sync_mode, input):
 @pytest.mark.flaky(retries=6, delay=1)
 @pytest.mark.skip(reason="Skipping test due to flakyness")
 async def test_hf_embedddings_with_optional_params(sync_mode):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     if sync_mode:
         client = HTTPHandler(concurrent_limit=1)
@@ -1022,16 +1022,16 @@ async def test_hf_embedddings_with_optional_params(sync_mode):
             if sync_mode:
                 response = embedding(
                     model="huggingface/jinaai/jina-embeddings-v2-small-en",
-                    input=["good morning from litellm"],
+                    input=["good morning from dheera_ai"],
                     top_p=10,
                     top_k=10,
                     wait_for_model=True,
                     client=client,
                 )
             else:
-                response = await litellm.aembedding(
+                response = await dheera_ai.aembedding(
                     model="huggingface/jinaai/jina-embeddings-v2-small-en",
-                    input=["good morning from litellm"],
+                    input=["good morning from dheera_ai"],
                     top_p=10,
                     top_k=10,
                     wait_for_model=True,
@@ -1053,7 +1053,7 @@ async def test_hf_embedddings_with_optional_params(sync_mode):
 
 def test_hosted_vllm_embedding(monkeypatch):
     monkeypatch.setenv("HOSTED_VLLM_API_BASE", "http://localhost:8000")
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
     with patch.object(client, "post") as mock_post:
@@ -1075,7 +1075,7 @@ def test_hosted_vllm_embedding(monkeypatch):
 
 def test_llamafile_embedding(monkeypatch):
     monkeypatch.setenv("LLAMAFILE_API_BASE", "http://localhost:8080/v1")
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
     with patch.object(client, "post") as mock_post:
@@ -1099,7 +1099,7 @@ def test_llamafile_embedding(monkeypatch):
 @pytest.mark.parametrize("sync_mode", [True, False])
 async def test_lm_studio_embedding(monkeypatch, sync_mode):
     monkeypatch.setenv("LM_STUDIO_API_BASE", "http://localhost:8000")
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
 
     client = HTTPHandler() if sync_mode else AsyncHTTPHandler()
     with patch.object(client, "post") as mock_post:
@@ -1111,7 +1111,7 @@ async def test_lm_studio_embedding(monkeypatch, sync_mode):
                     client=client,
                 )
             else:
-                await litellm.aembedding(
+                await dheera_ai.aembedding(
                     model="lm_studio/jina-embeddings-v3",
                     input=["Hello world"],
                     client=client,
@@ -1144,7 +1144,7 @@ def test_embedding_response_ratelimit_headers(model):
     print("additional_headers", additional_headers)
 
     # Azure is flaky with returning x-ratelimit-remaining-requests, we need to verify the upstream api returns this header
-    # if upstream api returns this header, we need to verify the header is transformed by litellm
+    # if upstream api returns this header, we need to verify the header is transformed by dheera_ai
     if (
         "llm_provider-x-ratelimit-limit-requests" in additional_headers
         or "x-ratelimit-limit-requests" in additional_headers
@@ -1169,7 +1169,7 @@ def test_embedding_response_ratelimit_headers(model):
     ],
 )
 def test_cohere_img_embeddings(input, input_type):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     try:
         response = embedding(
             model="cohere/embed-english-v3.0",
@@ -1180,7 +1180,7 @@ def test_cohere_img_embeddings(input, input_type):
             assert response.usage.prompt_tokens_details.image_tokens > 0
         else:
             assert response.usage.prompt_tokens_details.text_tokens > 0
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         # Cohere API is experiencing internal server errors - this is expected
         # and our exception mapping is working correctly
         if "internal server error" in str(e).lower():
@@ -1194,7 +1194,7 @@ def test_cohere_img_embeddings(input, input_type):
 async def test_embedding_with_extra_headers(sync_mode):
 
     input = ["hello world"]
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
 
     if sync_mode:
         client = HTTPHandler()
@@ -1212,7 +1212,7 @@ async def test_embedding_with_extra_headers(sync_mode):
             if sync_mode:
                 embedding(**data)
             else:
-                await litellm.aembedding(**data)
+                await dheera_ai.aembedding(**data)
         except Exception as e:
             print(e)
 
@@ -1258,15 +1258,15 @@ def test_jina_ai_img_embeddings(input_data, expected_payload_input):
     """
     Tests the input transformation logic for Jina AI embeddings using mocks.
 
-    This test verifies that when litellm.embedding is called with a jina_ai model,
+    This test verifies that when dheera_ai.embedding is called with a jina_ai model,
     the 'input' field in the request payload is formatted correctly based on whether
     the input contains text or base64 encoded images.
     """
     # We patch the `post` method of the HTTPHandler. This intercepts the network
     # request before it's actually sent.
-    with patch("litellm.llms.custom_httpx.http_handler.HTTPHandler.post") as mock_post:
+    with patch("dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post") as mock_post:
         # Configure the mock to return a successful, minimal valid response.
-        # This prevents litellm from raising an error when processing the response.
+        # This prevents dheera_ai from raising an error when processing the response.
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = {
@@ -1284,12 +1284,12 @@ def test_jina_ai_img_embeddings(input_data, expected_payload_input):
 
         # Call the function we want to test
         try:
-            litellm.embedding(
+            dheera_ai.embedding(
                 model="jina_ai/jina-embeddings-v4", input=input_data
             )
         except Exception as e:
             pytest.fail(
-                f"litellm.embedding call failed with an unexpected exception: {e}"
+                f"dheera_ai.embedding call failed with an unexpected exception: {e}"
             )
 
         # --- Assertions ---
@@ -1326,7 +1326,7 @@ def test_encoding_format_none_not_omitted_from_openai_sdk():
     - encoding_format=None is explicitly passed
     - OpenAI SDK respects the explicit None and doesn't add defaults
     """
-    with patch("litellm.llms.openai.openai.OpenAIChatCompletion._get_openai_client") as mock_get_client:
+    with patch("dheera_ai.llms.openai.openai.OpenAIChatCompletion._get_openai_client") as mock_get_client:
         # Create a mock client instance
         mock_client_instance = MagicMock()
         mock_get_client.return_value = mock_client_instance
@@ -1377,7 +1377,7 @@ def test_encoding_format_explicit_value_preserved():
     When user provides encoding_format='float' or 'base64', it should be 
     sent as-is to the OpenAI SDK.
     """
-    with patch("litellm.llms.openai.openai.OpenAIChatCompletion._get_openai_client") as mock_get_client:
+    with patch("dheera_ai.llms.openai.openai.OpenAIChatCompletion._get_openai_client") as mock_get_client:
         # Create a mock client instance
         mock_client_instance = MagicMock()
         mock_get_client.return_value = mock_client_instance

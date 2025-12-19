@@ -12,10 +12,10 @@ OpenTelemetry is a CNCF standard for observability. It connects to any observabi
 
 From v1.81.0, the request/response will be set as attributes on the parent "Received Proxy Server Request" span by default. This allows you to see the request/response in the parent span in your observability tool.
 
-To use the older behavior with nested "litellm_request" spans, set the following environment variable:
+To use the older behavior with nested "dheera_ai_request" spans, set the following environment variable:
 
 ```shell
-USE_OTEL_LITELLM_REQUEST_SPAN=true
+USE_OTEL_DHEERA_AI_REQUEST_SPAN=true
 ```
 
 :::
@@ -78,14 +78,14 @@ OTEL_HEADERS="authorization=Bearer <project-api-key>"
 Use just 1 line of code, to instantly log your LLM responses **across all providers** with OpenTelemetry:
 
 ```python
-litellm.callbacks = ["otel"]
+dheera_ai.callbacks = ["otel"]
 ```
 
 ## Redacting Messages, Response Content from OpenTelemetry Logging
 
 ### Redact Messages and Responses from all OpenTelemetry Logging
 
-Set `litellm.turn_off_message_logging=True` This will prevent the messages and responses from being logged to OpenTelemetry, but request metadata will still be logged.
+Set `dheera_ai.turn_off_message_logging=True` This will prevent the messages and responses from being logged to OpenTelemetry, but request metadata will still be logged.
 
 ### Redact Messages and Responses from specific OpenTelemetry Logging
 
@@ -103,9 +103,9 @@ For any question or issue with the integration you can reach out to the OpenLLMe
 
 ## Troubleshooting
 
-### Trace LiteLLM Proxy user/key/org/team information on failed requests
+### Trace Dheera AI Proxy user/key/org/team information on failed requests
 
-LiteLLM emits the user_api_key_metadata
+Dheera AI emits the user_api_key_metadata
 - key hash
 - key_alias
 - org_id
@@ -114,13 +114,13 @@ LiteLLM emits the user_api_key_metadata
 
 for successful + failed requests
 
-click under `litellm_request` in the trace
+click under `dheera_ai_request` in the trace
 
 <Image img={require('../../img/otel_debug_trace.png')} />
 
 ### Not seeing traces land on Integration
 
-If you don't see traces landing on your integration, set `OTEL_DEBUG="True"` in your LiteLLM environment and try again.
+If you don't see traces landing on your integration, set `OTEL_DEBUG="True"` in your Dheera AI environment and try again.
 
 ```shell
 export OTEL_DEBUG="True"

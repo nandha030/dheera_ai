@@ -9,23 +9,23 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 from openai import APITimeoutError as Timeout
-import litellm
+import dheera_ai
 
-litellm.num_retries = 0
-from litellm import (
+dheera_ai.num_retries = 0
+from dheera_ai import (
     batch_completion,
     batch_completion_models,
     completion,
     batch_completion_models_all_responses,
 )
 
-# litellm.set_verbose=True
+# dheera_ai.set_verbose=True
 
 
 def test_batch_completions():
     messages = [[{"role": "user", "content": "write a short poem"}] for _ in range(3)]
     model = "gpt-3.5-turbo"
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     try:
         result = batch_completion(
             model=model,
@@ -43,7 +43,7 @@ def test_batch_completions():
     except Timeout as e:
         print(f"IN TIMEOUT")
         pass
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         print(f"IN INTERNAL SERVER ERROR")
         pass
     except Exception as e:
@@ -80,7 +80,7 @@ def test_batch_completion_models_all_responses():
         assert len(responses) == 2
     except Timeout as e:
         pass
-    except litellm.APIError as e:
+    except dheera_ai.APIError as e:
         pass
     except Exception as e:
         pytest.fail(f"An error occurred: {e}")

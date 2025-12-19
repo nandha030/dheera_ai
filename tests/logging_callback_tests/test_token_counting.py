@@ -1,7 +1,7 @@
 import os
 import sys
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import pytest
 from dotenv import load_dotenv
 from fastapi import Request
@@ -13,16 +13,16 @@ import os
 import time
 import json
 
-# this file is to test litellm/proxy
+# this file is to test dheera_ai/proxy
 
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
+import dheera_ai
 import asyncio
 from typing import Optional
-from litellm.types.utils import StandardLoggingPayload, Usage, ModelInfoBase
-from litellm.integrations.custom_logger import CustomLogger
+from dheera_ai.types.utils import StandardLoggingPayload, Usage, ModelInfoBase
+from dheera_ai.integrations.custom_logger import CustomLogger
 
 
 class TestCustomLogger(CustomLogger):
@@ -52,9 +52,9 @@ async def test_stream_token_counting_gpt_4o():
     When stream_options={"include_usage": True} logging callback tracks Usage == Usage from llm API
     """
     custom_logger = TestCustomLogger()
-    litellm.logging_callback_manager.add_litellm_callback(custom_logger)
+    dheera_ai.logging_callback_manager.add_dheera_ai_callback(custom_logger)
 
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-4o",
         messages=[{"role": "user", "content": "Hello, how are you?" * 100}],
         stream=True,
@@ -89,12 +89,12 @@ async def test_stream_token_counting_without_include_usage():
     """
     When stream_options={"include_usage": True} is not passed, the usage tracked == usage from llm api chunk
 
-    by default, litellm passes `include_usage=True` for OpenAI API
+    by default, dheera_ai passes `include_usage=True` for OpenAI API
     """
     custom_logger = TestCustomLogger()
-    litellm.logging_callback_manager.add_litellm_callback(custom_logger)
+    dheera_ai.logging_callback_manager.add_dheera_ai_callback(custom_logger)
 
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-4o",
         messages=[{"role": "user", "content": "Hello, how are you?" * 100}],
         stream=True,
@@ -126,13 +126,13 @@ async def test_stream_token_counting_without_include_usage():
 @pytest.mark.asyncio
 async def test_stream_token_counting_with_redaction():
     """
-    When litellm.turn_off_message_logging=True is used, the usage tracked == usage from llm api chunk
+    When dheera_ai.turn_off_message_logging=True is used, the usage tracked == usage from llm api chunk
     """
-    litellm.turn_off_message_logging = True
+    dheera_ai.turn_off_message_logging = True
     custom_logger = TestCustomLogger()
-    litellm.logging_callback_manager.add_litellm_callback(custom_logger)
+    dheera_ai.logging_callback_manager.add_dheera_ai_callback(custom_logger)
 
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-4o",
         messages=[{"role": "user", "content": "Hello, how are you?" * 100}],
         stream=True,
@@ -167,14 +167,14 @@ async def test_stream_token_counting_anthropic_with_include_usage():
     from anthropic import Anthropic
 
     anthropic_client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
 
     custom_logger = TestCustomLogger()
-    litellm.logging_callback_manager.add_litellm_callback(custom_logger)
+    dheera_ai.logging_callback_manager.add_dheera_ai_callback(custom_logger)
 
     input_text = "Respond in just 1 word. Say ping"
 
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="claude-sonnet-4-5-20250929",
         messages=[{"role": "user", "content": input_text}],
         max_tokens=4096,
@@ -237,8 +237,8 @@ async def test_stream_token_counting_anthropic_with_include_usage():
     print("input_tokens_anthropic_api", anthropic_api_input_tokens)
     print("output_tokens_anthropic_api", anthropic_api_output_tokens)
 
-    print("input_tokens_litellm", custom_logger.recorded_usage.prompt_tokens)
-    print("output_tokens_litellm", custom_logger.recorded_usage.completion_tokens)
+    print("input_tokens_dheera_ai", custom_logger.recorded_usage.prompt_tokens)
+    print("output_tokens_dheera_ai", custom_logger.recorded_usage.completion_tokens)
 
     ## Assert Accuracy of token counting
     # input tokens should be exactly the same

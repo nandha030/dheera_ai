@@ -4,9 +4,9 @@
 
 ✨ **This is an Enterprise Feature**
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat)
+[Contact us here to get a free trial](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 :::
 
@@ -29,7 +29,7 @@ export GOOGLE_SECRET_MANAGER_ALWAYS_READ_SECRET_MANAGER = ""  # (str) set to "tr
 ```yaml
 model_list:
   - model_name: fake-openai-endpoint
-    litellm_params:
+    dheera_ai_params:
       model: openai/fake
       api_base: https://exampleopenaiendpoint-production.up.railway.app/
       api_key: os.environ/OPENAI_API_KEY # this will be read from Google Secret Manager
@@ -40,8 +40,8 @@ general_settings:
 
 You can now test this by starting your proxy: 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
-[Quick Test Proxy](../proxy/quick_start#using-litellm-proxy---curl-request-openai-package-langchain-langchain-js)
+[Quick Test Proxy](../proxy/quick_start#using-dheera_ai-proxy---curl-request-openai-package-langchain-langchain-js)
 

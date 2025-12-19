@@ -9,15 +9,15 @@ from datetime import datetime
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-from litellm import Router
+from dheera_ai import Router
 import pytest
-import litellm
+import dheera_ai
 from unittest.mock import patch, MagicMock, AsyncMock
 from create_mock_standard_logging_payload import create_standard_logging_payload
-from litellm.types.utils import StandardLoggingPayload
+from dheera_ai.types.utils import StandardLoggingPayload
 import unittest
 from pydantic import BaseModel
-from litellm.router_utils.prompt_caching_cache import PromptCachingCache
+from dheera_ai.router_utils.prompt_caching_cache import PromptCachingCache
 
 
 class ExampleModel(BaseModel):
@@ -70,7 +70,7 @@ def test_serialize_non_serializable():
 @pytest.mark.asyncio
 async def test_router_prompt_caching_same_cacheable_prefix_routes_to_same_deployment():
     """
-    End-to-end test to validate prompt caching routing through LiteLLM Router.
+    End-to-end test to validate prompt caching routing through DheeraAI Router.
     
     Tests that requests with same cacheable content but different user messages
     route to the same deployment (for prompt caching).
@@ -79,7 +79,7 @@ async def test_router_prompt_caching_same_cacheable_prefix_routes_to_same_deploy
     user messages should route to the same deployment, but previously didn't because
     the cache key included the entire messages array instead of just the cacheable prefix.
     """
-    from litellm.types.llms.openai import AllMessageValues
+    from dheera_ai.types.llms.openai import AllMessageValues
     
     def create_messages(user_content: str) -> list[AllMessageValues]:
         """
@@ -119,7 +119,7 @@ async def test_router_prompt_caching_same_cacheable_prefix_routes_to_same_deploy
         model_list=[
             {
                 "model_name": "test-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "gpt-3.5-turbo",
                     "api_base": "https://exampleopenaiendpoint-production-0ee2.up.railway.app/v1",
                     "api_key": f"test-key-{i}",

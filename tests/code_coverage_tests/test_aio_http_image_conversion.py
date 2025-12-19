@@ -1,7 +1,7 @@
 import ast
 import os
 import sys
-from litellm.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
+from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler, AsyncHTTPHandler
 import asyncio
 import aiohttp
 import base64

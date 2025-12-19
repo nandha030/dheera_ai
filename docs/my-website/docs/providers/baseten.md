@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Baseten
 
-LiteLLM supports both Baseten Model APIs and dedicated deployments with automatic routing.
+Dheera AI supports both Baseten Model APIs and dedicated deployments with automatic routing.
 
 ## API Types
 
@@ -18,7 +18,7 @@ LiteLLM supports both Baseten Model APIs and dedicated deployments with automati
 - **Best for**: Custom models, latency SLAs
 
 :::tip
-**Automatic Routing**: LiteLLM detects the type based on model format:
+**Automatic Routing**: Dheera AI detects the type based on model format:
 - 8-digit alphanumeric codes → Dedicated deployment
 - All other formats → Model API
 :::
@@ -28,7 +28,7 @@ LiteLLM supports both Baseten Model APIs and dedicated deployments with automati
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ['BASETEN_API_KEY'] = "your-api-key"
 
@@ -80,13 +80,13 @@ for chunk in response:
         print(chunk.choices[0].delta.content, end="")
 ```
 
-## Usage with LiteLLM Proxy
+## Usage with Dheera AI Proxy
 
 1. **Config**:
 ```yaml
 model_list:
   - model_name: baseten-model
-    litellm_params:
+    dheera_ai_params:
       model: baseten/openai/gpt-oss-120b
       api_key: your-baseten-api-key
 ```

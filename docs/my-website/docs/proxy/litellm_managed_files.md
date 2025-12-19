@@ -2,16 +2,16 @@ import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 import Image from '@theme/IdealImage';
 
-# [BETA] LiteLLM Managed Files
+# [BETA] Dheera AI Managed Files
 
 - Reuse the same file across different providers.
 - Prevent users from seeing files they don't have access to on `list` and `retrieve` calls. 
 
 :::info
 
-This is a free LiteLLM Enterprise feature.
+This is a free Dheera AI Enterprise feature.
 
-Available via the `litellm[proxy]` package or any `litellm` docker image.
+Available via the `dheera_ai[proxy]` package or any `dheera_ai` docker image.
 
 :::
 
@@ -30,24 +30,24 @@ Available via the `litellm[proxy]` package or any `litellm` docker image.
 ```yaml
 model_list:
     - model_name: "gemini-2.0-flash"
-      litellm_params:
+      dheera_ai_params:
         model: vertex_ai/gemini-2.0-flash
         vertex_project: my-project-id
         vertex_location: us-central1
     - model_name: "gpt-4o-mini-openai"
-      litellm_params:
+      dheera_ai_params:
         model: gpt-4o-mini
         api_key: os.environ/OPENAI_API_KEY
 
 general_settings: 
-  master_key: sk-1234  # alternatively use the env var - LITELLM_MASTER_KEY
+  master_key: sk-1234  # alternatively use the env var - DHEERA_AI_MASTER_KEY
   database_url: "postgresql://<user>:<password>@<host>:<port>/<dbname>" # alternatively use the env var - DATABASE_URL
 ```
 
 ### 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 ### 3. Test it!
@@ -229,19 +229,19 @@ Prevent users from seeing files they don't have access to on `list` and `retriev
 ```yaml
 model_list:
     - model_name: "gpt-4o-mini-openai"
-      litellm_params:
+      dheera_ai_params:
         model: gpt-4o-mini
         api_key: os.environ/OPENAI_API_KEY
 
 general_settings: 
-  master_key: sk-1234  # alternatively use the env var - LITELLM_MASTER_KEY
+  master_key: sk-1234  # alternatively use the env var - DHEERA_AI_MASTER_KEY
   database_url: "postgresql://<user>:<password>@<host>:<port>/<dbname>" # alternatively use the env var - DATABASE_URL
 ```
 
 ### 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 ### 3. Issue a key to the user
@@ -287,9 +287,9 @@ client = OpenAI(
 finetuning_input_file = client.files.create(
     file=open("./fine_tuning.jsonl", "rb"), # {"model": "azure-gpt-4o"} <-> {"model": "gpt-4o-my-special-deployment"}
     purpose="fine-tune",
-    extra_body={"target_model_names": "gpt-4.1-openai"} # 👈 Tells litellm which regions/projects to write the file in. 
+    extra_body={"target_model_names": "gpt-4.1-openai"} # 👈 Tells dheera_ai which regions/projects to write the file in. 
 )
-print(finetuning_input_file) # file.id = "litellm_proxy/..." = {"model_name": {"deployment_id": "deployment_file_id"}}
+print(finetuning_input_file) # file.id = "dheera_ai_proxy/..." = {"model_name": {"deployment_id": "deployment_file_id"}}
 ```
 
 ### 5. User retrieves a file 
@@ -395,17 +395,17 @@ Pre-GA Limitations will be fixed before GA of the Managed Files feature.
 
 ## FAQ
 
-**1. Does LiteLLM store the file?**
+**1. Does Dheera AI store the file?**
 
-No, LiteLLM does not store the file. It only stores the file id's in the postgres DB.
+No, Dheera AI does not store the file. It only stores the file id's in the postgres DB.
 
-**2. How does LiteLLM know which file to use for a given file id?**
+**2. How does Dheera AI know which file to use for a given file id?**
 
-LiteLLM stores a mapping of the litellm file id to the model-specific file id in the postgres DB. When a request comes in, LiteLLM looks up the model-specific file id and uses it in the request to the provider.
+Dheera AI stores a mapping of the dheera_ai file id to the model-specific file id in the postgres DB. When a request comes in, Dheera AI looks up the model-specific file id and uses it in the request to the provider.
 
 **3. How do file deletions work?**
 
-When a file is deleted, LiteLLM deletes the mapping from the postgres DB, and the files on each provider.
+When a file is deleted, Dheera AI deletes the mapping from the postgres DB, and the files on each provider.
 
 **4. Can a user call a file id that was created by another user?**
 

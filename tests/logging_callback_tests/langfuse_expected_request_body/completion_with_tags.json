@@ -4,9 +4,9 @@
             "id": "42be960a-5dde-47df-9cbc-1fdd0fdcaa7d",
             "type": "trace-create",
             "body": {
-                "id": "litellm-test-f3ab679b-1e1d-43fd-9a9a-f11287aeb339",
+                "id": "dheera_ai-test-f3ab679b-1e1d-43fd-9a9a-f11287aeb339",
                 "timestamp": "2025-01-22T15:31:28.963419Z",
-                "name": "litellm-acompletion",
+                "name": "dheera_ai-acompletion",
                 "input": {
                     "messages": [
                         {
@@ -33,8 +33,8 @@
             "id": "5486df5a-3776-4adf-abd0-bd22e51f7fb4",
             "type": "generation-create",
             "body": {
-                "traceId": "litellm-test-f3ab679b-1e1d-43fd-9a9a-f11287aeb339",
-                "name": "litellm-acompletion",
+                "traceId": "dheera_ai-test-f3ab679b-1e1d-43fd-9a9a-f11287aeb339",
+                "name": "dheera_ai-acompletion",
                 "startTime": "2025-01-22T07:31:28.960749-08:00",
                 "metadata": {
                     "tags": [
@@ -47,12 +47,12 @@
                         "api_base": "https://api.openai.com",
                         "response_cost": 5.4999999999999995e-05,
                         "additional_headers": {},
-                        "litellm_overhead_time_ms": null,
+                        "dheera_ai_overhead_time_ms": null,
                         "batch_models": null,
-                        "litellm_model_name": "gpt-3.5-turbo",
+                        "dheera_ai_model_name": "gpt-3.5-turbo",
                         "usage_object": null
                     },
-                    "litellm_response_cost": 5.4999999999999995e-05,
+                    "dheera_ai_response_cost": 5.4999999999999995e-05,
                     "cache_hit": false,
                     "requester_metadata": {}
                 },
@@ -98,7 +98,7 @@
     ],
     "metadata": {
         "batch_size": 2,
-        "sdk_integration": "litellm",
+        "sdk_integration": "dheera_ai",
         "sdk_name": "python",
         "sdk_version": "2.44.1",
         "public_key": "pk-lf-e02aaea3-8668-4c9f-8c69-771a4ea1f5c9"

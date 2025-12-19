@@ -9,7 +9,7 @@ import os
 sys.path.insert(0, os.path.abspath("../.."))
 
 import asyncio
-import litellm
+import dheera_ai
 import pytest
 import time
 from statistics import mean, median
@@ -67,7 +67,7 @@ async def create_async_vertex_embedding_task():
         "api_base": base_url,
     }
     start_time = time.time()
-    response = await litellm.aembedding(**embedding_args)
+    response = await dheera_ai.aembedding(**embedding_args)
     end_time = time.time()
     print(f"Vertex AI embedding time: {end_time - start_time:.2f} seconds")
     return response, end_time - start_time
@@ -115,7 +115,7 @@ async def test_embedding_performance(monkeypatch):
 
     20 RPS for 20 seconds
     """
-    monkeypatch.setattr(litellm, "api_base", None)
+    monkeypatch.setattr(dheera_ai, "api_base", None)
     duration_seconds = 20
     requests_per_second = 20
     vertex_times = await run_load_test(duration_seconds, requests_per_second)

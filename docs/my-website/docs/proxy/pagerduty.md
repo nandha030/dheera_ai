@@ -4,11 +4,11 @@ import Image from '@theme/IdealImage';
 
 :::info
 
-✨ PagerDuty Alerting is on LiteLLM Enterprise
+✨ PagerDuty Alerting is on Dheera AI Enterprise
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Get free 7-day trial key](https://www.litellm.ai/enterprise#trial)
+[Get free 7-day trial key](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
@@ -30,7 +30,7 @@ PAGERDUTY_API_KEY="d8bxxxxx"
 ```yaml
 model_list:
   - model_name: "openai/*"
-    litellm_params:
+    dheera_ai_params:
       model: "openai/*"
       api_key: os.environ/OPENAI_API_KEY
 
@@ -49,10 +49,10 @@ general_settings:
 3. Test it 
 
 
-Start LiteLLM Proxy
+Start Dheera AI Proxy
 
 ```shell
-litellm --config config.yaml
+dheera_ai --config config.yaml
 ```
 
 ### LLM API Failure Alert

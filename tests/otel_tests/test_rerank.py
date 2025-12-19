@@ -3,7 +3,7 @@ import asyncio
 import aiohttp, openai
 from openai import OpenAI, AsyncOpenAI
 from typing import Optional, List, Union
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 
 
 async def make_rerank_curl_request(
@@ -40,7 +40,7 @@ async def make_rerank_curl_request(
 @pytest.mark.asyncio
 async def test_basic_rerank_on_proxy():
     """
-    Test litellm.rerank() on proxy
+    Test dheera_ai.rerank() on proxy
 
     This SHOULD NOT call the pass through endpoints :)
     """

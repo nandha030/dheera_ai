@@ -19,15 +19,15 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-import litellm
-from litellm import RateLimitError, Timeout, completion, completion_cost, embedding
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
-from litellm.litellm_core_utils.prompt_templates.factory import anthropic_messages_pt
+import dheera_ai
+from dheera_ai import RateLimitError, Timeout, completion, completion_cost, embedding
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
+from dheera_ai.dheera_ai_core_utils.prompt_templates.factory import anthropic_messages_pt
 
-# litellm.num_retries=3
+# dheera_ai.num_retries=3
 
-litellm.cache = None
-litellm.success_callback = []
+dheera_ai.cache = None
+dheera_ai.success_callback = []
 user_message = "Write a short poem about the sky"
 messages = [{"content": user_message, "role": "user"}]
 
@@ -39,16 +39,16 @@ def logger_fn(user_model_dict):
 @pytest.fixture(autouse=True)
 def reset_callbacks():
     print("\npytest fixture - resetting callbacks")
-    litellm.success_callback = []
-    litellm._async_success_callback = []
-    litellm.failure_callback = []
-    litellm.callbacks = []
+    dheera_ai.success_callback = []
+    dheera_ai._async_success_callback = []
+    dheera_ai.failure_callback = []
+    dheera_ai.callbacks = []
 
 
 @pytest.mark.skip(reason="Local test")
 def test_response_model_none():
     """
-    Addresses:https://github.com/BerriAI/litellm/issues/2972
+    Addresses:https://github.com/BerriAI/dheera_ai/issues/2972
     """
     x = completion(
         model="mymodel",
@@ -58,12 +58,12 @@ def test_response_model_none():
         api_key="my-api-key",
     )
     print(f"x: {x}")
-    assert isinstance(x, litellm.ModelResponse)
+    assert isinstance(x, dheera_ai.ModelResponse)
 
 
 def test_completion_custom_provider_model_name():
     try:
-        litellm.cache = None
+        dheera_ai.cache = None
         response = completion(
             model="together_ai/mistralai/Mixtral-8x7B-Instruct-v0.1",
             messages=messages,
@@ -72,13 +72,13 @@ def test_completion_custom_provider_model_name():
         # Add assertions here to check the-response
         print(response)
         print(response["choices"][0]["finish_reason"])
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
 
 
-def _openai_mock_response(*args, **kwargs) -> litellm.ModelResponse:
+def _openai_mock_response(*args, **kwargs) -> dheera_ai.ModelResponse:
     new_response = MagicMock()
     new_response.headers = {"hello": "world"}
 
@@ -120,7 +120,7 @@ def test_null_role_response():
     with patch.object(
         openai_client.chat.completions, "create", side_effect=_openai_mock_response
     ) as mock_response:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hey! how's it going?"}],
             client=openai_client,
@@ -181,10 +181,10 @@ def predibase_mock_post(url, data=None, json=None, headers=None, timeout=None):
 @pytest.mark.asyncio
 async def test_completion_predibase():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         # with patch("requests.post", side_effect=predibase_mock_post):
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="predibase/llama-3-8b-instruct",
             tenant_id="c4768f95",
             api_key=os.getenv("PREDIBASE_API_KEY"),
@@ -194,12 +194,12 @@ async def test_completion_predibase():
         )
 
         print(response)
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         print("got a timeout error from predibase")
         pass
-    except litellm.ServiceUnavailableError as e:
+    except dheera_ai.ServiceUnavailableError as e:
         pass
-    except litellm.InternalServerError:
+    except dheera_ai.InternalServerError:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -213,7 +213,7 @@ async def test_completion_predibase():
 
 @pytest.mark.skip(reason="No empower api key")
 def test_completion_empower():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     messages = [
         {
             "role": "user",
@@ -241,7 +241,7 @@ def test_completion_empower():
 
 
 def test_completion_github_api():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     messages = [
         {
             "role": "user",
@@ -264,14 +264,14 @@ def test_completion_github_api():
         )
         # Add any assertions, here to check response args
         print(response)
-    except litellm.AuthenticationError:
+    except dheera_ai.AuthenticationError:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
 
 
 def test_completion_claude_3_empty_response():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     messages = [
         {
@@ -286,16 +286,16 @@ def test_completion_claude_3_empty_response():
         },
     ]
     try:
-        response = litellm.completion(model="claude-3-opus-20240229", messages=messages)
+        response = dheera_ai.completion(model="claude-3-opus-20240229", messages=messages)
         print(response)
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         pytest.skip(f"InternalServerError - {str(e)}")
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
 
 
 def test_completion_claude_3():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     messages = [
         {
             "role": "user",
@@ -318,7 +318,7 @@ def test_completion_claude_3():
         )
         # Add any assertions, here to check response args
         print(response)
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         pytest.skip(f"InternalServerError - {str(e)}")
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -329,7 +329,7 @@ def test_completion_claude_3():
     ["anthropic/claude-3-opus-20240229", "anthropic.claude-3-sonnet-20240229-v1:0"],
 )
 def test_completion_claude_3_function_call(model):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     tools = [
         {
             "type": "function",
@@ -400,7 +400,7 @@ def test_completion_claude_3_function_call(model):
             drop_params=True,
         )
         print(second_response)
-    except litellm.InternalServerError:
+    except dheera_ai.InternalServerError:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -423,7 +423,7 @@ def test_completion_claude_3_function_call(model):
 @pytest.mark.asyncio
 async def test_model_function_invoke(model, sync_mode, api_key, api_base):
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
         messages = [
             {
@@ -488,14 +488,14 @@ async def test_model_function_invoke(model, sync_mode, api_key, api_base):
             "api_base": api_base,
         }
         if sync_mode:
-            response = litellm.completion(**data)
+            response = dheera_ai.completion(**data)
         else:
-            response = await litellm.acompletion(**data)
+            response = await dheera_ai.acompletion(**data)
 
         print(f"response: {response}")
-    except litellm.InternalServerError:
+    except dheera_ai.InternalServerError:
         pass
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         if "429 Quota exceeded" in str(e):
@@ -507,11 +507,11 @@ async def test_model_function_invoke(model, sync_mode, api_key, api_base):
 @pytest.mark.asyncio
 async def test_anthropic_no_content_error():
     """
-    https://github.com/BerriAI/litellm/discussions/3440#discussioncomment-9323402
+    https://github.com/BerriAI/dheera_ai/discussions/3440#discussioncomment-9323402
     """
     try:
-        litellm.drop_params = True
-        response = await litellm.acompletion(
+        dheera_ai.drop_params = True
+        response = await dheera_ai.acompletion(
             model="anthropic/claude-3-opus-20240229",
             api_key=os.getenv("ANTHROPIC_API_KEY"),
             messages=[
@@ -565,16 +565,16 @@ async def test_anthropic_no_content_error():
         )
 
         pass
-    except litellm.InternalServerError:
+    except dheera_ai.InternalServerError:
         pass
-    except litellm.APIError as e:
+    except dheera_ai.APIError as e:
         assert e.status_code == 500
     except Exception as e:
         pytest.fail(f"An unexpected error occurred - {str(e)}")
 
 
 def test_parse_xml_params():
-    from litellm.litellm_core_utils.prompt_templates.factory import parse_xml_params
+    from dheera_ai.dheera_ai_core_utils.prompt_templates.factory import parse_xml_params
 
     ## SCENARIO 1 ## - W/ ARRAY
     xml_content = """<invoke><tool_name>return_list_of_str</tool_name>\n<parameters>\n<value>\n<item>apple</item>\n<item>banana</item>\n<item>orange</item>\n</value>\n</parameters></invoke>"""
@@ -616,8 +616,8 @@ def test_parse_xml_params():
 
 
 def test_completion_claude_3_multi_turn_conversations():
-    litellm.set_verbose = True
-    litellm.modify_params = True
+    dheera_ai.set_verbose = True
+    dheera_ai.modify_params = True
     messages = [
         {"role": "assistant", "content": "?"},  # test first user message auto injection
         {"role": "user", "content": "Hi!"},
@@ -639,7 +639,7 @@ def test_completion_claude_3_multi_turn_conversations():
 
 
 def test_completion_claude_3_stream():
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
     messages = [{"role": "user", "content": "Hello, world"}]
     try:
         # test without max tokens
@@ -678,14 +678,14 @@ def test_completion_base64(model):
 
         import requests
 
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         url = "https://dummyimage.com/100/100/fff&text=Test+image"
         response = requests.get(url)
         file_data = response.content
 
         encoded_file = base64.b64encode(file_data).decode("utf-8")
         base64_image = f"data:image/png;base64,{encoded_file}"
-        resp = litellm.completion(
+        resp = dheera_ai.completion(
             model=model,
             messages=[
                 {
@@ -703,10 +703,10 @@ def test_completion_base64(model):
         print(f"\nResponse: {resp}")
 
         prompt_tokens = resp.usage.prompt_tokens
-    except litellm.ServiceUnavailableError as e:
+    except dheera_ai.ServiceUnavailableError as e:
         print("got service unavailable error: ", e)
         pass
-    except litellm.InternalServerError as e:
+    except dheera_ai.InternalServerError as e:
         print("got internal server error: ", e)
         pass
     except Exception as e:
@@ -718,7 +718,7 @@ def test_completion_base64(model):
 
 def test_completion_mistral_api():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         response = completion(
             model="mistral/mistral-tiny",
             max_tokens=5,
@@ -733,7 +733,7 @@ def test_completion_mistral_api():
         # Add any assertions here to check the response
         print(response)
 
-        cost = litellm.completion_cost(completion_response=response)
+        cost = dheera_ai.completion_cost(completion_response=response)
         print("cost to make mistral completion=", cost)
         assert cost > 0.0
     except Exception as e:
@@ -744,8 +744,8 @@ def test_completion_mistral_api():
 @pytest.mark.asyncio
 async def test_completion_codestral_chat_api():
     try:
-        litellm.set_verbose = True
-        response = await litellm.acompletion(
+        dheera_ai.set_verbose = True
+        response = await dheera_ai.acompletion(
             model="codestral/codestral-latest",
             messages=[
                 {
@@ -762,7 +762,7 @@ async def test_completion_codestral_chat_api():
         # Add any assertions here to-check the response
         print(response)
 
-        # cost = litellm.completion_cost(completion_response=response)
+        # cost = dheera_ai.completion_cost(completion_response=response)
         # print("cost to make mistral completion=", cost)
         # assert cost > 0.0
     except Exception as e:
@@ -770,7 +770,7 @@ async def test_completion_codestral_chat_api():
 
 
 def test_completion_mistral_api_mistral_large_function_call():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     tools = [
         {
             "type": "function",
@@ -835,7 +835,7 @@ def test_completion_mistral_api_mistral_large_function_call():
             tool_choice="auto",
         )
         print(second_response)
-    except litellm.RateLimitError:
+    except dheera_ai.RateLimitError:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -846,7 +846,7 @@ def test_completion_mistral_api_mistral_large_function_call():
 )
 def test_completion_mistral_azure():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         response = completion(
             model="mistral/Mistral-large-nmefg",
             api_key=os.environ["MISTRAL_AZURE_API_KEY"],
@@ -855,7 +855,7 @@ def test_completion_mistral_azure():
             messages=[
                 {
                     "role": "user",
-                    "content": "Hi from litellm",
+                    "content": "Hi from dheera_ai",
                 }
             ],
         )
@@ -871,7 +871,7 @@ def test_completion_mistral_azure():
 
 def test_completion_mistral_api_modified_input():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         response = completion(
             model="mistral/mistral-tiny",
             max_tokens=5,
@@ -885,7 +885,7 @@ def test_completion_mistral_api_modified_input():
         # Add any assertions here to check the response
         print(response)
 
-        cost = litellm.completion_cost(completion_response=response)
+        cost = dheera_ai.completion_cost(completion_response=response)
         print("cost to make mistral completion=", cost)
         assert cost > 0.0
     except Exception as e:
@@ -934,7 +934,7 @@ import openai
 
 
 def test_completion_gpt4_turbo():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     try:
         response = completion(
             model="gpt-4-1106-preview",
@@ -970,7 +970,7 @@ def test_completion_gpt4_turbo_0125():
 @pytest.mark.skip(reason="this test is flaky")
 def test_completion_gpt4_vision():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         response = completion(
             model="gpt-4-vision-preview",
             messages=[
@@ -1002,7 +1002,7 @@ def test_completion_gpt4_vision():
 def test_completion_azure_gpt4_vision():
     # azure/gpt-4, vision takes 5-seconds to respond
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         response = completion(
             model="azure/gpt-4-vision",
             timeout=5,
@@ -1054,9 +1054,9 @@ def test_completion_azure_gpt4_vision():
 
 def test_completion_openai_response_headers():
     """
-    Tests if LiteLLM reurns response hea
+    Tests if DheeraAI reurns response hea
     """
-    litellm.return_response_headers = True
+    dheera_ai.return_response_headers = True
 
     # /chat/completion
     messages = [
@@ -1085,7 +1085,7 @@ def test_completion_openai_response_headers():
 
     # /chat/completion - with streaming
 
-    streaming_response = litellm.completion(
+    streaming_response = dheera_ai.completion(
         model="gpt-4o-mini",
         messages=messages,
         stream=True,
@@ -1105,7 +1105,7 @@ def test_completion_openai_response_headers():
         print("chunk=", chunk)
 
     # embedding
-    embedding_response = litellm.embedding(
+    embedding_response = dheera_ai.embedding(
         model="text-embedding-ada-002",
         input="hello",
     )
@@ -1121,15 +1121,15 @@ def test_completion_openai_response_headers():
         str,
     )
 
-    litellm.return_response_headers = False
+    dheera_ai.return_response_headers = False
 
 
 @pytest.mark.asyncio()
 async def test_async_completion_openai_response_headers():
     """
-    Tests if LiteLLM reurns response hea
+    Tests if DheeraAI reurns response hea
     """
-    litellm.return_response_headers = True
+    dheera_ai.return_response_headers = True
 
     # /chat/completion
     messages = [
@@ -1139,7 +1139,7 @@ async def test_async_completion_openai_response_headers():
         }
     ]
 
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-4o-mini",
         messages=messages,
     )
@@ -1152,7 +1152,7 @@ async def test_async_completion_openai_response_headers():
 
     # /chat/completion with streaming
 
-    streaming_response = await litellm.acompletion(
+    streaming_response = await dheera_ai.acompletion(
         model="gpt-4o-mini",
         messages=messages,
         stream=True,
@@ -1166,7 +1166,7 @@ async def test_async_completion_openai_response_headers():
         print("chunk=", chunk)
 
     # embedding
-    embedding_response = await litellm.aembedding(
+    embedding_response = await dheera_ai.aembedding(
         model="text-embedding-ada-002",
         input="hello",
     )
@@ -1176,12 +1176,12 @@ async def test_async_completion_openai_response_headers():
     assert embedding_response_headers is not None
     assert "x-ratelimit-remaining-tokens" in embedding_response_headers
 
-    litellm.return_response_headers = False
+    dheera_ai.return_response_headers = False
 
 
 @pytest.mark.parametrize("model", ["gpt-3.5-turbo", "gpt-4", "gpt-4o"])
 def test_completion_openai_params(model):
-    litellm.drop_params = True
+    dheera_ai.drop_params = True
     messages = [
         {
             "role": "user",
@@ -1200,7 +1200,7 @@ def test_completion_openai_params(model):
 
 def test_completion_fireworks_ai():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         messages = [
             {"role": "system", "content": "You're a good bot"},
             {
@@ -1222,7 +1222,7 @@ def test_completion_fireworks_ai():
 )
 def test_completion_fireworks_ai_dynamic_params(api_key, api_base):
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         messages = [
             {"role": "system", "content": "You're a good bot"},
             {
@@ -1289,7 +1289,7 @@ def test_completion_perplexity_api():
             "create",
             side_effect=_return_pydantic_obj,
         ) as mock_client:
-            # litellm.set_verbose= True
+            # dheera_ai.set_verbose= True
             messages = [
                 {"role": "system", "content": "You're a good bot"},
                 {
@@ -1319,7 +1319,7 @@ def test_completion_perplexity_api():
 @pytest.mark.skip(reason="this test is flaky")
 def test_completion_perplexity_api_2():
     try:
-        # litellm.set_verbose=True
+        # dheera_ai.set_verbose=True
         messages = [
             {"role": "system", "content": "You're a good bot"},
             {
@@ -1377,7 +1377,7 @@ HF Tests we should pass
 )  # "vertex_ai",
 @pytest.mark.asyncio
 async def test_openai_compatible_custom_api_base(provider):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     messages = [
         {
             "role": "user",
@@ -1420,7 +1420,7 @@ async def test_openai_compatible_custom_api_base(provider):
 )  # "vertex_ai",
 @pytest.mark.asyncio
 async def test_openai_compatible_custom_api_video(provider):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     messages = [
         {
             "role": "user",
@@ -1460,7 +1460,7 @@ async def test_openai_compatible_custom_api_video(provider):
 def test_lm_studio_completion(monkeypatch):
     monkeypatch.delenv("LM_STUDIO_API_KEY", raising=False)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     try:
         completion(
             api_key="fake-key",
@@ -1470,16 +1470,16 @@ def test_lm_studio_completion(monkeypatch):
             ],
             api_base="https://exampleopenaiendpoint-production.up.railway.app/",
         )
-    except litellm.AuthenticationError as e:
+    except dheera_ai.AuthenticationError as e:
         pytest.fail(f"Error occurred: {e}")
-    except litellm.APIError as e:
+    except dheera_ai.APIError as e:
         print(e)
 
 
 # ################### Hugging Face Conversational models ########################
 # def hf_test_completion_conv():
 #     try:
-#         response = litellm.completion(
+#         response = dheera_ai.completion(
 #             model="huggingface/facebook/blenderbot-3B",
 #             messages=[{ "content": "Hello, how are you?","role": "user"}],
 #         )
@@ -1647,10 +1647,10 @@ def test_ollama_image():
 #         pytest.fail(f"Error occurred: {e}")
 
 
-# this should throw an exception, to trigger https://logs.litellm.ai/
+# this should throw an exception, to trigger https://logs.dheera_ai.ai/
 # def hf_test_error_logs():
 #     try:
-#         litellm.set_verbose=True
+#         dheera_ai.set_verbose=True
 #         user_message = "My name is Merve and my favorite"
 #         messages = [{ "content": user_message,"role": "user"}]
 #         response = completion(
@@ -1670,10 +1670,10 @@ def test_ollama_image():
 
 def test_completion_openai():
     try:
-        litellm.set_verbose = True
-        litellm.drop_params = True
+        dheera_ai.set_verbose = True
+        dheera_ai.drop_params = True
         print(f"api key: {os.environ['OPENAI_API_KEY']}")
-        litellm.api_key = os.environ["OPENAI_API_KEY"]
+        dheera_ai.api_key = os.environ["OPENAI_API_KEY"]
         response = completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hey"}],
@@ -1691,7 +1691,7 @@ def test_completion_openai():
         assert type(response_str) == str
         assert len(response_str) > 1
 
-        litellm.api_key = None
+        dheera_ai.api_key = None
     except Timeout as e:
         pass
     except Exception as e:
@@ -1710,7 +1710,7 @@ def test_completion_openai():
 @pytest.mark.flaky(retries=3, delay=1)
 def test_completion_openai_pydantic(model, api_version):
     try:
-        litellm._turn_on_debug()
+        dheera_ai._turn_on_debug()
         from pydantic import BaseModel
 
         messages = [
@@ -1725,7 +1725,7 @@ def test_completion_openai_pydantic(model, api_version):
         class EventsList(BaseModel):
             events: list[CalendarEvent]
 
-        litellm.enable_json_schema_validation = True
+        dheera_ai.enable_json_schema_validation = True
         for _ in range(3):
             try:
                 response = completion(
@@ -1736,7 +1736,7 @@ def test_completion_openai_pydantic(model, api_version):
                     api_version=api_version,
                 )
                 break
-            except litellm.JSONSchemaValidationError:
+            except dheera_ai.JSONSchemaValidationError:
                 pytest.fail("ERROR OCCURRED! INVALID JSON")
 
         print("This is the response object\n", response)
@@ -1754,7 +1754,7 @@ def test_completion_openai_pydantic(model, api_version):
 
 def test_completion_openai_organization():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         try:
             response = completion(
                 model="gpt-3.5-turbo", messages=messages, organization="org-ikDc4ex8NB"
@@ -1770,7 +1770,7 @@ def test_completion_openai_organization():
 
 def test_completion_text_openai():
     try:
-        # litellm.set_verbose =True
+        # dheera_ai.set_verbose =True
         response = completion(model="gpt-3.5-turbo-instruct", messages=messages)
         print(response["choices"][0]["message"]["content"])
     except Exception as e:
@@ -1781,8 +1781,8 @@ def test_completion_text_openai():
 @pytest.mark.asyncio
 async def test_completion_text_openai_async():
     try:
-        # litellm.set_verbose =True
-        response = await litellm.acompletion(
+        # dheera_ai.set_verbose =True
+        response = await dheera_ai.acompletion(
             model="gpt-3.5-turbo-instruct", messages=messages
         )
         print(response["choices"][0]["message"]["content"])
@@ -1831,8 +1831,8 @@ def test_completion_openai_with_optional_params():
     # Note: This tests that we actually send the optional params to the completion call
     # We use custom callbacks to test this
     try:
-        litellm.set_verbose = True
-        litellm.success_callback = [custom_callback]
+        dheera_ai.set_verbose = True
+        dheera_ai.success_callback = [custom_callback]
         response = completion(
             model="gpt-3.5-turbo-1106",
             messages=[
@@ -1848,7 +1848,7 @@ def test_completion_openai_with_optional_params():
         # Add any assertions here to check the response
 
         print(response)
-        litellm.success_callback = []  # unset callbacks
+        dheera_ai.success_callback = []  # unset callbacks
 
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -1859,7 +1859,7 @@ def test_completion_openai_with_optional_params():
 
 def test_completion_logprobs():
     """
-    This function is used to test the litellm.completion logprobs functionality.
+    This function is used to test the dheera_ai.completion logprobs functionality.
 
     Parameters:
         None
@@ -1868,7 +1868,7 @@ def test_completion_logprobs():
         None
     """
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         response = completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "what is the time"}],
@@ -1897,7 +1897,7 @@ def test_completion_logprobs():
 
 def test_completion_logprobs_stream():
     """
-    This function is used to test the litellm.completion logprobs functionality.
+    This function is used to test the dheera_ai.completion logprobs functionality.
 
     Parameters:
         None
@@ -1906,7 +1906,7 @@ def test_completion_logprobs_stream():
         None
     """
     try:
-        litellm.set_verbose = False
+        dheera_ai.set_verbose = False
         response = completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "what is the time"}],
@@ -1943,11 +1943,11 @@ def test_completion_logprobs_stream():
 # test_completion_logprobs_stream()
 
 
-def test_completion_openai_litellm_key():
+def test_completion_openai_dheera_ai_key():
     try:
-        litellm.set_verbose = True
-        litellm.num_retries = 0
-        litellm.api_key = os.environ["OPENAI_API_KEY"]
+        dheera_ai.set_verbose = True
+        dheera_ai.num_retries = 0
+        dheera_ai.api_key = os.environ["OPENAI_API_KEY"]
 
         # ensure key is set to None in .env and in openai.api_key
         os.environ["OPENAI_API_KEY"] = ""
@@ -1968,24 +1968,24 @@ def test_completion_openai_litellm_key():
         print(response)
 
         ###### reset environ key
-        os.environ["OPENAI_API_KEY"] = litellm.api_key
+        os.environ["OPENAI_API_KEY"] = dheera_ai.api_key
 
-        ##### unset litellm var
-        litellm.api_key = None
+        ##### unset dheera_ai var
+        dheera_ai.api_key = None
     except Timeout as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
 
 
-# test_ completion_openai_litellm_key()
+# test_ completion_openai_dheera_ai_key()
 
 
 @pytest.mark.skip(reason="Unresponsive endpoint.[TODO] Rehost this somewhere else")
 def test_completion_ollama_hosted():
     try:
-        litellm.request_timeout = 20  # give ollama 20 seconds to response
-        litellm.set_verbose = True
+        dheera_ai.request_timeout = 20  # give ollama 20 seconds to response
+        dheera_ai.set_verbose = True
         response = completion(
             model="ollama/phi",
             messages=messages,
@@ -1996,7 +1996,7 @@ def test_completion_ollama_hosted():
         print(response)
     except openai.APITimeoutError as e:
         print("got a timeout error. Passed ! ")
-        litellm.request_timeout = None
+        dheera_ai.request_timeout = None
         pass
     except Exception as e:
         if "try pulling it first" in str(e):
@@ -2040,8 +2040,8 @@ def test_completion_ollama_function_call(model):
         }
     ]
     try:
-        litellm.set_verbose = True
-        response = litellm.completion(model=model, messages=messages, tools=tools)
+        dheera_ai.set_verbose = True
+        response = dheera_ai.completion(model=model, messages=messages, tools=tools)
         print(response)
         assert response.choices[0].message.tool_calls
         assert (
@@ -2086,8 +2086,8 @@ def test_completion_ollama_function_call_stream(model):
         }
     ]
     try:
-        litellm.set_verbose = True
-        response = litellm.completion(
+        dheera_ai.set_verbose = True
+        response = dheera_ai.completion(
             model=model, messages=messages, tools=tools, stream=True
         )
         print(response)
@@ -2136,8 +2136,8 @@ async def test_acompletion_ollama_function_call(model):
         }
     ]
     try:
-        litellm.set_verbose = True
-        response = await litellm.acompletion(
+        dheera_ai.set_verbose = True
+        response = await dheera_ai.acompletion(
             model=model, messages=messages, tools=tools
         )
         print(response)
@@ -2185,8 +2185,8 @@ async def test_acompletion_ollama_function_call_stream(model):
         }
     ]
     try:
-        litellm.set_verbose = True
-        response = await litellm.acompletion(
+        dheera_ai.set_verbose = True
+        response = await dheera_ai.acompletion(
             model=model, messages=messages, tools=tools, stream=True
         )
         print(response)
@@ -2203,7 +2203,7 @@ async def test_acompletion_ollama_function_call_stream(model):
 
 def test_completion_openrouter1():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         response = completion(
             model="openrouter/mistralai/mistral-tiny",
             messages=messages,
@@ -2217,7 +2217,7 @@ def test_completion_openrouter1():
 
 def test_completion_openrouter_reasoning_effort():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         response = completion(
             model="openrouter/deepseek/deepseek-r1",
             messages=messages,
@@ -2304,7 +2304,7 @@ def gemini_mock_post(*args, **kwargs):
 
 @pytest.mark.asyncio
 async def test_completion_functions_param():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     function1 = [
         {
             "name": "get_current_weather",
@@ -2323,14 +2323,14 @@ async def test_completion_functions_param():
         }
     ]
     try:
-        from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
+        from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
 
         messages = [{"role": "user", "content": "What is the weather like in Boston?"}]
 
         client = AsyncHTTPHandler(concurrent_limit=1)
 
         with patch.object(client, "post", side_effect=gemini_mock_post) as mock_client:
-            response: litellm.ModelResponse = await litellm.acompletion(
+            response: dheera_ai.ModelResponse = await dheera_ai.acompletion(
                 model="gemini/gemini-1.5-pro",
                 messages=messages,
                 functions=function1,
@@ -2342,11 +2342,11 @@ async def test_completion_functions_param():
             print(f"mock_client.call_args.kwargs: {mock_client.call_args.kwargs}")
             assert "tools" in mock_client.call_args.kwargs["json"]
             assert (
-                "litellm_param_is_function_call"
+                "dheera_ai_param_is_function_call"
                 not in mock_client.call_args.kwargs["json"]
             )
             assert (
-                "litellm_param_is_function_call"
+                "dheera_ai_param_is_function_call"
                 not in mock_client.call_args.kwargs["json"]["generationConfig"]
             )
             assert response.choices[0].message.function_call is not None
@@ -2365,12 +2365,12 @@ def test_completion_azure_extra_headers():
     from httpx import Client
     from openai import AzureOpenAI
 
-    from litellm.llms.custom_httpx.httpx_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.httpx_handler import HTTPHandler
 
     http_client = Client()
 
     with patch.object(http_client, "send", new=MagicMock()) as mock_client:
-        litellm.client_session = http_client
+        dheera_ai.client_session = http_client
         try:
             response = completion(
                 model="azure/gpt-4.1-mini",
@@ -2409,9 +2409,9 @@ def test_completion_azure_ad_token():
     # Ishaan will be very disappointed if this test is removed -> this is a standard way to pass api_key + the router + proxy use this
     from httpx import Client
 
-    from litellm import completion
+    from dheera_ai import completion
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     old_key = os.environ["AZURE_API_KEY"]
     os.environ.pop("AZURE_API_KEY", None)
@@ -2419,7 +2419,7 @@ def test_completion_azure_ad_token():
     http_client = Client()
 
     with patch.object(http_client, "send", new=MagicMock()) as mock_client:
-        litellm.client_session = http_client
+        dheera_ai.client_session = http_client
         try:
             response = completion(
                 model="azure/gpt-4.1-mini",
@@ -2450,7 +2450,7 @@ def test_completion_azure_key_completion_arg():
     os.environ.pop("AZURE_API_KEY", None)
     try:
         print("azure gpt-3.5 test\n\n")
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         ## Test azure call
         response = completion(
             model="azure/gpt-4.1-mini",
@@ -2473,7 +2473,7 @@ def test_completion_azure_key_completion_arg():
 async def test_re_use_azure_async_client():
     try:
         print("azure gpt-3.5 ASYNC with clie nttest\n\n")
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         import openai
 
         client = openai.AsyncAzureOpenAI(
@@ -2483,7 +2483,7 @@ async def test_re_use_azure_async_client():
         )
         ## Test azure call
         for _ in range(3):
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="azure/gpt-4.1-mini", messages=messages, client=client
             )
             print(f"response: {response}")
@@ -2494,7 +2494,7 @@ async def test_re_use_azure_async_client():
 def test_re_use_openaiClient():
     try:
         print("gpt-3.5  with client test\n\n")
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         import openai
 
         client = openai.OpenAI(
@@ -2502,7 +2502,7 @@ def test_re_use_openaiClient():
         )
         ## Test OpenAI call
         for _ in range(2):
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="gpt-3.5-turbo", messages=messages, client=client
             )
             print(f"response: {response}")
@@ -2518,7 +2518,7 @@ def test_azure_openai_ad_token():
 
     # this tests if the azure ad token is set in the request header
     # the request can fail since azure ad tokens expire after 30 mins, but the header MUST have the azure ad token
-    # we use litellm.input_callbacks for this test
+    # we use dheera_ai.input_callbacks for this test
     def tester(
         kwargs,  # kwargs to completion
     ):
@@ -2528,9 +2528,9 @@ def test_azure_openai_ad_token():
             pytest.fail("AZURE AD TOKEN Passed but not set in request header")
         return
 
-    litellm.input_callback = [tester]
+    dheera_ai.input_callback = [tester]
     try:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="azure/gpt-4.1-mini",  # e.g. gpt-35-instant
             messages=[
                 {
@@ -2542,9 +2542,9 @@ def test_azure_openai_ad_token():
         )
         print("azure ad token respoonse\n")
         print(response)
-        litellm.input_callback = []
+        dheera_ai.input_callback = []
     except Exception as e:
-        litellm.input_callback = []
+        dheera_ai.input_callback = []
         pass
 
     time.sleep(1)
@@ -2558,7 +2558,7 @@ def test_completion_azure2():
     # test if we can pass api_base, api_version and api_key in compleition()
     try:
         print("azure gpt-3.5 test\n\n")
-        litellm.set_verbose = False
+        dheera_ai.set_verbose = False
         api_base = os.environ["AZURE_API_BASE"]
         api_key = os.environ["AZURE_API_KEY"]
         api_version = os.environ["AZURE_API_VERSION"]
@@ -2595,10 +2595,10 @@ def test_completion_azure3():
     # test if we can pass api_base, api_version and api_key in compleition()
     try:
         print("azure gpt-3.5 test\n\n")
-        litellm.set_verbose = True
-        litellm.api_base = os.environ["AZURE_API_BASE"]
-        litellm.api_key = os.environ["AZURE_API_KEY"]
-        litellm.api_version = os.environ["AZURE_API_VERSION"]
+        dheera_ai.set_verbose = True
+        dheera_ai.api_base = os.environ["AZURE_API_BASE"]
+        dheera_ai.api_key = os.environ["AZURE_API_KEY"]
+        dheera_ai.api_version = os.environ["AZURE_API_VERSION"]
 
         os.environ["AZURE_API_BASE"] = ""
         os.environ["AZURE_API_VERSION"] = ""
@@ -2614,9 +2614,9 @@ def test_completion_azure3():
         # Add any assertions here to check the response
         print(response)
 
-        os.environ["AZURE_API_BASE"] = litellm.api_base
-        os.environ["AZURE_API_VERSION"] = litellm.api_version
-        os.environ["AZURE_API_KEY"] = litellm.api_key
+        os.environ["AZURE_API_BASE"] = dheera_ai.api_base
+        os.environ["AZURE_API_VERSION"] = dheera_ai.api_version
+        os.environ["AZURE_API_KEY"] = dheera_ai.api_key
 
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -2625,22 +2625,22 @@ def test_completion_azure3():
 # test_completion_azure3()
 
 
-# new azure test for using litellm. vars,
+# new azure test for using dheera_ai. vars,
 # use the following vars in this test and make an azure_api_call
-#  litellm.api_type = self.azure_api_type
-#  litellm.api_base = self.azure_api_base
-#  litellm.api_version = self.azure_api_version
-#  litellm.api_key = self.api_key
-def test_completion_azure_with_litellm_key():
+#  dheera_ai.api_type = self.azure_api_type
+#  dheera_ai.api_base = self.azure_api_base
+#  dheera_ai.api_version = self.azure_api_version
+#  dheera_ai.api_key = self.api_key
+def test_completion_azure_with_dheera_ai_key():
     try:
         print("azure gpt-3.5 test\n\n")
         import openai
 
-        #### set litellm vars
-        litellm.api_type = "azure"
-        litellm.api_base = os.environ["AZURE_API_BASE"]
-        litellm.api_version = os.environ["AZURE_API_VERSION"]
-        litellm.api_key = os.environ["AZURE_API_KEY"]
+        #### set dheera_ai vars
+        dheera_ai.api_type = "azure"
+        dheera_ai.api_base = os.environ["AZURE_API_BASE"]
+        dheera_ai.api_version = os.environ["AZURE_API_VERSION"]
+        dheera_ai.api_key = os.environ["AZURE_API_KEY"]
 
         ######### UNSET ENV VARs for this ################
         os.environ["AZURE_API_BASE"] = ""
@@ -2661,15 +2661,15 @@ def test_completion_azure_with_litellm_key():
         print(response)
 
         ######### RESET ENV VARs for this ################
-        os.environ["AZURE_API_BASE"] = litellm.api_base
-        os.environ["AZURE_API_VERSION"] = litellm.api_version
-        os.environ["AZURE_API_KEY"] = litellm.api_key
+        os.environ["AZURE_API_BASE"] = dheera_ai.api_base
+        os.environ["AZURE_API_VERSION"] = dheera_ai.api_version
+        os.environ["AZURE_API_KEY"] = dheera_ai.api_key
 
-        ######### UNSET litellm vars
-        litellm.api_type = None
-        litellm.api_base = None
-        litellm.api_version = None
-        litellm.api_key = None
+        ######### UNSET dheera_ai vars
+        dheera_ai.api_type = None
+        dheera_ai.api_base = None
+        dheera_ai.api_version = None
+        dheera_ai.api_key = None
 
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -2685,7 +2685,7 @@ import asyncio
 @pytest.mark.parametrize("sync_mode", [False, True])
 @pytest.mark.asyncio
 async def test_completion_replicate_llama3(sync_mode):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "replicate/meta/meta-llama-3-8b-instruct"
     try:
         if sync_mode:
@@ -2695,7 +2695,7 @@ async def test_completion_replicate_llama3(sync_mode):
                 max_tokens=10,
             )
         else:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model=model_name,
                 messages=messages,
                 max_tokens=10,
@@ -2703,7 +2703,7 @@ async def test_completion_replicate_llama3(sync_mode):
             print(f"ASYNC REPLICATE RESPONSE - {response}")
         print(f"REPLICATE RESPONSE - {response}")
         # Add any assertions here to check the response
-        assert isinstance(response, litellm.ModelResponse)
+        assert isinstance(response, dheera_ai.ModelResponse)
         assert len(response.choices[0].message.content.strip()) > 0
         response_format_tests(response=response)
     except Exception as e:
@@ -2713,7 +2713,7 @@ async def test_completion_replicate_llama3(sync_mode):
 @pytest.mark.skip(reason="replicate endpoints take +2 mins just for this request")
 def test_completion_replicate_vicuna():
     print("TESTING REPLICATE")
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "replicate/meta/llama-2-7b-chat:f1d50bb24186c52daae319ca8366e53debdaa9e0ae7ff976e918df752732ccc4"
     try:
         response = completion(
@@ -2740,9 +2740,9 @@ def test_completion_replicate_vicuna():
 
 
 def test_replicate_custom_prompt_dict():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "replicate/meta/llama-2-7b"
-    litellm.register_prompt_template(
+    dheera_ai.register_prompt_template(
         model="replicate/meta/llama-2-7b",
         initial_prompt_value="You are a good assistant",  # [OPTIONAL]
         roles={
@@ -2775,19 +2775,19 @@ def test_replicate_custom_prompt_dict():
             num_retries=3,
         )
 
-    except litellm.APIError as e:
+    except dheera_ai.APIError as e:
         pass
-    except litellm.APIConnectionError as e:
+    except dheera_ai.APIConnectionError as e:
         pass
     except Exception as e:
         pytest.fail(f"An exception occurred - {str(e)}")
     print(f"response: {response}")
-    litellm.custom_prompt_dict = {}  # reset
+    dheera_ai.custom_prompt_dict = {}  # reset
 
 
 def test_bedrock_deepseek_custom_prompt_dict():
     model = "llama/arn:aws:bedrock:us-east-1:1234:imported-model/45d34re"
-    litellm.register_prompt_template(
+    dheera_ai.register_prompt_template(
         model=model,
         tokenizer_config={
             "add_bos_token": True,
@@ -2825,8 +2825,8 @@ def test_bedrock_deepseek_custom_prompt_dict():
             "chat_template": "{% if not add_generation_prompt is defined %}{% set add_generation_prompt = false %}{% endif %}{% set ns = namespace(is_first=false, is_tool=false, is_output_first=true, system_prompt='') %}{%- for message in messages %}{%- if message['role'] == 'system' %}{% set ns.system_prompt = message['content'] %}{%- endif %}{%- endfor %}{{bos_token}}{{ns.system_prompt}}{%- for message in messages %}{%- if message['role'] == 'user' %}{%- set ns.is_tool = false -%}{{'<｜User｜>' + message['content']}}{%- endif %}{%- if message['role'] == 'assistant' and message['content'] is none %}{%- set ns.is_tool = false -%}{%- for tool in message['tool_calls']%}{%- if not ns.is_first %}{{'<｜Assistant｜><｜tool▁calls▁begin｜><｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\\n' + '```json' + '\\n' + tool['function']['arguments'] + '\\n' + '```' + '<｜tool▁call▁end｜>'}}{%- set ns.is_first = true -%}{%- else %}{{'\\n' + '<｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\\n' + '```json' + '\\n' + tool['function']['arguments'] + '\\n' + '```' + '<｜tool▁call▁end｜>'}}{{'<｜tool▁calls▁end｜><｜end▁of▁sentence｜>'}}{%- endif %}{%- endfor %}{%- endif %}{%- if message['role'] == 'assistant' and message['content'] is not none %}{%- if ns.is_tool %}{{'<｜tool▁outputs▁end｜>' + message['content'] + '<｜end▁of▁sentence｜>'}}{%- set ns.is_tool = false -%}{%- else %}{% set content = message['content'] %}{% if '</think>' in content %}{% set content = content.split('</think>')[-1] %}{% endif %}{{'<｜Assistant｜>' + content + '<｜end▁of▁sentence｜>'}}{%- endif %}{%- endif %}{%- if message['role'] == 'tool' %}{%- set ns.is_tool = true -%}{%- if ns.is_output_first %}{{'<｜tool▁outputs▁begin｜><｜tool▁output▁begin｜>' + message['content'] + '<｜tool▁output▁end｜>'}}{%- set ns.is_output_first = false %}{%- else %}{{'\\n<｜tool▁output▁begin｜>' + message['content'] + '<｜tool▁output▁end｜>'}}{%- endif %}{%- endif %}{%- endfor -%}{% if ns.is_tool %}{{'<｜tool▁outputs▁end｜>'}}{% endif %}{% if add_generation_prompt and not ns.is_tool %}{{'<｜Assistant｜><think>\\n'}}{% endif %}",
         },
     )
-    assert model in litellm.known_tokenizer_config
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    assert model in dheera_ai.known_tokenizer_config
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
@@ -2858,7 +2858,7 @@ def test_bedrock_deepseek_known_tokenizer_config(monkeypatch):
     model = (
         "deepseek_r1/arn:aws:bedrock:us-west-2:888602223428:imported-model/bnnr6463ejgf"
     )
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
     from unittest.mock import Mock
     import httpx
 
@@ -2913,7 +2913,7 @@ def test_bedrock_deepseek_known_tokenizer_config(monkeypatch):
 # commenthing this out since we won't be always testing a custom, replicate deployment
 # def test_completion_replicate_deployments():
 #     print("TESTING REPLICATE")
-#     litellm.set_verbose=False
+#     dheera_ai.set_verbose=False
 #     model_name = "replicate/deployments/ishaan-jaff/ishaan-mistral"
 #     try:
 #         response = completion(
@@ -2958,9 +2958,9 @@ def test_completion_together_ai_mixtral():
             "Cost for completion call together-computer/llama-2-70b: ",
             f"${float(cost):.10f}",
         )
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         pass
-    except litellm.ServiceUnavailableError as e:
+    except dheera_ai.ServiceUnavailableError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -2970,7 +2970,7 @@ def test_completion_together_ai_mixtral():
 
 
 def test_completion_together_ai_llama():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
     try:
         messages = [
@@ -2985,7 +2985,7 @@ def test_completion_together_ai_llama():
             "Cost for completion call together-computer/llama-2-70b: ",
             f"${float(cost):.10f}",
         )
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -2997,11 +2997,11 @@ def test_completion_together_ai_llama():
 # test_completion_together_ai()
 def test_customprompt_together_ai():
     try:
-        litellm.set_verbose = False
-        litellm.num_retries = 0
+        dheera_ai.set_verbose = False
+        dheera_ai.num_retries = 0
         print("in test_customprompt_together_ai")
-        print(litellm.success_callback)
-        print(litellm._async_success_callback)
+        print(dheera_ai.success_callback)
+        print(dheera_ai._async_success_callback)
         response = completion(
             model="together_ai/mistralai/Mixtral-8x7B-Instruct-v0.1",
             messages=messages,
@@ -3021,7 +3021,7 @@ def test_customprompt_together_ai():
             },
         )
         print(response)
-    except litellm.exceptions.Timeout as e:
+    except dheera_ai.exceptions.Timeout as e:
         print(f"Timeout Error")
         pass
     except Exception as e:
@@ -3032,7 +3032,7 @@ def test_customprompt_together_ai():
 # test_customprompt_together_ai()
 
 
-def response_format_tests(response: litellm.ModelResponse):
+def response_format_tests(response: dheera_ai.ModelResponse):
     assert isinstance(response.id, str)
     assert response.id != ""
 
@@ -3047,11 +3047,11 @@ def response_format_tests(response: litellm.ModelResponse):
     assert isinstance(response.choices, list)
     assert len(response.choices) == 1
     choice = response.choices[0]
-    assert isinstance(choice, litellm.Choices)
+    assert isinstance(choice, dheera_ai.Choices)
     assert isinstance(choice.get("index"), int)
 
     message = choice.get("message")
-    assert isinstance(message, litellm.Message)
+    assert isinstance(message, dheera_ai.Message)
     assert isinstance(message.get("role"), str)
     assert message.get("role") != ""
     assert isinstance(message.get("content"), str)
@@ -3061,7 +3061,7 @@ def response_format_tests(response: litellm.ModelResponse):
     assert isinstance(choice.get("finish_reason"), str)
     assert choice.get("finish_reason") != ""
 
-    assert isinstance(response.usage, litellm.Usage)  # type: ignore
+    assert isinstance(response.usage, dheera_ai.Usage)  # type: ignore
     assert isinstance(response.usage.prompt_tokens, int)  # type: ignore
     assert isinstance(response.usage.completion_tokens, int)  # type: ignore
     assert isinstance(response.usage.total_tokens, int)  # type: ignore
@@ -3081,7 +3081,7 @@ def response_format_tests(response: litellm.ModelResponse):
 @pytest.mark.parametrize("sync_mode", [True, False])
 @pytest.mark.asyncio
 async def test_completion_bedrock_httpx_models(sync_mode, model):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     try:
 
         if sync_mode:
@@ -3092,24 +3092,24 @@ async def test_completion_bedrock_httpx_models(sync_mode, model):
                 max_tokens=200,
             )
 
-            assert isinstance(response, litellm.ModelResponse)
+            assert isinstance(response, dheera_ai.ModelResponse)
 
             response_format_tests(response=response)
         else:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model=model,
                 messages=[{"role": "user", "content": "Hey! how's it going?"}],
                 temperature=0.2,
                 max_tokens=100,
             )
 
-            assert isinstance(response, litellm.ModelResponse)
+            assert isinstance(response, dheera_ai.ModelResponse)
 
             print(f"response: {response}")
             response_format_tests(response=response)
 
         print(f"response: {response}")
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         print("got rate limit error=", e)
         pass
     except Exception as e:
@@ -3150,7 +3150,7 @@ def test_completion_bedrock_titan_null_response():
 
 # def test_completion_bedrock_claude_stream():
 #     print("calling claude")
-#     litellm.set_verbose = False
+#     dheera_ai.set_verbose = False
 #     try:
 #         response = completion(
 #             model="bedrock/anthropic.claude-instant-v1",
@@ -3189,7 +3189,7 @@ def test_completion_bedrock_titan_null_response():
 #     # send a request to this proxy server: https://replit.com/@BerriAI/openai-proxy#main.py
 #     # it checks if model == facebook/opt-125m and returns test passed
 #     try:
-#         litellm.set_verbose = True
+#         dheera_ai.set_verbose = True
 #         response = completion(
 #             model="facebook/opt-125m",
 #             messages=messages,
@@ -3263,8 +3263,8 @@ def test_completion_with_fallbacks():
 #     ],
 # )
 def test_completion_anthropic_hanging():
-    litellm.set_verbose = True
-    litellm.modify_params = True
+    dheera_ai.set_verbose = True
+    dheera_ai.modify_params = True
     messages = [
         {
             "role": "user",
@@ -3295,7 +3295,7 @@ def test_completion_anthropic_hanging():
 @pytest.mark.skip(reason="anyscale stopped serving public api endpoints")
 def test_completion_anyscale_api():
     try:
-        # litellm.set_verbose = True
+        # dheera_ai.set_verbose = True
         messages = [
             {"role": "system", "content": "You're a good bot"},
             {
@@ -3320,7 +3320,7 @@ def test_completion_anyscale_api():
 @pytest.mark.skip(reason="anyscale stopped serving public api endpoints")
 def test_completion_anyscale_2():
     try:
-        # litellm.set_verbose = True
+        # dheera_ai.set_verbose = True
         messages = [
             {"role": "system", "content": "You're a good bot"},
             {
@@ -3342,7 +3342,7 @@ def test_completion_anyscale_2():
 
 @pytest.mark.skip(reason="anyscale stopped serving public api endpoints")
 def test_mistral_anyscale_stream():
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
     response = completion(
         model="anyscale/mistralai/Mistral-7B-Instruct-v0.1",
         messages=[{"content": "hello, good morning", "role": "user"}],
@@ -3373,7 +3373,7 @@ def test_mistral_anyscale_stream():
 # test_completion_with_fallbacks_multiple_keys()
 def test_petals():
     try:
-        from litellm.llms.custom_httpx.http_handler import HTTPHandler
+        from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
         client = HTTPHandler()
         with patch.object(client, "post") as mock_post:
@@ -3412,21 +3412,21 @@ def test_petals():
 
 # def test_baseten_falcon_7bcompletion_withbase():
 #     model_name = "qvv0xeq"
-#     litellm.api_base = "https://app.baseten.co"
+#     dheera_ai.api_base = "https://app.baseten.co"
 #     try:
 #         response = completion(model=model_name, messages=messages)
 #         # Add any assertions here to check the response
 #         print(response)
 #     except Exception as e:
 #         pytest.fail(f"Error occurred: {e}")
-#     litellm.api_base = None
+#     dheera_ai.api_base = None
 
 # test_baseten_falcon_7bcompletion_withbase()
 
 
 # def test_baseten_wizardLMcompletion_withbase():
 #     model_name = "q841o8w"
-#     litellm.api_base = "https://app.baseten.co"
+#     dheera_ai.api_base = "https://app.baseten.co"
 #     try:
 #         response = completion(model=model_name, messages=messages)
 #         # Add any assertions here to check the response
@@ -3438,7 +3438,7 @@ def test_petals():
 
 # def test_baseten_mosaic_ML_completion_withbase():
 #     model_name = "31dxrj3",
-#     litellm.api_base = "https://app.baseten.co"
+#     dheera_ai.api_base = "https://app.baseten.co"
 #     try:
 #         response = completion(model=model_name, messages=messages)
 #         # Add any assertions here to check the response
@@ -3452,7 +3452,7 @@ def test_petals():
 ## test deep infra
 @pytest.mark.parametrize("drop_params", [True, False])
 def test_completion_deep_infra(drop_params):
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
     model_name = "deepinfra/meta-llama/Llama-2-70b-chat-hf"
     tools = [
         {
@@ -3515,7 +3515,7 @@ def test_completion_deep_infra_mistral():
         )
         # Add any assertions here to check the response
         print(response)
-    except litellm.exceptions.Timeout as e:
+    except dheera_ai.exceptions.Timeout as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -3526,7 +3526,7 @@ def test_completion_deep_infra_mistral():
 
 @pytest.mark.skip(reason="Local test - don't have a volcengine account as yet")
 def test_completion_volcengine():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "volcengine/<OUR_ENDPOINT_ID>"
     try:
         response = completion(
@@ -3542,7 +3542,7 @@ def test_completion_volcengine():
         # Add any assertions here to check the response
         print(response)
 
-    except litellm.exceptions.Timeout as e:
+    except dheera_ai.exceptions.Timeout as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -3558,7 +3558,7 @@ def test_completion_volcengine():
 )
 @pytest.mark.flaky(retries=3, delay=1)
 def test_completion_gemini(model):
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "gemini/{}".format(model)
     messages = [
         {"role": "system", "content": "Be a good bot!"},
@@ -3590,9 +3590,9 @@ def test_completion_gemini(model):
         # Add any assertions,here to check the response
         print(response)
         assert response.choices[0]["index"] == 0
-    except litellm.RateLimitError:
+    except dheera_ai.RateLimitError:
         pass
-    except litellm.APIError:
+    except dheera_ai.APIError:
         pass
     except Exception as e:
         if "InternalServerError" in str(e):
@@ -3606,16 +3606,16 @@ def test_completion_gemini(model):
 
 @pytest.mark.asyncio
 async def test_acompletion_gemini():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "gemini/gemini-2.5-flash-lite"
     messages = [{"role": "user", "content": "Hey, how's it going?"}]
     try:
-        response = await litellm.acompletion(model=model_name, messages=messages)
+        response = await dheera_ai.acompletion(model=model_name, messages=messages)
         # Add any assertions here to check the response
         print(f"response: {response}")
-    except litellm.Timeout as e:
+    except dheera_ai.Timeout as e:
         pass
-    except litellm.APIError as e:
+    except dheera_ai.APIError as e:
         pass
     except Exception as e:
         if "InternalServerError" in str(e):
@@ -3626,7 +3626,7 @@ async def test_acompletion_gemini():
 
 # Deepseek tests
 def test_completion_deepseek():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "deepseek/deepseek-chat"
     tools = [
         {
@@ -3652,7 +3652,7 @@ def test_completion_deepseek():
         response = completion(model=model_name, messages=messages, tools=tools)
         # Add any assertions here to check the response
         print(response)
-    except litellm.APIError as e:
+    except dheera_ai.APIError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -3660,7 +3660,7 @@ def test_completion_deepseek():
 
 @pytest.mark.skip(reason="Account deleted by IBM.")
 def test_completion_watsonx_error():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "watsonx_text/ibm/granite-13b-chat-v2"
 
     response = completion(
@@ -3679,7 +3679,7 @@ def test_completion_watsonx_error():
 
 @pytest.mark.skip(reason="Skip test. account deleted.")
 def test_completion_stream_watsonx():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "watsonx/ibm/granite-13b-chat-v2"
     try:
         response = completion(
@@ -3691,9 +3691,9 @@ def test_completion_stream_watsonx():
         )
         for chunk in response:
             print(chunk)
-    except litellm.APIError as e:
+    except dheera_ai.APIError as e:
         pass
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -3723,21 +3723,21 @@ def test_unified_auth_params(provider, model, project, region_name, token):
         "model": model,
     }
 
-    translated_optional_params = litellm.utils.get_optional_params(**data)
+    translated_optional_params = dheera_ai.utils.get_optional_params(**data)
 
     if provider == "azure":
         special_auth_params = (
-            litellm.AzureOpenAIConfig().get_mapped_special_auth_params()
+            dheera_ai.AzureOpenAIConfig().get_mapped_special_auth_params()
         )
     elif provider == "bedrock":
         special_auth_params = (
-            litellm.AmazonBedrockGlobalConfig().get_mapped_special_auth_params()
+            dheera_ai.AmazonBedrockGlobalConfig().get_mapped_special_auth_params()
         )
     elif provider == "vertex_ai":
-        special_auth_params = litellm.VertexAIConfig().get_mapped_special_auth_params()
+        special_auth_params = dheera_ai.VertexAIConfig().get_mapped_special_auth_params()
     elif provider == "watsonx":
         special_auth_params = (
-            litellm.IBMWatsonXAIConfig().get_mapped_special_auth_params()
+            dheera_ai.IBMWatsonXAIConfig().get_mapped_special_auth_params()
         )
 
     for param, value in special_auth_params.items():
@@ -3748,11 +3748,11 @@ def test_unified_auth_params(provider, model, project, region_name, token):
 @pytest.mark.skip(reason="Local test")
 @pytest.mark.asyncio
 async def test_acompletion_watsonx():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "watsonx/ibm/granite-13b-chat-v2"
     print("testing watsonx")
     try:
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model=model_name,
             messages=messages,
             temperature=0.2,
@@ -3760,7 +3760,7 @@ async def test_acompletion_watsonx():
         )
         # Add any assertions here to check the response
         print(response)
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -3769,11 +3769,11 @@ async def test_acompletion_watsonx():
 @pytest.mark.skip(reason="Local test")
 @pytest.mark.asyncio
 async def test_acompletion_stream_watsonx():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     model_name = "watsonx/ibm/granite-13b-chat-v2"
     print("testing watsonx")
     try:
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model=model_name,
             messages=messages,
             temperature=0.2,
@@ -3783,7 +3783,7 @@ async def test_acompletion_stream_watsonx():
         # Add any assertions here to check the response
         async for chunk in response:
             print(chunk)
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
     except Exception as e:
         pytest.fail(f"Error occurred: {e}")
@@ -3796,12 +3796,12 @@ async def test_acompletion_stream_watsonx():
 # test config file with completion #
 # def test_completion_openai_config():
 #     try:
-#         litellm.config_path = "../config.json"
-#         litellm.set_verbose = True
-#         response = litellm.config_completion(messages=messages)
+#         dheera_ai.config_path = "../config.json"
+#         dheera_ai.set_verbose = True
+#         response = dheera_ai.config_completion(messages=messages)
 #         # Add any assertions here to check the response
 #         print(response)
-#         litellm.config_path = None
+#         dheera_ai.config_path = None
 #     except Exception as e:
 #         pytest.fail(f"Error occurred: {e}")
 
@@ -3817,8 +3817,8 @@ async def test_acompletion_stream_watsonx():
 
 
 def test_completion_together_ai_stream():
-    litellm.set_verbose = True
-    user_message = "Write 1pg about YC & litellm"
+    dheera_ai.set_verbose = True
+    user_message = "Write 1pg about YC & dheera_ai"
     messages = [{"content": user_message, "role": "user"}]
     try:
         response = completion(
@@ -3839,7 +3839,7 @@ def test_completion_together_ai_stream():
 
 
 def test_moderation():
-    response = litellm.moderation(input="i'm ishaan cto of litellm")
+    response = dheera_ai.moderation(input="i'm ishaan cto of dheera_ai")
     print(response)
     output = response.results[0]
     print(output)
@@ -3884,7 +3884,7 @@ async def test_dynamic_azure_params(stream, sync_mode):
                     stream=stream,
                 )
             else:
-                _ = await litellm.acompletion(
+                _ = await dheera_ai.acompletion(
                     model="azure/chatgpt-v2",
                     messages=[{"role": "user", "content": "Hello world"}],
                     client=client,
@@ -3915,7 +3915,7 @@ async def test_dynamic_azure_params(stream, sync_mode):
                     stream=stream,
                 )
             else:
-                _ = await litellm.acompletion(
+                _ = await dheera_ai.acompletion(
                     model="azure/chatgpt-v2",
                     messages=[{"role": "user", "content": "Hello world"}],
                     client=client,
@@ -3934,9 +3934,9 @@ async def test_dynamic_azure_params(stream, sync_mode):
 @pytest.mark.asyncio()
 @pytest.mark.flaky(retries=3, delay=1)
 async def test_completion_ai21_chat():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     try:
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="ai21_chat/jamba-mini",
             user="ishaan",
             tool_choice="auto",
@@ -3949,7 +3949,7 @@ async def test_completion_ai21_chat():
                 }
             ],
         )
-    except litellm.InternalServerError:
+    except dheera_ai.InternalServerError:
         pytest.skip("Model is overloaded")
 
 
@@ -3987,7 +3987,7 @@ def test_completion_response_ratelimit_headers(model, stream):
 
 def _openai_hallucinated_tool_call_mock_response(
     *args, **kwargs
-) -> litellm.ModelResponse:
+) -> dheera_ai.ModelResponse:
     new_response = MagicMock()
     new_response.headers = {"hello": "world"}
 
@@ -4054,7 +4054,7 @@ def test_openai_hallucinated_tool_call():
         "create",
         side_effect=_openai_hallucinated_tool_call_mock_response,
     ) as mock_response:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hey! how's it going?"}],
             client=openai_client,
@@ -4113,8 +4113,8 @@ def test_openai_hallucinated_tool_call_util(function_name, expect_modification):
         - get function name from recipient_name value
         - parameters will be JSON object for function arguments
     """
-    from litellm.utils import _handle_invalid_parallel_tool_calls
-    from litellm.types.utils import ChatCompletionMessageToolCall
+    from dheera_ai.utils import _handle_invalid_parallel_tool_calls
+    from dheera_ai.types.utils import ChatCompletionMessageToolCall
 
     response = _handle_invalid_parallel_tool_calls(
         tool_calls=[
@@ -4166,8 +4166,8 @@ def test_langfuse_completion(monkeypatch):
         "LANGFUSE_SECRET_KEY", "sk-lf-b11ef3a8-361c-4445-9652-12318b8596e4"
     )
     monkeypatch.setenv("LANGFUSE_HOST", "https://us.cloud.langfuse.com")
-    litellm.set_verbose = True
-    resp = litellm.completion(
+    dheera_ai.set_verbose = True
+    resp = dheera_ai.completion(
         model="langfuse/gpt-3.5-turbo",
         langfuse_public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
         langfuse_secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
@@ -4179,7 +4179,7 @@ def test_langfuse_completion(monkeypatch):
 
 
 def test_completion_novita_ai():
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
     messages = [
         {"role": "system", "content": "You're a good bot"},
         {
@@ -4220,7 +4220,7 @@ def test_completion_novita_ai():
 @pytest.mark.parametrize("api_key", ["my-bad-api-key"])
 def test_completion_novita_ai_dynamic_params(api_key):
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         messages = [
             {"role": "system", "content": "You're a good bot"},
             {
@@ -4258,22 +4258,22 @@ def test_completion_novita_ai_dynamic_params(api_key):
 
 def test_deepseek_reasoning_content_completion():
     try:
-        litellm.set_verbose = True
-        litellm._turn_on_debug()
-        resp = litellm.completion(
+        dheera_ai.set_verbose = True
+        dheera_ai._turn_on_debug()
+        resp = dheera_ai.completion(
             timeout=5,
             model="deepseek/deepseek-reasoner",
             messages=[{"role": "user", "content": "Tell me a joke."}],
         )
 
         assert resp.choices[0].message.reasoning_content is not None
-    except litellm.Timeout:
+    except dheera_ai.Timeout:
         pytest.skip("Model is timing out")
 
 
 def test_qwen_text_completion():
-    # litellm._turn_on_debug()
-    resp = litellm.completion(
+    # dheera_ai._turn_on_debug()
+    resp = dheera_ai.completion(
         model="gpt-3.5-turbo-instruct",
         messages=[{"content": "hello", "role": "user"}],
         stream=False,
@@ -4295,14 +4295,14 @@ def test_completion_openai_metadata(monkeypatch, enable_preview_features):
 
     client = OpenAI()
 
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
-    monkeypatch.setattr(litellm, "enable_preview_features", enable_preview_features)
+    monkeypatch.setattr(dheera_ai, "enable_preview_features", enable_preview_features)
     with patch.object(
         client.chat.completions.with_raw_response, "create", return_value=MagicMock()
     ) as mock_completion:
         try:
-            resp = litellm.completion(
+            resp = dheera_ai.completion(
                 model="openai/gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hello world"}],
                 metadata={"my-test-key": "my-test-value"},
@@ -4322,8 +4322,8 @@ def test_completion_openai_metadata(monkeypatch, enable_preview_features):
 
 def test_completion_o3_mini_temperature():
     try:
-        litellm.set_verbose = True
-        resp = litellm.completion(
+        dheera_ai.set_verbose = True
+        resp = dheera_ai.completion(
             model="o3-mini",
             temperature=0.0,
             messages=[
@@ -4340,7 +4340,7 @@ def test_completion_o3_mini_temperature():
 
 
 def test_completion_gpt_4o_empty_str():
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     from openai import OpenAI
     from unittest.mock import MagicMock
 
@@ -4400,7 +4400,7 @@ def test_completion_gpt_4o_empty_str():
     with patch.object(
         client.chat.completions.with_raw_response, "create", mock_completion
     ) as mock_create:
-        resp = litellm.completion(
+        resp = dheera_ai.completion(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": ""}],
         )
@@ -4408,7 +4408,7 @@ def test_completion_gpt_4o_empty_str():
 
 
 def test_edit_note():
-    litellm.callbacks = ["langfuse_otel"]
+    dheera_ai.callbacks = ["langfuse_otel"]
     response = completion(
         model="gpt-4o",
         messages=[

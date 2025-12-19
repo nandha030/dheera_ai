@@ -13,7 +13,7 @@ The Guardrail Testing Playground allows you to quickly test and compare the beha
 ### Steps to Test Guardrails
 
 1. **Navigate to the Guardrails Section**
-   - Open the LiteLLM Admin UI
+   - Open the Dheera AI Admin UI
    - Go to the **Guardrails** section
 
 2. **Open Test Playground**
@@ -37,9 +37,9 @@ The Guardrail Testing Playground allows you to quickly test and compare the beha
 
 ## Use Cases
 
-This is ideal for **Security Teams** & **LiteLLM Admins** evaluating guardrail solutions.
+This is ideal for **Security Teams** & **Dheera AI Admins** evaluating guardrail solutions.
 
-This brings the following benefits for LiteLLM users:
+This brings the following benefits for Dheera AI users:
 
 - **Compare guardrail responses**: test the same prompt across multiple providers (Lakera, Noma AI, Bedrock Guardrails, etc.) simultaneously.
 

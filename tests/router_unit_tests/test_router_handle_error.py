@@ -6,10 +6,10 @@ from typing import List
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm import Router
-from litellm.router import Deployment, LiteLLM_Params
-from litellm.types.router import ModelInfo
+import dheera_ai
+from dheera_ai import Router
+from dheera_ai.router import Deployment, DheeraAI_Params
+from dheera_ai.types.router import ModelInfo
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 from dotenv import load_dotenv
@@ -41,7 +41,7 @@ async def test_send_llm_exception_alert_success():
     error_traceback = 'Traceback (most recent call last):\n  File "test.py", line 10, in <module>\n    raise Exception("Test exception")\nException: Test exception'
 
     # Call the function
-    from litellm.router_utils.handle_error import send_llm_exception_alert
+    from dheera_ai.router_utils.handle_error import send_llm_exception_alert
 
     await send_llm_exception_alert(
         mock_router, request_kwargs, error_traceback, mock_exception
@@ -73,7 +73,7 @@ async def test_send_llm_exception_alert_no_logger():
     error_traceback = 'Traceback (most recent call last):\n  File "test.py", line 10, in <module>\n    raise Exception("Test exception")\nException: Test exception'
 
     # Call the function
-    from litellm.router_utils.handle_error import send_llm_exception_alert
+    from dheera_ai.router_utils.handle_error import send_llm_exception_alert
 
     await send_llm_exception_alert(
         mock_router, request_kwargs, error_traceback, mock_exception
@@ -103,7 +103,7 @@ async def test_send_llm_exception_alert_when_proxy_server_request_in_kwargs():
     error_traceback = 'Traceback (most recent call last):\n  File "test.py", line 10, in <module>\n    raise Exception("Test exception")\nException: Test exception'
 
     # Call the function
-    from litellm.router_utils.handle_error import send_llm_exception_alert
+    from dheera_ai.router_utils.handle_error import send_llm_exception_alert
 
     await send_llm_exception_alert(
         mock_router, request_kwargs, error_traceback, mock_exception
@@ -120,8 +120,8 @@ async def test_async_raise_no_deployment_exception():
     Test that async_raise_no_deployment_exception returns a RouterRateLimitError
     with cooldown_list containing just IDs (not tuples with debug info).
     """
-    from litellm.router_utils.handle_error import async_raise_no_deployment_exception
-    from litellm.types.router import RouterRateLimitError
+    from dheera_ai.router_utils.handle_error import async_raise_no_deployment_exception
+    from dheera_ai.types.router import RouterRateLimitError
     from unittest.mock import patch
 
     # Create a mock LitellmRouter instance
@@ -139,12 +139,12 @@ async def test_async_raise_no_deployment_exception():
     ]
 
     with patch(
-        "litellm.router_utils.handle_error._async_get_cooldown_deployments_with_debug_info",
+        "dheera_ai.router_utils.handle_error._async_get_cooldown_deployments_with_debug_info",
         return_value=mock_cooldown_list,
     ):
         # Call the function
         result = await async_raise_no_deployment_exception(
-            litellm_router_instance=mock_router,
+            dheera_ai_router_instance=mock_router,
             model="gpt-3.5-turbo",
             parent_otel_span=None,
         )
@@ -177,8 +177,8 @@ async def test_async_raise_no_deployment_exception_empty_cooldown_list():
     """
     Test that async_raise_no_deployment_exception handles empty cooldown list correctly.
     """
-    from litellm.router_utils.handle_error import async_raise_no_deployment_exception
-    from litellm.types.router import RouterRateLimitError
+    from dheera_ai.router_utils.handle_error import async_raise_no_deployment_exception
+    from dheera_ai.types.router import RouterRateLimitError
     from unittest.mock import patch
 
     # Create a mock LitellmRouter instance
@@ -191,12 +191,12 @@ async def test_async_raise_no_deployment_exception_empty_cooldown_list():
     mock_cooldown_list: List = []
 
     with patch(
-        "litellm.router_utils.handle_error._async_get_cooldown_deployments_with_debug_info",
+        "dheera_ai.router_utils.handle_error._async_get_cooldown_deployments_with_debug_info",
         return_value=mock_cooldown_list,
     ):
         # Call the function
         result = await async_raise_no_deployment_exception(
-            litellm_router_instance=mock_router,
+            dheera_ai_router_instance=mock_router,
             model="claude-3-sonnet",
             parent_otel_span=None,
         )
@@ -221,8 +221,8 @@ async def test_async_raise_no_deployment_exception_none_cooldown_list():
     Note: In practice, _async_get_cooldown_deployments_with_debug_info should never return None
     based on the implementation, but this tests defensive programming.
     """
-    from litellm.router_utils.handle_error import async_raise_no_deployment_exception
-    from litellm.types.router import RouterRateLimitError
+    from dheera_ai.router_utils.handle_error import async_raise_no_deployment_exception
+    from dheera_ai.types.router import RouterRateLimitError
     from unittest.mock import patch
 
     # Create a mock LitellmRouter instance
@@ -235,12 +235,12 @@ async def test_async_raise_no_deployment_exception_none_cooldown_list():
     mock_cooldown_list = None
 
     with patch(
-        "litellm.router_utils.handle_error._async_get_cooldown_deployments_with_debug_info",
+        "dheera_ai.router_utils.handle_error._async_get_cooldown_deployments_with_debug_info",
         return_value=mock_cooldown_list,
     ):
         # After the defensive fix, this should handle None gracefully and return empty list
         result = await async_raise_no_deployment_exception(
-            litellm_router_instance=mock_router,
+            dheera_ai_router_instance=mock_router,
             model="gpt-4",
             parent_otel_span=None,
         )

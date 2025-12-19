@@ -9,16 +9,16 @@
 
 :::tip
 
-LiteLLM follows the [Anthropic Skills API](https://docs.anthropic.com/en/docs/build-with-claude/skills) for creating, managing, and using reusable AI capabilities.
+Dheera AI follows the [Anthropic Skills API](https://docs.anthropic.com/en/docs/build-with-claude/skills) for creating, managing, and using reusable AI capabilities.
 
 :::
 
-## **LiteLLM Python SDK Usage**
+## **Dheera AI Python SDK Usage**
 
 ### Quick Start - Create a Skill
 
 ```python showLineNumbers title="create_skill.py"
-from litellm import create_skill
+from dheera_ai import create_skill
 import zipfile
 import os
 
@@ -56,7 +56,7 @@ print(f"Skill created: {response.id}")
 ### List Skills
 
 ```python showLineNumbers title="list_skills.py"
-from litellm import list_skills
+from dheera_ai import list_skills
 
 response = list_skills(
     custom_llm_provider="anthropic",
@@ -71,7 +71,7 @@ for skill in response.data:
 ### Get Skill Details
 
 ```python showLineNumbers title="get_skill.py"
-from litellm import get_skill
+from dheera_ai import get_skill
 
 skill = get_skill(
     skill_id="skill_01...",
@@ -86,7 +86,7 @@ print(f"Description: {skill.description}")
 ### Delete a Skill
 
 ```python showLineNumbers title="delete_skill.py"
-from litellm import delete_skill
+from dheera_ai import delete_skill
 
 response = delete_skill(
     skill_id="skill_01...",
@@ -100,7 +100,7 @@ print(f"Deleted: {response.id}")
 ### Async Usage
 
 ```python showLineNumbers title="async_skills.py"
-from litellm import acreate_skill, alist_skills, aget_skill, adelete_skill
+from dheera_ai import acreate_skill, alist_skills, aget_skill, adelete_skill
 import asyncio
 
 async def manage_skills():
@@ -136,9 +136,9 @@ async def manage_skills():
 asyncio.run(manage_skills())
 ```
 
-## **LiteLLM Proxy Usage**
+## **Dheera AI Proxy Usage**
 
-LiteLLM provides Anthropic-compatible `/skills` endpoints for managing skills.
+Dheera AI provides Anthropic-compatible `/skills` endpoints for managing skills.
 
 ### Authentication
 
@@ -168,15 +168,15 @@ Define multiple models in your config and use the `model` parameter to specify w
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: claude-sonnet
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet-20241022
       api_key: os.environ/ANTHROPIC_API_KEY
 ```
 
-Start litellm
+Start dheera_ai
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -248,12 +248,12 @@ If you have multiple Anthropic accounts, you can use model-based routing to spec
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: claude-team-a
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet-20241022
       api_key: os.environ/ANTHROPIC_API_KEY_TEAM_A
   
   - model_name: claude-team-b
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet-20241022
       api_key: os.environ/ANTHROPIC_API_KEY_TEAM_B
 ```

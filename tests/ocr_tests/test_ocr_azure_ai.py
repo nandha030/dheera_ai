@@ -12,7 +12,7 @@ class TestAzureAIOCR(BaseOCRTest):
     Test class for Azure AI OCR functionality.
     Inherits from BaseOCRTest and provides Azure AI-specific configuration.
     
-    Note: For Azure AI, LiteLLM will automatically convert URLs to base64 data URIs before
+    Note: For Azure AI, DheeraAI will automatically convert URLs to base64 data URIs before
     sending to the API, since Azure AI OCR endpoint doesn't have internet access.
     """
 

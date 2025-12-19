@@ -4,7 +4,7 @@ import TabItem from '@theme/TabItem';
 
 # Azure Content Safety Guardrail
 
-LiteLLM supports Azure Content Safety guardrails via the [Azure Content Safety API](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/overview). 
+Dheera AI supports Azure Content Safety guardrails via the [Azure Content Safety API](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/overview). 
 
 
 ## Supported Guardrails
@@ -13,26 +13,26 @@ LiteLLM supports Azure Content Safety guardrails via the [Azure Content Safety A
 - [Text Moderation](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/quickstart-text?tabs=visual-studio%2Clinux&pivots=programming-language-rest)
 
 ## Quick Start
-### 1. Define Guardrails on your LiteLLM config.yaml 
+### 1. Define Guardrails on your Dheera AI config.yaml 
 
 Define your guardrails under the `guardrails` section
 
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: azure-prompt-shield
-    litellm_params:
+    dheera_ai_params:
       guardrail: azure/prompt_shield
       mode: pre_call # only mode supported for prompt shield
       api_key: os.environ/AZURE_GUARDRAIL_API_KEY
       api_base: os.environ/AZURE_GUARDRAIL_API_BASE 
   - guardrail_name: azure-text-moderation
-    litellm_params:
+    dheera_ai_params:
       guardrail: azure/text_moderations
       mode: [pre_call, post_call] 
       api_key: os.environ/AZURE_GUARDRAIL_API_KEY
@@ -45,11 +45,11 @@ guardrails:
 - `pre_call` Run **before** LLM call, on **input**
 - `post_call` Run **after** LLM call, on **input & output**
 
-### 2. Start LiteLLM Gateway 
+### 2. Start Dheera AI Gateway 
 
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 ### 3. Test request 

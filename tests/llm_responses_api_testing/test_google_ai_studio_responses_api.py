@@ -3,15 +3,15 @@ import sys
 import pytest
 from unittest.mock import patch, AsyncMock
 sys.path.insert(0, os.path.abspath("../.."))
-import litellm
+import dheera_ai
 import json
 from base_responses_api import BaseResponsesAPITest
 @pytest.mark.asyncio
 async def test_basic_google_ai_studio_responses_api_with_tools():
-    litellm._turn_on_debug()
-    litellm.set_verbose = True
+    dheera_ai._turn_on_debug()
+    dheera_ai.set_verbose = True
     request_model = "gemini/gemini-2.5-flash"
-    response = await litellm.aresponses(
+    response = await dheera_ai.aresponses(
         model=request_model,
         input="what is the latest version of supabase python package and when was it released?",
         tools=[
@@ -21,27 +21,27 @@ async def test_basic_google_ai_studio_responses_api_with_tools():
             }
         ]
     )
-    print("litellm response=", json.dumps(response, indent=4, default=str))
+    print("dheera_ai response=", json.dumps(response, indent=4, default=str))
 
 
 @pytest.mark.asyncio
 async def test_mock_basic_google_ai_studio_responses_api_with_tools():
     """
-    - Ensure that this is the request that litellm.completion gets when we pass web search options 
+    - Ensure that this is the request that dheera_ai.completion gets when we pass web search options 
 
-    litellm.acompletion(messages=[{'role': 'user', 'content': 'what is the latest version of supabase python package and when was it released?'}], model='gemini-2.5-flash', tools=[], web_search_options={'search_context_size': 'low', 'user_location': None})
+    dheera_ai.acompletion(messages=[{'role': 'user', 'content': 'what is the latest version of supabase python package and when was it released?'}], model='gemini-2.5-flash', tools=[], web_search_options={'search_context_size': 'low', 'user_location': None})
     """
     # Mock the acompletion function
-    litellm._turn_on_debug()
-    mock_response = litellm.ModelResponse(
+    dheera_ai._turn_on_debug()
+    mock_response = dheera_ai.ModelResponse(
         id="test-id",
         created=1234567890,
         model="gemini/gemini-2.5-flash",
         object="chat.completion",
         choices=[
-            litellm.utils.Choices(
+            dheera_ai.utils.Choices(
                 index=0,
-                message=litellm.utils.Message(
+                message=dheera_ai.utils.Message(
                     role="assistant",
                     content="Test response"
                 ),
@@ -50,11 +50,11 @@ async def test_mock_basic_google_ai_studio_responses_api_with_tools():
         ]
     )
     
-    with patch('litellm.acompletion', new_callable=AsyncMock) as mock_acompletion:
+    with patch('dheera_ai.acompletion', new_callable=AsyncMock) as mock_acompletion:
         mock_acompletion.return_value = mock_response
         
         request_model = "gemini/gemini-2.5-flash"
-        await litellm.aresponses(
+        await dheera_ai.aresponses(
             model=request_model,
             input="what is the latest version of supabase python package and when was it released?",
             tools=[
@@ -72,7 +72,7 @@ async def test_mock_basic_google_ai_studio_responses_api_with_tools():
         call_args, call_kwargs = mock_acompletion.call_args
         
         # Verify the expected parameters were passed
-        print("call kwargs to litellm.completion=", json.dumps(call_kwargs, indent=4, default=str))
+        print("call kwargs to dheera_ai.completion=", json.dumps(call_kwargs, indent=4, default=str))
         assert "web_search_options" in call_kwargs
         assert call_kwargs["web_search_options"] is not None
         assert call_kwargs["web_search_options"]["search_context_size"] == "low"
@@ -95,7 +95,7 @@ async def test_gemini_3_responses_api_with_thought_signatures():
     if not os.getenv("GEMINI_API_KEY"):
         pytest.skip("GEMINI_API_KEY not set")
     
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
     request_model = "gemini/gemini-3-pro-preview"
     
     tools = [
@@ -124,7 +124,7 @@ async def test_gemini_3_responses_api_with_thought_signatures():
     ]
     
     # Step 1: Initial request with tools
-    response = await litellm.aresponses(
+    response = await dheera_ai.aresponses(
         model=request_model,
         input="What is the weather in Mumbai?",
         tools=tools,
@@ -132,7 +132,7 @@ async def test_gemini_3_responses_api_with_thought_signatures():
     )
     
     # Validate response structure
-    from litellm.types.llms.openai import ResponsesAPIResponse
+    from dheera_ai.types.llms.openai import ResponsesAPIResponse
     assert isinstance(response, ResponsesAPIResponse), "Response should be a ResponsesAPIResponse"
     assert hasattr(response, "output") or "output" in response, "Response should have 'output' field"
     assert isinstance(response.output, list), "Output should be a list"
@@ -176,7 +176,7 @@ async def test_gemini_3_responses_api_streaming_with_thought_signatures():
     if not os.getenv("GEMINI_API_KEY"):
         pytest.skip("GEMINI_API_KEY not set")
     
-    litellm.set_verbose = False
+    dheera_ai.set_verbose = False
     request_model = "gemini/gemini-3-pro-preview"
     
     tools = [
@@ -205,7 +205,7 @@ async def test_gemini_3_responses_api_streaming_with_thought_signatures():
     ]
     
     # Step 1: Streaming request with tools
-    response_stream = await litellm.aresponses(
+    response_stream = await dheera_ai.aresponses(
         model=request_model,
         input="What is the weather in Mumbai?",
         tools=tools,
@@ -251,7 +251,7 @@ async def test_gemini_3_responses_api_streaming_with_thought_signatures():
 
 class TestGoogleAIStudioResponsesAPITest(BaseResponsesAPITest):
     def get_base_completion_call_args(self):
-        #litellm._turn_on_debug()
+        #dheera_ai._turn_on_debug()
         return {
             "model": "gemini/gemini-2.5-flash-lite"
         }

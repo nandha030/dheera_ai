@@ -25,7 +25,7 @@ import pytest
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-from litellm.proxy.response_polling.polling_handler import ResponsePollingHandler
+from dheera_ai.proxy.response_polling.polling_handler import ResponsePollingHandler
 
 
 class TestResponsePollingHandler:
@@ -37,8 +37,8 @@ class TestResponsePollingHandler:
         """Test that generated polling IDs have the correct prefix"""
         polling_id = ResponsePollingHandler.generate_polling_id()
         
-        assert polling_id.startswith("litellm_poll_")
-        assert len(polling_id) > len("litellm_poll_")  # Has UUID after prefix
+        assert polling_id.startswith("dheera_ai_poll_")
+        assert len(polling_id) > len("dheera_ai_poll_")  # Has UUID after prefix
 
     def test_generate_polling_id_is_unique(self):
         """Test that each generated polling ID is unique"""
@@ -63,10 +63,10 @@ class TestResponsePollingHandler:
 
     def test_get_cache_key_format(self):
         """Test that cache keys have the correct format"""
-        polling_id = "litellm_poll_abc123"
+        polling_id = "dheera_ai_poll_abc123"
         cache_key = ResponsePollingHandler.get_cache_key(polling_id)
         
-        assert cache_key == "litellm:polling:response:litellm_poll_abc123"
+        assert cache_key == "dheera_ai:polling:response:dheera_ai_poll_abc123"
 
     # ==================== Initial State Tests ====================
 
@@ -76,7 +76,7 @@ class TestResponsePollingHandler:
         mock_redis = AsyncMock()
         handler = ResponsePollingHandler(redis_cache=mock_redis, ttl=3600)
         
-        polling_id = "litellm_poll_test123"
+        polling_id = "dheera_ai_poll_test123"
         request_data = {
             "model": "gpt-4o",
             "input": "Hello",
@@ -101,7 +101,7 @@ class TestResponsePollingHandler:
         mock_redis = AsyncMock()
         handler = ResponsePollingHandler(redis_cache=mock_redis, ttl=7200)
         
-        polling_id = "litellm_poll_test123"
+        polling_id = "dheera_ai_poll_test123"
         request_data = {"model": "gpt-4o", "input": "Hello"}
         
         await handler.create_initial_state(
@@ -113,7 +113,7 @@ class TestResponsePollingHandler:
         mock_redis.async_set_cache.assert_called_once()
         call_args = mock_redis.async_set_cache.call_args
         
-        assert call_args.kwargs["key"] == "litellm:polling:response:litellm_poll_test123"
+        assert call_args.kwargs["key"] == "dheera_ai:polling:response:dheera_ai_poll_test123"
         assert call_args.kwargs["ttl"] == 7200
         
         # Verify the stored value is valid JSON
@@ -131,7 +131,7 @@ class TestResponsePollingHandler:
         before_time = int(datetime.now(timezone.utc).timestamp())
         
         response = await handler.create_initial_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             request_data={},
         )
         
@@ -146,7 +146,7 @@ class TestResponsePollingHandler:
         """Test that update_state can change status to in_progress"""
         mock_redis = AsyncMock()
         mock_redis.async_get_cache.return_value = json.dumps({
-            "id": "litellm_poll_test",
+            "id": "dheera_ai_poll_test",
             "object": "response",
             "status": "queued",
             "output": [],
@@ -156,7 +156,7 @@ class TestResponsePollingHandler:
         handler = ResponsePollingHandler(redis_cache=mock_redis, ttl=3600)
         
         await handler.update_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             status="in_progress",
         )
         
@@ -172,7 +172,7 @@ class TestResponsePollingHandler:
         """Test that update_state replaces the full output list"""
         mock_redis = AsyncMock()
         mock_redis.async_get_cache.return_value = json.dumps({
-            "id": "litellm_poll_test",
+            "id": "dheera_ai_poll_test",
             "object": "response",
             "status": "in_progress",
             "output": [{"id": "old_item", "type": "message"}],
@@ -187,7 +187,7 @@ class TestResponsePollingHandler:
         ]
         
         await handler.update_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             output=new_output,
         )
         
@@ -203,7 +203,7 @@ class TestResponsePollingHandler:
         """Test that update_state correctly stores usage data"""
         mock_redis = AsyncMock()
         mock_redis.async_get_cache.return_value = json.dumps({
-            "id": "litellm_poll_test",
+            "id": "dheera_ai_poll_test",
             "object": "response",
             "status": "in_progress",
             "output": [],
@@ -219,7 +219,7 @@ class TestResponsePollingHandler:
         }
         
         await handler.update_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             status="completed",
             usage=usage_data,
         )
@@ -235,7 +235,7 @@ class TestResponsePollingHandler:
         """Test that update_state stores reasoning, tools, and tool_choice from response.completed"""
         mock_redis = AsyncMock()
         mock_redis.async_get_cache.return_value = json.dumps({
-            "id": "litellm_poll_test",
+            "id": "dheera_ai_poll_test",
             "object": "response",
             "status": "in_progress",
             "output": [],
@@ -249,7 +249,7 @@ class TestResponsePollingHandler:
         tools_data = [{"type": "function", "function": {"name": "get_weather", "parameters": {}}}]
         
         await handler.update_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             status="completed",
             reasoning=reasoning_data,
             tool_choice=tool_choice_data,
@@ -268,7 +268,7 @@ class TestResponsePollingHandler:
         """Test that update_state stores all ResponsesAPIResponse fields from response.completed"""
         mock_redis = AsyncMock()
         mock_redis.async_get_cache.return_value = json.dumps({
-            "id": "litellm_poll_test",
+            "id": "dheera_ai_poll_test",
             "object": "response",
             "status": "in_progress",
             "output": [],
@@ -279,7 +279,7 @@ class TestResponsePollingHandler:
         
         # All ResponsesAPIResponse fields that can be updated
         await handler.update_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             status="completed",
             usage={"input_tokens": 10, "output_tokens": 50, "total_tokens": 60},
             reasoning={"effort": "medium"},
@@ -326,7 +326,7 @@ class TestResponsePollingHandler:
         """Test that update_state preserves fields not being updated"""
         mock_redis = AsyncMock()
         mock_redis.async_get_cache.return_value = json.dumps({
-            "id": "litellm_poll_test",
+            "id": "dheera_ai_poll_test",
             "object": "response",
             "status": "in_progress",
             "output": [{"id": "item_1", "type": "message"}],
@@ -339,7 +339,7 @@ class TestResponsePollingHandler:
         
         # Only update status
         await handler.update_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             status="completed",
         )
         
@@ -357,7 +357,7 @@ class TestResponsePollingHandler:
         """Test that providing an error automatically sets status to failed"""
         mock_redis = AsyncMock()
         mock_redis.async_get_cache.return_value = json.dumps({
-            "id": "litellm_poll_test",
+            "id": "dheera_ai_poll_test",
             "object": "response",
             "status": "in_progress",
             "output": [],
@@ -373,7 +373,7 @@ class TestResponsePollingHandler:
         }
         
         await handler.update_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             error=error_data,
         )
         
@@ -388,7 +388,7 @@ class TestResponsePollingHandler:
         """Test that update_state stores incomplete_details"""
         mock_redis = AsyncMock()
         mock_redis.async_get_cache.return_value = json.dumps({
-            "id": "litellm_poll_test",
+            "id": "dheera_ai_poll_test",
             "object": "response",
             "status": "in_progress",
             "output": [],
@@ -402,7 +402,7 @@ class TestResponsePollingHandler:
         }
         
         await handler.update_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             status="incomplete",
             incomplete_details=incomplete_details,
         )
@@ -420,7 +420,7 @@ class TestResponsePollingHandler:
         
         # Should not raise an exception
         await handler.update_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             status="in_progress",
         )
 
@@ -434,7 +434,7 @@ class TestResponsePollingHandler:
         
         # Should not raise an exception
         await handler.update_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             status="in_progress",
         )
         
@@ -448,7 +448,7 @@ class TestResponsePollingHandler:
         """Test that get_state returns the cached state"""
         mock_redis = AsyncMock()
         cached_state = {
-            "id": "litellm_poll_test",
+            "id": "dheera_ai_poll_test",
             "object": "response",
             "status": "in_progress",
             "output": [{"id": "item_1", "type": "message"}],
@@ -459,7 +459,7 @@ class TestResponsePollingHandler:
         
         handler = ResponsePollingHandler(redis_cache=mock_redis)
         
-        result = await handler.get_state("litellm_poll_test")
+        result = await handler.get_state("dheera_ai_poll_test")
         
         assert result == cached_state
 
@@ -471,7 +471,7 @@ class TestResponsePollingHandler:
         
         handler = ResponsePollingHandler(redis_cache=mock_redis)
         
-        result = await handler.get_state("litellm_poll_nonexistent")
+        result = await handler.get_state("dheera_ai_poll_nonexistent")
         
         assert result is None
 
@@ -480,7 +480,7 @@ class TestResponsePollingHandler:
         """Test that get_state returns None when Redis is not configured"""
         handler = ResponsePollingHandler(redis_cache=None)
         
-        result = await handler.get_state("litellm_poll_test")
+        result = await handler.get_state("dheera_ai_poll_test")
         
         assert result is None
 
@@ -491,7 +491,7 @@ class TestResponsePollingHandler:
         """Test that cancel_polling sets status to cancelled"""
         mock_redis = AsyncMock()
         mock_redis.async_get_cache.return_value = json.dumps({
-            "id": "litellm_poll_test",
+            "id": "dheera_ai_poll_test",
             "object": "response",
             "status": "in_progress",
             "output": [],
@@ -500,7 +500,7 @@ class TestResponsePollingHandler:
         
         handler = ResponsePollingHandler(redis_cache=mock_redis)
         
-        result = await handler.cancel_polling("litellm_poll_test")
+        result = await handler.cancel_polling("dheera_ai_poll_test")
         
         assert result is True
         
@@ -528,11 +528,11 @@ class TestResponsePollingHandler:
         
         handler = ResponsePollingHandler(redis_cache=mock_redis)
         
-        result = await handler.delete_polling("litellm_poll_test")
+        result = await handler.delete_polling("dheera_ai_poll_test")
         
         assert result is True
         mock_async_client.delete.assert_called_once_with(
-            "litellm:polling:response:litellm_poll_test"
+            "dheera_ai:polling:response:dheera_ai_poll_test"
         )
 
     @pytest.mark.asyncio
@@ -540,7 +540,7 @@ class TestResponsePollingHandler:
         """Test that delete_polling returns False when Redis is not configured"""
         handler = ResponsePollingHandler(redis_cache=None)
         
-        result = await handler.delete_polling("litellm_poll_test")
+        result = await handler.delete_polling("dheera_ai_poll_test")
         
         assert result is False
 
@@ -563,7 +563,7 @@ class TestResponsePollingHandler:
         """Test that update_state uses the configured TTL"""
         mock_redis = AsyncMock()
         mock_redis.async_get_cache.return_value = json.dumps({
-            "id": "litellm_poll_test",
+            "id": "dheera_ai_poll_test",
             "object": "response",
             "status": "queued",
             "output": [],
@@ -573,7 +573,7 @@ class TestResponsePollingHandler:
         handler = ResponsePollingHandler(redis_cache=mock_redis, ttl=1800)
         
         await handler.update_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             status="in_progress",
         )
         
@@ -631,7 +631,7 @@ class TestBackgroundStreamingModule:
 
     def test_background_streaming_task_can_be_imported(self):
         """Test that background_streaming_task can be imported from the module"""
-        from litellm.proxy.response_polling.background_streaming import (
+        from dheera_ai.proxy.response_polling.background_streaming import (
             background_streaming_task,
         )
         
@@ -640,7 +640,7 @@ class TestBackgroundStreamingModule:
 
     def test_module_exports_from_init(self):
         """Test that the module exports are available from __init__"""
-        from litellm.proxy.response_polling import (
+        from dheera_ai.proxy.response_polling import (
             ResponsePollingHandler,
             background_streaming_task,
         )
@@ -651,7 +651,7 @@ class TestBackgroundStreamingModule:
     def test_background_streaming_task_is_async(self):
         """Test that background_streaming_task is an async function"""
         import asyncio
-        from litellm.proxy.response_polling.background_streaming import (
+        from dheera_ai.proxy.response_polling.background_streaming import (
             background_streaming_task,
         )
         
@@ -700,7 +700,7 @@ class TestProviderResolutionForPolling:
         model_list = [
             {
                 "model_name": "gpt-5",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-5",
                     "api_key": "sk-test",
                 }
@@ -715,11 +715,11 @@ class TestProviderResolutionForPolling:
         indices = model_name_to_deployment_indices.get(model, [])
         for idx in indices:
             deployment_dict = model_list[idx]
-            litellm_params = deployment_dict.get("litellm_params", {})
+            dheera_ai_params = deployment_dict.get("dheera_ai_params", {})
             
-            dep_provider = litellm_params.get("custom_llm_provider")
+            dep_provider = dheera_ai_params.get("custom_llm_provider")
             if not dep_provider:
-                dep_model = litellm_params.get("model", "")
+                dep_model = dheera_ai_params.get("model", "")
                 if "/" in dep_model:
                     dep_provider = dep_model.split("/")[0]
             
@@ -737,13 +737,13 @@ class TestProviderResolutionForPolling:
         model_list = [
             {
                 "model_name": "gpt-4o",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-4o",
                 }
             },
             {
                 "model_name": "gpt-4o",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "azure/gpt-4o-deployment",
                 }
             }
@@ -756,11 +756,11 @@ class TestProviderResolutionForPolling:
         indices = model_name_to_deployment_indices.get(model, [])
         for idx in indices:
             deployment_dict = model_list[idx]
-            litellm_params = deployment_dict.get("litellm_params", {})
+            dheera_ai_params = deployment_dict.get("dheera_ai_params", {})
             
-            dep_provider = litellm_params.get("custom_llm_provider")
+            dep_provider = dheera_ai_params.get("custom_llm_provider")
             if not dep_provider:
-                dep_model = litellm_params.get("model", "")
+                dep_model = dheera_ai_params.get("model", "")
                 if "/" in dep_model:
                     dep_provider = dep_model.split("/")[0]
             
@@ -779,7 +779,7 @@ class TestProviderResolutionForPolling:
         model_list = [
             {
                 "model_name": "claude-3",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "anthropic/claude-3-sonnet",
                 }
             }
@@ -792,11 +792,11 @@ class TestProviderResolutionForPolling:
         indices = model_name_to_deployment_indices.get(model, [])
         for idx in indices:
             deployment_dict = model_list[idx]
-            litellm_params = deployment_dict.get("litellm_params", {})
+            dheera_ai_params = deployment_dict.get("dheera_ai_params", {})
             
-            dep_provider = litellm_params.get("custom_llm_provider")
+            dep_provider = dheera_ai_params.get("custom_llm_provider")
             if not dep_provider:
-                dep_model = litellm_params.get("model", "")
+                dep_model = dheera_ai_params.get("model", "")
                 if "/" in dep_model:
                     dep_provider = dep_model.split("/")[0]
             
@@ -814,7 +814,7 @@ class TestProviderResolutionForPolling:
         model_list = [
             {
                 "model_name": "my-model",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "some-custom-model",
                     "custom_llm_provider": "openai",  # Explicit provider
                 }
@@ -828,12 +828,12 @@ class TestProviderResolutionForPolling:
         indices = model_name_to_deployment_indices.get(model, [])
         for idx in indices:
             deployment_dict = model_list[idx]
-            litellm_params = deployment_dict.get("litellm_params", {})
+            dheera_ai_params = deployment_dict.get("dheera_ai_params", {})
             
             # custom_llm_provider should be checked first
-            dep_provider = litellm_params.get("custom_llm_provider")
+            dep_provider = dheera_ai_params.get("custom_llm_provider")
             if not dep_provider:
-                dep_model = litellm_params.get("model", "")
+                dep_model = dheera_ai_params.get("model", "")
                 if "/" in dep_model:
                     dep_provider = dep_model.split("/")[0]
             
@@ -851,7 +851,7 @@ class TestProviderResolutionForPolling:
         model_list = [
             {
                 "model_name": "gpt-5",
-                "litellm_params": {"model": "openai/gpt-5"}
+                "dheera_ai_params": {"model": "openai/gpt-5"}
             }
         ]
         
@@ -876,7 +876,7 @@ class TestPollingConditionChecks:
 
     def test_polling_enabled_when_all_conditions_met(self):
         """Test polling is enabled when background=true, polling_via_cache="all", and redis is available"""
-        from litellm.proxy.response_polling.polling_handler import should_use_polling_for_request
+        from dheera_ai.proxy.response_polling.polling_handler import should_use_polling_for_request
         
         result = should_use_polling_for_request(
             background_mode=True,
@@ -890,7 +890,7 @@ class TestPollingConditionChecks:
 
     def test_polling_disabled_when_background_false(self):
         """Test polling is disabled when background=false"""
-        from litellm.proxy.response_polling.polling_handler import should_use_polling_for_request
+        from dheera_ai.proxy.response_polling.polling_handler import should_use_polling_for_request
         
         result = should_use_polling_for_request(
             background_mode=False,
@@ -904,7 +904,7 @@ class TestPollingConditionChecks:
 
     def test_polling_disabled_when_config_false(self):
         """Test polling is disabled when polling_via_cache is False"""
-        from litellm.proxy.response_polling.polling_handler import should_use_polling_for_request
+        from dheera_ai.proxy.response_polling.polling_handler import should_use_polling_for_request
         
         result = should_use_polling_for_request(
             background_mode=True,
@@ -918,7 +918,7 @@ class TestPollingConditionChecks:
 
     def test_polling_disabled_when_redis_not_configured(self):
         """Test polling is disabled when Redis is not configured"""
-        from litellm.proxy.response_polling.polling_handler import should_use_polling_for_request
+        from dheera_ai.proxy.response_polling.polling_handler import should_use_polling_for_request
         
         result = should_use_polling_for_request(
             background_mode=True,
@@ -932,7 +932,7 @@ class TestPollingConditionChecks:
 
     def test_polling_enabled_with_provider_list_match(self):
         """Test polling is enabled when provider list matches"""
-        from litellm.proxy.response_polling.polling_handler import should_use_polling_for_request
+        from dheera_ai.proxy.response_polling.polling_handler import should_use_polling_for_request
         
         result = should_use_polling_for_request(
             background_mode=True,
@@ -946,7 +946,7 @@ class TestPollingConditionChecks:
 
     def test_polling_disabled_with_provider_list_no_match(self):
         """Test polling is disabled when provider not in list"""
-        from litellm.proxy.response_polling.polling_handler import should_use_polling_for_request
+        from dheera_ai.proxy.response_polling.polling_handler import should_use_polling_for_request
         
         result = should_use_polling_for_request(
             background_mode=True,
@@ -960,7 +960,7 @@ class TestPollingConditionChecks:
 
     def test_polling_with_router_lookup(self):
         """Test polling uses router to resolve model name to provider"""
-        from litellm.proxy.response_polling.polling_handler import should_use_polling_for_request
+        from dheera_ai.proxy.response_polling.polling_handler import should_use_polling_for_request
         
         # Create mock router
         mock_router = Mock()
@@ -968,7 +968,7 @@ class TestPollingConditionChecks:
         mock_router.model_list = [
             {
                 "model_name": "gpt-5",
-                "litellm_params": {"model": "openai/gpt-5"}
+                "dheera_ai_params": {"model": "openai/gpt-5"}
             }
         ]
         
@@ -984,14 +984,14 @@ class TestPollingConditionChecks:
 
     def test_polling_with_router_lookup_no_match(self):
         """Test polling returns False when router lookup finds non-matching provider"""
-        from litellm.proxy.response_polling.polling_handler import should_use_polling_for_request
+        from dheera_ai.proxy.response_polling.polling_handler import should_use_polling_for_request
         
         mock_router = Mock()
         mock_router.model_name_to_deployment_indices = {"claude-3": [0]}
         mock_router.model_list = [
             {
                 "model_name": "claude-3",
-                "litellm_params": {"model": "anthropic/claude-3-sonnet"}
+                "dheera_ai_params": {"model": "anthropic/claude-3-sonnet"}
             }
         ]
         
@@ -1217,13 +1217,13 @@ class TestEdgeCases:
         assert ResponsePollingHandler.is_polling_id("") is False
         
         # Just prefix without UUID
-        assert ResponsePollingHandler.is_polling_id("litellm_poll_") is True
+        assert ResponsePollingHandler.is_polling_id("dheera_ai_poll_") is True
         
         # Similar but different prefix
-        assert ResponsePollingHandler.is_polling_id("litellm_polling_abc") is False
+        assert ResponsePollingHandler.is_polling_id("dheera_ai_polling_abc") is False
         
         # Case sensitivity
-        assert ResponsePollingHandler.is_polling_id("LITELLM_POLL_abc") is False
+        assert ResponsePollingHandler.is_polling_id("DHEERA_AI_POLL_abc") is False
 
     @pytest.mark.asyncio
     async def test_create_initial_state_with_empty_metadata(self):
@@ -1232,7 +1232,7 @@ class TestEdgeCases:
         handler = ResponsePollingHandler(redis_cache=mock_redis)
         
         response = await handler.create_initial_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             request_data={"model": "gpt-4o"},  # No metadata field
         )
         
@@ -1243,7 +1243,7 @@ class TestEdgeCases:
         """Test that output=[] explicitly sets empty output"""
         mock_redis = AsyncMock()
         mock_redis.async_get_cache.return_value = json.dumps({
-            "id": "litellm_poll_test",
+            "id": "dheera_ai_poll_test",
             "object": "response",
             "status": "in_progress",
             "output": [{"id": "item_1"}],  # Has existing output
@@ -1253,7 +1253,7 @@ class TestEdgeCases:
         handler = ResponsePollingHandler(redis_cache=mock_redis)
         
         await handler.update_state(
-            polling_id="litellm_poll_test",
+            polling_id="dheera_ai_poll_test",
             output=[],  # Explicitly set empty
         )
         

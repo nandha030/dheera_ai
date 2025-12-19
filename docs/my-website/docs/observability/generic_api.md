@@ -1,17 +1,17 @@
 # Generic API Callback (Webhook)
 
-Send LiteLLM logs to any HTTP endpoint.
+Send Dheera AI logs to any HTTP endpoint.
 
 ## Quick Start
 
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["custom_api_name"]
 
 callback_settings:
@@ -53,7 +53,7 @@ callback_settings:
 Use built-in configurations from `generic_api_compatible_callbacks.json`:
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["rubrik"]  # loads pre-configured settings
 
 callback_settings:
@@ -66,13 +66,13 @@ callback_settings:
 
 ## Payload Format
 
-Logs are sent as `StandardLoggingPayload` [objects](https://docs.litellm.ai/docs/proxy/logging_spec) in JSON format:
+Logs are sent as `StandardLoggingPayload` [objects](https://docs.dheera_ai.ai/docs/proxy/logging_spec) in JSON format:
 
 ```json
 [
   {
     "id": "chatcmpl-123",
-    "call_type": "litellm.completion",
+    "call_type": "dheera_ai.completion",
     "model": "gpt-3.5-turbo",
     "messages": [...],
     "response": {...},

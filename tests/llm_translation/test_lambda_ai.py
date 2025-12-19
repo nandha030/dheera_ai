@@ -6,9 +6,9 @@ from unittest import mock
 
 import pytest
 
-import litellm
-from litellm import completion
-from litellm.llms.lambda_ai.chat.transformation import LambdaAIChatConfig
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai.llms.lambda_ai.chat.transformation import LambdaAIChatConfig
 
 
 def test_lambda_ai_config_initialization():
@@ -44,7 +44,7 @@ def test_lambda_ai_get_openai_compatible_provider_info():
 
 def test_get_llm_provider_lambda_ai():
     """Test that get_llm_provider correctly identifies Lambda AI"""
-    from litellm.litellm_core_utils.get_llm_provider_logic import get_llm_provider
+    from dheera_ai.dheera_ai_core_utils.get_llm_provider_logic import get_llm_provider
     
     # Test with lambda_ai/model-name format
     model, provider, api_key, api_base = get_llm_provider("lambda_ai/llama3.1-8b-instruct")
@@ -62,9 +62,9 @@ def test_get_llm_provider_lambda_ai():
 
 def test_lambda_ai_in_provider_lists():
     """Test that Lambda AI is registered in all necessary provider lists"""
-    assert "lambda_ai" in litellm.openai_compatible_providers
-    assert "lambda_ai" in litellm.provider_list
-    assert "https://api.lambda.ai/v1" in litellm.openai_compatible_endpoints
+    assert "lambda_ai" in dheera_ai.openai_compatible_providers
+    assert "lambda_ai" in dheera_ai.provider_list
+    assert "https://api.lambda.ai/v1" in dheera_ai.openai_compatible_endpoints
 
 
 @pytest.mark.asyncio
@@ -75,7 +75,7 @@ async def test_lambda_ai_completion_call():
         pytest.skip("LAMBDA_API_KEY not set")
     
     try:
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="lambda_ai/llama3.1-8b-instruct",
             messages=[{"role": "user", "content": "Hello, this is a test"}],
             max_tokens=10,
@@ -93,15 +93,15 @@ async def test_lambda_ai_completion_call():
 
 def test_lambda_ai_models_configuration():
     """Test that Lambda AI models are configured correctly"""
-    from litellm import get_model_info
+    from dheera_ai import get_model_info
     
     # Reload model cost map to pick up local changes
-    os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-    litellm.model_cost = litellm.get_model_cost_map(url="")
+    os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+    dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
     
     # Clear and repopulate lambda_ai_models list after reloading model_cost
-    litellm.lambda_ai_models = set()
-    litellm.add_known_models()
+    dheera_ai.lambda_ai_models = set()
+    dheera_ai.add_known_models()
     
     # Some Lambda AI models to test
     lambda_ai_models = [
@@ -115,7 +115,7 @@ def test_lambda_ai_models_configuration():
     for model in lambda_ai_models:
         model_info = get_model_info(model)
         assert model_info is not None, f"Model info not found for {model}"
-        assert model_info.get("litellm_provider") == "lambda_ai", f"{model} should have lambda_ai as provider"
+        assert model_info.get("dheera_ai_provider") == "lambda_ai", f"{model} should have lambda_ai as provider"
         assert model_info.get("mode") == "chat", f"{model} should be in chat mode"
         assert model_info.get("supports_function_calling") is True, f"{model} should support function calling"
         assert model_info.get("supports_system_messages") is True, f"{model} should support system messages"
@@ -128,18 +128,18 @@ def test_lambda_ai_models_configuration():
 def test_lambda_ai_model_list_populated():
     """Test that lambda_ai_models list is populated correctly"""
     # Ensure we're using local model cost map and repopulate models
-    os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-    litellm.model_cost = litellm.get_model_cost_map(url="")
+    os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+    dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
     
     # Clear and repopulate all model lists after reloading model_cost
-    litellm.lambda_ai_models = set()
-    litellm.add_known_models()
+    dheera_ai.lambda_ai_models = set()
+    dheera_ai.add_known_models()
     
     # This should be populated by the add_known_models function
-    assert len(litellm.lambda_ai_models) > 0, "lambda_ai_models list should not be empty"
+    assert len(dheera_ai.lambda_ai_models) > 0, "lambda_ai_models list should not be empty"
     
     # Check that all models in the list are Lambda AI models
-    for model in litellm.lambda_ai_models:
+    for model in dheera_ai.lambda_ai_models:
         assert model.startswith("lambda_ai/"), f"Model {model} should start with 'lambda_ai/'"
     
     # Check some expected models are in the list
@@ -150,4 +150,4 @@ def test_lambda_ai_model_list_populated():
     ]
     
     for model in expected_models:
-        assert model in litellm.lambda_ai_models, f"{model} should be in lambda_ai_models list"
+        assert model in dheera_ai.lambda_ai_models, f"{model} should be in lambda_ai_models list"

@@ -2,7 +2,7 @@ import openai
 
 client = openai.OpenAI(api_key="hi", base_url="http://0.0.0.0:8000")
 
-# # request sent to model set on litellm proxy, `litellm --model`
+# # request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(
     model="azure/gpt-4.1-mini",
     messages=[

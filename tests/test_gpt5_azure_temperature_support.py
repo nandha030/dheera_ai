@@ -3,8 +3,8 @@ Test that Azure GPT-5 models support temperature parameter in Responses API.
 """
 
 import pytest
-from litellm.utils import ProviderConfigManager
-from litellm.types.utils import LlmProviders
+from dheera_ai.utils import ProviderConfigManager
+from dheera_ai.types.utils import LlmProviders
 
 
 def test_azure_gpt5_supports_temperature():

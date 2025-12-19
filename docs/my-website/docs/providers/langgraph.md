@@ -3,12 +3,12 @@ import TabItem from '@theme/TabItem';
 
 # LangGraph
 
-Call LangGraph agents through LiteLLM using the OpenAI chat completions format.
+Call LangGraph agents through Dheera AI using the OpenAI chat completions format.
 
 | Property | Details |
 |----------|---------|
-| Description | LangGraph is a framework for building stateful, multi-actor applications with LLMs. LiteLLM supports calling LangGraph agents via their streaming and non-streaming endpoints. |
-| Provider Route on LiteLLM | `langgraph/{agent_id}` |
+| Description | LangGraph is a framework for building stateful, multi-actor applications with LLMs. Dheera AI supports calling LangGraph agents via their streaming and non-streaming endpoints. |
+| Provider Route on Dheera AI | `langgraph/{agent_id}` |
 | Provider Doc | [LangGraph Platform ↗](https://langchain-ai.github.io/langgraph/cloud/quick_start/) |
 
 **Prerequisites:** You need a running LangGraph server. See [Setting Up a Local LangGraph Server](#setting-up-a-local-langgraph-server) below.
@@ -24,12 +24,12 @@ langgraph/{agent_id}
 **Example:**
 - `langgraph/agent` - calls the default agent
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
 ```python showLineNumbers title="Basic LangGraph Completion"
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="langgraph/agent",
     messages=[
         {"role": "user", "content": "What is 25 * 4?"}
@@ -41,9 +41,9 @@ print(response.choices[0].message.content)
 ```
 
 ```python showLineNumbers title="Streaming LangGraph Response"
-import litellm
+import dheera_ai
 
-response = litellm.completion(
+response = dheera_ai.completion(
     model="langgraph/agent",
     messages=[
         {"role": "user", "content": "What is the weather in Tokyo?"}
@@ -57,17 +57,17 @@ for chunk in response:
         print(chunk.choices[0].delta.content, end="")
 ```
 
-### LiteLLM Proxy
+### Dheera AI Proxy
 
 #### 1. Configure your model in config.yaml
 
 <Tabs>
 <TabItem value="config-yaml" label="config.yaml">
 
-```yaml showLineNumbers title="LiteLLM Proxy Configuration"
+```yaml showLineNumbers title="Dheera AI Proxy Configuration"
 model_list:
   - model_name: langgraph-agent
-    litellm_params:
+    dheera_ai_params:
       model: langgraph/agent
       api_base: http://localhost:2024
 ```
@@ -75,10 +75,10 @@ model_list:
 </TabItem>
 </Tabs>
 
-#### 2. Start the LiteLLM Proxy
+#### 2. Start the Dheera AI Proxy
 
-```bash showLineNumbers title="Start LiteLLM Proxy"
-litellm --config config.yaml
+```bash showLineNumbers title="Start Dheera AI Proxy"
+dheera_ai --config config.yaml
 ```
 
 #### 3. Make requests to your LangGraph agent
@@ -89,7 +89,7 @@ litellm --config config.yaml
 ```bash showLineNumbers title="Basic Request"
 curl http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "model": "langgraph-agent",
     "messages": [
@@ -101,7 +101,7 @@ curl http://localhost:4000/v1/chat/completions \
 ```bash showLineNumbers title="Streaming Request"
 curl http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "model": "langgraph-agent",
     "messages": [
@@ -115,12 +115,12 @@ curl http://localhost:4000/v1/chat/completions \
 
 <TabItem value="openai-sdk" label="OpenAI Python SDK">
 
-```python showLineNumbers title="Using OpenAI SDK with LiteLLM Proxy"
+```python showLineNumbers title="Using OpenAI SDK with Dheera AI Proxy"
 from openai import OpenAI
 
 client = OpenAI(
     base_url="http://localhost:4000",
-    api_key="your-litellm-api-key"
+    api_key="your-dheera_ai-api-key"
 )
 
 response = client.chat.completions.create(
@@ -138,7 +138,7 @@ from openai import OpenAI
 
 client = OpenAI(
     base_url="http://localhost:4000",
-    api_key="your-litellm-api-key"
+    api_key="your-dheera_ai-api-key"
 )
 
 stream = client.chat.completions.create(
@@ -177,7 +177,7 @@ for chunk in stream:
 
 ## Setting Up a Local LangGraph Server
 
-Before using LiteLLM with LangGraph, you need a running LangGraph server.
+Before using Dheera AI with LangGraph, you need a running LangGraph server.
 
 ### Prerequisites
 
@@ -233,9 +233,9 @@ curl -s --request POST \
 
 
 
-## LiteLLM A2A Gateway
+## Dheera AI A2A Gateway
 
-You can also connect to LangGraph agents through LiteLLM's A2A (Agent-to-Agent) Gateway UI. This provides a visual way to register and test agents without writing code.
+You can also connect to LangGraph agents through Dheera AI's A2A (Agent-to-Agent) Gateway UI. This provides a visual way to register and test agents without writing code.
 
 ### 1. Navigate to Agents
 

@@ -10,13 +10,13 @@ import os
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm.exceptions import BadRequestError
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
-from litellm.utils import CustomStreamWrapper
+import dheera_ai
+from dheera_ai.exceptions import BadRequestError
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
+from dheera_ai.utils import CustomStreamWrapper
 from openai.types.image import Image
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.utils import StandardLoggingPayload
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.utils import StandardLoggingPayload
 
 
 class TestCustomLogger(CustomLogger):
@@ -47,13 +47,13 @@ class BaseImageGenTest(ABC):
     async def test_basic_image_generation(self):
         """Test basic image generation"""
         try:
-            litellm._turn_on_debug()
+            dheera_ai._turn_on_debug()
             custom_logger = TestCustomLogger()
-            litellm.logging_callback_manager._reset_all_callbacks()
-            litellm.callbacks = [custom_logger]
+            dheera_ai.logging_callback_manager._reset_all_callbacks()
+            dheera_ai.callbacks = [custom_logger]
             base_image_generation_call_args = self.get_base_image_generation_call_args()
-            litellm.set_verbose = True
-            response = await litellm.aimage_generation(
+            dheera_ai.set_verbose = True
+            response = await dheera_ai.aimage_generation(
                 **base_image_generation_call_args, prompt="A image of a otter"
             )
             print("FAL AI RESPONSE: ", response)
@@ -84,11 +84,11 @@ class BaseImageGenTest(ABC):
                 assert isinstance(d, Image)
                 print("data in response.data", d)
                 assert d.b64_json is not None or d.url is not None
-        except litellm.RateLimitError as e:
+        except dheera_ai.RateLimitError as e:
             pass
-        except litellm.ContentPolicyViolationError:
+        except dheera_ai.ContentPolicyViolationError:
             pass  # Azure randomly raises these errors - skip when they occur
-        except litellm.InternalServerError:
+        except dheera_ai.InternalServerError:
             pass
         except Exception as e:
             if "Your task failed as a result of our safety system." in str(e):
@@ -99,7 +99,7 @@ class BaseImageGenTest(ABC):
 
 @pytest.mark.skip(reason="Skipping image edit test, image file not in ci/cd")
 def test_openai_gpt_image_1():
-    from litellm import image_edit
+    from dheera_ai import image_edit
     from PIL import Image
     import io
 

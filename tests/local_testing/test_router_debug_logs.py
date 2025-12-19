@@ -13,26 +13,26 @@ sys.path.insert(
 import asyncio
 import logging
 
-import litellm
-from litellm import Router
+import dheera_ai
+from dheera_ai import Router
 
-# this tests debug logs from litellm router and litellm proxy server
-from litellm._logging import verbose_logger, verbose_proxy_logger, verbose_router_logger
+# this tests debug logs from dheera_ai router and dheera_ai proxy server
+from dheera_ai._logging import verbose_logger, verbose_proxy_logger, verbose_router_logger
 
 
-# this tests debug logs from litellm router and litellm proxy server
+# this tests debug logs from dheera_ai router and dheera_ai proxy server
 def test_async_fallbacks(caplog):
-    # THIS IS A PROD TEST - DO NOT DELETE THIS. Used for testing if litellm proxy verbose logs are human readable
-    litellm.set_verbose = False
-    litellm.success_callback = []
-    litellm.failure_callback = []
+    # THIS IS A PROD TEST - DO NOT DELETE THIS. Used for testing if dheera_ai proxy verbose logs are human readable
+    dheera_ai.set_verbose = False
+    dheera_ai.success_callback = []
+    dheera_ai.failure_callback = []
     verbose_router_logger.setLevel(level=logging.INFO)
     verbose_logger.setLevel(logging.CRITICAL + 1)
     verbose_proxy_logger.setLevel(logging.CRITICAL + 1)
     model_list = [
         {
             "model_name": "azure/gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "azure/gpt-4.1-mini",
                 "api_key": os.getenv("AZURE_API_KEY"),
                 "api_version": os.getenv("AZURE_API_VERSION"),
@@ -44,7 +44,7 @@ def test_async_fallbacks(caplog):
         },
         {
             "model_name": "gpt-3.5-turbo",
-            "litellm_params": {
+            "dheera_ai_params": {
                 "model": "gpt-3.5-turbo",
                 "api_key": "bad-key",
             },
@@ -68,7 +68,7 @@ def test_async_fallbacks(caplog):
                 model="gpt-3.5-turbo", messages=messages, max_tokens=1
             )
             router.reset()
-        except litellm.Timeout:
+        except dheera_ai.Timeout:
             pass
         except Exception as e:
             pytest.fail(f"An exception occurred: {e}")
@@ -93,7 +93,7 @@ def test_async_fallbacks(caplog):
     # - error request, falling back notice, success notice
     expected_logs = [
         "Falling back to model_group = azure/gpt-3.5-turbo",
-        "litellm.acompletion(model=azure/gpt-4.1-mini)\x1b[32m 200 OK\x1b[0m",
+        "dheera_ai.acompletion(model=azure/gpt-4.1-mini)\x1b[32m 200 OK\x1b[0m",
         "Successful fallback b/w models.",
     ]
 

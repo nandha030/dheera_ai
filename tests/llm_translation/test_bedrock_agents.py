@@ -4,7 +4,7 @@ import traceback
 
 from dotenv import load_dotenv
 
-import litellm.types
+import dheera_ai.types
 
 load_dotenv()
 import io
@@ -22,8 +22,8 @@ import pytest
 @pytest.mark.asyncio
 @pytest.mark.skip(reason="Skipping bedrock agents test - arn not working")
 async def test_bedrock_agents():
-    litellm._turn_on_debug()
-    response = litellm.completion(
+    dheera_ai._turn_on_debug()
+    response = dheera_ai.completion(
         model="bedrock/agent/L1RT58GYRW/MFPSBCXYTW",
         messages=[{"role": "user", "content": "Hi just respond with a ping message"}],
     )
@@ -47,13 +47,13 @@ async def test_bedrock_agents():
 @pytest.mark.asyncio
 @pytest.mark.skip(reason="Skipping bedrock agents test - arn not working")
 async def test_bedrock_agents_with_streaming():
-    # litellm._turn_on_debug()
-    response = litellm.completion(
+    # dheera_ai._turn_on_debug()
+    response = dheera_ai.completion(
         model="bedrock/agent/L1RT58GYRW/MFPSBCXYTW",
         messages=[
             {
                 "role": "user",
-                "content": "Hi who is ishaan cto of litellm, tell me 10 things about him",
+                "content": "Hi who is ishaan cto of dheera_ai, tell me 10 things about him",
             }
         ],
         stream=True,
@@ -66,20 +66,20 @@ async def test_bedrock_agents_with_streaming():
 
 
 def test_bedrock_agents_with_custom_params():
-    litellm._turn_on_debug()
+    dheera_ai._turn_on_debug()
     from unittest.mock import MagicMock, patch
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
 
     with patch.object(client, "post", return_value=MagicMock()) as mock_post:
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="bedrock/agent/L1RT58GYRW/MFPSBCXYTW",
                 messages=[
                     {
                         "role": "user",
-                        "content": "Hi who is ishaan cto of litellm, tell me 10 things about him",
+                        "content": "Hi who is ishaan cto of dheera_ai, tell me 10 things about him",
                     }
                 ],
                 invocationId="my-test-invocation-id",

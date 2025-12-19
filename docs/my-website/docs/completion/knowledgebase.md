@@ -9,11 +9,11 @@ import Image from '@theme/IdealImage';
   style={{width: '100%', display: 'block', margin: '2rem auto'}}
 />
 <p style={{textAlign: 'left', color: '#666'}}>
-  Use Vector Stores with any LiteLLM supported model
+  Use Vector Stores with any Dheera AI supported model
 </p>
 
 
-LiteLLM integrates with vector stores, allowing your models to access your organization's data for more accurate and contextually relevant responses.
+Dheera AI integrates with vector stores, allowing your models to access your organization's data for more accurate and contextually relevant responses.
 
 ## Supported Vector Stores
 - [Bedrock Knowledge Bases](https://aws.amazon.com/bedrock/knowledge-bases/)
@@ -26,25 +26,25 @@ LiteLLM integrates with vector stores, allowing your models to access your organ
 
 ## Quick Start
 
-In order to use a vector store with LiteLLM, you need to 
+In order to use a vector store with Dheera AI, you need to 
 
-- Initialize litellm.vector_store_registry
-- Pass tools with vector_store_ids to the completion request. Where `vector_store_ids` is a list of vector store ids you initialized in litellm.vector_store_registry
+- Initialize dheera_ai.vector_store_registry
+- Pass tools with vector_store_ids to the completion request. Where `vector_store_ids` is a list of vector store ids you initialized in dheera_ai.vector_store_registry
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
-LiteLLM's allows you to use vector stores in the [OpenAI API spec](https://platform.openai.com/docs/api-reference/chat/create) by passing a tool with vector_store_ids you want to use
+Dheera AI's allows you to use vector stores in the [OpenAI API spec](https://platform.openai.com/docs/api-reference/chat/create) by passing a tool with vector_store_ids you want to use
 
 ```python showLineNumbers title="Basic Bedrock Knowledge Base Usage"
 import os
-import litellm
+import dheera_ai
 
-from litellm.vector_stores.vector_store_registry import VectorStoreRegistry, LiteLLM_ManagedVectorStore
+from dheera_ai.vector_stores.vector_store_registry import VectorStoreRegistry, Dheera AI_ManagedVectorStore
 
 # Init vector store registry
-litellm.vector_store_registry = VectorStoreRegistry(
+dheera_ai.vector_store_registry = VectorStoreRegistry(
     vector_stores=[
-        LiteLLM_ManagedVectorStore(
+        Dheera AI_ManagedVectorStore(
             vector_store_id="T37J8R4WTM",
             custom_llm_provider="bedrock"
         )
@@ -53,9 +53,9 @@ litellm.vector_store_registry = VectorStoreRegistry(
 
 
 # Make a completion request with vector_store_ids parameter
-response = await litellm.acompletion(
+response = await dheera_ai.acompletion(
     model="anthropic/claude-3-5-sonnet", 
-    messages=[{"role": "user", "content": "What is litellm?"}],
+    messages=[{"role": "user", "content": "What is dheera_ai?"}],
     tools=[
         {
             "type": "file_search",
@@ -67,11 +67,11 @@ response = await litellm.acompletion(
 print(response.choices[0].message.content)
 ```
 
-### LiteLLM Proxy
+### Dheera AI Proxy
 
 #### 1. Configure your vector_store_registry
 
-In order to use a vector store with LiteLLM, you need to configure your vector_store_registry. This tells litellm which vector stores to use and api provider to use for the vector store.
+In order to use a vector store with Dheera AI, you need to configure your vector_store_registry. This tells dheera_ai which vector stores to use and api provider to use for the vector store.
 
 <Tabs>
 <TabItem value="config-yaml" label="config.yaml">
@@ -79,26 +79,26 @@ In order to use a vector store with LiteLLM, you need to configure your vector_s
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: claude-3-5-sonnet
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet
       api_key: os.environ/ANTHROPIC_API_KEY
 
 vector_store_registry:
-  - vector_store_name: "bedrock-litellm-website-knowledgebase"
-    litellm_params:
+  - vector_store_name: "bedrock-dheera_ai-website-knowledgebase"
+    dheera_ai_params:
       vector_store_id: "T37J8R4WTM"
       custom_llm_provider: "bedrock"
       vector_store_description: "Bedrock vector store for the Litellm website knowledgebase"
       vector_store_metadata:
-        source: "https://www.litellm.com/docs"
+        source: "https://www.dheera_ai.com/docs"
 
 ```
 
 </TabItem>
 
-<TabItem value="litellm-ui" label="LiteLLM UI">
+<TabItem value="dheera_ai-ui" label="Dheera AI UI">
 
-On the LiteLLM UI, Navigate to Experimental > Vector Stores > Create Vector Store. On this page you can create a vector store with a name, vector store id and credentials.
+On the Dheera AI UI, Navigate to Experimental > Vector Stores > Create Vector Store. On this page you can create a vector store with a name, vector store id and credentials.
 <Image 
   img={require('../../img/kb_2.png')}
   style={{width: '50%'}}
@@ -116,13 +116,13 @@ On the LiteLLM UI, Navigate to Experimental > Vector Stores > Create Vector Stor
 <Tabs>
 <TabItem value="curl" label="Curl">
 
-```bash showLineNumbers title="Curl Request to LiteLLM Proxy"
+```bash showLineNumbers title="Curl Request to Dheera AI Proxy"
 curl http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "model": "claude-3-5-sonnet",
-    "messages": [{"role": "user", "content": "What is litellm?"}],
+    "messages": [{"role": "user", "content": "What is dheera_ai?"}],
     "tools": [
         {
             "type": "file_search",
@@ -139,16 +139,16 @@ curl http://localhost:4000/v1/chat/completions \
 ```python showLineNumbers title="OpenAI Python SDK Request"
 from openai import OpenAI
 
-# Initialize client with your LiteLLM proxy URL
+# Initialize client with your Dheera AI proxy URL
 client = OpenAI(
     base_url="http://localhost:4000",
-    api_key="your-litellm-api-key"
+    api_key="your-dheera_ai-api-key"
 )
 
 # Make a completion request with vector_store_ids parameter
 response = client.chat.completions.create(
     model="claude-3-5-sonnet",
-    messages=[{"role": "user", "content": "What is litellm?"}],
+    messages=[{"role": "user", "content": "What is dheera_ai?"}],
     tools=[
         {
             "type": "file_search",
@@ -165,7 +165,7 @@ print(response.choices[0].message.content)
 
 ## Provider Specific Guides
 
-This section covers how to add your vector stores to LiteLLM. If you want support for a new provider, please file an issue [here](https://github.com/BerriAI/litellm/issues).
+This section covers how to add your vector stores to Dheera AI. If you want support for a new provider, please file an issue [here](https://github.com/BerriAI/dheera_ai/issues).
 
 ### Bedrock Knowledge Bases
 
@@ -173,7 +173,7 @@ This section covers how to add your vector stores to LiteLLM. If you want suppor
 
 Ensure you have a Bedrock Knowledge Base created in your AWS account with the appropriate permissions configured.
 
-**2. Add to LiteLLM UI**
+**2. Add to Dheera AI UI**
 
 1. Navigate to **Tools > Vector Stores > "Add new vector store"**
 2. Select **"Bedrock"** as the provider
@@ -190,7 +190,7 @@ Ensure you have a Bedrock Knowledge Base created in your AWS account with the ap
 **1. Get your Vertex AI RAG Engine ID**
 
 1. Navigate to your RAG Engine Corpus in the [Google Cloud Console](https://console.cloud.google.com/vertex-ai/rag/corpus)
-2. Select the **RAG Engine** you want to integrate with LiteLLM
+2. Select the **RAG Engine** you want to integrate with Dheera AI
 
 <div style={{margin: '20px 0', padding: '10px', border: '1px solid #ddd', borderRadius: '8px', display: 'inline-block', boxShadow: '0 2px 8px rgba(0,0,0,0.1)'}}>
 <Image 
@@ -209,7 +209,7 @@ Ensure you have a Bedrock Knowledge Base created in your AWS account with the ap
 />
 </div>
 
-**2. Add to LiteLLM UI**
+**2. Add to Dheera AI UI**
 
 1. Navigate to **Tools > Vector Stores > "Add new vector store"**
 2. Select **"Vertex AI RAG Engine"** as the provider
@@ -224,14 +224,14 @@ Ensure you have a Bedrock Knowledge Base created in your AWS account with the ap
 
 ### PG Vector
 
-**1. Deploy the litellm-pg-vector-store connector**
+**1. Deploy the dheera_ai-pg-vector-store connector**
 
-LiteLLM provides a server that exposes OpenAI-compatible `vector_store` endpoints for PG Vector. The LiteLLM Proxy server connects to your deployed service and uses it as a vector store when querying.
+Dheera AI provides a server that exposes OpenAI-compatible `vector_store` endpoints for PG Vector. The Dheera AI Proxy server connects to your deployed service and uses it as a vector store when querying.
 
-1. Follow the deployment instructions for the litellm-pg-vector-store connector [here](https://github.com/BerriAI/litellm-pgvector)
-2. For detailed configuration options, see the [configuration guide](https://github.com/BerriAI/litellm-pgvector?tab=readme-ov-file#configuration)
+1. Follow the deployment instructions for the dheera_ai-pg-vector-store connector [here](https://github.com/BerriAI/dheera_ai-pgvector)
+2. For detailed configuration options, see the [configuration guide](https://github.com/BerriAI/dheera_ai-pgvector?tab=readme-ov-file#configuration)
 
-**Example .env configuration for deploying litellm-pg-vector-store:**
+**Example .env configuration for deploying dheera_ai-pg-vector-store:**
 
 ```env
 DATABASE_URL="postgresql://neondb_owner:xxxx"
@@ -250,13 +250,13 @@ DB_FIELDS__VECTOR_STORE_ID_FIELD="vector_store_id"
 DB_FIELDS__CREATED_AT_FIELD="created_at"
 ```
 
-**2. Add to LiteLLM UI**
+**2. Add to Dheera AI UI**
 
-Once your litellm-pg-vector-store is deployed:
+Once your dheera_ai-pg-vector-store is deployed:
 
 1. Navigate to **Tools > Vector Stores > "Add new vector store"**
 2. Select **"PG Vector"** as the provider
-3. Enter your **API Base URL** and **API Key** for your `litellm-pg-vector-store` container
+3. Enter your **API Base URL** and **API Key** for your `dheera_ai-pg-vector-store` container
    - The API Key field corresponds to the `SERVER_API_KEY` from your .env configuration
 
 <div style={{margin: '20px 0', padding: '10px', border: '1px solid #ddd', borderRadius: '8px', display: 'inline-block', boxShadow: '0 2px 8px rgba(0,0,0,0.1)'}}>
@@ -273,7 +273,7 @@ Once your litellm-pg-vector-store is deployed:
 1. Create your Vector Store on the [OpenAI platform](https://platform.openai.com/storage/vector_stores)
 2. Note your Vector Store ID (format: `vs_687ae3b2439881918b433cb99d10662e`)
 
-**2. Add to LiteLLM UI**
+**2. Add to Dheera AI UI**
 
 1. Navigate to **Tools > Vector Stores > "Add new vector store"**
 2. Select **"OpenAI"** as the provider
@@ -293,16 +293,16 @@ Once your litellm-pg-vector-store is deployed:
 
 ### Logging Vector Store Usage
 
-LiteLLM allows you to view your vector store usage in the LiteLLM UI on the `Logs` page.
+Dheera AI allows you to view your vector store usage in the Dheera AI UI on the `Logs` page.
 
-After completing a request with a vector store, navigate to the `Logs` page on LiteLLM. Here you should be able to see the query sent to the vector store and corresponding response with scores.
+After completing a request with a vector store, navigate to the `Logs` page on Dheera AI. Here you should be able to see the query sent to the vector store and corresponding response with scores.
 
 <Image 
   img={require('../../img/kb_4.png')}
   style={{width: '80%'}}
 />
 <p style={{textAlign: 'left', color: '#666'}}>
-  LiteLLM Logs Page: Vector Store Usage
+  Dheera AI Logs Page: Vector Store Usage
 </p>
 
 
@@ -313,12 +313,12 @@ You can list all available vector stores using the /vector_store/list endpoint
 **Request:**
 ```bash showLineNumbers title="List all available vector stores"
 curl -X GET "http://localhost:4000/vector_store/list" \
-  -H "Authorization: Bearer $LITELLM_API_KEY"
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY"
 ```
 
 **Response:**
 
-The response will be a list of all vector stores that are available to use with LiteLLM.
+The response will be a list of all vector stores that are available to use with Dheera AI.
 
 ```json
 {
@@ -327,14 +327,14 @@ The response will be a list of all vector stores that are available to use with 
     {
       "vector_store_id": "T37J8R4WTM",
       "custom_llm_provider": "bedrock",
-      "vector_store_name": "bedrock-litellm-website-knowledgebase",
+      "vector_store_name": "bedrock-dheera_ai-website-knowledgebase",
       "vector_store_description": "Bedrock vector store for the Litellm website knowledgebase",
       "vector_store_metadata": {
-        "source": "https://www.litellm.com/docs"
+        "source": "https://www.dheera_ai.com/docs"
       },
       "created_at": "2023-05-03T18:21:36.462Z",
       "updated_at": "2023-05-03T18:21:36.462Z",
-      "litellm_credential_name": "bedrock_credentials"
+      "dheera_ai_credential_name": "bedrock_credentials"
     }
   ],
   "total_count": 1,
@@ -353,26 +353,26 @@ In this config, we add `vector_store_ids` to the claude-3-5-sonnet-with-vector-s
 ```yaml showLineNumbers title="Always on for a model"
 model_list:
   - model_name: claude-3-5-sonnet-with-vector-store
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet
       vector_store_ids: ["T37J8R4WTM"]
 
 vector_store_registry:
-  - vector_store_name: "bedrock-litellm-website-knowledgebase"
-    litellm_params:
+  - vector_store_name: "bedrock-dheera_ai-website-knowledgebase"
+    dheera_ai_params:
       vector_store_id: "T37J8R4WTM"
       custom_llm_provider: "bedrock"
       vector_store_description: "Bedrock vector store for the Litellm website knowledgebase"
       vector_store_metadata:
-        source: "https://www.litellm.com/docs"
+        source: "https://www.dheera_ai.com/docs"
 ```
 
 ## How It Works
 
-If your request includes a `vector_store_ids` parameter where any of the vector store ids are found in the `vector_store_registry`, LiteLLM will automatically use the vector store for the request.
+If your request includes a `vector_store_ids` parameter where any of the vector store ids are found in the `vector_store_registry`, Dheera AI will automatically use the vector store for the request.
 
-1. You make a completion request with the `vector_store_ids` parameter and any of the vector store ids are found in the `litellm.vector_store_registry`
-2. LiteLLM automatically:
+1. You make a completion request with the `vector_store_ids` parameter and any of the vector store ids are found in the `dheera_ai.vector_store_registry`
+2. Dheera AI automatically:
    - Uses your last message as the query to retrieve relevant information from the Knowledge Base
    - Adds the retrieved context to your conversation
    - Sends the augmented messages to the model
@@ -381,12 +381,12 @@ If your request includes a `vector_store_ids` parameter where any of the vector 
 
 When you pass `vector_store_ids=["YOUR_KNOWLEDGE_BASE_ID"]`, your request flows through these steps:
 
-**1. Original Request to LiteLLM:**
+**1. Original Request to Dheera AI:**
 ```json
 {
     "model": "anthropic/claude-3-5-sonnet",
     "messages": [
-        {"role": "user", "content": "What is litellm?"}
+        {"role": "user", "content": "What is dheera_ai?"}
     ],
     "vector_store_ids": ["YOUR_KNOWLEDGE_BASE_ID"]
 }
@@ -396,19 +396,19 @@ When you pass `vector_store_ids=["YOUR_KNOWLEDGE_BASE_ID"]`, your request flows 
 ```json
 {
     "retrievalQuery": {
-        "text": "What is litellm?"
+        "text": "What is dheera_ai?"
     }
 }
 ```
 This is sent to: `https://bedrock-agent-runtime.{aws_region}.amazonaws.com/knowledgebases/YOUR_KNOWLEDGE_BASE_ID/retrieve`
 
-**3. Final Request to LiteLLM:**
+**3. Final Request to Dheera AI:**
 ```json
 {
     "model": "anthropic/claude-3-5-sonnet",
     "messages": [
-        {"role": "user", "content": "What is litellm?"},
-        {"role": "user", "content": "Context: \n\nLiteLLM is an open-source SDK to simplify LLM API calls across providers (OpenAI, Claude, etc). It provides a standardized interface with robust error handling, streaming, and observability tools."}
+        {"role": "user", "content": "What is dheera_ai?"},
+        {"role": "user", "content": "Context: \n\nDheera AI is an open-source SDK to simplify LLM API calls across providers (OpenAI, Claude, etc). It provides a standardized interface with robust error handling, streaming, and observability tools."}
     ]
 }
 ```
@@ -417,7 +417,7 @@ This process happens automatically whenever you include the `vector_store_ids` p
 
 ## Accessing Search Results (Citations)
 
-When using vector stores, LiteLLM automatically returns search results in `provider_specific_fields`. This allows you to show users citations for the AI's response.
+When using vector stores, Dheera AI automatically returns search results in `provider_specific_fields`. This allows you to show users citations for the AI's response.
 
 ### Key Concept
 
@@ -437,14 +437,14 @@ For streaming: Results appear in the **final chunk** when `finish_reason == "sto
     "index": 0,
     "message": {
       "role": "assistant",
-      "content": "LiteLLM is a platform...",
+      "content": "Dheera AI is a platform...",
       "provider_specific_fields": {
         "search_results": [{
-          "search_query": "What is litellm?",
+          "search_query": "What is dheera_ai?",
           "data": [{
             "score": 0.95,
             "content": [{"text": "...", "type": "text"}],
-            "filename": "litellm-docs.md",
+            "filename": "dheera_ai-docs.md",
             "file_id": "doc-123"
           }]
         }]
@@ -463,12 +463,12 @@ from openai import OpenAI
 
 client = OpenAI(
     base_url="http://localhost:4000",
-    api_key="your-litellm-api-key"
+    api_key="your-dheera_ai-api-key"
 )
 
 response = client.chat.completions.create(
     model="claude-3-5-sonnet",
-    messages=[{"role": "user", "content": "What is litellm?"}],
+    messages=[{"role": "user", "content": "What is dheera_ai?"}],
     tools=[{"type": "file_search", "vector_store_ids": ["T37J8R4WTM"]}]
 )
 
@@ -492,12 +492,12 @@ import OpenAI from 'openai';
 
 const client = new OpenAI({
   baseURL: 'http://localhost:4000',
-  apiKey: process.env.LITELLM_API_KEY
+  apiKey: process.env.DHEERA_AI_API_KEY
 });
 
 const response = await client.chat.completions.create({
   model: 'claude-3-5-sonnet',
-  messages: [{ role: 'user', content: 'What is litellm?' }],
+  messages: [{ role: 'user', content: 'What is dheera_ai?' }],
   tools: [{ type: 'file_search', vector_store_ids: ['T37J8R4WTM'] }]
 });
 
@@ -530,11 +530,11 @@ searchResults.forEach((page: any) => {
     "delta": {
       "provider_specific_fields": {
         "search_results": [{
-          "search_query": "What is litellm?",
+          "search_query": "What is dheera_ai?",
           "data": [{
             "score": 0.95,
             "content": [{"text": "...", "type": "text"}],
-            "filename": "litellm-docs.md",
+            "filename": "dheera_ai-docs.md",
             "file_id": "doc-123"
           }]
         }]
@@ -553,12 +553,12 @@ from openai import OpenAI
 
 client = OpenAI(
     base_url="http://localhost:4000",
-    api_key="your-litellm-api-key"
+    api_key="your-dheera_ai-api-key"
 )
 
 stream = client.chat.completions.create(
     model="claude-3-5-sonnet",
-    messages=[{"role": "user", "content": "What is litellm?"}],
+    messages=[{"role": "user", "content": "What is dheera_ai?"}],
     tools=[{"type": "file_search", "vector_store_ids": ["T37J8R4WTM"]}],
     stream=True
 )
@@ -587,7 +587,7 @@ import OpenAI from 'openai';
 
 const stream = await client.chat.completions.create({
   model: 'claude-3-5-sonnet',
-  messages: [{ role: 'user', content: 'What is litellm?' }],
+  messages: [{ role: 'user', content: 'What is dheera_ai?' }],
   tools: [{ type: 'file_search', vector_store_ids: ['T37J8R4WTM'] }],
   stream: true
 });
@@ -630,9 +630,9 @@ for await (const chunk of stream) {
 
 ## API Reference
 
-### LiteLLM Completion Knowledge Base Parameters
+### Dheera AI Completion Knowledge Base Parameters
 
-When using the Knowledge Base integration with LiteLLM, you can include the following parameters:
+When using the Knowledge Base integration with Dheera AI, you can include the following parameters:
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
@@ -640,24 +640,24 @@ When using the Knowledge Base integration with LiteLLM, you can include the foll
 
 ### VectorStoreRegistry
 
-The `VectorStoreRegistry` is a central component for managing vector stores in LiteLLM. It acts as a registry where you can configure and access your vector stores.
+The `VectorStoreRegistry` is a central component for managing vector stores in Dheera AI. It acts as a registry where you can configure and access your vector stores.
 
 #### What is VectorStoreRegistry?
 
 `VectorStoreRegistry` is a class that:
-- Maintains a collection of vector stores that LiteLLM can use
+- Maintains a collection of vector stores that Dheera AI can use
 - Allows you to register vector stores with their credentials and metadata
 - Makes vector stores accessible via their IDs in your completion requests
 
 #### Using VectorStoreRegistry in Python
 
 ```python
-from litellm.vector_stores.vector_store_registry import VectorStoreRegistry, LiteLLM_ManagedVectorStore
+from dheera_ai.vector_stores.vector_store_registry import VectorStoreRegistry, Dheera AI_ManagedVectorStore
 
 # Initialize the vector store registry with one or more vector stores
-litellm.vector_store_registry = VectorStoreRegistry(
+dheera_ai.vector_store_registry = VectorStoreRegistry(
     vector_stores=[
-        LiteLLM_ManagedVectorStore(
+        Dheera AI_ManagedVectorStore(
             vector_store_id="YOUR_VECTOR_STORE_ID",  # Required: Unique ID for referencing this store
             custom_llm_provider="bedrock"            # Required: Provider (e.g., "bedrock")
         )
@@ -665,9 +665,9 @@ litellm.vector_store_registry = VectorStoreRegistry(
 )
 ```
 
-#### LiteLLM_ManagedVectorStore Parameters
+#### Dheera AI_ManagedVectorStore Parameters
 
-Each vector store in the registry is configured using a `LiteLLM_ManagedVectorStore` object with these parameters:
+Each vector store in the registry is configured using a `Dheera AI_ManagedVectorStore` object with these parameters:
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -676,23 +676,23 @@ Each vector store in the registry is configured using a `LiteLLM_ManagedVectorSt
 | `vector_store_name` | str | No | A friendly name for the vector store |
 | `vector_store_description` | str | No | Description of what the vector store contains |
 | `vector_store_metadata` | dict or str | No | Additional metadata about the vector store |
-| `litellm_credential_name` | str | No | Name of the credentials to use for this vector store |
+| `dheera_ai_credential_name` | str | No | Name of the credentials to use for this vector store |
 
 #### Configuring VectorStoreRegistry in config.yaml
 
-For the LiteLLM Proxy, you can configure the same registry in your `config.yaml` file:
+For the Dheera AI Proxy, you can configure the same registry in your `config.yaml` file:
 
 ```yaml showLineNumbers title="Vector store configuration in config.yaml"
 vector_store_registry:
-  - vector_store_name: "bedrock-litellm-website-knowledgebase"  # Optional friendly name
-    litellm_params:
+  - vector_store_name: "bedrock-dheera_ai-website-knowledgebase"  # Optional friendly name
+    dheera_ai_params:
       vector_store_id: "T37J8R4WTM"                            # Required: Unique ID  
       custom_llm_provider: "bedrock"                           # Required: Provider
       vector_store_description: "Bedrock vector store for the Litellm website knowledgebase"
       vector_store_metadata:
-        source: "https://www.litellm.com/docs"
+        source: "https://www.dheera_ai.com/docs"
 ```
 
-The `litellm_params` section accepts all the same parameters as the `LiteLLM_ManagedVectorStore` constructor in the Python SDK.
+The `dheera_ai_params` section accepts all the same parameters as the `Dheera AI_ManagedVectorStore` constructor in the Python SDK.
 
 

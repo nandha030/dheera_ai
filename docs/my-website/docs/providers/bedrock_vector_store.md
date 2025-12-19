@@ -9,23 +9,23 @@ AWS Bedrock Knowledge Bases allows you to connect your LLM's to your organizatio
 | Property | Details |
 |----------|---------|
 | Description | Bedrock Knowledge Bases connects your data to LLM's, enabling them to retrieve and reference your organization's information in their responses. |
-| Provider Route on LiteLLM | `bedrock` in the litellm vector_store_registry |
+| Provider Route on Dheera AI | `bedrock` in the dheera_ai vector_store_registry |
 | Provider Doc | [AWS Bedrock Knowledge Bases ↗](https://aws.amazon.com/bedrock/knowledge-bases/) |
 
 ## Quick Start
 
-### LiteLLM Python SDK
+### Dheera AI Python SDK
 
-```python showLineNumbers title="Example using LiteLLM Python SDK"
+```python showLineNumbers title="Example using Dheera AI Python SDK"
 import os
-import litellm
+import dheera_ai
 
-from litellm.vector_stores.vector_store_registry import VectorStoreRegistry, LiteLLM_ManagedVectorStore
+from dheera_ai.vector_stores.vector_store_registry import VectorStoreRegistry, Dheera AI_ManagedVectorStore
 
 # Init vector store registry with your Bedrock Knowledge Base
-litellm.vector_store_registry = VectorStoreRegistry(
+dheera_ai.vector_store_registry = VectorStoreRegistry(
     vector_stores=[
-        LiteLLM_ManagedVectorStore(
+        Dheera AI_ManagedVectorStore(
             vector_store_id="YOUR_KNOWLEDGE_BASE_ID",  # KB ID from AWS Bedrock
             custom_llm_provider="bedrock"
         )
@@ -33,7 +33,7 @@ litellm.vector_store_registry = VectorStoreRegistry(
 )
 
 # Make a completion request using your Knowledge Base
-response = await litellm.acompletion(
+response = await dheera_ai.acompletion(
     model="anthropic/claude-3-5-sonnet", 
     messages=[{"role": "user", "content": "What does our company policy say about remote work?"}],
     tools=[
@@ -47,7 +47,7 @@ response = await litellm.acompletion(
 print(response.choices[0].message.content)
 ```
 
-### LiteLLM Proxy
+### Dheera AI Proxy
 
 #### 1. Configure your vector_store_registry
 
@@ -57,13 +57,13 @@ print(response.choices[0].message.content)
 ```yaml
 model_list:
   - model_name: claude-3-5-sonnet
-    litellm_params:
+    dheera_ai_params:
       model: anthropic/claude-3-5-sonnet
       api_key: os.environ/ANTHROPIC_API_KEY
 
 vector_store_registry:
   - vector_store_name: "bedrock-company-docs"
-    litellm_params:
+    dheera_ai_params:
       vector_store_id: "YOUR_KNOWLEDGE_BASE_ID"
       custom_llm_provider: "bedrock"
       vector_store_description: "Bedrock Knowledge Base for company documents"
@@ -73,9 +73,9 @@ vector_store_registry:
 
 </TabItem>
 
-<TabItem value="litellm-ui" label="LiteLLM UI">
+<TabItem value="dheera_ai-ui" label="Dheera AI UI">
 
-On the LiteLLM UI, Navigate to Experimental > Vector Stores > Create Vector Store. On this page you can create a vector store with a name, vector store id and credentials.
+On the Dheera AI UI, Navigate to Experimental > Vector Stores > Create Vector Store. On this page you can create a vector store with a name, vector store id and credentials.
 
 <Image 
   img={require('../../img/kb_2.png')}
@@ -93,7 +93,7 @@ On the LiteLLM UI, Navigate to Experimental > Vector Stores > Create Vector Stor
 ```bash
 curl http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "model": "claude-3-5-sonnet",
     "messages": [{"role": "user", "content": "What does our company policy say about remote work?"}],
@@ -113,10 +113,10 @@ curl http://localhost:4000/v1/chat/completions \
 ```python
 from openai import OpenAI
 
-# Initialize client with your LiteLLM proxy URL
+# Initialize client with your Dheera AI proxy URL
 client = OpenAI(
     base_url="http://localhost:4000",
-    api_key="your-litellm-api-key"
+    api_key="your-dheera_ai-api-key"
 )
 
 # Make a completion request with vector_store_ids parameter
@@ -152,7 +152,7 @@ Filter by metadata attributes.
 <TabItem value="single-filter" label="Single Filter">
 
 ```python
-response = await litellm.acompletion(
+response = await dheera_ai.acompletion(
     model="anthropic/claude-3-5-sonnet",
     messages=[{"role": "user", "content": "What are the latest updates?"}],
     tools=[{
@@ -172,7 +172,7 @@ response = await litellm.acompletion(
 <TabItem value="and-filters" label="AND">
 
 ```python
-response = await litellm.acompletion(
+response = await dheera_ai.acompletion(
     model="anthropic/claude-3-5-sonnet",
     messages=[{"role": "user", "content": "What are the policies?"}],
     tools=[{
@@ -193,7 +193,7 @@ response = await litellm.acompletion(
 <TabItem value="or-filters" label="OR">
 
 ```python
-response = await litellm.acompletion(
+response = await dheera_ai.acompletion(
     model="anthropic/claude-3-5-sonnet",
     messages=[{"role": "user", "content": "Show me technical docs"}],
     tools=[{
@@ -214,7 +214,7 @@ response = await litellm.acompletion(
 <TabItem value="advanced-filters" label="AWS Operators">
 
 ```python
-response = await litellm.acompletion(
+response = await dheera_ai.acompletion(
     model="anthropic/claude-3-5-sonnet",
     messages=[{"role": "user", "content": "Find docs"}],
     tools=[{
@@ -237,7 +237,7 @@ response = await litellm.acompletion(
 ```bash
 curl http://localhost:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_API_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_API_KEY" \
   -d '{
     "model": "claude-3-5-sonnet",
     "messages": [{"role": "user", "content": "What are our policies?"}],
@@ -265,6 +265,6 @@ See how to access vector store search results in your response:
 ## Further Reading
 
 Vector Stores:
-- [Always on Vector Stores](https://docs.litellm.ai/docs/completion/knowledgebase#always-on-for-a-model)
-- [Listing available vector stores on litellm proxy](https://docs.litellm.ai/docs/completion/knowledgebase#listing-available-vector-stores)
-- [How LiteLLM Vector Stores Work](https://docs.litellm.ai/docs/completion/knowledgebase#how-it-works)
+- [Always on Vector Stores](https://docs.dheera_ai.ai/docs/completion/knowledgebase#always-on-for-a-model)
+- [Listing available vector stores on dheera_ai proxy](https://docs.dheera_ai.ai/docs/completion/knowledgebase#listing-available-vector-stores)
+- [How Dheera AI Vector Stores Work](https://docs.dheera_ai.ai/docs/completion/knowledgebase#how-it-works)

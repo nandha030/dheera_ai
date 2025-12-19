@@ -1,10 +1,10 @@
-# LiteLLM v1.71.1 Benchmarks
+# Dheera AI v1.71.1 Benchmarks
 
 ## Overview
 
-This document presents performance benchmarks comparing LiteLLM's v1.71.1 to prior litellm versions.
+This document presents performance benchmarks comparing Dheera AI's v1.71.1 to prior dheera_ai versions.
 
-**Related PR:** [#11097](https://github.com/BerriAI/litellm/pull/11097)
+**Related PR:** [#11097](https://github.com/BerriAI/dheera_ai/pull/11097)
 
 ## Testing Methodology
 
@@ -12,16 +12,16 @@ The load testing was conducted using the following parameters:
 - **Request Rate:** 200 RPS (Requests Per Second)
 - **User Ramp Up:** 200 concurrent users
 - **Transport Comparison:** httpx (existing) vs aiohttp (new implementation)
-- **Number of pods/instance of litellm:** 1
+- **Number of pods/instance of dheera_ai:** 1
 - **Machine Specs:** 2 vCPUs, 4GB RAM
-- **LiteLLM Settings:**
+- **Dheera AI Settings:**
     - Tested against a [fake openai endpoint](https://exampleopenaiendpoint-production.up.railway.app/)
     - Set `USE_AIOHTTP_TRANSPORT="True"` in the environment variables. This feature flag enables the aiohttp transport.
 
 
 ## Benchmark Results
 
-| Metric | httpx (Existing) | aiohttp (LiteLLM v1.71.1) | Improvement | Calculation |
+| Metric | httpx (Existing) | aiohttp (Dheera AI v1.71.1) | Improvement | Calculation |
 |--------|------------------|-------------------|-------------|-------------|
 | **RPS** | 50.2 | 224 | **+346%** ✅ | (224 - 50.2) / 50.2 × 100 = 346% |
 | **Median Latency** | 2,500ms | 74ms | **-97%** ✅ | (74 - 2500) / 2500 × 100 = -97% |

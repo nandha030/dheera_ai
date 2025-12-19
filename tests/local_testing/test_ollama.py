@@ -17,10 +17,10 @@ from unittest import mock
 
 import pytest
 
-import litellm
+import dheera_ai
 
 ## for ollama we can't test making the completion call
-from litellm.utils import EmbeddingResponse, get_llm_provider, get_optional_params
+from dheera_ai.utils import EmbeddingResponse, get_llm_provider, get_optional_params
 
 
 def test_get_ollama_params():
@@ -80,14 +80,14 @@ def test_ollama_json_mode():
 
 
 def test_ollama_vision_model():
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
 
     client = HTTPHandler()
     from unittest.mock import patch
 
     with patch.object(client, "post") as mock_post:
         try:
-            litellm.completion(
+            dheera_ai.completion(
                 model="ollama/llama3.2-vision:11b",
                 messages=[
                     {
@@ -122,13 +122,13 @@ mock_ollama_embedding_response = EmbeddingResponse(model="ollama/nomic-embed-tex
 
 
 @mock.patch(
-    "litellm.llms.ollama.completion.handler.ollama_embeddings",
+    "dheera_ai.llms.ollama.completion.handler.ollama_embeddings",
     return_value=mock_ollama_embedding_response,
 )
 def test_ollama_embeddings(mock_embeddings):
     # assert that ollama_embeddings is called with the right parameters
     try:
-        embeddings = litellm.embedding(
+        embeddings = dheera_ai.embedding(
             model="ollama/nomic-embed-text", input=["hello world"]
         )
         print(embeddings)
@@ -149,14 +149,14 @@ def test_ollama_embeddings(mock_embeddings):
 
 
 @mock.patch(
-    "litellm.llms.ollama.completion.handler.ollama_aembeddings",
+    "dheera_ai.llms.ollama.completion.handler.ollama_aembeddings",
     return_value=mock_ollama_embedding_response,
 )
 def test_ollama_aembeddings(mock_aembeddings):
     # assert that ollama_aembeddings is called with the right parameters
     try:
         embeddings = asyncio.run(
-            litellm.aembedding(model="ollama/nomic-embed-text", input=["hello world"])
+            dheera_ai.aembedding(model="ollama/nomic-embed-text", input=["hello world"])
         )
         print(embeddings)
         mock_aembeddings.assert_called_once_with(
@@ -204,7 +204,7 @@ def test_ollama_chat_function_calling():
         {"role": "user", "content": "What's the weather like in San Francisco?"}
     ]
 
-    response = litellm.completion(
+    response = dheera_ai.completion(
         model="ollama_chat/llama3.1",
         messages=messages,
         tools=tools,
@@ -219,12 +219,12 @@ def test_ollama_chat_function_calling():
 
 
 def test_ollama_ssl_verify():
-    from litellm.llms.custom_httpx.http_handler import HTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import HTTPHandler
     import ssl
     import httpx
 
     try:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="ollama/llama3.1",
             messages=[
                 {
@@ -237,7 +237,7 @@ def test_ollama_ssl_verify():
     except Exception as e:
         print(e)
 
-    client: HTTPHandler = litellm.in_memory_llm_clients_cache.get_cache(
+    client: HTTPHandler = dheera_ai.in_memory_llm_clients_cache.get_cache(
         "httpx_clientssl_verify_False"
     )
 
@@ -252,11 +252,11 @@ def test_ollama_ssl_verify():
 @pytest.mark.parametrize("stream", [True, False])
 @pytest.mark.asyncio
 async def test_async_ollama_ssl_verify(stream):
-    from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
+    from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler
     import httpx
 
     try:
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="ollama/llama3.1",
             messages=[
                 {
@@ -270,17 +270,17 @@ async def test_async_ollama_ssl_verify(stream):
     except Exception as e:
         print(e)
 
-    client: AsyncHTTPHandler = litellm.in_memory_llm_clients_cache.get_cache(
+    client: AsyncHTTPHandler = dheera_ai.in_memory_llm_clients_cache.get_cache(
         "async_httpx_clientssl_verify_Falseollama"
     )
 
     # check client
     print("type of transport in client=", type(client.client._transport))
     print("vars in transport in client=", vars(client.client._transport))
-    litellm_created_session = client.client._transport._get_valid_client_session()
-    print("litellm_created_session=", litellm_created_session)
+    dheera_ai_created_session = client.client._transport._get_valid_client_session()
+    print("dheera_ai_created_session=", dheera_ai_created_session)
     # check session ssl
-    print("litellm_created_session ssl=", litellm_created_session.connector._ssl)
+    print("dheera_ai_created_session ssl=", dheera_ai_created_session.connector._ssl)
 
     
     # create aiohttp transport with ssl_verify=False
@@ -288,12 +288,12 @@ async def test_async_ollama_ssl_verify(stream):
     aiohttp_session = aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False))
     print("aiohttp_session ssl=", aiohttp_session.connector._ssl)
 
-    assert litellm_created_session.connector._ssl is False
-    assert litellm_created_session.connector._ssl == aiohttp_session.connector._ssl
+    assert dheera_ai_created_session.connector._ssl is False
+    assert dheera_ai_created_session.connector._ssl == aiohttp_session.connector._ssl
 
 @pytest.mark.skip(reason="local only test")
 def test_ollama_streaming_with_chunk_builder():
-    from litellm.main import stream_chunk_builder
+    from dheera_ai.main import stream_chunk_builder
     tools = [
         {
             "type": "function",
@@ -327,7 +327,7 @@ def test_ollama_streaming_with_chunk_builder():
         "tools": tools,
         "stream": True,
     }
-    response = litellm.completion(**completion_kwargs)
+    response = dheera_ai.completion(**completion_kwargs)
     response = stream_chunk_builder(list(response))
 
     assert response.choices[0].message.tool_calls, "No tool call detected"

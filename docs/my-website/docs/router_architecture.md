@@ -10,14 +10,14 @@ import TabItem from '@theme/TabItem';
 
 ### Request Flow 
 
-1. **User Sends Request**: The process begins when a user sends a request to the LiteLLM Router endpoint. All unified endpoints (`.completion`, `.embeddings`, etc) are supported by LiteLLM Router.
+1. **User Sends Request**: The process begins when a user sends a request to the Dheera AI Router endpoint. All unified endpoints (`.completion`, `.embeddings`, etc) are supported by Dheera AI Router.
 
 2. **function_with_fallbacks**: The initial request is sent to the `function_with_fallbacks` function. This function wraps the initial request in a try-except block, to handle any exceptions - doing fallbacks if needed. This request is then sent to the `function_with_retries` function.
 
 
-3. **function_with_retries**: The `function_with_retries` function wraps the request in a try-except block and passes the initial request to a base litellm unified function (`litellm.completion`, `litellm.embeddings`, etc) to handle LLM API calling. `function_with_retries` handles any exceptions - doing retries on the model group if needed (i.e. if the request fails, it will retry on an available model within the model group). 
+3. **function_with_retries**: The `function_with_retries` function wraps the request in a try-except block and passes the initial request to a base dheera_ai unified function (`dheera_ai.completion`, `dheera_ai.embeddings`, etc) to handle LLM API calling. `function_with_retries` handles any exceptions - doing retries on the model group if needed (i.e. if the request fails, it will retry on an available model within the model group). 
 
-4. **litellm.completion**: The `litellm.completion` function is a base function that handles the LLM API calling. It is used by `function_with_retries` to make the actual request to the LLM API.
+4. **dheera_ai.completion**: The `dheera_ai.completion` function is a base function that handles the LLM API calling. It is used by `function_with_retries` to make the actual request to the LLM API.
 
 ## Legend 
 

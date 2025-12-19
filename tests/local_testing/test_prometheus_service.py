@@ -8,12 +8,12 @@ import io, asyncio
 
 sys.path.insert(0, os.path.abspath("../.."))
 import pytest
-from litellm import acompletion, Cache
-from litellm._service_logger import ServiceLogging
-from litellm.integrations.prometheus_services import PrometheusServicesLogger
-from litellm.proxy.utils import ServiceTypes
+from dheera_ai import acompletion, Cache
+from dheera_ai._service_logger import ServiceLogging
+from dheera_ai.integrations.prometheus_services import PrometheusServicesLogger
+from dheera_ai.proxy.utils import ServiceTypes
 from unittest.mock import patch, AsyncMock
-import litellm
+import dheera_ai
 
 """
 - Check if it receives a call when redis is used 
@@ -38,13 +38,13 @@ async def test_completion_with_caching():
     - Assert success callback gets called
     """
 
-    litellm.set_verbose = True
-    litellm.cache = Cache(type="redis")
-    litellm.service_callback = ["prometheus_system"]
+    dheera_ai.set_verbose = True
+    dheera_ai.cache = Cache(type="redis")
+    dheera_ai.service_callback = ["prometheus_system"]
 
     sl = ServiceLogging(mock_testing=True)
     sl.prometheusServicesLogger.mock_testing = True
-    litellm.cache.cache.service_logger_obj = sl
+    dheera_ai.cache.cache.service_logger_obj = sl
 
     messages = [{"role": "user", "content": "Hey, how's it going?"}]
     response1 = await acompletion(
@@ -66,12 +66,12 @@ async def test_completion_with_caching_bad_call():
     - Run completion with caching (incorrect credentials)
     - Assert failure callback gets called
     """
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     try:
-        from litellm.caching.caching import RedisCache
+        from dheera_ai.caching.caching import RedisCache
 
-        litellm.service_callback = ["prometheus_system"]
+        dheera_ai.service_callback = ["prometheus_system"]
         sl = ServiceLogging(mock_testing=True)
 
         RedisCache(host="hello-world", service_logger_obj=sl)
@@ -102,17 +102,17 @@ async def test_router_with_caching():
         model_list = [
             {
                 "model_name": "azure/gpt-4",
-                "litellm_params": get_openai_params(),
+                "dheera_ai_params": get_openai_params(),
                 "tpm": 100,
             },
             {
                 "model_name": "azure/gpt-4",
-                "litellm_params": get_openai_params(),
+                "dheera_ai_params": get_openai_params(),
                 "tpm": 1000,
             },
         ]
 
-        router = litellm.Router(
+        router = dheera_ai.Router(
             model_list=model_list,
             set_verbose=True,
             debug_level="DEBUG",
@@ -122,7 +122,7 @@ async def test_router_with_caching():
             redis_password=os.environ["REDIS_PASSWORD"],
         )
 
-        litellm.service_callback = ["prometheus_system"]
+        dheera_ai.service_callback = ["prometheus_system"]
 
         sl = ServiceLogging(mock_testing=True)
         sl.prometheusServicesLogger.mock_testing = True
@@ -146,7 +146,7 @@ async def test_service_logger_db_monitoring():
     """
     Test prometheus monitoring for database operations
     """
-    litellm.service_callback = ["prometheus_system"]
+    dheera_ai.service_callback = ["prometheus_system"]
     sl = ServiceLogging()
 
     # Create spy on prometheus logger's async_service_success_hook
@@ -179,7 +179,7 @@ async def test_service_logger_db_monitoring_failure():
     """
     Test prometheus monitoring for failed database operations
     """
-    litellm.service_callback = ["prometheus_system"]
+    dheera_ai.service_callback = ["prometheus_system"]
     sl = ServiceLogging()
 
     # Create spy on prometheus logger's async_service_failure_hook
@@ -219,7 +219,7 @@ def test_get_metric_existing():
     )
 
     # Test retrieving existing metric
-    retrieved_metric = pl._get_metric("litellm_test_service_test_type_of_request")
+    retrieved_metric = pl._get_metric("dheera_ai_test_service_test_type_of_request")
     assert retrieved_metric is hist
     assert retrieved_metric is not None
 
@@ -243,7 +243,7 @@ def test_create_histogram_new():
     )
 
     assert hist is not None
-    assert pl._get_metric("litellm_test_service_test_type_of_request") is hist
+    assert pl._get_metric("dheera_ai_test_service_test_type_of_request") is hist
 
 
 def test_create_histogram_existing():
@@ -261,7 +261,7 @@ def test_create_histogram_existing():
     )
 
     assert hist2 is hist1  # same object
-    assert pl._get_metric("litellm_test_service_test_type_of_request") is hist1
+    assert pl._get_metric("dheera_ai_test_service_test_type_of_request") is hist1
 
 
 def test_create_counter_new():
@@ -274,7 +274,7 @@ def test_create_counter_new():
     )
 
     assert counter is not None
-    assert pl._get_metric("litellm_test_service_test_type_of_request") is counter
+    assert pl._get_metric("dheera_ai_test_service_test_type_of_request") is counter
 
 
 def test_create_counter_existing():
@@ -292,4 +292,4 @@ def test_create_counter_existing():
     )
 
     assert counter2 is counter1
-    assert pl._get_metric("litellm_test_service_test_type_of_request") is counter1
+    assert pl._get_metric("dheera_ai_test_service_test_type_of_request") is counter1

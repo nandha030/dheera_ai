@@ -6,7 +6,7 @@ import os
 import sys
 import time
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 from datetime import datetime
 
 import pytest
@@ -16,16 +16,16 @@ sys.path.insert(0, os.path.abspath("../.."))
 from typing import List, Literal, Optional, Union
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import litellm
-from litellm import Cache, completion, embedding
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.types.utils import LiteLLMCommonStrings
+import dheera_ai
+from dheera_ai import Cache, completion, embedding
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.types.utils import DheeraAICommonStrings
 
 # Test Scenarios (test across completion, streaming, embedding)
 ## 1: Pre-API-Call
 ## 2: Post-API-Call
-## 3: On LiteLLM Call success
-## 4: On LiteLLM Call failure
+## 3: On DheeraAI Call success
+## 4: On DheeraAI Call failure
 ## 5. Caching
 
 # Test models
@@ -34,13 +34,13 @@ from litellm.types.utils import LiteLLMCommonStrings
 ## 3. Non-OpenAI/Azure - e.g. Bedrock
 
 # Test interfaces
-## 1. litellm.completion() + litellm.embeddings()
+## 1. dheera_ai.completion() + dheera_ai.embeddings()
 ## refer to test_custom_callback_input_router.py for the router +  proxy tests
 
 
 class CompletionCustomHandler(
     CustomLogger
-):  # https://docs.litellm.ai/docs/observability/custom_callback#callback-class
+):  # https://docs.dheera_ai.ai/docs/observability/custom_callback#callback-class
     """
     The set of expected inputs to a custom handler for a
     """
@@ -73,18 +73,18 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["model"], str)
             assert isinstance(kwargs["messages"], list)
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["user"], (str, type(None)))
             ### METADATA
-            metadata_value = kwargs["litellm_params"].get("metadata")
+            metadata_value = kwargs["dheera_ai_params"].get("metadata")
             assert metadata_value is None or isinstance(metadata_value, dict)
             if metadata_value is not None:
-                if litellm.turn_off_message_logging is True:
+                if dheera_ai.turn_off_message_logging is True:
                     assert (
                         metadata_value["raw_request"]
-                        is LiteLLMCommonStrings.redacted_by_litellm.value
+                        is DheeraAICommonStrings.redacted_by_dheera_ai.value
                     )
                 else:
                     assert "raw_request" not in metadata_value or isinstance(
@@ -107,7 +107,7 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["model"], str)
             assert isinstance(kwargs["messages"], list)
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["user"], (str, type(None)))
@@ -116,7 +116,7 @@ class CompletionCustomHandler(
             assert (
                 isinstance(
                     kwargs["original_response"],
-                    (str, litellm.CustomStreamWrapper, BaseModel),
+                    (str, dheera_ai.CustomStreamWrapper, BaseModel),
                 )
                 or inspect.iscoroutine(kwargs["original_response"])
                 or inspect.isasyncgen(kwargs["original_response"])
@@ -135,14 +135,14 @@ class CompletionCustomHandler(
             ## END TIME
             assert isinstance(end_time, datetime)
             ## RESPONSE OBJECT
-            assert isinstance(response_obj, litellm.ModelResponseStream)
+            assert isinstance(response_obj, dheera_ai.ModelResponseStream)
             ## KWARGS
             assert isinstance(kwargs["model"], str)
             assert isinstance(kwargs["messages"], list) and isinstance(
                 kwargs["messages"][0], dict
             )
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["user"], (str, type(None)))
@@ -153,7 +153,7 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["api_key"], (str, type(None)))
             assert (
                 isinstance(
-                    kwargs["original_response"], (str, litellm.CustomStreamWrapper)
+                    kwargs["original_response"], (str, dheera_ai.CustomStreamWrapper)
                 )
                 or inspect.isasyncgen(kwargs["original_response"])
                 or inspect.iscoroutine(kwargs["original_response"])
@@ -180,9 +180,9 @@ class CompletionCustomHandler(
             assert isinstance(
                 response_obj,
                 (
-                    litellm.ModelResponse,
-                    litellm.EmbeddingResponse,
-                    litellm.ImageResponse,
+                    dheera_ai.ModelResponse,
+                    dheera_ai.EmbeddingResponse,
+                    dheera_ai.ImageResponse,
                 ),
             )
             ## KWARGS
@@ -191,8 +191,8 @@ class CompletionCustomHandler(
                 kwargs["messages"][0], dict
             )
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
-            assert isinstance(kwargs["litellm_params"]["api_base"], str)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"]["api_base"], str)
             assert kwargs["cache_hit"] is None or isinstance(kwargs["cache_hit"], bool)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
@@ -207,8 +207,8 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["api_key"], (str, type(None)))
             assert isinstance(
                 kwargs["original_response"],
-                (str, litellm.CustomStreamWrapper, BaseModel),
-            ), "Original Response={}. Allowed types=[str, litellm.CustomStreamWrapper, BaseModel]".format(
+                (str, dheera_ai.CustomStreamWrapper, BaseModel),
+            ), "Original Response={}. Allowed types=[str, dheera_ai.CustomStreamWrapper, BaseModel]".format(
                 kwargs["original_response"]
             )
             assert isinstance(kwargs["additional_args"], (dict, type(None)))
@@ -235,8 +235,8 @@ class CompletionCustomHandler(
             )
 
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
-            assert isinstance(kwargs["litellm_params"]["metadata"], Optional[dict])
+            assert isinstance(kwargs["dheera_ai_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"]["metadata"], Optional[dict])
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["user"], (str, type(None)))
@@ -247,7 +247,7 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["api_key"], (str, type(None)))
             assert (
                 isinstance(
-                    kwargs["original_response"], (str, litellm.CustomStreamWrapper)
+                    kwargs["original_response"], (str, dheera_ai.CustomStreamWrapper)
                 )
                 or kwargs["original_response"] == None
             )
@@ -270,7 +270,7 @@ class CompletionCustomHandler(
                 kwargs["messages"][0], dict
             )
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["user"], (str, type(None)))
@@ -292,17 +292,17 @@ class CompletionCustomHandler(
             assert isinstance(
                 response_obj,
                 (
-                    litellm.ModelResponse,
-                    litellm.EmbeddingResponse,
-                    litellm.TextCompletionResponse,
+                    dheera_ai.ModelResponse,
+                    dheera_ai.EmbeddingResponse,
+                    dheera_ai.TextCompletionResponse,
                 ),
             )
             ## KWARGS
             assert isinstance(kwargs["model"], str)
             assert isinstance(kwargs["messages"], list)
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
-            assert isinstance(kwargs["litellm_params"]["api_base"], str)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"]["api_base"], str)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["completion_start_time"], datetime)
@@ -312,7 +312,7 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["api_key"], (str, type(None)))
             assert (
                 isinstance(
-                    kwargs["original_response"], (str, litellm.CustomStreamWrapper)
+                    kwargs["original_response"], (str, dheera_ai.CustomStreamWrapper)
                 )
                 or inspect.isasyncgen(kwargs["original_response"])
                 or inspect.iscoroutine(kwargs["original_response"])
@@ -338,7 +338,7 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["model"], str)
             assert isinstance(kwargs["messages"], list)
             assert isinstance(kwargs["optional_params"], dict)
-            assert isinstance(kwargs["litellm_params"], dict)
+            assert isinstance(kwargs["dheera_ai_params"], dict)
             assert isinstance(kwargs["start_time"], (datetime, type(None)))
             assert isinstance(kwargs["stream"], bool)
             assert isinstance(kwargs["user"], (str, type(None)))
@@ -346,7 +346,7 @@ class CompletionCustomHandler(
             assert isinstance(kwargs["api_key"], (str, type(None)))
             assert (
                 isinstance(
-                    kwargs["original_response"], (str, litellm.CustomStreamWrapper)
+                    kwargs["original_response"], (str, dheera_ai.CustomStreamWrapper)
                 )
                 or inspect.isasyncgen(kwargs["original_response"])
                 or inspect.iscoroutine(kwargs["original_response"])
@@ -364,13 +364,13 @@ class CompletionCustomHandler(
 def test_chat_openai_stream():
     try:
         customHandler = CompletionCustomHandler()
-        litellm.callbacks = [customHandler]
-        response = litellm.completion(
+        dheera_ai.callbacks = [customHandler]
+        response = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hi 👋 - i'm sync openai"}],
         )
         ## test streaming
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hi 👋 - i'm openai"}],
             stream=True,
@@ -379,7 +379,7 @@ def test_chat_openai_stream():
             continue
         ## test failure callback
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hi 👋 - i'm openai"}],
                 api_key="my-bad-key",
@@ -392,7 +392,7 @@ def test_chat_openai_stream():
         time.sleep(1)
         print(f"customHandler.errors: {customHandler.errors}")
         assert len(customHandler.errors) == 0
-        litellm.callbacks = []
+        dheera_ai.callbacks = []
     except Exception as e:
         pytest.fail(f"An exception occurred: {str(e)}")
 
@@ -405,13 +405,13 @@ def test_chat_openai_stream():
 async def test_async_chat_openai_stream():
     try:
         customHandler = CompletionCustomHandler()
-        litellm.callbacks = [customHandler]
-        response = await litellm.acompletion(
+        dheera_ai.callbacks = [customHandler]
+        response = await dheera_ai.acompletion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hi 👋 - i'm openai"}],
         )
         ## test streaming
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hi 👋 - i'm openai"}],
             stream=True,
@@ -422,7 +422,7 @@ async def test_async_chat_openai_stream():
         await asyncio.sleep(1)
         ## test failure callback
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hi 👋 - i'm openai"}],
                 api_key="my-bad-key",
@@ -436,7 +436,7 @@ async def test_async_chat_openai_stream():
         time.sleep(1)
         print(f"customHandler.errors: {customHandler.errors}")
         assert len(customHandler.errors) == 0
-        litellm.callbacks = []
+        dheera_ai.callbacks = []
     except Exception as e:
         pytest.fail(f"An exception occurred: {str(e)}")
 
@@ -448,13 +448,13 @@ async def test_async_chat_openai_stream():
 def test_chat_azure_stream():
     try:
         customHandler = CompletionCustomHandler()
-        litellm.callbacks = [customHandler]
-        response = litellm.completion(
+        dheera_ai.callbacks = [customHandler]
+        response = dheera_ai.completion(
             model="azure/gpt-4.1-mini",
             messages=[{"role": "user", "content": "Hi 👋 - i'm sync azure"}],
         )
         # test streaming
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="azure/gpt-4.1-mini",
             messages=[{"role": "user", "content": "Hi 👋 - i'm sync azure"}],
             stream=True,
@@ -463,7 +463,7 @@ def test_chat_azure_stream():
             continue
         # test failure callback
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="azure/gpt-4.1-mini",
                 messages=[{"role": "user", "content": "Hi 👋 - i'm sync azure"}],
                 api_key="my-bad-key",
@@ -476,7 +476,7 @@ def test_chat_azure_stream():
         time.sleep(1)
         print(f"customHandler.errors: {customHandler.errors}")
         assert len(customHandler.errors) == 0
-        litellm.callbacks = []
+        dheera_ai.callbacks = []
     except Exception as e:
         pytest.fail(f"An exception occurred: {str(e)}")
 
@@ -489,13 +489,13 @@ def test_chat_azure_stream():
 async def test_async_chat_azure_stream():
     try:
         customHandler = CompletionCustomHandler()
-        litellm.callbacks = [customHandler]
-        response = await litellm.acompletion(
+        dheera_ai.callbacks = [customHandler]
+        response = await dheera_ai.acompletion(
             model="azure/gpt-4.1-mini",
             messages=[{"role": "user", "content": "Hi 👋 - i'm async azure"}],
         )
         ## test streaming
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="azure/gpt-4.1-mini",
             messages=[{"role": "user", "content": "Hi 👋 - i'm async azure"}],
             stream=True,
@@ -506,7 +506,7 @@ async def test_async_chat_azure_stream():
         await asyncio.sleep(1)
         # test failure callback
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="azure/gpt-4.1-mini",
                 messages=[{"role": "user", "content": "Hi 👋 - i'm async azure"}],
                 api_key="my-bad-key",
@@ -520,7 +520,7 @@ async def test_async_chat_azure_stream():
         await asyncio.sleep(1)
         print(f"customHandler.errors: {customHandler.errors}")
         assert len(customHandler.errors) == 0
-        litellm.callbacks = []
+        dheera_ai.callbacks = []
     except Exception as e:
         pytest.fail(f"An exception occurred: {str(e)}")
 
@@ -531,13 +531,13 @@ async def test_async_chat_azure_stream():
 @pytest.mark.asyncio
 async def test_async_chat_openai_stream_options():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         customHandler = CompletionCustomHandler()
-        litellm.callbacks = [customHandler]
+        dheera_ai.callbacks = [customHandler]
         with patch.object(
             customHandler, "async_log_success_event", new=AsyncMock()
         ) as mock_client:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hi 👋 - i'm async openai"}],
                 stream=True,
@@ -563,13 +563,13 @@ async def test_async_chat_openai_stream_options():
 async def test_async_chat_sagemaker_stream():
     try:
         customHandler = CompletionCustomHandler()
-        litellm.callbacks = [customHandler]
-        response = await litellm.acompletion(
+        dheera_ai.callbacks = [customHandler]
+        response = await dheera_ai.acompletion(
             model="sagemaker/berri-benchmarking-Llama-2-70b-chat-hf-4",
             messages=[{"role": "user", "content": "Hi 👋 - i'm async sagemaker"}],
         )
         # test streaming
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="sagemaker/berri-benchmarking-Llama-2-70b-chat-hf-4",
             messages=[{"role": "user", "content": "Hi 👋 - i'm async sagemaker"}],
             stream=True,
@@ -580,7 +580,7 @@ async def test_async_chat_sagemaker_stream():
             continue
         ## test failure callback
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="sagemaker/berri-benchmarking-Llama-2-70b-chat-hf-4",
                 messages=[{"role": "user", "content": "Hi 👋 - i'm async sagemaker"}],
                 aws_region_name="my-bad-key",
@@ -593,7 +593,7 @@ async def test_async_chat_sagemaker_stream():
         time.sleep(1)
         print(f"customHandler.errors: {customHandler.errors}")
         assert len(customHandler.errors) == 0
-        litellm.callbacks = []
+        dheera_ai.callbacks = []
     except Exception as e:
         pytest.fail(f"An exception occurred: {str(e)}")
 
@@ -649,10 +649,10 @@ async def test_async_chat_vertex_ai_stream():
     try:
         load_vertex_ai_credentials()
         customHandler = CompletionCustomHandler()
-        litellm.set_verbose = True
-        litellm.callbacks = [customHandler]
+        dheera_ai.set_verbose = True
+        dheera_ai.callbacks = [customHandler]
         # test streaming
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="gemini-pro",
             messages=[
                 {
@@ -684,13 +684,13 @@ async def test_async_chat_vertex_ai_stream():
 async def test_async_text_completion_bedrock():
     try:
         customHandler = CompletionCustomHandler()
-        litellm.callbacks = [customHandler]
-        response = await litellm.atext_completion(
+        dheera_ai.callbacks = [customHandler]
+        response = await dheera_ai.atext_completion(
             model="bedrock/anthropic.claude-3-haiku-20240307-v1:0",
             prompt=["Hi 👋 - i'm async text completion bedrock"],
         )
         # test streaming
-        response = await litellm.atext_completion(
+        response = await dheera_ai.atext_completion(
             model="bedrock/anthropic.claude-3-haiku-20240307-v1:0",
             prompt=["Hi 👋 - i'm async text completion bedrock"],
             stream=True,
@@ -702,7 +702,7 @@ async def test_async_text_completion_bedrock():
         await asyncio.sleep(1)
         ## test failure callback
         try:
-            response = await litellm.atext_completion(
+            response = await dheera_ai.atext_completion(
                 model="bedrock/",
                 prompt=["Hi 👋 - i'm async text completion bedrock"],
                 stream=True,
@@ -717,7 +717,7 @@ async def test_async_text_completion_bedrock():
         time.sleep(1)
         print(f"customHandler.errors: {customHandler.errors}")
         assert len(customHandler.errors) == 0
-        litellm.callbacks = []
+        dheera_ai.callbacks = []
     except Exception as e:
         pytest.fail(f"An exception occurred: {str(e)}")
 
@@ -727,13 +727,13 @@ async def test_async_text_completion_bedrock():
 async def test_async_text_completion_openai_stream():
     try:
         customHandler = CompletionCustomHandler()
-        litellm.callbacks = [customHandler]
-        response = await litellm.atext_completion(
+        dheera_ai.callbacks = [customHandler]
+        response = await dheera_ai.atext_completion(
             model="gpt-3.5-turbo",
             prompt="Hi 👋 - i'm async text completion openai",
         )
         # test streaming
-        response = await litellm.atext_completion(
+        response = await dheera_ai.atext_completion(
             model="gpt-3.5-turbo",
             prompt="Hi 👋 - i'm async text completion openai",
             stream=True,
@@ -745,7 +745,7 @@ async def test_async_text_completion_openai_stream():
         await asyncio.sleep(1)
         ## test failure callback
         try:
-            response = await litellm.atext_completion(
+            response = await dheera_ai.atext_completion(
                 model="gpt-3.5-turbo",
                 prompt="Hi 👋 - i'm async text completion openai",
                 stream=True,
@@ -760,7 +760,7 @@ async def test_async_text_completion_openai_stream():
         time.sleep(1)
         print(f"customHandler.errors: {customHandler.errors}")
         assert len(customHandler.errors) == 0
-        litellm.callbacks = []
+        dheera_ai.callbacks = []
     except Exception as e:
         pytest.fail(f"An exception occurred: {str(e)}")
 
@@ -772,10 +772,10 @@ async def test_async_embedding_openai():
     try:
         customHandler_success = CompletionCustomHandler()
         customHandler_failure = CompletionCustomHandler()
-        litellm.callbacks = [customHandler_success]
-        response = await litellm.aembedding(
+        dheera_ai.callbacks = [customHandler_success]
+        response = await dheera_ai.aembedding(
             model="text-embedding-ada-002",
-            input=["good morning from litellm"],
+            input=["good morning from dheera_ai"],
         )
         await asyncio.sleep(1)
         print(f"customHandler_success.errors: {customHandler_success.errors}")
@@ -783,12 +783,12 @@ async def test_async_embedding_openai():
         assert len(customHandler_success.errors) == 0
         assert len(customHandler_success.states) == 3  # pre, post, success
         # test failure callback
-        litellm.logging_callback_manager._reset_all_callbacks()
-        litellm.callbacks = [customHandler_failure]
+        dheera_ai.logging_callback_manager._reset_all_callbacks()
+        dheera_ai.callbacks = [customHandler_failure]
         try:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 model="text-embedding-ada-002",
-                input=["good morning from litellm"],
+                input=["good morning from dheera_ai"],
                 api_key="my-bad-key",
             )
         except Exception:
@@ -810,9 +810,9 @@ def test_amazing_sync_embedding():
     try:
         customHandler_success = CompletionCustomHandler()
         customHandler_failure = CompletionCustomHandler()
-        litellm.callbacks = [customHandler_success]
-        response = litellm.embedding(
-            model="azure/text-embedding-ada-002", input=["good morning from litellm"]
+        dheera_ai.callbacks = [customHandler_success]
+        response = dheera_ai.embedding(
+            model="azure/text-embedding-ada-002", input=["good morning from dheera_ai"]
         )
         print(f"customHandler_success.errors: {customHandler_success.errors}")
         print(f"customHandler_success.states: {customHandler_success.states}")
@@ -820,12 +820,12 @@ def test_amazing_sync_embedding():
         assert len(customHandler_success.errors) == 0
         assert len(customHandler_success.states) == 3  # pre, post, success
         # test failure callback
-        litellm.logging_callback_manager._reset_all_callbacks()
-        litellm.callbacks = [customHandler_failure]
+        dheera_ai.logging_callback_manager._reset_all_callbacks()
+        dheera_ai.callbacks = [customHandler_failure]
         try:
-            response = litellm.embedding(
+            response = dheera_ai.embedding(
                 model="azure/text-embedding-ada-002",
-                input=["good morning from litellm"],
+                input=["good morning from dheera_ai"],
                 api_key="my-bad-key",
             )
         except Exception:
@@ -845,9 +845,9 @@ async def test_async_embedding_azure():
     try:
         customHandler_success = CompletionCustomHandler()
         customHandler_failure = CompletionCustomHandler()
-        litellm.callbacks = [customHandler_success]
-        response = await litellm.aembedding(
-            model="azure/text-embedding-ada-002", input=["good morning from litellm"]
+        dheera_ai.callbacks = [customHandler_success]
+        response = await dheera_ai.aembedding(
+            model="azure/text-embedding-ada-002", input=["good morning from dheera_ai"]
         )
         await asyncio.sleep(1)
         print(f"customHandler_success.errors: {customHandler_success.errors}")
@@ -855,12 +855,12 @@ async def test_async_embedding_azure():
         assert len(customHandler_success.errors) == 0
         assert len(customHandler_success.states) == 3  # pre, post, success
         # test failure callback
-        litellm.logging_callback_manager._reset_all_callbacks()
-        litellm.callbacks = [customHandler_failure]
+        dheera_ai.logging_callback_manager._reset_all_callbacks()
+        dheera_ai.callbacks = [customHandler_failure]
         try:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 model="azure/text-embedding-ada-002",
-                input=["good morning from litellm"],
+                input=["good morning from dheera_ai"],
                 api_key="my-bad-key",
             )
         except Exception:
@@ -883,11 +883,11 @@ async def test_async_embedding_bedrock():
     try:
         customHandler_success = CompletionCustomHandler()
         customHandler_failure = CompletionCustomHandler()
-        litellm.callbacks = [customHandler_success]
-        litellm.set_verbose = True
-        response = await litellm.aembedding(
+        dheera_ai.callbacks = [customHandler_success]
+        dheera_ai.set_verbose = True
+        response = await dheera_ai.aembedding(
             model="bedrock/cohere.embed-multilingual-v3",
-            input=["good morning from litellm"],
+            input=["good morning from dheera_ai"],
             aws_region_name="us-east-1",
         )
         await asyncio.sleep(1)
@@ -896,12 +896,12 @@ async def test_async_embedding_bedrock():
         assert len(customHandler_success.errors) == 0
         assert len(customHandler_success.states) == 3  # pre, post, success
         # test failure callback
-        litellm.logging_callback_manager._reset_all_callbacks()
-        litellm.callbacks = [customHandler_failure]
+        dheera_ai.logging_callback_manager._reset_all_callbacks()
+        dheera_ai.callbacks = [customHandler_failure]
         try:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 model="bedrock/cohere.embed-multilingual-v3",
-                input=["good morning from litellm"],
+                input=["good morning from dheera_ai"],
                 aws_region_name="my-bad-region",
             )
         except Exception:
@@ -924,11 +924,11 @@ def test_image_generation_openai():
     try:
         customHandler_success = CompletionCustomHandler()
         customHandler_failure = CompletionCustomHandler()
-        litellm.callbacks = [customHandler_success]
+        dheera_ai.callbacks = [customHandler_success]
 
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
 
-        response = litellm.image_generation(
+        response = dheera_ai.image_generation(
             prompt="A cute baby sea otter",
             model="openai/dall-e-3",
             api_key=os.getenv("OPENAI_API_KEY"),
@@ -943,10 +943,10 @@ def test_image_generation_openai():
         assert len(customHandler_success.errors) == 0
         assert len(customHandler_success.states) == 3  # pre, post, success
         # test failure callback
-        litellm.logging_callback_manager._reset_all_callbacks()
-        litellm.callbacks = [customHandler_failure]
+        dheera_ai.logging_callback_manager._reset_all_callbacks()
+        dheera_ai.callbacks = [customHandler_failure]
         try:
-            response = litellm.image_generation(
+            response = dheera_ai.image_generation(
                 prompt="A cute baby sea otter",
                 model="dall-e-2",
                 api_key="my-bad-api-key",
@@ -957,9 +957,9 @@ def test_image_generation_openai():
         print(f"customHandler_failure.states: {customHandler_failure.states}")
         assert len(customHandler_failure.errors) == 0
         assert len(customHandler_failure.states) == 3  # pre, post, failure
-    except litellm.RateLimitError as e:
+    except dheera_ai.RateLimitError as e:
         pass
-    except litellm.ContentPolicyViolationError:
+    except dheera_ai.ContentPolicyViolationError:
         pass  # OpenAI randomly raises these errors - skip when they occur
     except Exception as e:
         pytest.fail(f"An exception occurred - {str(e)}")
@@ -979,13 +979,13 @@ def test_turn_off_message_logging():
     """
     If 'turn_off_message_logging' is true, assert no user request information is logged.
     """
-    litellm.turn_off_message_logging = True
+    dheera_ai.turn_off_message_logging = True
 
     # sync completion
     customHandler = CompletionCustomHandler()
-    litellm.callbacks = [customHandler]
+    dheera_ai.callbacks = [customHandler]
 
-    _ = litellm.completion(
+    _ = dheera_ai.completion(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "Hey, how's it going?"}],
         mock_response="Going well!",
@@ -1016,18 +1016,18 @@ def test_standard_logging_payload(model, turn_off_message_logging):
 
     Motivation: provide a standard set of things that are logged to s3/gcs/future integrations across all llm calls
     """
-    from litellm.types.utils import StandardLoggingPayload
+    from dheera_ai.types.utils import StandardLoggingPayload
 
     # sync completion
     customHandler = CompletionCustomHandler()
-    litellm.callbacks = [customHandler]
+    dheera_ai.callbacks = [customHandler]
 
-    litellm.turn_off_message_logging = turn_off_message_logging
+    dheera_ai.turn_off_message_logging = turn_off_message_logging
 
     with patch.object(
         customHandler, "log_success_event", new=MagicMock()
     ) as mock_client:
-        _ = litellm.completion(
+        _ = dheera_ai.completion(
             model=model,
             messages=[{"role": "user", "content": "Hey, how's it going?"}],
             mock_response="Going well!",
@@ -1083,9 +1083,9 @@ def test_standard_logging_payload(model, turn_off_message_logging):
             "standard_logging_object"
         ]
         if turn_off_message_logging:
-            print("checks redacted-by-litellm")
-            assert "redacted-by-litellm" == slobject["messages"][0]["content"]
-            assert {"text": "redacted-by-litellm"} == slobject["response"]
+            print("checks redacted-by-dheera_ai")
+            assert "redacted-by-dheera_ai" == slobject["messages"][0]["content"]
+            assert {"text": "redacted-by-dheera_ai"} == slobject["response"]
 
 
 @pytest.mark.parametrize(
@@ -1104,19 +1104,19 @@ def test_standard_logging_payload_audio(turn_off_message_logging, stream):
 
     Motivation: provide a standard set of things that are logged to s3/gcs/future integrations across all llm calls
     """
-    from litellm.types.utils import StandardLoggingPayload
+    from dheera_ai.types.utils import StandardLoggingPayload
 
     # sync completion
     customHandler = CompletionCustomHandler()
-    litellm.callbacks = [customHandler]
+    dheera_ai.callbacks = [customHandler]
 
-    litellm.turn_off_message_logging = turn_off_message_logging
+    dheera_ai.turn_off_message_logging = turn_off_message_logging
 
     with patch.object(
         customHandler, "log_success_event", new=MagicMock()
     ) as mock_client:
         try:
-            response = litellm.completion(
+            response = dheera_ai.completion(
                 model="gpt-4o-audio-preview",
                 modalities=["text", "audio"],
                 audio={"voice": "alloy", "format": "pcm16"},
@@ -1183,33 +1183,33 @@ def test_standard_logging_payload_audio(turn_off_message_logging, stream):
             "standard_logging_object"
         ]
         if turn_off_message_logging:
-            print("checks redacted-by-litellm")
-            assert "redacted-by-litellm" == slobject["messages"][0]["content"]
-            assert {"text": "redacted-by-litellm"} == slobject["response"]
+            print("checks redacted-by-dheera_ai")
+            assert "redacted-by-dheera_ai" == slobject["messages"][0]["content"]
+            assert {"text": "redacted-by-dheera_ai"} == slobject["response"]
 
 
 @pytest.mark.skip(reason="Works locally. Flaky on ci/cd")
 def test_aaastandard_logging_payload_cache_hit():
-    from litellm.types.utils import StandardLoggingPayload
+    from dheera_ai.types.utils import StandardLoggingPayload
 
     # sync completion
 
-    litellm.cache = Cache()
+    dheera_ai.cache = Cache()
 
-    _ = litellm.completion(
+    _ = dheera_ai.completion(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "Hey, how's it going?"}],
         caching=True,
     )
 
     customHandler = CompletionCustomHandler()
-    litellm.callbacks = [customHandler]
-    litellm.success_callback = []
+    dheera_ai.callbacks = [customHandler]
+    dheera_ai.success_callback = []
 
     with patch.object(
         customHandler, "log_success_event", new=MagicMock()
     ) as mock_client:
-        _ = litellm.completion(
+        _ = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hey, how's it going?"}],
             caching=True,
@@ -1238,13 +1238,13 @@ def test_aaastandard_logging_payload_cache_hit():
     [False, True],
 )  # False
 def test_logging_async_cache_hit_sync_call(turn_off_message_logging):
-    from litellm.types.utils import StandardLoggingPayload
+    from dheera_ai.types.utils import StandardLoggingPayload
 
-    litellm.turn_off_message_logging = turn_off_message_logging
+    dheera_ai.turn_off_message_logging = turn_off_message_logging
 
-    litellm.cache = Cache()
+    dheera_ai.cache = Cache()
 
-    response = litellm.completion(
+    response = dheera_ai.completion(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "Hey, how's it going?"}],
         caching=True,
@@ -1255,13 +1255,13 @@ def test_logging_async_cache_hit_sync_call(turn_off_message_logging):
 
     time.sleep(3)
     customHandler = CompletionCustomHandler()
-    litellm.callbacks = [customHandler]
-    litellm.success_callback = []
+    dheera_ai.callbacks = [customHandler]
+    dheera_ai.success_callback = []
 
     with patch.object(
         customHandler, "log_success_event", new=MagicMock()
     ) as mock_client:
-        resp = litellm.completion(
+        resp = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hey, how's it going?"}],
             caching=True,
@@ -1289,32 +1289,32 @@ def test_logging_async_cache_hit_sync_call(turn_off_message_logging):
         assert standard_logging_object["saved_cache_cost"] > 0
 
         if turn_off_message_logging:
-            print("checks redacted-by-litellm")
+            print("checks redacted-by-dheera_ai")
             assert (
-                "redacted-by-litellm"
+                "redacted-by-dheera_ai"
                 == standard_logging_object["messages"][0]["content"]
             )
-            assert {"text": "redacted-by-litellm"} == standard_logging_object[
+            assert {"text": "redacted-by-dheera_ai"} == standard_logging_object[
                 "response"
             ]
 
 
 def test_logging_standard_payload_failure_call():
-    from litellm.types.utils import StandardLoggingPayload
+    from dheera_ai.types.utils import StandardLoggingPayload
 
     customHandler = CompletionCustomHandler()
-    litellm.callbacks = [customHandler]
+    dheera_ai.callbacks = [customHandler]
 
     with patch.object(
         customHandler, "log_failure_event", new=MagicMock()
     ) as mock_client:
         try:
-            resp = litellm.completion(
+            resp = dheera_ai.completion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
                 api_key="my-bad-api-key",
             )
-        except litellm.AuthenticationError:
+        except dheera_ai.AuthenticationError:
             pass
 
         mock_client.assert_called_once()
@@ -1333,17 +1333,17 @@ def test_logging_standard_payload_failure_call():
 
 @pytest.mark.parametrize("stream", [False, True])
 def test_logging_standard_payload_llm_headers(stream):
-    from litellm.types.utils import StandardLoggingPayload
+    from dheera_ai.types.utils import StandardLoggingPayload
 
     # sync completion
     customHandler = CompletionCustomHandler()
-    litellm.callbacks = [customHandler]
+    dheera_ai.callbacks = [customHandler]
 
     with patch.object(
         customHandler, "log_success_event", new=MagicMock()
     ) as mock_client:
 
-        resp = litellm.completion(
+        resp = dheera_ai.completion(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hey, how's it going?"}],
             stream=stream,
@@ -1365,19 +1365,19 @@ def test_logging_standard_payload_llm_headers(stream):
 
 def test_logging_key_masking_gemini():
     customHandler = CompletionCustomHandler()
-    litellm.callbacks = [customHandler]
-    litellm.success_callback = []
+    dheera_ai.callbacks = [customHandler]
+    dheera_ai.success_callback = []
 
     with patch.object(
         customHandler, "log_pre_api_call", new=MagicMock()
     ) as mock_client:
         try:
-            resp = litellm.completion(
+            resp = dheera_ai.completion(
                 model="gemini/gemini-1.5-pro",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
                 api_key="LEAVE_ONLY_LAST_4_CHAR_UNMASKED_THIS_PART",
             )
-        except litellm.AuthenticationError:
+        except dheera_ai.AuthenticationError:
             pass
 
         mock_client.assert_called()
@@ -1385,9 +1385,9 @@ def test_logging_key_masking_gemini():
         print(f"mock_client.call_args.kwargs: {mock_client.call_args.kwargs}")
         assert (
             "LEAVE_ONLY_LAST_4_CHAR_UNMASKED_THIS_PART"
-            not in mock_client.call_args.kwargs["kwargs"]["litellm_params"]["api_base"]
+            not in mock_client.call_args.kwargs["kwargs"]["dheera_ai_params"]["api_base"]
         )
-        key = mock_client.call_args.kwargs["kwargs"]["litellm_params"]["api_base"]
+        key = mock_client.call_args.kwargs["kwargs"]["dheera_ai_params"]["api_base"]
         trimmed_key = key.split("key=")[1]
         trimmed_key = trimmed_key.replace("*", "")
         assert "PART" == trimmed_key
@@ -1399,14 +1399,14 @@ async def test_standard_logging_payload_stream_usage(sync_mode):
     """
     Even if stream_options is not provided, correct usage should be logged
     """
-    from litellm.types.utils import StandardLoggingPayload
-    from litellm.main import stream_chunk_builder
+    from dheera_ai.types.utils import StandardLoggingPayload
+    from dheera_ai.main import stream_chunk_builder
 
     stream = True
     try:
         # sync completion
         customHandler = CompletionCustomHandler()
-        litellm.callbacks = [customHandler]
+        dheera_ai.callbacks = [customHandler]
 
         if sync_mode:
             patch_event = "log_success_event"
@@ -1417,7 +1417,7 @@ async def test_standard_logging_payload_stream_usage(sync_mode):
 
         with patch.object(customHandler, patch_event, new=return_val) as mock_client:
             if sync_mode:
-                resp = litellm.completion(
+                resp = dheera_ai.completion(
                     model="anthropic/claude-sonnet-4-5-20250929",
                     messages=[{"role": "user", "content": "Hey, how's it going?"}],
                     stream=stream,
@@ -1428,7 +1428,7 @@ async def test_standard_logging_payload_stream_usage(sync_mode):
                     chunks.append(chunk)
                 time.sleep(2)
             else:
-                resp = await litellm.acompletion(
+                resp = await dheera_ai.acompletion(
                     model="anthropic/claude-sonnet-4-5-20250929",
                     messages=[{"role": "user", "content": "Hey, how's it going?"}],
                     stream=stream,
@@ -1452,7 +1452,7 @@ async def test_standard_logging_payload_stream_usage(sync_mode):
                 == standard_logging_object["total_tokens"]
             )
             print(f"standard_logging_object usage: {built_response.usage}")
-    except litellm.InternalServerError:
+    except dheera_ai.InternalServerError:
         pass
 
 
@@ -1460,17 +1460,17 @@ def test_standard_logging_retries():
     """
     know if a request was retried.
     """
-    from litellm.types.utils import StandardLoggingPayload
-    from litellm.router import Router
+    from dheera_ai.types.utils import StandardLoggingPayload
+    from dheera_ai.router import Router
 
     customHandler = CompletionCustomHandler()
-    litellm.callbacks = [customHandler]
+    dheera_ai.callbacks = [customHandler]
 
     router = Router(
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/gpt-3.5-turbo",
                     "api_key": "test-api-key",
                 },
@@ -1486,9 +1486,9 @@ def test_standard_logging_retries():
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "Hey, how's it going?"}],
                 num_retries=1,
-                mock_response="litellm.RateLimitError",
+                mock_response="dheera_ai.RateLimitError",
             )
-        except litellm.RateLimitError:
+        except dheera_ai.RateLimitError:
             pass
 
         assert mock_client.call_count == 2
@@ -1509,25 +1509,25 @@ def test_standard_logging_retries():
 
 
 @pytest.mark.parametrize("disable_no_log_param", [True, False])
-def test_litellm_logging_no_log_param(monkeypatch, disable_no_log_param):
-    monkeypatch.setattr(litellm, "global_disable_no_log_param", disable_no_log_param)
-    from litellm.litellm_core_utils.litellm_logging import Logging
+def test_dheera_ai_logging_no_log_param(monkeypatch, disable_no_log_param):
+    monkeypatch.setattr(dheera_ai, "global_disable_no_log_param", disable_no_log_param)
+    from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging
 
-    litellm.success_callback = ["langfuse"]
-    litellm_call_id = "my-unique-call-id"
-    litellm_logging_obj = Logging(
+    dheera_ai.success_callback = ["langfuse"]
+    dheera_ai_call_id = "my-unique-call-id"
+    dheera_ai_logging_obj = Logging(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "hi"}],
         stream=False,
         call_type="acompletion",
-        litellm_call_id=litellm_call_id,
+        dheera_ai_call_id=dheera_ai_call_id,
         start_time=datetime.now(),
         function_id="1234",
     )
 
-    should_run = litellm_logging_obj.should_run_callback(
+    should_run = dheera_ai_logging_obj.should_run_callback(
         callback="langfuse",
-        litellm_params={"no-log": True},
+        dheera_ai_params={"no-log": True},
         event_hook="success_handler",
     )
 

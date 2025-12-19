@@ -24,11 +24,11 @@ from openai.types.chat import ChatCompletionMessage
 from openai.types.chat.chat_completion import ChatCompletion, Choice
 from respx import MockRouter
 
-import litellm
-from litellm import RateLimitError, Timeout, completion, completion_cost, embedding
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
-from litellm.litellm_core_utils.prompt_templates.factory import anthropic_messages_pt
-from litellm.router import Router
+import dheera_ai
+from dheera_ai import RateLimitError, Timeout, completion, completion_cost, embedding
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
+from dheera_ai.dheera_ai_core_utils.prompt_templates.factory import anthropic_messages_pt
+from dheera_ai.router import Router
 
 
 @pytest.mark.asyncio()
@@ -40,13 +40,13 @@ async def test_aaaaazure_tenant_id_auth(respx_mock: MockRouter):
 
     PROD Test
     """
-    litellm.disable_aiohttp_transport = True # since this uses respx, we need to set use_aiohttp_transport to False
+    dheera_ai.disable_aiohttp_transport = True # since this uses respx, we need to set use_aiohttp_transport to False
 
     router = Router(
         model_list=[
             {
                 "model_name": "gpt-3.5-turbo",
-                "litellm_params": {  # params for litellm completion/embedding call
+                "dheera_ai_params": {  # params for dheera_ai completion/embedding call
                     "model": "azure/gpt-4.1-mini",
                     "api_base": os.getenv("AZURE_API_BASE"),
                     "tenant_id": os.getenv("AZURE_TENANT_ID"),
@@ -74,7 +74,7 @@ async def test_aaaaazure_tenant_id_auth(respx_mock: MockRouter):
         ],
         created=int(datetime.now().timestamp()),
     )
-    litellm.set_verbose = True
+    dheera_ai.set_verbose = True
 
     mock_request = respx_mock.post(url__regex=r".*/chat/completions.*").mock(
         return_value=httpx.Response(200, json=obj.model_dump(mode="json"))

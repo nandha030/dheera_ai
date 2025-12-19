@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, os.path.abspath("../.."))
 
 import asyncio
-import litellm
+import dheera_ai
 import gzip
 import json
 import logging
@@ -15,12 +15,12 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-import litellm
-from litellm import completion
-from litellm._logging import verbose_logger
-from litellm.integrations.gcs_pubsub.pub_sub import *
+import dheera_ai
+from dheera_ai import completion
+from dheera_ai._logging import verbose_logger
+from dheera_ai.integrations.gcs_pubsub.pub_sub import *
 from datetime import datetime, timedelta
-from litellm.types.utils import (
+from dheera_ai.types.utils import (
     StandardLoggingPayload,
     StandardLoggingModelInformation,
     StandardLoggingMetadata,
@@ -28,7 +28,7 @@ from litellm.types.utils import (
 )
 
 verbose_logger.setLevel(logging.DEBUG)
-from litellm.integrations.generic_api.generic_api_callback import GenericAPILogger
+from dheera_ai.integrations.generic_api.generic_api_callback import GenericAPILogger
 
 
 @pytest.mark.asyncio
@@ -54,10 +54,10 @@ async def test_generic_api_callback():
         endpoint=test_endpoint, headers=test_headers, flush_interval=1
     )
     generic_logger.async_httpx_client.post = mock_post
-    litellm.callbacks = [generic_logger]
+    dheera_ai.callbacks = [generic_logger]
 
     # Make the completion call
-    response = await litellm.acompletion(
+    response = await dheera_ai.acompletion(
         model="gpt-4o",
         messages=[{"role": "user", "content": "Hello, world!"}],
         mock_response="hi",
@@ -141,11 +141,11 @@ async def test_generic_api_callback_multiple_logs():
         endpoint=test_endpoint, headers=test_headers, flush_interval=5
     )
     generic_logger.async_httpx_client.post = mock_post
-    litellm.callbacks = [generic_logger]
+    dheera_ai.callbacks = [generic_logger]
 
     # Make the completion call
     for _ in range(10):
-        response = await litellm.acompletion(
+        response = await dheera_ai.acompletion(
             model="gpt-4o",
             messages=[{"role": "user", "content": "Hello, world!"}],
             mock_response="hi",

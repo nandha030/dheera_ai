@@ -100,8 +100,8 @@ def find_copy_deepcopy_kwargs_in_directory(directory):
 
 
 if __name__ == "__main__":
-    # Check for copy.deepcopy(kwargs) usage in the litellm directory
-    directory_path = "./litellm"
+    # Check for copy.deepcopy(kwargs) usage in the dheera_ai directory
+    directory_path = "./dheera_ai"
     violations = find_copy_deepcopy_kwargs_in_directory(directory_path)
 
     print("\n" + "=" * 80)
@@ -123,8 +123,8 @@ if __name__ == "__main__":
         print(f"🚨 TOTAL VIOLATIONS: {total_violations}")
         print("🚨 USE safe_deep_copy() INSTEAD OF copy.deepcopy() FOR KWARGS!")
         print("🚨 Available imports:")
-        print("   - from litellm.proxy.utils import safe_deep_copy")
-        print("   - from litellm.litellm_core_utils.core_helpers import safe_deep_copy")
+        print("   - from dheera_ai.proxy.utils import safe_deep_copy")
+        print("   - from dheera_ai.dheera_ai_core_utils.core_helpers import safe_deep_copy")
         print("=" * 80)
 
         # Get first violation for the exception message

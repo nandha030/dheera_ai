@@ -1,7 +1,7 @@
 # CometAPI
-LiteLLM supports all AI models from [CometAPI](https://www.cometapi.com/). CometAPI provides access to 500+ AI models through a unified API interface, including cutting-edge models like GPT-5, Claude Opus 4.1, and various other state-of-the-art language models.
+Dheera AI supports all AI models from [CometAPI](https://www.cometapi.com/). CometAPI provides access to 500+ AI models through a unified API interface, including cutting-edge models like GPT-5, Claude Opus 4.1, and various other state-of-the-art language models.
 
-<a target="_blank" href="https://colab.research.google.com/github/BerriAI/litellm/blob/main/cookbook/LiteLLM_CometAPI.ipynb">
+<a target="_blank" href="https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/Dheera AI_CometAPI.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 
@@ -15,7 +15,7 @@ Set your CometAPI key as an environment variable and use the completion function
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # Set API key
 os.environ["COMETAPI_KEY"] = "your_comet_api_key_here"
@@ -38,7 +38,7 @@ You can also pass the API key explicitly:
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 # Define messages
 messages = [{"content": "Hello, how are you?", "role": "user"}]
@@ -59,7 +59,7 @@ Just set `stream=True` when calling completion:
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 os.environ["COMETAPI_KEY"] = "your_comet_api_key_here"
 
@@ -80,7 +80,7 @@ for chunk in response:
 For async streaming, use `acompletion`:
 
 ```python
-from litellm import acompletion
+from dheera_ai import acompletion
 import asyncio, os, traceback
 
 async def completion_call():
@@ -129,7 +129,7 @@ For a complete list of available models, visit the [CometAPI Models page](https:
 
 ```python
 import os
-from litellm import completion
+from dheera_ai import completion
 
 try:
     os.environ["COMETAPI_KEY"] = "your_comet_api_key_here"

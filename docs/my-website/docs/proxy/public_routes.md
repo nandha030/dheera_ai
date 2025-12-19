@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 :::info
 
-Requires a LiteLLM Enterprise License. [Get a free trial](https://calendly.com/d/4mp-gd3-k5k/litellm-1-1-onboarding-chat).
+Requires a Dheera AI Enterprise License. [Get a free trial](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat).
 
 :::
 
@@ -28,7 +28,7 @@ Allow specific routes to be accessed without authentication:
 ```yaml
 general_settings:
   master_key: sk-1234
-  public_routes: ["LiteLLMRoutes.public_routes", "/spend/calculate"]
+  public_routes: ["Dheera AIRoutes.public_routes", "/spend/calculate"]
 ```
 
 ### Restrict Routes to Admin Only
@@ -48,7 +48,7 @@ Only expose specific routes on the proxy:
 ```yaml
 general_settings:
   master_key: sk-1234
-  allowed_routes: ["/chat/completions", "/embeddings", "LiteLLMRoutes.public_routes"]
+  allowed_routes: ["/chat/completions", "/embeddings", "Dheera AIRoutes.public_routes"]
 ```
 
 ## Usage Examples
@@ -58,12 +58,12 @@ general_settings:
 ```yaml
 general_settings:
   master_key: sk-1234
-  public_routes: ["LiteLLMRoutes.public_routes", "/spend/calculate"]
+  public_routes: ["Dheera AIRoutes.public_routes", "/spend/calculate"]
   admin_only_routes: ["/key/generate"]
-  allowed_routes: ["/chat/completions", "/spend/calculate", "LiteLLMRoutes.public_routes"]
+  allowed_routes: ["/chat/completions", "/spend/calculate", "Dheera AIRoutes.public_routes"]
 ```
 
-`LiteLLMRoutes.public_routes` is an ENUM corresponding to the default public routes on LiteLLM. [View the source](https://github.com/BerriAI/litellm/blob/main/litellm/proxy/_types.py).
+`Dheera AIRoutes.public_routes` is an ENUM corresponding to the default public routes on Dheera AI. [View the source](https://github.com/BerriAI/dheera_ai/blob/main/dheera_ai/proxy/_types.py).
 
 ### Testing
 
@@ -144,7 +144,7 @@ curl --location 'http://0.0.0.0:4000/embeddings' \
 -H "Authorization: Bearer sk-1234" \
 --data '{
 "model": "text-embedding-ada-002",
-"input": ["write a litellm poem"]
+"input": ["write a dheera_ai poem"]
 }'
 ```
 
@@ -184,7 +184,7 @@ Use wildcard patterns to match multiple routes at once.
 general_settings:
   master_key: sk-1234
   public_routes:
-    - "LiteLLMRoutes.public_routes"
+    - "Dheera AIRoutes.public_routes"
     - "/api/v1/*"      # All routes under /api/v1/
     - "/health/*"       # All health check routes
 ```

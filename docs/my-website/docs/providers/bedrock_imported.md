@@ -18,7 +18,7 @@ This is a separate route, as the chat template is different.
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 response = completion(
@@ -37,7 +37,7 @@ response = completion(
 ```yaml
 model_list:
     - model_name: DeepSeek-R1-Distill-Llama-70B
-      litellm_params:
+      dheera_ai_params:
         model: bedrock/deepseek_r1/arn:aws:bedrock:us-east-1:086734376398:imported-model/r4c4kewx2s0n
 
 ```
@@ -45,7 +45,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -87,7 +87,7 @@ Use this route to call Bedrock Imported Models that follow the `llama` Invoke Re
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 response = completion(
@@ -106,7 +106,7 @@ response = completion(
 ```yaml
 model_list:
     - model_name: DeepSeek-R1-Distill-Llama-70B
-      litellm_params:
+      dheera_ai_params:
         model: bedrock/llama/arn:aws:bedrock:us-east-1:086734376398:imported-model/r4c4kewx2s0n
 
 ```
@@ -114,7 +114,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -150,7 +150,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 response = completion(
@@ -170,7 +170,7 @@ response = completion(
 ```yaml
 model_list:
     - model_name: Qwen3-32B
-      litellm_params:
+      dheera_ai_params:
         model: bedrock/qwen3/arn:aws:bedrock:us-east-1:086734376398:imported-model/your-qwen3-model
 
 ```
@@ -178,7 +178,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -215,7 +215,7 @@ curl --location 'http://0.0.0.0:4000/chat/completions' \
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 response = completion(
@@ -235,7 +235,7 @@ response = completion(
 ```yaml
 model_list:
     - model_name: Qwen2-72B
-      litellm_params:
+      dheera_ai_params:
         model: bedrock/qwen2/arn:aws:bedrock:us-east-1:086734376398:imported-model/your-qwen2-model
 
 ```
@@ -243,7 +243,7 @@ model_list:
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```
@@ -278,12 +278,12 @@ Use this route for Bedrock imported models that follow the **OpenAI Chat Complet
 | Provider Documentation | [Bedrock Imported Models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html) |
 | Supported Features | Vision (images), tool calling, streaming, system messages |
 
-#### LiteLLMSDK Usage
+#### Dheera AISDK Usage
 
 **Basic Usage**
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 
 response = completion(
     model="bedrock/openai/arn:aws:bedrock:us-east-1:046319184608:imported-model/0m2lasirsp6z",  # bedrock/openai/{your-model-arn}
@@ -297,7 +297,7 @@ response = completion(
 
 ```python
 import base64
-from litellm import completion
+from dheera_ai import completion
 
 # Load and encode image
 with open("image.jpg", "rb") as f:
@@ -330,7 +330,7 @@ response = completion(
 
 ```python
 import base64
-from litellm import completion
+from dheera_ai import completion
 
 # Load images
 with open("image1.jpg", "rb") as f:
@@ -365,21 +365,21 @@ response = completion(
 )
 ```
 
-#### LiteLLM Proxy Usage (AI Gateway)
+#### Dheera AI Proxy Usage (AI Gateway)
 
 **1. Add to config**
 
 ```yaml
 model_list:
     - model_name: qwen-25vl-72b
-      litellm_params:
+      dheera_ai_params:
         model: bedrock/openai/arn:aws:bedrock:us-east-1:046319184608:imported-model/0m2lasirsp6z
 ```
 
 **2. Start proxy**
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING at http://0.0.0.0:4000
 ```

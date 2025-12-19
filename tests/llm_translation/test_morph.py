@@ -8,11 +8,11 @@ sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
 
-import litellm
-from litellm import MorphChatConfig, get_llm_provider
+import dheera_ai
+from dheera_ai import MorphChatConfig, get_llm_provider
 
 # Force model loading
-litellm.add_known_models()
+dheera_ai.add_known_models()
 
 
 def test_morph_config_get_provider_info():
@@ -48,8 +48,8 @@ def test_morph_get_llm_provider():
 
 def test_morph_in_provider_lists():
     """Test that morph is included in all necessary provider lists."""
-    import litellm
-    from litellm.constants import openai_compatible_providers, openai_compatible_endpoints
+    import dheera_ai
+    from dheera_ai.constants import openai_compatible_providers, openai_compatible_endpoints
     
     # Check morph is in openai_compatible_providers
     assert "morph" in openai_compatible_providers
@@ -58,18 +58,18 @@ def test_morph_in_provider_lists():
     assert "https://api.morphllm.com/v1" in openai_compatible_endpoints
     
     # Check morph is in provider_list
-    assert "morph" in litellm.provider_list
+    assert "morph" in dheera_ai.provider_list
     
     # Check models are in model_list after initialization
-    assert all(model in litellm.model_list for model in ["morph/morph-v3-large", "morph/morph-v3-fast"])
+    assert all(model in dheera_ai.model_list for model in ["morph/morph-v3-large", "morph/morph-v3-fast"])
 
 
 def test_morph_model_info():
     """Test that morph models have correct configuration."""
-    import litellm
-    model_info = litellm.get_model_info("morph/morph-v3-large")
+    import dheera_ai
+    model_info = dheera_ai.get_model_info("morph/morph-v3-large")
     
-    assert model_info["litellm_provider"] == "morph"
+    assert model_info["dheera_ai_provider"] == "morph"
     assert model_info["mode"] == "chat"
     assert model_info["max_tokens"] == 16000
     assert model_info["max_input_tokens"] == 16000

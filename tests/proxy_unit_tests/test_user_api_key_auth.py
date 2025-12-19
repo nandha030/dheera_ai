@@ -4,8 +4,8 @@
 import os
 import sys
 
-import litellm.proxy
-import litellm.proxy.proxy_server
+import dheera_ai.proxy
+import dheera_ai.proxy.proxy_server
 
 sys.path.insert(
     0, os.path.abspath("../..")
@@ -15,17 +15,17 @@ from unittest.mock import MagicMock, patch, AsyncMock
 
 import pytest
 from starlette.datastructures import URL
-from litellm._logging import verbose_proxy_logger
+from dheera_ai._logging import verbose_proxy_logger
 import logging
-import litellm
-from litellm.proxy.auth.user_api_key_auth import (
+import dheera_ai
+from dheera_ai.proxy.auth.user_api_key_auth import (
     user_api_key_auth,
     UserAPIKeyAuth,
     get_api_key_from_custom_header,
 )
 from fastapi import WebSocket, HTTPException, status
 
-from litellm.proxy._types import LiteLLM_UserTable, LitellmUserRoles
+from dheera_ai.proxy._types import DheeraAI_UserTable, LitellmUserRoles
 
 
 class Request:
@@ -53,7 +53,7 @@ class Request:
 def test_check_valid_ip(
     allowed_ips: Optional[List[str]], client_ip: Optional[str], expected_result: bool
 ):
-    from litellm.proxy.auth.auth_utils import _check_valid_ip
+    from dheera_ai.proxy.auth.auth_utils import _check_valid_ip
 
     request = Request(client_ip)
 
@@ -81,7 +81,7 @@ def test_check_valid_ip(
 def test_check_valid_ip_sent_with_x_forwarded_for(
     allowed_ips: Optional[List[str]], client_ip: Optional[str], expected_result: bool
 ):
-    from litellm.proxy.auth.auth_utils import _check_valid_ip
+    from dheera_ai.proxy.auth.auth_utils import _check_valid_ip
 
     request = Request(client_ip, headers={"X-Forwarded-For": client_ip})
 
@@ -103,13 +103,13 @@ async def test_check_blocked_team():
     from fastapi import Request
     from starlette.datastructures import URL
 
-    from litellm.proxy._types import (
-        LiteLLM_TeamTable,
-        LiteLLM_TeamTableCachedObj,
+    from dheera_ai.proxy._types import (
+        DheeraAI_TeamTable,
+        DheeraAI_TeamTableCachedObj,
         UserAPIKeyAuth,
     )
-    from litellm.proxy.auth.user_api_key_auth import user_api_key_auth
-    from litellm.proxy.proxy_server import hash_token, user_api_key_cache
+    from dheera_ai.proxy.auth.user_api_key_auth import user_api_key_auth
+    from dheera_ai.proxy.proxy_server import hash_token, user_api_key_cache
 
     _team_id = "1234"
     user_key = "sk-12345678"
@@ -121,7 +121,7 @@ async def test_check_blocked_team():
         last_refreshed_at=time.time(),
     )
     await asyncio.sleep(1)
-    team_obj = LiteLLM_TeamTableCachedObj(
+    team_obj = DheeraAI_TeamTableCachedObj(
         team_id=_team_id, blocked=False, last_refreshed_at=time.time()
     )
     hashed_token = hash_token(user_key)
@@ -129,9 +129,9 @@ async def test_check_blocked_team():
     user_api_key_cache.set_cache(key=hashed_token, value=valid_token)
     user_api_key_cache.set_cache(key="team_id:{}".format(_team_id), value=team_obj)
 
-    setattr(litellm.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    setattr(litellm.proxy.proxy_server, "prisma_client", "hello-world")
+    setattr(dheera_ai.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", "hello-world")
 
     request = Request(scope={"type": "http"})
     request._url = URL(url="/chat/completions")
@@ -150,8 +150,8 @@ async def test_team_object_has_object_permission_id():
     from fastapi import Request
     from starlette.datastructures import URL
 
-    from litellm.proxy.proxy_server import hash_token, user_api_key_cache
-    from litellm.proxy.auth.user_api_key_auth import user_api_key_auth
+    from dheera_ai.proxy.proxy_server import hash_token, user_api_key_cache
+    from dheera_ai.proxy.auth.user_api_key_auth import user_api_key_auth
 
     team_id = "team-vector"
     permission_id = "perm-vector-123"
@@ -166,15 +166,15 @@ async def test_team_object_has_object_permission_id():
     )
     user_api_key_cache.set_cache(key=hashed_key, value=valid_token)
 
-    setattr(litellm.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    setattr(litellm.proxy.proxy_server, "prisma_client", "test-client")
+    setattr(dheera_ai.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", "test-client")
 
     request = Request(scope={"type": "http"})
     request._url = URL(url="/chat/completions")
 
     with patch(
-        "litellm.proxy.auth.user_api_key_auth.common_checks", new_callable=AsyncMock
+        "dheera_ai.proxy.auth.user_api_key_auth.common_checks", new_callable=AsyncMock
     ) as mock_common_checks:
         mock_common_checks.return_value = True
         await user_api_key_auth(request=request, api_key="Bearer " + user_key)
@@ -195,12 +195,12 @@ async def test_team_object_has_object_permission_id():
 )
 @pytest.mark.asyncio
 async def test_returned_user_api_key_auth(user_role, expected_role):
-    from litellm.proxy._types import LiteLLM_UserTable, LitellmUserRoles
-    from litellm.proxy.auth.user_api_key_auth import _return_user_api_key_auth_obj
+    from dheera_ai.proxy._types import DheeraAI_UserTable, LitellmUserRoles
+    from dheera_ai.proxy.auth.user_api_key_auth import _return_user_api_key_auth_obj
     from datetime import datetime
 
     new_obj = await _return_user_api_key_auth_obj(
-        user_obj=LiteLLM_UserTable(
+        user_obj=DheeraAI_UserTable(
             user_role=user_role, user_id="", max_budget=None, user_email=""
         ),
         api_key="hello-world",
@@ -227,11 +227,11 @@ async def test_aaauser_personal_budgets(key_ownership):
 
     from fastapi import Request
     from starlette.datastructures import URL
-    import litellm
+    import dheera_ai
 
-    from litellm.proxy._types import LiteLLM_UserTable, UserAPIKeyAuth
-    from litellm.proxy.auth.user_api_key_auth import user_api_key_auth
-    from litellm.proxy.proxy_server import hash_token, user_api_key_cache
+    from dheera_ai.proxy._types import DheeraAI_UserTable, UserAPIKeyAuth
+    from dheera_ai.proxy.auth.user_api_key_auth import user_api_key_auth
+    from dheera_ai.proxy.proxy_server import hash_token, user_api_key_cache
 
     _user_id = "1234"
     user_key = "sk-12345678"
@@ -253,20 +253,20 @@ async def test_aaauser_personal_budgets(key_ownership):
             spend=20,
         )
 
-    user_obj = LiteLLM_UserTable(
+    user_obj = DheeraAI_UserTable(
         user_id=_user_id, spend=11, max_budget=10, user_email=""
     )
     user_api_key_cache.set_cache(key=hash_token(user_key), value=valid_token)
     user_api_key_cache.set_cache(key="{}".format(_user_id), value=user_obj)
 
-    setattr(litellm.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    setattr(litellm.proxy.proxy_server, "prisma_client", "hello-world")
+    setattr(dheera_ai.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", "hello-world")
 
     request = Request(scope={"type": "http"})
     request._url = URL(url="/chat/completions")
 
-    test_user_cache = getattr(litellm.proxy.proxy_server, "user_api_key_cache")
+    test_user_cache = getattr(dheera_ai.proxy.proxy_server, "user_api_key_cache")
 
     assert test_user_cache.get_cache(key=hash_token(user_key)) == valid_token
 
@@ -293,7 +293,7 @@ async def test_user_api_key_auth_fails_with_prohibited_params(prohibited_param):
     # Setup
     user_key = "sk-1234"
 
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
 
     # Create request with prohibited parameter in body
     request = Request(scope={"type": "http"})
@@ -333,7 +333,7 @@ async def test_auth_with_allowed_routes(route, should_raise_error):
     general_settings = {"allowed_routes": ["/embeddings"]}
     from fastapi import Request
 
-    from litellm.proxy import proxy_server
+    from dheera_ai.proxy import proxy_server
 
     initial_general_settings = getattr(proxy_server, "general_settings")
 
@@ -378,10 +378,10 @@ async def test_auth_with_allowed_routes(route, should_raise_error):
     ],
 )
 def test_is_ui_route_allowed(route, user_role, expected_result):
-    from litellm.proxy.auth.auth_checks import _is_ui_route
-    from litellm.proxy._types import LiteLLM_UserTable
+    from dheera_ai.proxy.auth.auth_checks import _is_ui_route
+    from dheera_ai.proxy._types import DheeraAI_UserTable
 
-    user_obj = LiteLLM_UserTable(
+    user_obj = DheeraAI_UserTable(
         user_id="3b803c0e-666e-4e99-bd5c-6e534c07e297",
         max_budget=None,
         spend=0.0,
@@ -416,10 +416,10 @@ def test_is_ui_route_allowed(route, user_role, expected_result):
     ],
 )
 def test_is_api_route_allowed(route, user_role, expected_result):
-    from litellm.proxy.auth.auth_checks import _is_api_route_allowed
-    from litellm.proxy._types import LiteLLM_UserTable
+    from dheera_ai.proxy.auth.auth_checks import _is_api_route_allowed
+    from dheera_ai.proxy._types import DheeraAI_UserTable
 
-    user_obj = LiteLLM_UserTable(
+    user_obj = DheeraAI_UserTable(
         user_id="3b803c0e-666e-4e99-bd5c-6e534c07e297",
         max_budget=None,
         spend=0.0,
@@ -455,16 +455,16 @@ async def test_auth_not_connected_to_db():
     from fastapi import Request
     from starlette.datastructures import URL
 
-    from litellm.proxy.auth.user_api_key_auth import user_api_key_auth
-    from litellm.proxy.proxy_server import hash_token, user_api_key_cache
+    from dheera_ai.proxy.auth.user_api_key_auth import user_api_key_auth
+    from dheera_ai.proxy.proxy_server import hash_token, user_api_key_cache
 
     user_key = "sk-12345678"
 
-    setattr(litellm.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    setattr(litellm.proxy.proxy_server, "prisma_client", None)
+    setattr(dheera_ai.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", None)
     setattr(
-        litellm.proxy.proxy_server,
+        dheera_ai.proxy.proxy_server,
         "general_settings",
         {"allow_requests_on_db_unavailable": True},
     )
@@ -503,12 +503,12 @@ def test_get_api_key_from_custom_header(headers, custom_header_name, expected_ap
     # Call the function and verify it doesn't raise an exception
 
     api_key = get_api_key_from_custom_header(
-        request=request, custom_litellm_key_header_name=custom_header_name
+        request=request, custom_dheera_ai_key_header_name=custom_header_name
     )
     assert api_key == expected_api_key
 
 
-from litellm.proxy._types import LitellmUserRoles
+from dheera_ai.proxy._types import LitellmUserRoles
 
 
 @pytest.mark.parametrize(
@@ -524,8 +524,8 @@ from litellm.proxy._types import LitellmUserRoles
 def test_allowed_route_inside_route(
     user_role, auth_user_id, requested_user_id, expected_result
 ):
-    from litellm.proxy.auth.auth_checks import allowed_route_check_inside_route
-    from litellm.proxy._types import UserAPIKeyAuth, LitellmUserRoles
+    from dheera_ai.proxy.auth.auth_checks import allowed_route_check_inside_route
+    from dheera_ai.proxy._types import UserAPIKeyAuth, LitellmUserRoles
 
     assert (
         allowed_route_check_inside_route(
@@ -537,7 +537,7 @@ def test_allowed_route_inside_route(
 
 
 def test_read_request_body():
-    from litellm.proxy.common_utils.http_parsing_utils import _read_request_body
+    from dheera_ai.proxy.common_utils.http_parsing_utils import _read_request_body
     from fastapi import Request
 
     payload = "()" * 1000000
@@ -560,7 +560,7 @@ async def test_auth_with_form_data_and_model():
     """
     from fastapi import Request
     from starlette.datastructures import URL, FormData
-    from litellm.proxy.proxy_server import (
+    from dheera_ai.proxy.proxy_server import (
         hash_token,
         user_api_key_cache,
         user_api_key_auth,
@@ -578,9 +578,9 @@ async def test_auth_with_form_data_and_model():
     # Store the virtual key in cache
     user_api_key_cache.set_cache(key=hash_token(user_key), value=valid_token)
 
-    setattr(litellm.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    setattr(litellm.proxy.proxy_server, "prisma_client", "hello-world")
+    setattr(dheera_ai.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", "hello-world")
 
     # Create request with form data
     request = Request(
@@ -616,9 +616,9 @@ async def test_soft_budget_alert():
     from fastapi import Request
     from starlette.datastructures import URL
 
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.proxy.auth.user_api_key_auth import user_api_key_auth
-    from litellm.proxy.proxy_server import hash_token, user_api_key_cache
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy.auth.user_api_key_auth import user_api_key_auth
+    from dheera_ai.proxy.proxy_server import hash_token, user_api_key_cache
 
     # Setup
     user_key = "sk-12345"
@@ -637,9 +637,9 @@ async def test_soft_budget_alert():
     user_api_key_cache.set_cache(key=hash_token(user_key), value=valid_token)
 
     # Mock proxy server settings
-    setattr(litellm.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    setattr(litellm.proxy.proxy_server, "prisma_client", AsyncMock())
+    setattr(dheera_ai.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", AsyncMock())
 
     # Create request
     request = Request(scope={"type": "http"})
@@ -647,7 +647,7 @@ async def test_soft_budget_alert():
 
     # Track if budget_alerts was called
     alert_called = False
-    original_budget_alerts = litellm.proxy.proxy_server.proxy_logging_obj.budget_alerts
+    original_budget_alerts = dheera_ai.proxy.proxy_server.proxy_logging_obj.budget_alerts
 
     async def mock_budget_alerts(*args, **kwargs):
         nonlocal alert_called
@@ -657,7 +657,7 @@ async def test_soft_budget_alert():
 
     # Patch the budget_alerts method
     setattr(
-        litellm.proxy.proxy_server.proxy_logging_obj,
+        dheera_ai.proxy.proxy_server.proxy_logging_obj,
         "budget_alerts",
         mock_budget_alerts,
     )
@@ -677,15 +677,15 @@ async def test_soft_budget_alert():
     finally:
         # Restore original budget_alerts
         setattr(
-            litellm.proxy.proxy_server.proxy_logging_obj,
+            dheera_ai.proxy.proxy_server.proxy_logging_obj,
             "budget_alerts",
             original_budget_alerts,
         )
 
 
 def test_is_allowed_route():
-    from litellm.proxy.auth.auth_checks import _is_allowed_route
-    from litellm.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy.auth.auth_checks import _is_allowed_route
+    from dheera_ai.proxy._types import UserAPIKeyAuth
     import datetime
 
     request = MagicMock()
@@ -719,7 +719,7 @@ def test_is_allowed_route():
             model_max_budget={},
             soft_budget_cooldown=False,
             blocked=None,
-            litellm_budget_table=None,
+            dheera_ai_budget_table=None,
             org_id=None,
             created_at=MagicMock(),
             updated_at=MagicMock(),
@@ -760,7 +760,7 @@ def test_is_allowed_route():
     [
         (None, False),  # Case 1: user_obj is None
         (
-            LiteLLM_UserTable(
+            DheeraAI_UserTable(
                 user_role=LitellmUserRoles.PROXY_ADMIN.value,
                 user_id="1234",
                 user_email="test@test.com",
@@ -770,7 +770,7 @@ def test_is_allowed_route():
             True,
         ),  # Case 2: user_role is PROXY_ADMIN
         (
-            LiteLLM_UserTable(
+            DheeraAI_UserTable(
                 user_role="OTHER_ROLE",
                 user_id="1234",
                 user_email="test@test.com",
@@ -782,7 +782,7 @@ def test_is_allowed_route():
     ],
 )
 def test_is_user_proxy_admin(user_obj, expected_result):
-    from litellm.proxy.auth.auth_checks import _is_user_proxy_admin
+    from dheera_ai.proxy.auth.auth_checks import _is_user_proxy_admin
 
     assert _is_user_proxy_admin(user_obj) == expected_result
 
@@ -792,7 +792,7 @@ def test_is_user_proxy_admin(user_obj, expected_result):
     [
         (None, None),  # Case 1: user_obj is None (should return None)
         (
-            LiteLLM_UserTable(
+            DheeraAI_UserTable(
                 user_role=LitellmUserRoles.PROXY_ADMIN.value,
                 user_id="1234",
                 user_email="test@test.com",
@@ -802,7 +802,7 @@ def test_is_user_proxy_admin(user_obj, expected_result):
             LitellmUserRoles.PROXY_ADMIN,
         ),  # Case 2: user_role is PROXY_ADMIN (should return LitellmUserRoles.PROXY_ADMIN)
         (
-            LiteLLM_UserTable(
+            DheeraAI_UserTable(
                 user_role="OTHER_ROLE",
                 user_id="1234",
                 user_email="test@test.com",
@@ -814,14 +814,14 @@ def test_is_user_proxy_admin(user_obj, expected_result):
     ],
 )
 def test_get_user_role(user_obj, expected_role):
-    from litellm.proxy.auth.user_api_key_auth import _get_user_role
+    from dheera_ai.proxy.auth.user_api_key_auth import _get_user_role
 
     assert _get_user_role(user_obj) == expected_role
 
 
 @pytest.mark.asyncio
 async def test_user_api_key_auth_websocket():
-    from litellm.proxy.auth.user_api_key_auth import user_api_key_auth_websocket
+    from dheera_ai.proxy.auth.user_api_key_auth import user_api_key_auth_websocket
 
     # Prepare a mock WebSocket object
     mock_websocket = MagicMock(spec=WebSocket)
@@ -834,7 +834,7 @@ async def test_user_api_key_auth_websocket():
 
     # Mock the return value of `user_api_key_auth` when it's called within the `user_api_key_auth_websocket` function
     with patch(
-        "litellm.proxy.auth.user_api_key_auth.user_api_key_auth", autospec=True
+        "dheera_ai.proxy.auth.user_api_key_auth.user_api_key_auth", autospec=True
     ) as mock_user_api_key_auth:
 
         # Make the call to the WebSocket function
@@ -859,13 +859,13 @@ async def test_user_api_key_auth_websocket():
 @pytest.mark.parametrize("enforce_rbac", [True, False])
 @pytest.mark.asyncio
 async def test_jwt_user_api_key_auth_builder_enforce_rbac(enforce_rbac, monkeypatch):
-    from litellm.proxy.auth.handle_jwt import JWTHandler, JWTAuthManager
+    from dheera_ai.proxy.auth.handle_jwt import JWTHandler, JWTAuthManager
     from unittest.mock import patch, Mock
-    from litellm.proxy._types import LiteLLM_JWTAuth
-    from litellm.caching import DualCache
+    from dheera_ai.proxy._types import DheeraAI_JWTAuth
+    from dheera_ai.caching import DualCache
 
     monkeypatch.setenv("JWT_PUBLIC_KEY_URL", "my-fake-url")
-    monkeypatch.setenv("JWT_AUDIENCE", "api://LiteLLM_Proxy-dev")
+    monkeypatch.setenv("JWT_AUDIENCE", "api://DheeraAI_Proxy-dev")
 
     local_cache = DualCache()
 
@@ -886,13 +886,13 @@ async def test_jwt_user_api_key_auth_builder_enforce_rbac(enforce_rbac, monkeypa
     ]
 
     local_cache.set_cache(
-        key="litellm_jwt_auth_keys_my-fake-url",
+        key="dheera_ai_jwt_auth_keys_my-fake-url",
         value=keys,
     )
 
-    litellm_jwtauth = LiteLLM_JWTAuth(
+    dheera_ai_jwtauth = DheeraAI_JWTAuth(
         **{
-            "admin_jwt_scope": "litellm_proxy_endpoints_access",
+            "admin_jwt_scope": "dheera_ai_proxy_endpoints_access",
             "admin_allowed_routes": ["openai_routes", "info_routes"],
             "public_key_ttl": 600,
             "enforce_rbac": enforce_rbac,
@@ -903,7 +903,7 @@ async def test_jwt_user_api_key_auth_builder_enforce_rbac(enforce_rbac, monkeypa
     jwt_handler.update_environment(
         prisma_client=None,
         user_api_key_cache=local_cache,
-        litellm_jwtauth=litellm_jwtauth,
+        dheera_ai_jwtauth=dheera_ai_jwtauth,
         leeway=10000000000000,
     )
     args = {
@@ -926,7 +926,7 @@ async def test_jwt_user_api_key_auth_builder_enforce_rbac(enforce_rbac, monkeypa
 
 
 def test_user_api_key_auth_end_user_str():
-    from litellm.proxy.auth.user_api_key_auth import UserAPIKeyAuth
+    from dheera_ai.proxy.auth.user_api_key_auth import UserAPIKeyAuth
 
     user_api_key_args = {
         "api_key": "sk-1234",
@@ -941,8 +941,8 @@ def test_user_api_key_auth_end_user_str():
 
 
 def test_can_rbac_role_call_model():
-    from litellm.proxy.auth.handle_jwt import JWTAuthManager
-    from litellm.proxy._types import RoleBasedPermissions
+    from dheera_ai.proxy.auth.handle_jwt import JWTAuthManager
+    from dheera_ai.proxy._types import RoleBasedPermissions
 
     roles_based_permissions = [
         RoleBasedPermissions(
@@ -977,7 +977,7 @@ def test_can_rbac_role_call_model():
 
 
 def test_can_rbac_role_call_model_no_role_permissions():
-    from litellm.proxy.auth.handle_jwt import JWTAuthManager
+    from dheera_ai.proxy.auth.handle_jwt import JWTAuthManager
 
     assert JWTAuthManager.can_rbac_role_call_model(
         rbac_role=LitellmUserRoles.INTERNAL_USER,
@@ -1004,7 +1004,7 @@ def test_can_rbac_role_call_model_no_role_permissions():
     ],
 )
 def test_get_model_from_request(route, request_data, expected_model):
-    from litellm.proxy.auth.user_api_key_auth import get_model_from_request
+    from dheera_ai.proxy.auth.user_api_key_auth import get_model_from_request
 
     assert get_model_from_request(request_data, route) == expected_model
 
@@ -1017,9 +1017,9 @@ async def test_jwt_non_admin_team_route_access(monkeypatch):
     from fastapi import Request, HTTPException
     from starlette.datastructures import URL
     from unittest.mock import patch
-    from litellm.proxy.auth.user_api_key_auth import user_api_key_auth
+    from dheera_ai.proxy.auth.user_api_key_auth import user_api_key_auth
     import json
-    from litellm.proxy._types import ProxyException
+    from dheera_ai.proxy._types import ProxyException
 
     mock_jwt_response = {
         "is_proxy_admin": False,
@@ -1041,12 +1041,12 @@ async def test_jwt_non_admin_team_route_access(monkeypatch):
     request._url = URL(url="/team/new")
 
     monkeypatch.setattr(
-        litellm.proxy.proxy_server, "general_settings", {"enable_jwt_auth": True}
+        dheera_ai.proxy.proxy_server, "general_settings", {"enable_jwt_auth": True}
     )
 
     # Mock JWTAuthManager.auth_builder
     with patch(
-        "litellm.proxy.auth.handle_jwt.JWTAuthManager.auth_builder",
+        "dheera_ai.proxy.auth.handle_jwt.JWTAuthManager.auth_builder",
         return_value=mock_jwt_response,
     ):
         try:
@@ -1060,26 +1060,26 @@ async def test_jwt_non_admin_team_route_access(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_x_litellm_api_key():
+async def test_x_dheera_ai_api_key():
     """
-    Check if auth can pick up x-litellm-api-key header, even if Bearer token is provided
+    Check if auth can pick up x-dheera_ai-api-key header, even if Bearer token is provided
     """
     from fastapi import Request
     from starlette.datastructures import URL
 
-    from litellm.proxy._types import (
-        LiteLLM_TeamTable,
-        LiteLLM_TeamTableCachedObj,
+    from dheera_ai.proxy._types import (
+        DheeraAI_TeamTable,
+        DheeraAI_TeamTableCachedObj,
         UserAPIKeyAuth,
     )
-    from litellm.proxy.auth.user_api_key_auth import user_api_key_auth
-    from litellm.proxy.proxy_server import hash_token, user_api_key_cache
+    from dheera_ai.proxy.auth.user_api_key_auth import user_api_key_auth
+    from dheera_ai.proxy.proxy_server import hash_token, user_api_key_cache
 
     master_key = "sk-1234"
 
-    setattr(litellm.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
-    setattr(litellm.proxy.proxy_server, "master_key", master_key)
-    setattr(litellm.proxy.proxy_server, "prisma_client", "hello-world")
+    setattr(dheera_ai.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", master_key)
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", "hello-world")
 
     ignored_key = "aj12445"
 
@@ -1091,7 +1091,7 @@ async def test_x_litellm_api_key():
     )
     request._url = URL(url="/chat/completions")
 
-    valid_token = await user_api_key_auth(request=request, api_key="Bearer " + ignored_key, custom_litellm_key_header=master_key)
+    valid_token = await user_api_key_auth(request=request, api_key="Bearer " + ignored_key, custom_dheera_ai_key_header=master_key)
     assert valid_token.token == hash_token(master_key)
 
 
@@ -1101,16 +1101,16 @@ async def test_user_api_key_from_query_param():
     from fastapi import Request
     from starlette.datastructures import URL
 
-    from litellm.proxy._types import UserAPIKeyAuth
-    from litellm.proxy.auth.user_api_key_auth import user_api_key_auth
-    from litellm.proxy.proxy_server import hash_token, user_api_key_cache
+    from dheera_ai.proxy._types import UserAPIKeyAuth
+    from dheera_ai.proxy.auth.user_api_key_auth import user_api_key_auth
+    from dheera_ai.proxy.proxy_server import hash_token, user_api_key_cache
 
     user_key = "sk-query-1234"
     user_api_key_cache.set_cache(key=hash_token(user_key), value=UserAPIKeyAuth(token=hash_token(user_key)))
 
-    setattr(litellm.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
-    setattr(litellm.proxy.proxy_server, "master_key", "sk-1234")
-    setattr(litellm.proxy.proxy_server, "prisma_client", "hello-world")
+    setattr(dheera_ai.proxy.proxy_server, "user_api_key_cache", user_api_key_cache)
+    setattr(dheera_ai.proxy.proxy_server, "master_key", "sk-1234")
+    setattr(dheera_ai.proxy.proxy_server, "prisma_client", "hello-world")
 
     request = Request(
         scope={

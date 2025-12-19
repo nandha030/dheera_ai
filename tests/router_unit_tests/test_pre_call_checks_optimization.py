@@ -17,7 +17,7 @@ Critical Requirement:
 
 import copy
 import pytest
-from litellm import Router
+from dheera_ai import Router
 
 
 class TestPreCallChecksOptimization:
@@ -38,12 +38,12 @@ class TestPreCallChecksOptimization:
             model_list=[
                 {
                     "model_name": "gpt-3.5-turbo",
-                    "litellm_params": {"model": "gpt-3.5-turbo", "api_key": "sk-test"},
+                    "dheera_ai_params": {"model": "gpt-3.5-turbo", "api_key": "sk-test"},
                     "model_info": {"id": "test-1"},
                 },
                 {
                     "model_name": "gpt-3.5-turbo",
-                    "litellm_params": {"model": "gpt-4", "api_key": "sk-test2"},
+                    "dheera_ai_params": {"model": "gpt-4", "api_key": "sk-test2"},
                     "model_info": {"id": "test-2"},
                 },
             ],
@@ -57,7 +57,7 @@ class TestPreCallChecksOptimization:
         # Capture the original state
         original_length = len(deployments)
         original_deployment_ids = [id(d) for d in deployments]
-        original_litellm_params_ids = [id(d["litellm_params"]) for d in deployments]
+        original_dheera_ai_params_ids = [id(d["dheera_ai_params"]) for d in deployments]
         snapshot = copy.deepcopy(deployments)
 
         # Call the function under test
@@ -73,7 +73,7 @@ class TestPreCallChecksOptimization:
         # 2. Same deployment objects (not replaced with copies)
         assert [id(d) for d in deployments] == original_deployment_ids, "Deployment dicts replaced!"
         # 3. Same nested objects (not replaced with copies)
-        assert [id(d["litellm_params"]) for d in deployments] == original_litellm_params_ids, "Nested dicts replaced!"
+        assert [id(d["dheera_ai_params"]) for d in deployments] == original_dheera_ai_params_ids, "Nested dicts replaced!"
         # 4. Same values (catches any mutation)
         assert deployments == snapshot, "Values were mutated!"
 
@@ -88,12 +88,12 @@ class TestPreCallChecksOptimization:
             model_list=[
                 {
                     "model_name": "test",
-                    "litellm_params": {"model": "gpt-3.5-turbo", "api_key": "sk-test"},
+                    "dheera_ai_params": {"model": "gpt-3.5-turbo", "api_key": "sk-test"},
                     "model_info": {"id": "small", "max_input_tokens": 50},
                 },
                 {
                     "model_name": "test",
-                    "litellm_params": {"model": "gpt-4", "api_key": "sk-test"},
+                    "dheera_ai_params": {"model": "gpt-4", "api_key": "sk-test"},
                     "model_info": {"id": "large", "max_input_tokens": 10000},
                 },
             ],

@@ -13,11 +13,11 @@
    - `DATAFORSEO_LOGIN` - Your DataForSEO login/username
    - `DATAFORSEO_PASSWORD` - Your DataForSEO password
 
-## LiteLLM Python SDK
+## Dheera AI Python SDK
 
 ```python showLineNumbers title="DataForSEO Search"
 import os
-from litellm import search
+from dheera_ai import search
 
 os.environ["DATAFORSEO_LOGIN"] = "your-login"
 os.environ["DATAFORSEO_PASSWORD"] = "your-password"
@@ -29,20 +29,20 @@ response = search(
 )
 ```
 
-## LiteLLM AI Gateway
+## Dheera AI AI Gateway
 
 ### 1. Setup config.yaml
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
 search_tools:
   - search_tool_name: dataforseo-search
-    litellm_params:
+    dheera_ai_params:
       search_provider: dataforseo
       api_key: "os.environ/DATAFORSEO_LOGIN:os.environ/DATAFORSEO_PASSWORD"
 ```
@@ -50,7 +50,7 @@ search_tools:
 ### 2. Start the proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -71,7 +71,7 @@ curl http://0.0.0.0:4000/v1/search/dataforseo-search \
 
 ```python showLineNumbers title="DataForSEO Search with Provider-specific Parameters"
 import os
-from litellm import search
+from dheera_ai import search
 
 os.environ["DATAFORSEO_LOGIN"] = "your-login"
 os.environ["DATAFORSEO_PASSWORD"] = "your-password"

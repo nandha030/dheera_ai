@@ -9,19 +9,19 @@ import pytest
 from fastapi.exceptions import HTTPException
 from httpx import Request, Response
 
-from litellm import DualCache
-from litellm.proxy.guardrails.guardrail_hooks.aim.aim import (
+from dheera_ai import DualCache
+from dheera_ai.proxy.guardrails.guardrail_hooks.aim.aim import (
     AimGuardrail,
     AimGuardrailMissingSecrets,
 )
-from litellm.proxy.proxy_server import StreamingCallbackError, UserAPIKeyAuth
-from litellm.types.utils import ModelResponseStream, ModelResponse
+from dheera_ai.proxy.proxy_server import StreamingCallbackError, UserAPIKeyAuth
+from dheera_ai.types.utils import ModelResponseStream, ModelResponse
 
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm.proxy.guardrails.init_guardrails import init_guardrails_v2
+import dheera_ai
+from dheera_ai.proxy.guardrails.init_guardrails import init_guardrails_v2
 
 
 class ReceiveMock:
@@ -35,14 +35,14 @@ class ReceiveMock:
 
 
 def test_aim_guard_config():
-    litellm.set_verbose = True
-    litellm.guardrail_name_config_map = {}
+    dheera_ai.set_verbose = True
+    dheera_ai.guardrail_name_config_map = {}
 
     init_guardrails_v2(
         all_guardrails=[
             {
                 "guardrail_name": "gibberish-guard",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "guardrail": "aim",
                     "guard_name": "gibberish_guard",
                     "mode": "pre_call",
@@ -55,14 +55,14 @@ def test_aim_guard_config():
 
 
 def test_aim_guard_config_no_api_key():
-    litellm.set_verbose = True
-    litellm.guardrail_name_config_map = {}
+    dheera_ai.set_verbose = True
+    dheera_ai.guardrail_name_config_map = {}
     with pytest.raises(AimGuardrailMissingSecrets, match="Couldn't get Aim api key"):
         init_guardrails_v2(
             all_guardrails=[
                 {
                     "guardrail_name": "gibberish-guard",
-                    "litellm_params": {
+                    "dheera_ai_params": {
                         "guardrail": "aim",
                         "guard_name": "gibberish_guard",
                         "mode": "pre_call",
@@ -80,7 +80,7 @@ async def test_block_callback(mode: str):
         all_guardrails=[
             {
                 "guardrail_name": "gibberish-guard",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "guardrail": "aim",
                     "mode": mode,
                     "api_key": "hs-aim-key",
@@ -90,7 +90,7 @@ async def test_block_callback(mode: str):
         config_file_path="",
     )
     aim_guardrails = [
-        callback for callback in litellm.callbacks if isinstance(callback, AimGuardrail)
+        callback for callback in dheera_ai.callbacks if isinstance(callback, AimGuardrail)
     ]
     assert len(aim_guardrails) == 1
     aim_guardrail = aim_guardrails[0]
@@ -103,7 +103,7 @@ async def test_block_callback(mode: str):
 
     with pytest.raises(HTTPException, match="Jailbreak detected"):
         with patch(
-            "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+            "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
             return_value=Response(
                 json={
                     "analysis_result": {
@@ -143,7 +143,7 @@ async def test_anonymize_callback__it_returns_redacted_content(mode: str):
         all_guardrails=[
             {
                 "guardrail_name": "gibberish-guard",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "guardrail": "aim",
                     "mode": mode,
                     "api_key": "hs-aim-key",
@@ -153,7 +153,7 @@ async def test_anonymize_callback__it_returns_redacted_content(mode: str):
         config_file_path="",
     )
     aim_guardrails = [
-        callback for callback in litellm.callbacks if isinstance(callback, AimGuardrail)
+        callback for callback in dheera_ai.callbacks if isinstance(callback, AimGuardrail)
     ]
     assert len(aim_guardrails) == 1
     aim_guardrail = aim_guardrails[0]
@@ -165,7 +165,7 @@ async def test_anonymize_callback__it_returns_redacted_content(mode: str):
     }
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
         return_value=response_with_detections,
     ):
         if mode == "pre_call":
@@ -190,7 +190,7 @@ async def test_post_call__with_anonymized_entities__it_doesnt_deanonymize_output
         all_guardrails=[
             {
                 "guardrail_name": "gibberish-guard",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "guardrail": "aim",
                     "mode": "pre_call",
                     "api_key": "hs-aim-key",
@@ -200,7 +200,7 @@ async def test_post_call__with_anonymized_entities__it_doesnt_deanonymize_output
         config_file_path="",
     )
     aim_guardrails = [
-        callback for callback in litellm.callbacks if isinstance(callback, AimGuardrail)
+        callback for callback in dheera_ai.callbacks if isinstance(callback, AimGuardrail)
     ]
     assert len(aim_guardrails) == 1
     aim_guardrail = aim_guardrails[0]
@@ -209,11 +209,11 @@ async def test_post_call__with_anonymized_entities__it_doesnt_deanonymize_output
         "messages": [
             {"role": "user", "content": "Hi my name id Brian"},
         ],
-        "litellm_call_id": "test-call-id",
+        "dheera_ai_call_id": "test-call-id",
     }
 
     with patch(
-        "litellm.llms.custom_httpx.http_handler.AsyncHTTPHandler.post"
+        "dheera_ai.llms.custom_httpx.http_handler.AsyncHTTPHandler.post"
     ) as mock_post:
 
         def mock_post_detect_side_effect(url, *args, **kwargs):
@@ -271,7 +271,7 @@ async def test_post_call_stream__all_chunks_are_valid(monkeypatch, length: int):
         all_guardrails=[
             {
                 "guardrail_name": "gibberish-guard",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "guardrail": "aim",
                     "mode": "post_call",
                     "api_key": "hs-aim-key",
@@ -281,7 +281,7 @@ async def test_post_call_stream__all_chunks_are_valid(monkeypatch, length: int):
         config_file_path="",
     )
     aim_guardrails = [
-        callback for callback in litellm.callbacks if isinstance(callback, AimGuardrail)
+        callback for callback in dheera_ai.callbacks if isinstance(callback, AimGuardrail)
     ]
     assert len(aim_guardrails) == 1
     aim_guardrail = aim_guardrails[0]
@@ -309,7 +309,7 @@ async def test_post_call_stream__all_chunks_are_valid(monkeypatch, length: int):
         yield websocket_mock
 
     monkeypatch.setattr(
-        "litellm.proxy.guardrails.guardrail_hooks.aim.aim.connect", connect_mock
+        "dheera_ai.proxy.guardrails.guardrail_hooks.aim.aim.connect", connect_mock
     )
 
     results = []
@@ -327,13 +327,13 @@ async def test_post_call_stream__all_chunks_are_valid(monkeypatch, length: int):
 
 @pytest.mark.asyncio
 async def test_post_call_stream__blocked_chunks(monkeypatch):
-    from litellm.proxy.proxy_server import StreamingCallbackError
+    from dheera_ai.proxy.proxy_server import StreamingCallbackError
 
     init_guardrails_v2(
         all_guardrails=[
             {
                 "guardrail_name": "gibberish-guard",
-                "litellm_params": {
+                "dheera_ai_params": {
                     "guardrail": "aim",
                     "mode": "post_call",
                     "api_key": "hs-aim-key",
@@ -343,7 +343,7 @@ async def test_post_call_stream__blocked_chunks(monkeypatch):
         config_file_path="",
     )
     aim_guardrails = [
-        callback for callback in litellm.callbacks if isinstance(callback, AimGuardrail)
+        callback for callback in dheera_ai.callbacks if isinstance(callback, AimGuardrail)
     ]
     assert len(aim_guardrails) == 1
     aim_guardrail = aim_guardrails[0]
@@ -370,7 +370,7 @@ async def test_post_call_stream__blocked_chunks(monkeypatch):
         yield websocket_mock
 
     monkeypatch.setattr(
-        "litellm.proxy.guardrails.guardrail_hooks.aim.aim.connect", connect_mock
+        "dheera_ai.proxy.guardrails.guardrail_hooks.aim.aim.connect", connect_mock
     )
 
     results = []

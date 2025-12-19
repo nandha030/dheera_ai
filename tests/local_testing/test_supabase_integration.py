@@ -7,15 +7,15 @@ import pytest
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm import embedding, completion
+import dheera_ai
+from dheera_ai import embedding, completion
 
-litellm.input_callback = ["supabase"]
-litellm.success_callback = ["supabase"]
-litellm.failure_callback = ["supabase"]
+dheera_ai.input_callback = ["supabase"]
+dheera_ai.success_callback = ["supabase"]
+dheera_ai.failure_callback = ["supabase"]
 
 
-litellm.set_verbose = False
+dheera_ai.set_verbose = False
 
 
 def test_supabase_logging():
@@ -40,7 +40,7 @@ def test_acompletion_sync():
 
     async def completion_call():
         try:
-            response = await litellm.acompletion(
+            response = await dheera_ai.acompletion(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": "write a poem"}],
                 max_tokens=10,
@@ -61,7 +61,7 @@ def test_acompletion_sync():
                     print("🤗🤗🤗 DONE")
                     return
 
-        except litellm.Timeout as e:
+        except dheera_ai.Timeout as e:
             pass
         except Exception:
             print(f"error occurred: {traceback.format_exc()}")
@@ -74,6 +74,6 @@ def test_acompletion_sync():
 
 
 # reset callbacks
-litellm.input_callback = []
-litellm.success_callback = []
-litellm.failure_callback = []
+dheera_ai.input_callback = []
+dheera_ai.success_callback = []
+dheera_ai.failure_callback = []

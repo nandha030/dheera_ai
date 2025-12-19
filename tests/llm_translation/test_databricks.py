@@ -11,10 +11,10 @@ import os
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm.exceptions import BadRequestError
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
-from litellm.utils import CustomStreamWrapper
+import dheera_ai
+from dheera_ai.exceptions import BadRequestError
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
+from dheera_ai.utils import CustomStreamWrapper
 from base_llm_unit_tests import BaseLLMChatTest, BaseAnthropicChatTest
 
 try:
@@ -405,14 +405,14 @@ def test_throws_if_api_base_or_api_key_not_set_without_databricks_sdk(
         )
 
     with pytest.raises(BadRequestError) as exc:
-        litellm.completion(
+        dheera_ai.completion(
             model="databricks/dbrx-instruct-071224",
             messages=[{"role": "user", "content": "How are you?"}],
         )
     assert any(msg in str(exc) for msg in err_msg)
 
     with pytest.raises(BadRequestError) as exc:
-        litellm.embedding(
+        dheera_ai.embedding(
             model="databricks/bge-12312",
             input=["Hello", "World"],
         )
@@ -440,7 +440,7 @@ def test_completions_with_sync_http_handler(monkeypatch):
     messages = [{"role": "user", "content": "How are you?"}]
 
     with patch.object(HTTPHandler, "post", return_value=mock_response) as mock_post:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="databricks/dbrx-instruct-071224",
             messages=messages,
             client=sync_handler,
@@ -494,7 +494,7 @@ def test_completions_with_async_http_handler(monkeypatch):
         AsyncHTTPHandler, "post", return_value=mock_response
     ) as mock_post:
         response = asyncio.run(
-            litellm.acompletion(
+            dheera_ai.acompletion(
                 model="databricks/dbrx-instruct-071224",
                 messages=messages,
                 client=async_handler,
@@ -537,7 +537,7 @@ def test_completions_streaming_with_sync_http_handler(monkeypatch):
     mock_response = mock_http_handler_chat_streaming_response()
 
     with patch.object(HTTPHandler, "post", return_value=mock_response) as mock_post:
-        response_stream: CustomStreamWrapper = litellm.completion(
+        response_stream: CustomStreamWrapper = dheera_ai.completion(
             model="databricks/dbrx-instruct-071224",
             messages=messages,
             client=sync_handler,
@@ -588,7 +588,7 @@ def test_completions_streaming_with_async_http_handler(monkeypatch):
         AsyncHTTPHandler, "post", return_value=mock_response
     ) as mock_post:
         response_stream: CustomStreamWrapper = asyncio.run(
-            litellm.acompletion(
+            dheera_ai.acompletion(
                 model="databricks/dbrx-instruct-071224",
                 messages=messages,
                 client=async_handler,
@@ -666,7 +666,7 @@ def test_completions_uses_databricks_sdk_if_api_key_and_base_not_specified(monke
     with patch(
         "databricks.sdk.WorkspaceClient", return_value=mock_workspace_client
     ), patch.object(HTTPHandler, "post", return_value=mock_response) as mock_post:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="databricks/dbrx-instruct-071224",
             messages=messages,
             client=sync_handler,
@@ -712,7 +712,7 @@ def test_embeddings_with_sync_http_handler(monkeypatch):
     inputs = ["Hello", "World"]
 
     with patch.object(HTTPHandler, "post", return_value=mock_response) as mock_post:
-        response = litellm.embedding(
+        response = dheera_ai.embedding(
             model="databricks/bge-large-en-v1.5",
             input=inputs,
             client=sync_handler,
@@ -753,7 +753,7 @@ def test_embeddings_with_async_http_handler(monkeypatch):
         AsyncHTTPHandler, "post", return_value=mock_response
     ) as mock_post:
         response = asyncio.run(
-            litellm.aembedding(
+            dheera_ai.aembedding(
                 model="databricks/bge-large-en-v1.5",
                 input=inputs,
                 client=async_handler,
@@ -810,7 +810,7 @@ def test_embeddings_uses_databricks_sdk_if_api_key_and_base_not_specified(monkey
     with patch(
         "databricks.sdk.WorkspaceClient", return_value=mock_workspace_client
     ), patch.object(HTTPHandler, "post", return_value=mock_response) as mock_post:
-        response = litellm.embedding(
+        response = dheera_ai.embedding(
             model="databricks/bge-large-en-v1.5",
             input=inputs,
             client=sync_handler,
@@ -849,7 +849,7 @@ class TestDatabricksCompletion(BaseLLMChatTest, BaseAnthropicChatTest):
         pytest.skip("Databricks does not support PDF handling")
 
     def test_tool_call_no_arguments(self, tool_call_no_arguments):
-        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/litellm/issues/6833"""
+        """Test that tool calls with no arguments is translated correctly. Relevant issue: https://github.com/BerriAI/dheera_ai/issues/6833"""
         pytest.skip("Databricks is openai compatible")
 
 
@@ -870,16 +870,16 @@ async def test_databricks_embeddings(sync_mode, monkeypatch):
     mock_response.status_code = 200
     mock_response.json.return_value = mock_embedding_response()
 
-    inputs = ["good morning from litellm"]
+    inputs = ["good morning from dheera_ai"]
     instruction = "Represent this sentence for searching relevant passages:"
 
-    litellm.set_verbose = True
-    litellm.drop_params = True
+    dheera_ai.set_verbose = True
+    dheera_ai.drop_params = True
 
     if sync_mode:
         sync_handler = HTTPHandler()
         with patch.object(HTTPHandler, "post", return_value=mock_response) as mock_post:
-            response = litellm.embedding(
+            response = dheera_ai.embedding(
                 model="databricks/databricks-bge-large-en",
                 input=inputs,
                 instruction=instruction,
@@ -907,7 +907,7 @@ async def test_databricks_embeddings(sync_mode, monkeypatch):
     else:
         async_handler = AsyncHTTPHandler()
         with patch.object(AsyncHTTPHandler, "post", return_value=mock_response) as mock_post:
-            response = await litellm.aembedding(
+            response = await dheera_ai.aembedding(
                 model="databricks/databricks-bge-large-en",
                 input=inputs,
                 instruction=instruction,
@@ -969,7 +969,7 @@ def test_completion_with_prompt_caching_anthropic_model(monkeypatch):
     ]
 
     with patch.object(HTTPHandler, "post", return_value=mock_response) as mock_post:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="databricks/databricks-claude-3-7-sonnet",
             messages=messages,
             client=sync_handler,
@@ -986,7 +986,7 @@ def test_completion_with_prompt_caching_anthropic_model(monkeypatch):
         assert mock_post.call_args.kwargs["stream"] == False
 
         # TODO: add test for entire expected output schema in the future
-        # Check the response object returned from litellm.completion()
+        # Check the response object returned from dheera_ai.completion()
         assert 'claude-3-7-sonnet' in response['model']
         assert response['usage']['cache_read_input_tokens'] == 0
         assert response['usage']['cache_creation_input_tokens'] == 1545
@@ -1030,7 +1030,7 @@ def test_completion_with_prompt_caching_anthropic_model_repeat(monkeypatch):
     ]
 
     with patch.object(HTTPHandler, "post", return_value=mock_response) as mock_post:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="databricks/databricks-claude-3-7-sonnet",
             messages=messages,
             client=sync_handler,
@@ -1049,7 +1049,7 @@ def test_completion_with_prompt_caching_anthropic_model_repeat(monkeypatch):
 
         
         # TODO: add test for entire expected output schema in the future
-        # Check the response object returned from litellm.completion()
+        # Check the response object returned from dheera_ai.completion()
         assert 'claude-3-7-sonnet' in response['model']
         assert response['usage']['cache_read_input_tokens'] == 1545
         assert response['usage']['cache_creation_input_tokens'] == 0
@@ -1093,7 +1093,7 @@ def test_completion_with_prompt_caching_nonanthropic_model(monkeypatch):
     ]
 
     with patch.object(HTTPHandler, "post", return_value=mock_response) as mock_post:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="databricks/databricks-gpt-oss-20b",
             messages=messages,
             client=sync_handler,
@@ -1111,7 +1111,7 @@ def test_completion_with_prompt_caching_nonanthropic_model(monkeypatch):
         assert mock_post.call_args.kwargs["stream"] == False
 
         # TODO: add test for entire expected output schema in the future
-        # Check the response object returned from litellm.completion()
+        # Check the response object returned from dheera_ai.completion()
         assert 'gpt-oss-20b' in response['model']
         assert ('cache_read_input_tokens' not in response['usage']) or response['usage']['cache_read_input_tokens'] in [0, None]
         assert ('cache_creation_input_tokens' not in response['usage']) or response['usage']['cache_creation_input_tokens'] in [0, None]
@@ -1129,7 +1129,7 @@ def test_completion_with_prompt_caching_nonanthropic_model(monkeypatch):
 def test_databricks_anthropic_function_call_with_no_schema(model, monkeypatch):
     """
     Test function calling with tools that have no parameters schema using mocked HTTP responses.
-    Relevant Issue: https://github.com/BerriAI/litellm/issues/6012
+    Relevant Issue: https://github.com/BerriAI/dheera_ai/issues/6012
     """
     base_url = "https://my.workspace.cloud.databricks.com/serving-endpoints"
     api_key = "dapimykey"
@@ -1189,7 +1189,7 @@ def test_databricks_anthropic_function_call_with_no_schema(model, monkeypatch):
     ]
     
     with patch.object(HTTPHandler, "post", return_value=mock_response):
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model=model,
             messages=messages,
             tools=tools,
@@ -1232,7 +1232,7 @@ def test_databricks_anthropic_user_string_content_cache_injection(monkeypatch):
     ]
 
     with patch.object(HTTPHandler, "post", return_value=mock_response) as mock_post:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="databricks/databricks-claude-3-7-sonnet",
             messages=messages,
             client=sync_handler,
@@ -1251,7 +1251,7 @@ def test_databricks_anthropic_user_string_content_cache_injection(monkeypatch):
         assert mock_post.call_args.kwargs["stream"] == False
 
         # TODO: add test for entire expected output schema in the future
-        # Check the response object returned from litellm.completion()
+        # Check the response object returned from dheera_ai.completion()
         assert 'claude-3-7-sonnet' in response['model']
         assert response['usage']['cache_read_input_tokens'] == 0
         assert response['usage']['cache_creation_input_tokens'] == 1545
@@ -1290,7 +1290,7 @@ def test_databricks_anthropic_system_string_content_cache_injection(monkeypatch)
     ]
 
     with patch.object(HTTPHandler, "post", return_value=mock_response) as mock_post:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="databricks/databricks-claude-3-7-sonnet",
             messages=messages,
             client=sync_handler,
@@ -1309,7 +1309,7 @@ def test_databricks_anthropic_system_string_content_cache_injection(monkeypatch)
         assert mock_post.call_args.kwargs["stream"] == False
 
         # TODO: add test for entire expected output schema in the future
-        # Check the response object returned from litellm.completion()
+        # Check the response object returned from dheera_ai.completion()
         assert 'claude-3-7-sonnet' in response['model']
         assert response['usage']['cache_read_input_tokens'] == 0
         assert response['usage']['cache_creation_input_tokens'] == 1545
@@ -1349,7 +1349,7 @@ def test_databricks_anthropic_system_string_content_cache_injection_not_enough_t
     ]
 
     with patch.object(HTTPHandler, "post", return_value=mock_response) as mock_post:
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="databricks/databricks-claude-3-7-sonnet",
             messages=messages,
             client=sync_handler,
@@ -1368,7 +1368,7 @@ def test_databricks_anthropic_system_string_content_cache_injection_not_enough_t
         assert mock_post.call_args.kwargs["stream"] == False
 
         # TODO: add test for entire expected output schema in the future
-        # Check the response object returned from litellm.completion()
+        # Check the response object returned from dheera_ai.completion()
         assert 'claude-3-7-sonnet' in response['model']
         assert response['usage']['cache_read_input_tokens'] == 0
         assert response['usage']['cache_creation_input_tokens'] == 0

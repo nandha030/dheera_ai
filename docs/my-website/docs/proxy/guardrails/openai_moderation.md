@@ -17,7 +17,7 @@ import TabItem from '@theme/TabItem';
 
 ## Quick Start
 
-### 1. Define Guardrails on your LiteLLM config.yaml 
+### 1. Define Guardrails on your Dheera AI config.yaml 
 
 Define your guardrails under the `guardrails` section:
 
@@ -27,13 +27,13 @@ Define your guardrails under the `guardrails` section:
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "openai-moderation-pre"
-    litellm_params:
+    dheera_ai_params:
       guardrail: openai_moderation
       mode: "pre_call"
       api_key: os.environ/OPENAI_API_KEY  # Optional if already set globally
@@ -65,10 +65,10 @@ export OPENAI_API_KEY="your-openai-api-key"
 </TabItem>
 </Tabs>
 
-### 2. Start LiteLLM Gateway 
+### 2. Start Dheera AI Gateway 
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 ### 3. Test request 
@@ -171,13 +171,13 @@ You can configure separate guardrails for user input and LLM responses:
 ```yaml showLineNumbers title="Multiple Guardrails Config"
 guardrails:
   - guardrail_name: "openai-moderation-input" 
-    litellm_params:
+    dheera_ai_params:
       guardrail: openai_moderation
       mode: "pre_call"
       api_key: os.environ/OPENAI_API_KEY
       
   - guardrail_name: "openai-moderation-output"
-    litellm_params:
+    dheera_ai_params:
       guardrail: openai_moderation
       mode: "post_call" 
       api_key: os.environ/OPENAI_API_KEY
@@ -190,7 +190,7 @@ Configure custom OpenAI API endpoints or different models:
 ```yaml showLineNumbers title="Custom API Config"
 guardrails:
   - guardrail_name: "openai-moderation-custom"
-    litellm_params:
+    dheera_ai_params:
       guardrail: openai_moderation
       mode: "pre_call"
       api_key: os.environ/OPENAI_API_KEY
@@ -211,7 +211,7 @@ The OpenAI Moderation guardrail fully supports streaming responses. When used in
 ```yaml showLineNumbers title="Streaming Config"
 guardrails:
   - guardrail_name: "openai-moderation-streaming"
-    litellm_params:
+    dheera_ai_params:
       guardrail: openai_moderation
       mode: "post_call"  # Works with streaming responses
       api_key: os.environ/OPENAI_API_KEY
@@ -247,7 +247,7 @@ When content violates OpenAI's moderation policy:
 ```yaml
 guardrails:
   - guardrail_name: "input-moderation"
-    litellm_params:
+    dheera_ai_params:
       guardrail: openai_moderation
       mode: "pre_call"  # Block harmful user inputs early
 ```
@@ -257,7 +257,7 @@ guardrails:
 ```yaml
 guardrails:
   - guardrail_name: "output-moderation"
-    litellm_params:
+    dheera_ai_params:
       guardrail: openai_moderation  
       mode: "post_call"  # Ensure LLM responses are safe
 ```
@@ -267,12 +267,12 @@ guardrails:
 ```yaml
 guardrails:
   - guardrail_name: "openai-moderation"
-    litellm_params:
+    dheera_ai_params:
       guardrail: openai_moderation
       mode: "pre_call"
       
   - guardrail_name: "custom-pii-detection"
-    litellm_params:
+    dheera_ai_params:
       guardrail: presidio
       mode: "pre_call"
 ```
@@ -295,7 +295,7 @@ guardrails:
 Enable detailed logging to troubleshoot issues:
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 Look for logs starting with `OpenAI Moderation:` to trace guardrail execution.
@@ -308,5 +308,5 @@ The OpenAI Moderation API is **free to use** for content policy compliance. This
 
 For additional support:
 - Check the [OpenAI Moderation API documentation](https://platform.openai.com/docs/guides/moderation)
-- Review [LiteLLM Guardrails documentation](./quick_start)
+- Review [Dheera AI Guardrails documentation](./quick_start)
 - Join our [Discord community](https://discord.gg/wuPM9dRgDw) 

@@ -10,10 +10,10 @@ import os
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm.exceptions import BadRequestError
-from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
-from litellm.utils import (
+import dheera_ai
+from dheera_ai.exceptions import BadRequestError
+from dheera_ai.llms.custom_httpx.http_handler import AsyncHTTPHandler, HTTPHandler
+from dheera_ai.utils import (
     CustomStreamWrapper,
     get_supported_openai_params,
     get_optional_params,
@@ -79,7 +79,7 @@ class BaseLLMRerankTest(ABC):
         pass
 
     @abstractmethod
-    def get_custom_llm_provider(self) -> litellm.LlmProviders:
+    def get_custom_llm_provider(self) -> dheera_ai.LlmProviders:
         """Must return the custom llm provider"""
         pass
 
@@ -94,13 +94,13 @@ class BaseLLMRerankTest(ABC):
     @pytest.mark.asyncio()
     @pytest.mark.parametrize("sync_mode", [True, False])
     async def test_basic_rerank(self, sync_mode):
-        litellm._turn_on_debug()
-        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-        litellm.model_cost = litellm.get_model_cost_map(url="")
+        dheera_ai._turn_on_debug()
+        os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+        dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
         rerank_call_args = self.get_base_rerank_call_args()
         custom_llm_provider = self.get_custom_llm_provider()
         if sync_mode is True:
-            response = litellm.rerank(
+            response = dheera_ai.rerank(
                 **rerank_call_args,
                 query="hello",
                 documents=["hello", "world"],
@@ -130,7 +130,7 @@ class BaseLLMRerankTest(ABC):
                 response=response, custom_llm_provider=custom_llm_provider.value
             )
         else:
-            response = await litellm.arerank(
+            response = await dheera_ai.arerank(
                 **rerank_call_args,
                 query="hello",
                 documents=["hello", "world"],

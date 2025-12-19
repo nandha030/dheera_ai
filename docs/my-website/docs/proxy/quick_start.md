@@ -4,23 +4,23 @@ import TabItem from '@theme/TabItem';
 
 # CLI - Quick Start
 
-Setup LiteLLM Proxy quickly via CLI. 
+Setup Dheera AI Proxy quickly via CLI. 
 
-LiteLLM Server (LLM Gateway) manages:
+Dheera AI Server (LLM Gateway) manages:
 
 * **Unified Interface**: Calling 100+ LLMs [Huggingface/Bedrock/TogetherAI/etc.](#other-supported-models) in the OpenAI `ChatCompletions` & `Completions` format
-* **Cost tracking**: Authentication, Spend Tracking & Budgets [Virtual Keys](https://docs.litellm.ai/docs/proxy/virtual_keys)
-* **Load Balancing**: between [Multiple Models](#multiple-models---quick-start) + [Deployments of the same model](#multiple-instances-of-1-model) - LiteLLM proxy can handle 1.5k+ requests/second during load tests.
+* **Cost tracking**: Authentication, Spend Tracking & Budgets [Virtual Keys](https://docs.dheera_ai.ai/docs/proxy/virtual_keys)
+* **Load Balancing**: between [Multiple Models](#multiple-models---quick-start) + [Deployments of the same model](#multiple-instances-of-1-model) - Dheera AI proxy can handle 1.5k+ requests/second during load tests.
 
 ```shell
-$ pip install 'litellm[proxy]'
+$ pip install 'dheera_ai[proxy]'
 ```
 
-## Quick Start - LiteLLM Proxy CLI
+## Quick Start - Dheera AI Proxy CLI
 
-Run the following command to start the litellm proxy
+Run the following command to start the dheera_ai proxy
 ```shell
-$ litellm --model huggingface/bigcode/starcoder
+$ dheera_ai --model huggingface/bigcode/starcoder
 
 #INFO: Proxy running on http://0.0.0.0:4000
 ```
@@ -31,19 +31,19 @@ $ litellm --model huggingface/bigcode/starcoder
 Run with `--detailed_debug` if you need detailed debug logs 
 
 ```shell
-$ litellm --model huggingface/bigcode/starcoder --detailed_debug
+$ dheera_ai --model huggingface/bigcode/starcoder --detailed_debug
 :::
 
 ### Test
 In a new shell, run, this will make an `openai.chat.completions` request. Ensure you're using openai v1.0.0+
 ```shell
-litellm --test
+dheera_ai --test
 ```
 
 This will now automatically route any requests for gpt-3.5-turbo to bigcode starcoder, hosted on huggingface inference endpoints. 
 
 ### Supported LLMs
-All LiteLLM supported LLMs are supported on the Proxy. Seel all [supported llms](https://docs.litellm.ai/docs/providers)
+All Dheera AI supported LLMs are supported on the Proxy. Seel all [supported llms](https://docs.dheera_ai.ai/docs/providers)
 <Tabs>
 <TabItem value="bedrock" label="AWS Bedrock">
 
@@ -54,7 +54,7 @@ $ export AWS_SECRET_ACCESS_KEY=
 ```
 
 ```shell
-$ litellm --model bedrock/anthropic.claude-v2
+$ dheera_ai --model bedrock/anthropic.claude-v2
 ```
 </TabItem>
 <TabItem value="azure" label="Azure OpenAI">
@@ -64,7 +64,7 @@ $ export AZURE_API_KEY=my-api-key
 $ export AZURE_API_BASE=my-api-base
 ```
 ```
-$ litellm --model azure/my-deployment-name
+$ dheera_ai --model azure/my-deployment-name
 ```
 
 </TabItem>
@@ -75,13 +75,13 @@ $ export OPENAI_API_KEY=my-api-key
 ```
 
 ```shell
-$ litellm --model gpt-3.5-turbo
+$ dheera_ai --model gpt-3.5-turbo
 ```
 </TabItem>
 <TabItem value="ollama" label="Ollama">
 
 ```
-$ litellm --model ollama/<ollama-model-name>
+$ dheera_ai --model ollama/<ollama-model-name>
 ```
 
 </TabItem>
@@ -92,7 +92,7 @@ $ export OPENAI_API_KEY=my-api-key
 ```
 
 ```shell
-$ litellm --model openai/<your model name> --api_base <your-api-base> # e.g. http://0.0.0.0:3000
+$ dheera_ai --model openai/<your model name> --api_base <your-api-base> # e.g. http://0.0.0.0:3000
 ```
 </TabItem>
 
@@ -104,7 +104,7 @@ $ export VERTEX_LOCATION="us-west"
 ```
 
 ```shell
-$ litellm --model vertex_ai/gemini-pro
+$ dheera_ai --model vertex_ai/gemini-pro
 ```
 </TabItem>
 
@@ -114,14 +114,14 @@ $ litellm --model vertex_ai/gemini-pro
 $ export HUGGINGFACE_API_KEY=my-api-key #[OPTIONAL]
 ```
 ```shell
-$ litellm --model huggingface/<your model name> --api_base <your-api-base> # e.g. http://0.0.0.0:3000
+$ dheera_ai --model huggingface/<your model name> --api_base <your-api-base> # e.g. http://0.0.0.0:3000
 ```
 
 </TabItem>
 <TabItem value="huggingface-local" label="Huggingface (TGI) Local">
 
 ```shell
-$ litellm --model huggingface/<your model name> --api_base http://0.0.0.0:8001
+$ dheera_ai --model huggingface/<your model name> --api_base http://0.0.0.0:8001
 ```
 
 </TabItem>
@@ -134,7 +134,7 @@ export AWS_SECRET_ACCESS_KEY=
 ```
 
 ```shell
-$ litellm --model sagemaker/jumpstart-dft-meta-textgeneration-llama-2-7b
+$ dheera_ai --model sagemaker/jumpstart-dft-meta-textgeneration-llama-2-7b
 ```
 
 </TabItem>
@@ -144,7 +144,7 @@ $ litellm --model sagemaker/jumpstart-dft-meta-textgeneration-llama-2-7b
 $ export ANTHROPIC_API_KEY=my-api-key
 ```
 ```shell
-$ litellm --model claude-instant-1
+$ dheera_ai --model claude-instant-1
 ```
 
 </TabItem>
@@ -152,7 +152,7 @@ $ litellm --model claude-instant-1
 Assuming you're running vllm locally
 
 ```shell
-$ litellm --model vllm/facebook/opt-125m
+$ dheera_ai --model vllm/facebook/opt-125m
 ```
 </TabItem>
 <TabItem value="together_ai" label="TogetherAI">
@@ -161,7 +161,7 @@ $ litellm --model vllm/facebook/opt-125m
 $ export TOGETHERAI_API_KEY=my-api-key
 ```
 ```shell
-$ litellm --model together_ai/lmsys/vicuna-13b-v1.5-16k
+$ dheera_ai --model together_ai/lmsys/vicuna-13b-v1.5-16k
 ```
 
 </TabItem>
@@ -172,7 +172,7 @@ $ litellm --model together_ai/lmsys/vicuna-13b-v1.5-16k
 $ export REPLICATE_API_KEY=my-api-key
 ```
 ```shell
-$ litellm \
+$ dheera_ai \
   --model replicate/meta/llama-2-70b-chat:02e509c789964a7ea8736978a43525956ef40397be9033abf9fd2badfe68c9e3
 ```
 
@@ -181,7 +181,7 @@ $ litellm \
 <TabItem value="petals" label="Petals">
 
 ```shell
-$ litellm --model petals/meta-llama/Llama-2-70b-chat-hf
+$ dheera_ai --model petals/meta-llama/Llama-2-70b-chat-hf
 ```
 
 </TabItem>
@@ -192,7 +192,7 @@ $ litellm --model petals/meta-llama/Llama-2-70b-chat-hf
 $ export PALM_API_KEY=my-palm-key
 ```
 ```shell
-$ litellm --model palm/chat-bison
+$ dheera_ai --model palm/chat-bison
 ```
 
 </TabItem>
@@ -204,7 +204,7 @@ $ export AI21_API_KEY=my-api-key
 ```
 
 ```shell
-$ litellm --model j2-light
+$ dheera_ai --model j2-light
 ```
 
 </TabItem>
@@ -216,33 +216,33 @@ $ export COHERE_API_KEY=my-api-key
 ```
 
 ```shell
-$ litellm --model command-nightly
+$ dheera_ai --model command-nightly
 ```
 
 </TabItem>
 
 </Tabs>
 
-## Quick Start - LiteLLM Proxy + Config.yaml
-The config allows you to create a model list and set `api_base`, `max_tokens` (all litellm params). See more details about the config [here](https://docs.litellm.ai/docs/proxy/configs)
+## Quick Start - Dheera AI Proxy + Config.yaml
+The config allows you to create a model list and set `api_base`, `max_tokens` (all dheera_ai params). See more details about the config [here](https://docs.dheera_ai.ai/docs/proxy/configs)
 
-### Create a Config for LiteLLM Proxy
+### Create a Config for Dheera AI Proxy
 Example config
 
 ```yaml
 model_list: 
   - model_name: gpt-3.5-turbo # user-facing model alias
-    litellm_params: # all params accepted by litellm.completion() - https://docs.litellm.ai/docs/completion/input
+    dheera_ai_params: # all params accepted by dheera_ai.completion() - https://docs.dheera_ai.ai/docs/completion/input
       model: azure/<your-deployment-name>
       api_base: <your-azure-api-endpoint>
       api_key: <your-azure-api-key>
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: azure/gpt-turbo-small-ca
       api_base: https://my-endpoint-canada-berri992.openai.azure.com/
       api_key: <your-azure-api-key>
   - model_name: vllm-model
-    litellm_params:
+    dheera_ai_params:
       model: openai/<your-model-name>
       api_base: <your-vllm-api-base> # e.g. http://0.0.0.0:3000/v1
       api_key: <your-vllm-api-key|none>
@@ -251,14 +251,14 @@ model_list:
 ### Run proxy with config
 
 ```shell
-litellm --config your_config.yaml
+dheera_ai --config your_config.yaml
 ```
 
 
-## Using LiteLLM Proxy - Curl Request, OpenAI Package, Langchain
+## Using Dheera AI Proxy - Curl Request, OpenAI Package, Langchain
 
 :::info
-LiteLLM is compatible with several SDKs - including OpenAI SDK, Anthropic SDK, Mistral SDK, LLamaIndex, Langchain (Js, Python)
+Dheera AI is compatible with several SDKs - including OpenAI SDK, Anthropic SDK, Mistral SDK, LLamaIndex, Langchain (Js, Python)
 
 [More examples here](user_keys)
 :::
@@ -290,7 +290,7 @@ client = openai.OpenAI(
     base_url="http://0.0.0.0:4000"
 )
 
-# request sent to model set on litellm proxy, `litellm --model`
+# request sent to model set on dheera_ai proxy, `dheera_ai --model`
 response = client.chat.completions.create(model="gpt-3.5-turbo", messages = [
     {
         "role": "user",
@@ -314,7 +314,7 @@ from langchain.prompts.chat import (
 from langchain.schema import HumanMessage, SystemMessage
 
 chat = ChatOpenAI(
-    openai_api_base="http://0.0.0.0:4000", # set openai_api_base to the LiteLLM Proxy
+    openai_api_base="http://0.0.0.0:4000", # set openai_api_base to the Dheera AI Proxy
     model = "gpt-3.5-turbo",
     temperature=0.1
 )
@@ -324,7 +324,7 @@ messages = [
         content="You are a helpful assistant that im using to make a test request to."
     ),
     HumanMessage(
-        content="test from litellm. tell me why it's amazing in 1 sentence"
+        content="test from dheera_ai. tell me why it's amazing in 1 sentence"
     ),
 ]
 response = chat(messages)
@@ -367,12 +367,12 @@ print(f"TITAN EMBEDDINGS")
 print(query_result[:5])
 ```
 </TabItem>
-<TabItem value="litellm" label="LiteLLM SDK">
+<TabItem value="dheera_ai" label="Dheera AI SDK">
 
 This is **not recommended**. There is duplicate logic as the proxy also uses the sdk, which might lead to unexpected errors. 
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 
 response = completion(
     model="openai/gpt-3.5-turbo", 
@@ -400,7 +400,7 @@ from anthropic import Anthropic
 
 client = Anthropic(
     base_url="http://localhost:4000", # proxy endpoint
-    api_key="sk-s4xN1IiLTCytwtZFJaYQrA", # litellm proxy virtual key
+    api_key="sk-s4xN1IiLTCytwtZFJaYQrA", # dheera_ai proxy virtual key
 )
 
 message = client.messages.create(
@@ -424,7 +424,7 @@ print(message.content)
 
 
 
-## 📖 Proxy Endpoints - [Swagger Docs](https://litellm-api.up.railway.app/)
+## 📖 Proxy Endpoints - [Swagger Docs](https://dheera_ai-api.up.railway.app/)
 - POST `/chat/completions` - chat completions endpoint to call 100+ LLMs
 - POST `/completions` - completions endpoint
 - POST `/embeddings` - embedding endpoint for Azure, OpenAI, Huggingface endpoints
@@ -436,27 +436,27 @@ print(message.content)
 
 Events that occur during normal operation
 ```shell
-litellm --model gpt-3.5-turbo --debug
+dheera_ai --model gpt-3.5-turbo --debug
 ```
 
 Detailed information
 ```shell
-litellm --model gpt-3.5-turbo --detailed_debug
+dheera_ai --model gpt-3.5-turbo --detailed_debug
 ```
 
 ### Set Debug Level using env variables
 
 Events that occur during normal operation
 ```shell
-export LITELLM_LOG=INFO
+export DHEERA_AI_LOG=INFO
 ```
 
 Detailed information
 ```shell
-export LITELLM_LOG=DEBUG
+export DHEERA_AI_LOG=DEBUG
 ```
 
 No Logs
 ```shell
-export LITELLM_LOG=None
+export DHEERA_AI_LOG=None
 ```

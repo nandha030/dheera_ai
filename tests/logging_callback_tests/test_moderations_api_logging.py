@@ -1,7 +1,7 @@
 import os
 import sys
 import traceback
-from litellm._uuid import uuid
+from dheera_ai._uuid import uuid
 import pytest
 from dotenv import load_dotenv
 from fastapi import Request
@@ -16,12 +16,12 @@ import json
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
-from litellm.router import Router
+import dheera_ai
+from dheera_ai.router import Router
 import asyncio
 from typing import Optional
-from litellm.types.utils import StandardLoggingPayload, Usage, ModelInfoBase
-from litellm.integrations.custom_logger import CustomLogger
+from dheera_ai.types.utils import StandardLoggingPayload, Usage, ModelInfoBase
+from dheera_ai.integrations.custom_logger import CustomLogger
 
 
 class TestCustomLogger(CustomLogger):
@@ -51,7 +51,7 @@ async def test_moderations_api_logging(model):
     When moderations API is called, it should log the event on standard_logging_payload
     """
     custom_logger = TestCustomLogger()
-    litellm.logging_callback_manager.add_litellm_callback(custom_logger)
+    dheera_ai.logging_callback_manager.add_dheera_ai_callback(custom_logger)
 
 
     MODEL_GROUP = "internal-moderation-model"
@@ -59,7 +59,7 @@ async def test_moderations_api_logging(model):
         model_list=[
             {
                 "model_name": MODEL_GROUP,
-                "litellm_params": {
+                "dheera_ai_params": {
                     "model": "openai/omni-moderation-latest",
                 },
             }
@@ -73,7 +73,7 @@ async def test_moderations_api_logging(model):
             model=MODEL_GROUP,
         )
     else:
-        response = await litellm.amoderation(
+        response = await dheera_ai.amoderation(
             input=input_content,
             model=model,
         )
@@ -86,9 +86,9 @@ async def test_moderations_api_logging(model):
 
     # validate the standard_logging_payload
     standard_logging_payload: StandardLoggingPayload = custom_logger.standard_logging_payload
-    assert standard_logging_payload["call_type"] == litellm.utils.CallTypes.amoderation.value
+    assert standard_logging_payload["call_type"] == dheera_ai.utils.CallTypes.amoderation.value
     assert standard_logging_payload["status"] == "success"
-    assert standard_logging_payload["custom_llm_provider"] == litellm.LlmProviders.OPENAI.value
+    assert standard_logging_payload["custom_llm_provider"] == dheera_ai.LlmProviders.OPENAI.value
 
 
     # assert the logged input == input

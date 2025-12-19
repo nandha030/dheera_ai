@@ -22,17 +22,17 @@ import Image from '@theme/IdealImage';
 ```python
 import os
 import time
-import litellm
+import dheera_ai
 
 
 os.environ['OPENAI_API_KEY']='<your-openai-api-key>'
 os.environ['CONFIDENT_API_KEY']='<your-confident-api-key>'
 
-litellm.success_callback = ["deepeval"]
-litellm.failure_callback = ["deepeval"]
+dheera_ai.success_callback = ["deepeval"]
+dheera_ai.failure_callback = ["deepeval"]
 
 try:
-    response = litellm.completion(
+    response = dheera_ai.completion(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "user", "content": "What's the weather like in San Francisco?"}

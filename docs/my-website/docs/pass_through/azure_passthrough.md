@@ -12,10 +12,10 @@ Pass-through endpoints for `/azure`
 
 ### When to use this?
 
-- For most use cases, you should use the [native LiteLLM Azure OpenAI Integration](../providers/azure/azure) (`/chat/completions`, `/embeddings`, `/completions`, `/images`, etc.)
-- Use this passthrough to call newer or less common Azure OpenAI endpoints that LiteLLM doesn't fully support yet, such as `/assistants`, `/threads`, `/vector_stores`
+- For most use cases, you should use the [native Dheera AI Azure OpenAI Integration](../providers/azure/azure) (`/chat/completions`, `/embeddings`, `/completions`, `/images`, etc.)
+- Use this passthrough to call newer or less common Azure OpenAI endpoints that Dheera AI doesn't fully support yet, such as `/assistants`, `/threads`, `/vector_stores`
 
-Simply replace your Azure endpoint (e.g. `https://<your-resource-name>.openai.azure.com`) with `LITELLM_PROXY_BASE_URL/azure`
+Simply replace your Azure endpoint (e.g. `https://<your-resource-name>.openai.azure.com`) with `DHEERA_AI_PROXY_BASE_URL/azure`
 
 ## Usage Examples
 
@@ -24,8 +24,8 @@ Simply replace your Azure endpoint (e.g. `https://<your-resource-name>.openai.az
 #### Create Azure OpenAI Client
 
 Make sure you do the following:
-- Point `azure_endpoint` to your `LITELLM_PROXY_BASE_URL/azure`
-- Use your `LITELLM_API_KEY` as the `api_key`
+- Point `azure_endpoint` to your `DHEERA_AI_PROXY_BASE_URL/azure`
+- Use your `DHEERA_AI_API_KEY` as the `api_key`
 
 ```python
 import openai

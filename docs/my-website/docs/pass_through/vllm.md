@@ -6,10 +6,10 @@ Pass-through endpoints for VLLM - call provider-specific endpoint, in native for
 |-------|-------|-------|
 | Cost Tracking | ❌ | Not supported |
 | Logging | ✅ | works across all integrations |
-| End-user Tracking | ❌ | [Tell us if you need this](https://github.com/BerriAI/litellm/issues/new) |
+| End-user Tracking | ❌ | [Tell us if you need this](https://github.com/BerriAI/dheera_ai/issues/new) |
 | Streaming | ✅ | |
 
-Just replace `https://my-vllm-server.com` with `LITELLM_PROXY_BASE_URL/vllm` 🚀
+Just replace `https://my-vllm-server.com` with `DHEERA_AI_PROXY_BASE_URL/vllm` 🚀
 
 #### **Example Usage**
 
@@ -25,26 +25,26 @@ Supports **ALL** VLLM Endpoints (including streaming).
 
 Let's call the VLLM [`/score` endpoint](https://vllm.readthedocs.io/en/latest/api_reference/api_reference.html)
 
-1. Add a VLLM hosted model to your LiteLLM Proxy 
+1. Add a VLLM hosted model to your Dheera AI Proxy 
 
 :::info
 
-Works with LiteLLM v1.72.0+. 
+Works with Dheera AI v1.72.0+. 
 
 :::
 
 ```yaml
 model_list:
   - model_name: "my-vllm-model"
-    litellm_params:
+    dheera_ai_params:
       model: hosted_vllm/vllm-1.72
       api_base: https://my-vllm-server.com
 ```
 
-2. Start LiteLLM Proxy 
+2. Start Dheera AI Proxy 
 
 ```bash
-litellm
+dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```
@@ -75,18 +75,18 @@ Key Changes:
 
 | **Original Endpoint**                                | **Replace With**                  |
 |------------------------------------------------------|-----------------------------------|
-| `https://my-vllm-server.com`          | `http://0.0.0.0:4000/vllm` (LITELLM_PROXY_BASE_URL="http://0.0.0.0:4000")      |
-| `bearer $VLLM_API_KEY`                                 | `bearer anything` (use `bearer LITELLM_VIRTUAL_KEY` if Virtual Keys are setup on proxy)                    |
+| `https://my-vllm-server.com`          | `http://0.0.0.0:4000/vllm` (DHEERA_AI_PROXY_BASE_URL="http://0.0.0.0:4000")      |
+| `bearer $VLLM_API_KEY`                                 | `bearer anything` (use `bearer DHEERA_AI_VIRTUAL_KEY` if Virtual Keys are setup on proxy)                    |
 
 
 ### **Example 1: Metrics endpoint**
 
-#### LiteLLM Proxy Call 
+#### Dheera AI Proxy Call 
 
 ```bash
 curl -L -X GET 'http://0.0.0.0:4000/vllm/metrics' \
 -H 'Content-Type: application/json' \
--H 'Authorization: Bearer $LITELLM_VIRTUAL_KEY' \
+-H 'Authorization: Bearer $DHEERA_AI_VIRTUAL_KEY' \
 ```
 
 
@@ -99,12 +99,12 @@ curl -L -X GET 'https://my-vllm-server.com/metrics' \
 
 ### **Example 2: Chat API**
 
-#### LiteLLM Proxy Call 
+#### Dheera AI Proxy Call 
 
 ```bash
 curl -L -X POST 'http://0.0.0.0:4000/vllm/chat/completions' \
 -H 'Content-Type: application/json' \
--H 'Authorization: Bearer $LITELLM_VIRTUAL_KEY' \
+-H 'Authorization: Bearer $DHEERA_AI_VIRTUAL_KEY' \
 -d '{
     "messages": [
         {
@@ -152,12 +152,12 @@ Use this, to avoid giving developers the raw Cohere API key, but still letting t
 
 ```bash
 export DATABASE_URL=""
-export LITELLM_MASTER_KEY=""
+export DHEERA_AI_MASTER_KEY=""
 export HOSTED_VLLM_API_BASE=""
 ```
 
 ```bash
-litellm
+dheera_ai
 
 # RUNNING on http://0.0.0.0:4000
 ```

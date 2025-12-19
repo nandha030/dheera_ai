@@ -3,24 +3,24 @@ import TabItem from '@theme/TabItem';
 
 # DynamoAI Guardrails
 
-LiteLLM supports DynamoAI guardrails for content moderation and policy enforcement on LLM inputs and outputs.
+Dheera AI supports DynamoAI guardrails for content moderation and policy enforcement on LLM inputs and outputs.
 
 ## Quick Start
 
-### 1. Define Guardrails on your LiteLLM config.yaml
+### 1. Define Guardrails on your Dheera AI config.yaml
 
 Define your guardrails under the `guardrails` section:
 
 ```yaml showLineNumbers title="config.yaml"
 model_list:
   - model_name: gpt-4
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-4
       api_key: os.environ/OPENAI_API_KEY
 
 guardrails:
   - guardrail_name: "dynamoai-guard"
-    litellm_params:
+    dheera_ai_params:
       guardrail: dynamoai
       mode: "pre_call"
       api_key: os.environ/DYNAMOAI_API_KEY
@@ -40,10 +40,10 @@ export DYNAMOAI_API_KEY="your-api-key"
 export DYNAMOAI_POLICY_IDS="policy-id-1,policy-id-2,policy-id-3"
 ```
 
-### 3. Start LiteLLM Gateway
+### 3. Start Dheera AI Gateway
 
 ```shell
-litellm --config config.yaml --detailed_debug
+dheera_ai --config config.yaml --detailed_debug
 ```
 
 ### 4. Test Request
@@ -112,7 +112,7 @@ Configure specific DynamoAI policies to apply:
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "dynamoai-policies"
-    litellm_params:
+    dheera_ai_params:
       guardrail: dynamoai
       mode: "pre_call"
       api_key: os.environ/DYNAMOAI_API_KEY
@@ -129,7 +129,7 @@ Specify a custom DynamoAI API endpoint:
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "dynamoai-custom"
-    litellm_params:
+    dheera_ai_params:
       guardrail: dynamoai
       mode: "pre_call"
       api_key: os.environ/DYNAMOAI_API_KEY
@@ -143,7 +143,7 @@ Add a model ID for tracking and logging purposes:
 ```yaml showLineNumbers title="config.yaml"
 guardrails:
   - guardrail_name: "dynamoai-tracked"
-    litellm_params:
+    dheera_ai_params:
       guardrail: dynamoai
       mode: "pre_call"
       api_key: os.environ/DYNAMOAI_API_KEY
@@ -158,14 +158,14 @@ Configure separate guardrails for input and output:
 guardrails:
   # Input guardrail
   - guardrail_name: "dynamoai-input"
-    litellm_params:
+    dheera_ai_params:
       guardrail: dynamoai
       mode: "pre_call"
       api_key: os.environ/DYNAMOAI_API_KEY
 
   # Output guardrail
   - guardrail_name: "dynamoai-output"
-    litellm_params:
+    dheera_ai_params:
       guardrail: dynamoai
       mode: "post_call"
       api_key: os.environ/DYNAMOAI_API_KEY
@@ -191,7 +191,7 @@ DynamoAI guardrail logs include:
 - **duration**: Time taken for guardrail check
 - **start_time** and **end_time**: Timestamps
 
-These logs are available through your configured LiteLLM logging callbacks.
+These logs are available through your configured Dheera AI logging callbacks.
 
 ## Error Handling
 

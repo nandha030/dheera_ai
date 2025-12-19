@@ -16,20 +16,20 @@ from unittest.mock import MagicMock, AsyncMock, patch
 # Add the project root to the path
 sys.path.insert(0, os.path.abspath("../.."))
 
-import litellm
-from litellm.exceptions import BlockedPiiEntityError, GuardrailRaisedException
-from litellm.integrations.custom_guardrail import CustomGuardrail
-from litellm.integrations.custom_logger import CustomLogger
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.caching.caching import DualCache
-from litellm.types.mcp import (
+import dheera_ai
+from dheera_ai.exceptions import BlockedPiiEntityError, GuardrailRaisedException
+from dheera_ai.integrations.custom_guardrail import CustomGuardrail
+from dheera_ai.integrations.custom_logger import CustomLogger
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.caching.caching import DualCache
+from dheera_ai.types.mcp import (
     MCPPreCallRequestObject,
     MCPPreCallResponseObject,
     MCPDuringCallRequestObject,
     MCPDuringCallResponseObject,
 )
-from litellm.types.llms.base import HiddenParams
-from litellm.types.guardrails import GuardrailEventHooks
+from dheera_ai.types.llms.base import HiddenParams
+from dheera_ai.types.guardrails import GuardrailEventHooks
 from fastapi import HTTPException
 
 
@@ -222,7 +222,7 @@ class MockProxyLogging:
                     raise e
                 except Exception as e:
                     # Log non-guardrail exceptions as non-blocking
-                    print(f"LiteLLM.LoggingError: [Non-Blocking] Exception occurred while logging {str(e)}")
+                    print(f"DheeraAI.LoggingError: [Non-Blocking] Exception occurred while logging {str(e)}")
         
         return None
     
@@ -253,7 +253,7 @@ class MockProxyLogging:
                     raise e
                 except Exception as e:
                     # Log non-guardrail exceptions as non-blocking
-                    print(f"LiteLLM.LoggingError: [Non-Blocking] Exception occurred while logging {str(e)}")
+                    print(f"DheeraAI.LoggingError: [Non-Blocking] Exception occurred while logging {str(e)}")
         
         return None
 

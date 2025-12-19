@@ -12,13 +12,13 @@ https://smith.langchain.com/
 <Image img={require('../../img/langsmith_new.png')} />
 
 :::info
-We want to learn how we can make the callbacks better! Meet the LiteLLM [founders](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-litellm-hosted-version) or
+We want to learn how we can make the callbacks better! Meet the Dheera AI [founders](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-dheera_ai-hosted-version) or
 join our [discord](https://discord.gg/wuPM9dRgDw)
 ::: 
 
 ## Pre-Requisites
 ```shell
-pip install litellm
+pip install dheera_ai
 ```
 
 ## Quick Start
@@ -28,24 +28,24 @@ Use just 2 lines of code, to instantly log your responses **across all providers
 <TabItem value="python" label="SDK">
 
 ```python
-litellm.callbacks = ["langsmith"]
+dheera_ai.callbacks = ["langsmith"]
 ```
 
 ```python
-import litellm
+import dheera_ai
 import os
 
 os.environ["LANGSMITH_API_KEY"] = ""
-os.environ["LANGSMITH_PROJECT"] = "" # defaults to litellm-completion
+os.environ["LANGSMITH_PROJECT"] = "" # defaults to dheera_ai-completion
 os.environ["LANGSMITH_DEFAULT_RUN_NAME"] = "" # defaults to LLMRun
 # LLM API Keys
 os.environ['OPENAI_API_KEY']=""
 
-# set langsmith as a callback, litellm will send the data to langsmith
-litellm.callbacks = ["langsmith"] 
+# set langsmith as a callback, dheera_ai will send the data to langsmith
+dheera_ai.callbacks = ["langsmith"] 
  
 # openai call
-response = litellm.completion(
+response = dheera_ai.completion(
   model="gpt-3.5-turbo",
   messages=[
     {"role": "user", "content": "Hi 👋 - i'm openai"}
@@ -53,23 +53,23 @@ response = litellm.completion(
 )
 ```
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 1. Setup config.yaml
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   callbacks: ["langsmith"]
 ```
 
-2. Start LiteLLM Proxy
+2. Start Dheera AI Proxy
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -105,18 +105,18 @@ Set `langsmith_batch_size=1` when testing locally, to see logs land quickly.
 <TabItem value="python" label="SDK">
 
 ```python
-import litellm
+import dheera_ai
 import os
 
 os.environ["LANGSMITH_API_KEY"] = ""
 # LLM API Keys
 os.environ['OPENAI_API_KEY']=""
 
-# set langsmith as a callback, litellm will send the data to langsmith
-litellm.callbacks = ["langsmith"] 
-litellm.langsmith_batch_size = 1 # 👈 KEY CHANGE
+# set langsmith as a callback, dheera_ai will send the data to langsmith
+dheera_ai.callbacks = ["langsmith"] 
+dheera_ai.langsmith_batch_size = 1 # 👈 KEY CHANGE
  
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gpt-3.5-turbo",
      messages=[
         {"role": "user", "content": "Hi 👋 - i'm openai"}
@@ -125,24 +125,24 @@ response = litellm.completion(
 print(response)
 ```
 </TabItem>
-<TabItem value="proxy" label="LiteLLM Proxy">
+<TabItem value="proxy" label="Dheera AI Proxy">
 
 1. Setup config.yaml
 ```yaml
 model_list:
   - model_name: gpt-3.5-turbo
-    litellm_params:
+    dheera_ai_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
 
-litellm_settings:
+dheera_ai_settings:
   langsmith_batch_size: 1
   callbacks: ["langsmith"]
 ```
 
-2. Start LiteLLM Proxy
+2. Start Dheera AI Proxy
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it!
@@ -173,24 +173,24 @@ curl -L -X POST 'http://0.0.0.0:4000/v1/chat/completions' \
 ### Set Langsmith fields
 
 ```python
-import litellm
+import dheera_ai
 import os
 
 os.environ["LANGSMITH_API_KEY"] = ""
 # LLM API Keys
 os.environ['OPENAI_API_KEY']=""
 
-# set langsmith as a callback, litellm will send the data to langsmith
-litellm.success_callback = ["langsmith"] 
+# set langsmith as a callback, dheera_ai will send the data to langsmith
+dheera_ai.success_callback = ["langsmith"] 
  
-response = litellm.completion(
+response = dheera_ai.completion(
     model="gpt-3.5-turbo",
      messages=[
         {"role": "user", "content": "Hi 👋 - i'm openai"}
     ],
     metadata={
-        "run_name": "litellmRUN",                                   # langsmith run name
-        "project_name": "litellm-completion",                       # langsmith project name
+        "run_name": "dheera_aiRUN",                                   # langsmith run name
+        "project_name": "dheera_ai-completion",                       # langsmith project name
         "run_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",           # langsmith run id
         "parent_run_id": "f8faf8c1-9778-49a4-9004-628cdb0047e5",    # langsmith run parent run id
         "trace_id": "df570c03-5a03-4cea-8df0-c162d05127ac",         # langsmith run trace id
@@ -205,25 +205,25 @@ response = litellm.completion(
 print(response)
 ```
 
-### Make LiteLLM Proxy use Custom `LANGSMITH_BASE_URL`
+### Make Dheera AI Proxy use Custom `LANGSMITH_BASE_URL`
 
 If you're using a custom LangSmith instance, you can set the
 `LANGSMITH_BASE_URL` environment variable to point to your instance.
-For example, you can make LiteLLM Proxy log to a local LangSmith instance with
+For example, you can make Dheera AI Proxy log to a local LangSmith instance with
 this config:
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   success_callback: ["langsmith"]
 
 environment_variables:
   LANGSMITH_BASE_URL: "http://localhost:1984"
-  LANGSMITH_PROJECT: "litellm-proxy"
+  LANGSMITH_PROJECT: "dheera_ai-proxy"
 ```
 
 ## Support & Talk to Founders
 
-- [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-litellm-hosted-version)
+- [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-dheera_ai-hosted-version)
 - [Community Discord 💭](https://discord.gg/wuPM9dRgDw)
 - Our numbers 📞 +1 (770) 8783-106 / ‭+1 (412) 618-6238‬
 - Our emails ✉️ ishaan@berri.ai / krrish@berri.ai

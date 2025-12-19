@@ -118,7 +118,7 @@ if (
                     del kwargs["model"]
 
                 print("making completion call", model)
-                response = litellm.completion(**kwargs, model=model)
+                response = dheera_ai.completion(**kwargs, model=model)
 
                 if response != None:
                     return response

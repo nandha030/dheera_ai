@@ -10,7 +10,7 @@ from unittest.mock import Mock
 from pydantic import BaseModel
 from typing import Optional
 
-from litellm.proxy.spend_tracking.spend_tracking_utils import (
+from dheera_ai.proxy.spend_tracking.spend_tracking_utils import (
     get_logging_payload,
     _extract_usage_for_ocr_call,
 )
@@ -122,7 +122,7 @@ class TestGetLoggingPayloadOCR:
         return {
             "model": "test-ocr-model",
             "call_type": "ocr",
-            "litellm_params": {},
+            "dheera_ai_params": {},
             "response_cost": 0.05,
         }
 
@@ -240,7 +240,7 @@ class TestGetLoggingPayloadOCR:
         kwargs = {
             "model": "gpt-4",
             "call_type": "completion",
-            "litellm_params": {},
+            "dheera_ai_params": {},
             "response_cost": 0.02,
         }
         
@@ -269,7 +269,7 @@ class TestGetLoggingPayloadOCR:
 
     def test_ocr_with_metadata(self, mock_datetime, base_kwargs):
         """Test OCR call with additional metadata"""
-        base_kwargs["litellm_params"] = {
+        base_kwargs["dheera_ai_params"] = {
             "metadata": {
                 "user_api_key_user_id": "test-user",
                 "user_api_key_team_id": "test-team"

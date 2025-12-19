@@ -1,11 +1,11 @@
 # Vertex AI Live API WebSocket Passthrough
 
-LiteLLM now supports WebSocket passthrough for the Vertex AI Live API, enabling real-time bidirectional communication with Gemini models.
+Dheera AI now supports WebSocket passthrough for the Vertex AI Live API, enabling real-time bidirectional communication with Gemini models.
 
 ## Overview
 
 The Vertex AI Live API WebSocket passthrough allows you to:
-- Connect to Vertex AI Live API through LiteLLM proxy
+- Connect to Vertex AI Live API through Dheera AI proxy
 - Use existing Vertex AI authentication methods
 - Pass through all WebSocket messages bidirectionally
 - Support text, audio, video, and multimodal interactions
@@ -32,7 +32,7 @@ DEFAULT_GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
 Alternatively, configure in your `config.yaml`:
 
 ```yaml
-litellm_settings:
+dheera_ai_settings:
   default_vertex_config:
     vertex_project: "your-project-id"
     vertex_location: "us-central1"
@@ -74,7 +74,7 @@ The WebSocket passthrough automatically tracks costs for all usage types based o
 
 ### Cost Calculation
 
-Costs are calculated using the same methods as other Vertex AI models in LiteLLM:
+Costs are calculated using the same methods as other Vertex AI models in Dheera AI:
 - Uses `cost_per_character` for Gemini models
 - Uses `cost_per_token` for partner models (Claude, Llama, etc.)
 - Includes audio, video, and image costs when applicable
@@ -82,7 +82,7 @@ Costs are calculated using the same methods as other Vertex AI models in LiteLLM
 ### Cost Logging
 
 Costs are automatically logged to:
-- LiteLLM proxy logs
+- Dheera AI proxy logs
 - Database (if configured)
 - Spend tracking system
 - Admin dashboard
@@ -250,7 +250,7 @@ The WebSocket connection may close with these codes:
 
 ## Authentication
 
-The WebSocket passthrough uses the same authentication as other LiteLLM endpoints:
+The WebSocket passthrough uses the same authentication as other Dheera AI endpoints:
 
 1. **API Key**: Pass `Authorization: Bearer your-api-key` header
 2. **Vertex AI Credentials**: Set environment variables or config file
@@ -267,18 +267,18 @@ The WebSocket passthrough uses the same authentication as other LiteLLM endpoint
 
 1. **Authentication Error**: Ensure Vertex AI credentials are properly configured
 2. **Project Not Found**: Verify the project ID exists and has Vertex AI enabled
-3. **Connection Refused**: Check that the LiteLLM proxy server is running
+3. **Connection Refused**: Check that the Dheera AI proxy server is running
 
 ### Debug Mode
 
 Enable debug logging to see detailed connection information:
 
 ```bash
-export LITELLM_LOG=DEBUG
+export DHEERA_AI_LOG=DEBUG
 ```
 
 ## Related Documentation
 
 - [Vertex AI Live API Reference](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/multimodal-live)
-- [LiteLLM Proxy Configuration](../proxy/)
+- [Dheera AI Proxy Configuration](../proxy/)
 - [Vertex AI Passthrough Endpoints](./vertex_ai.md)

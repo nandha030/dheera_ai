@@ -20,11 +20,11 @@ import pytest
 # Add the parent directory to the system path
 sys.path.insert(0, os.path.abspath("../.."))
 
-import litellm
-from litellm.proxy._types import UserAPIKeyAuth
-from litellm.proxy.google_endpoints.endpoints import google_generate_content
-from litellm.proxy.proxy_server import ProxyConfig
-from litellm.proxy.utils import ProxyLogging
+import dheera_ai
+from dheera_ai.proxy._types import UserAPIKeyAuth
+from dheera_ai.proxy.google_endpoints.endpoints import google_generate_content
+from dheera_ai.proxy.proxy_server import ProxyConfig
+from dheera_ai.proxy.utils import ProxyLogging
 from fastapi import Request, Response
 from fastapi.datastructures import Headers
 
@@ -142,9 +142,9 @@ async def test_google_gemini_httpx_request_direct():
     
     This test directly calls the HTTP handler to verify the httpx integration.
     """
-    from litellm.llms.custom_httpx.llm_http_handler import BaseLLMHTTPHandler
-    from litellm.llms.gemini.google_genai.transformation import GoogleGenAIConfig
-    from litellm.litellm_core_utils.litellm_logging import Logging as LiteLLMLoggingObj
+    from dheera_ai.llms.custom_httpx.llm_http_handler import BaseLLMHTTPHandler
+    from dheera_ai.llms.gemini.google_genai.transformation import GoogleGenAIConfig
+    from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import Logging as DheeraAILoggingObj
     
     # Sample request payload
     sample_payload = {
@@ -190,7 +190,7 @@ async def test_google_gemini_httpx_request_direct():
     }
     
     # Mock the HTTP handler to capture the request
-    with patch("litellm.llms.custom_httpx.http_handler.HTTPHandler.post") as mock_post:
+    with patch("dheera_ai.llms.custom_httpx.http_handler.HTTPHandler.post") as mock_post:
         # Create mock response
         mock_http_response = MagicMock()
         mock_http_response.status_code = 200
@@ -211,24 +211,24 @@ async def test_google_gemini_httpx_request_direct():
         mock_post.return_value = mock_http_response
         
         # Create the HTTP handler and provider config
-        from litellm.types.router import GenericLiteLLMParams
+        from dheera_ai.types.router import GenericDheeraAIParams
         
         http_handler = BaseLLMHTTPHandler()
         provider_config = GoogleGenAIConfig()
         
-        # Create proper litellm params
-        litellm_params = GenericLiteLLMParams(
+        # Create proper dheera_ai params
+        dheera_ai_params = GenericDheeraAIParams(
             api_base="https://generativelanguage.googleapis.com",
             api_key="test_api_key"
         )
         
-        logging_obj = LiteLLMLoggingObj(
+        logging_obj = DheeraAILoggingObj(
             model="gemini/gemini-2.5-flash",
             messages=[],
             stream=False,
             call_type="agenerate_content",
             start_time=None,
-            litellm_call_id="test_call_id",
+            dheera_ai_call_id="test_call_id",
             function_id="test_function_id"
         )
         
@@ -241,7 +241,7 @@ async def test_google_gemini_httpx_request_direct():
                 generate_content_config_dict=sample_payload["config"],
                 tools=None,
                 custom_llm_provider="gemini",
-                litellm_params=litellm_params,
+                dheera_ai_params=dheera_ai_params,
                 logging_obj=logging_obj,
                 extra_headers=None,
                 extra_body=None,
@@ -249,7 +249,7 @@ async def test_google_gemini_httpx_request_direct():
                 _is_async=False,
                 client=None,
                 stream=False,
-                litellm_metadata={}
+                dheera_ai_metadata={}
             )
             
             # Verify that the HTTP post was called
@@ -319,7 +319,7 @@ async def test_generationconfig_to_config_mapping(sample_request_payload):
     Test that generationConfig is correctly mapped to config parameter
     for Google GenAI compatibility in the main functions.
     """
-    from litellm.google_genai.main import agenerate_content
+    from dheera_ai.google_genai.main import agenerate_content
     
     # Create a copy of the payload to avoid modifying the fixture
     test_data = sample_request_payload.copy()
@@ -353,7 +353,7 @@ async def test_gemini_custom_api_base_proxy_integration():
     This test verifies that when a custom api_base is provided for Gemini models,
     the URL is correctly constructed using the _check_custom_proxy method.
     """
-    from litellm.llms.vertex_ai.vertex_llm_base import VertexBase
+    from dheera_ai.llms.vertex_ai.vertex_llm_base import VertexBase
     
     # Test the _check_custom_proxy method directly
     vertex_base = VertexBase()
@@ -428,12 +428,12 @@ async def test_gemini_proxy_config_with_custom_api_base():
     This test simulates the proxy configuration scenario where a model is configured
     with a custom api_base in the config.yaml file.
     """
-    from litellm.llms.vertex_ai.vertex_llm_base import VertexBase
+    from dheera_ai.llms.vertex_ai.vertex_llm_base import VertexBase
     
     # Simulate proxy configuration
     model_config = {
         "model_name": "byok-gemini/*",
-        "litellm_params": {
+        "dheera_ai_params": {
             "model": "gemini/*",
             "api_key": "dummy-key-for-testing",
             "api_base": "https://proxy.example.com/generativelanguage.googleapis.com/v1beta"
@@ -453,9 +453,9 @@ async def test_gemini_proxy_config_with_custom_api_base():
     for model in test_models:
         # Test generateContent endpoint
         auth_header, result_url = vertex_base._check_custom_proxy(
-            api_base=model_config["litellm_params"]["api_base"],
+            api_base=model_config["dheera_ai_params"]["api_base"],
             custom_llm_provider="gemini",
-            gemini_api_key=model_config["litellm_params"]["api_key"],
+            gemini_api_key=model_config["dheera_ai_params"]["api_key"],
             endpoint="generateContent",
             stream=False,
             auth_header=None,
@@ -463,9 +463,9 @@ async def test_gemini_proxy_config_with_custom_api_base():
             model=model,
         )
         
-        expected_url = f"{model_config['litellm_params']['api_base']}/models/{model}:generateContent"
+        expected_url = f"{model_config['dheera_ai_params']['api_base']}/models/{model}:generateContent"
         assert result_url == expected_url, f"Expected {expected_url}, got {result_url} for model {model}"
-        expected_auth_header = {"x-goog-api-key": model_config["litellm_params"]["api_key"]}
+        expected_auth_header = {"x-goog-api-key": model_config["dheera_ai_params"]["api_key"]}
         assert auth_header == expected_auth_header, f"Expected {expected_auth_header}, got {auth_header} for model {model}"
         
         print(f"✅ Model {model} configuration test passed: {result_url}")

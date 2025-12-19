@@ -3,13 +3,13 @@ import os, sys, traceback
 sys.path.insert(
     0, os.path.abspath("../..")
 )  # Adds the parent directory to the system path
-import litellm
+import dheera_ai
 from dotenv import load_dotenv
 
 
 def generate_text():
     try:
-        litellm.set_verbose = True
+        dheera_ai.set_verbose = True
         messages = [
             {
                 "role": "user",
@@ -24,7 +24,7 @@ def generate_text():
                 ],
             }
         ]
-        response = litellm.completion(
+        response = dheera_ai.completion(
             model="gemini/gemini-pro-vision",
             messages=messages,
             stop="Hello world",

@@ -3,11 +3,11 @@ import TabItem from '@theme/TabItem';
 
 # Databricks
 
-LiteLLM supports all models on Databricks
+Dheera AI supports all models on Databricks
 
 :::tip
 
-**We support ALL Databricks models, just set `model=databricks/<any-model-on-databricks>` as a prefix when sending litellm requests**
+**We support ALL Databricks models, just set `model=databricks/<any-model-on-databricks>` as a prefix when sending dheera_ai requests**
 
 :::
 
@@ -26,7 +26,7 @@ os.environ["DATABRICKS_API_BASE"] = ""
 ### Example Call
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 ## set ENV variables
 os.environ["DATABRICKS_API_KEY"] = "databricks key"
@@ -47,7 +47,7 @@ response = completion(
   ```yaml
   model_list:
     - model_name: dbrx-instruct
-      litellm_params:
+      dheera_ai_params:
         model: databricks/databricks-dbrx-instruct
         api_key: os.environ/DATABRICKS_API_KEY
         api_base: os.environ/DATABRICKS_API_BASE
@@ -58,10 +58,10 @@ response = completion(
 2. Start the proxy 
 
   ```bash
-  $ litellm --config /path/to/config.yaml --debug
+  $ dheera_ai --config /path/to/config.yaml --debug
   ```
 
-3. Send Request to LiteLLM Proxy Server
+3. Send Request to Dheera AI Proxy Server
 
   <Tabs>
 
@@ -70,8 +70,8 @@ response = completion(
   ```python
   import openai
   client = openai.OpenAI(
-      api_key="sk-1234",             # pass litellm proxy key, if you're using virtual keys
-      base_url="http://0.0.0.0:4000" # litellm-proxy-base url
+      api_key="sk-1234",             # pass dheera_ai proxy key, if you're using virtual keys
+      base_url="http://0.0.0.0:4000" # dheera_ai-proxy-base url
   )
 
   response = client.chat.completions.create(
@@ -123,11 +123,11 @@ response = completion(
 </Tabs>
 
 ## Passing additional params - max_tokens, temperature 
-See all litellm.completion supported params [here](../completion/input.md#translated-openai-params)
+See all dheera_ai.completion supported params [here](../completion/input.md#translated-openai-params)
 
 ```python
-# !pip install litellm
-from litellm import completion
+# !pip install dheera_ai
+from dheera_ai import completion
 import os
 ## set ENV variables
 os.environ["DATABRICKS_API_KEY"] = "databricks key"
@@ -147,7 +147,7 @@ response = completion(
 ```yaml
   model_list:
     - model_name: llama-3
-      litellm_params:
+      dheera_ai_params:
         model: databricks/databricks-meta-llama-3-70b-instruct
         api_key: os.environ/DATABRICKS_API_KEY
         max_tokens: 20
@@ -157,7 +157,7 @@ response = completion(
 
 ## Usage - Thinking / `reasoning_content`
 
-LiteLLM translates OpenAI's `reasoning_effort` to Anthropic's `thinking` parameter. [Code](https://github.com/BerriAI/litellm/blob/23051d89dd3611a81617d84277059cd88b2df511/litellm/llms/anthropic/chat/transformation.py#L298)
+Dheera AI translates OpenAI's `reasoning_effort` to Anthropic's `thinking` parameter. [Code](https://github.com/BerriAI/dheera_ai/blob/23051d89dd3611a81617d84277059cd88b2df511/dheera_ai/llms/anthropic/chat/transformation.py#L298)
 
 | reasoning_effort | thinking |
 | ---------------- | -------- |
@@ -167,14 +167,14 @@ LiteLLM translates OpenAI's `reasoning_effort` to Anthropic's `thinking` paramet
 
 
 Known Limitations:
-- Support for passing thinking blocks back to Claude [Issue](https://github.com/BerriAI/litellm/issues/9790)
+- Support for passing thinking blocks back to Claude [Issue](https://github.com/BerriAI/dheera_ai/issues/9790)
  
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 # set ENV variables (can also be passed in to .completion() - e.g. `api_base`, `api_key`)
@@ -197,7 +197,7 @@ resp = completion(
 
 ```yaml
 - model_name: claude-3-7-sonnet
-  litellm_params:
+  dheera_ai_params:
     model: databricks/databricks-claude-3-7-sonnet
     api_key: os.environ/DATABRICKS_API_KEY
     api_base: os.environ/DATABRICKS_API_BASE
@@ -206,7 +206,7 @@ resp = completion(
 2. Start proxy
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 ```
 
 3. Test it! 
@@ -284,7 +284,7 @@ ModelResponse(
 
 ### Citations
 
-Anthropic models served through Databricks can return citation metadata. LiteLLM
+Anthropic models served through Databricks can return citation metadata. Dheera AI
 exposes these via `response.choices[0].message.provider_specific_fields["citations"]`.
 
 ### Pass `thinking` to Anthropic models
@@ -298,14 +298,14 @@ You can also pass the `thinking` parameter to Anthropic models.
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 # set ENV variables (can also be passed in to .completion() - e.g. `api_base`, `api_key`)
 os.environ["DATABRICKS_API_KEY"] = "databricks key"
 os.environ["DATABRICKS_API_BASE"] = "databricks base url"
 
-response = litellm.completion(
+response = dheera_ai.completion(
   model="databricks/databricks-claude-3-7-sonnet",
   messages=[{"role": "user", "content": "What is the capital of France?"}],
   thinking={"type": "enabled", "budget_tokens": 1024},
@@ -318,7 +318,7 @@ response = litellm.completion(
 ```bash
 curl http://0.0.0.0:4000/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $LITELLM_KEY" \
+  -H "Authorization: Bearer $DHEERA_AI_KEY" \
   -d '{
     "model": "databricks/databricks-claude-3-7-sonnet",
     "messages": [{"role": "user", "content": "What is the capital of France?"}],
@@ -337,7 +337,7 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 
 :::tip
 
-**We support ALL Databricks models, just set `model=databricks/<any-model-on-databricks>` as a prefix when sending litellm requests**
+**We support ALL Databricks models, just set `model=databricks/<any-model-on-databricks>` as a prefix when sending dheera_ai requests**
 
 :::
 
@@ -359,21 +359,21 @@ curl http://0.0.0.0:4000/v1/chat/completions \
 
 ### Passing Databricks specific params - 'instruction'
 
-For embedding models, databricks lets you pass in an additional param 'instruction'. [Full Spec](https://github.com/BerriAI/litellm/blob/43353c28b341df0d9992b45c6ce464222ebd7984/litellm/llms/databricks.py#L164)
+For embedding models, databricks lets you pass in an additional param 'instruction'. [Full Spec](https://github.com/BerriAI/dheera_ai/blob/43353c28b341df0d9992b45c6ce464222ebd7984/dheera_ai/llms/databricks.py#L164)
 
 
 ```python
-# !pip install litellm
-from litellm import embedding
+# !pip install dheera_ai
+from dheera_ai import embedding
 import os
 ## set ENV variables
 os.environ["DATABRICKS_API_KEY"] = "databricks key"
 os.environ["DATABRICKS_API_BASE"] = "databricks url"
 
 # Databricks bge-large-en call
-response = litellm.embedding(
+response = dheera_ai.embedding(
       model="databricks/databricks-bge-large-en",
-      input=["good morning from litellm"],
+      input=["good morning from dheera_ai"],
       instruction="Represent this sentence for searching relevant passages:",
   )
 ```
@@ -383,7 +383,7 @@ response = litellm.embedding(
 ```yaml
   model_list:
     - model_name: bge-large
-      litellm_params:
+      dheera_ai_params:
         model: databricks/databricks-bge-large-en
         api_key: os.environ/DATABRICKS_API_KEY
         api_base: os.environ/DATABRICKS_API_BASE
@@ -394,7 +394,7 @@ response = litellm.embedding(
 
 :::tip
 
-**We support ALL Databricks models, just set `model=databricks/<any-model-on-databricks>` as a prefix when sending litellm requests**
+**We support ALL Databricks models, just set `model=databricks/<any-model-on-databricks>` as a prefix when sending dheera_ai requests**
 
 :::
 

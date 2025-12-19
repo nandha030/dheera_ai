@@ -2,7 +2,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath("../.."))
-import litellm
+import dheera_ai
 import requests
 from bs4 import BeautifulSoup
 
@@ -191,10 +191,10 @@ def _check_if_model_name_in_pricing(
     input_cost_per_1k_tokens: str,
     output_cost_per_1k_tokens: str,
 ):
-    os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
-    litellm.model_cost = litellm.get_model_cost_map(url="")
+    os.environ["DHEERA_AI_LOCAL_MODEL_COST_MAP"] = "True"
+    dheera_ai.model_cost = dheera_ai.get_model_cost_map(url="")
 
-    for model, value in litellm.model_cost.items():
+    for model, value in dheera_ai.model_cost.items():
         if model.startswith(bedrock_model_name):
             input_cost_per_token = (
                 _convert_str_to_float(input_cost_per_1k_tokens) / 1000
@@ -230,7 +230,7 @@ if __name__ == "__main__":
                         output_cost_per_1k_tokens=details[
                             "Price per 1,000 output tokens"
                         ],
-                    ), f"Model {complete_model_name} not found in litellm.model_cost"
+                    ), f"Model {complete_model_name} not found in dheera_ai.model_cost"
                     print(f"  {complete_model_name}:")
                     if isinstance(details, dict):
                         for detail, value in details.items():

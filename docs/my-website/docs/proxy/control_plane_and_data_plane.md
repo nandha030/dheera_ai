@@ -4,21 +4,21 @@ import TabItem from '@theme/TabItem';
 
 # Control Plane for Multi-region Architecture (Enterprise)
 
-Learn how to deploy LiteLLM across multiple regions while maintaining centralized administration and avoiding duplication of management overhead.
+Learn how to deploy Dheera AI across multiple regions while maintaining centralized administration and avoiding duplication of management overhead.
 
 :::info
 
-✨ This requires LiteLLM Enterprise features.
+✨ This requires Dheera AI Enterprise features.
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Get free 7-day trial key](https://www.litellm.ai/enterprise#trial)
+[Get free 7-day trial key](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
 ## Overview
 
-When scaling LiteLLM for production use, you may want to deploy multiple instances across different regions or availability zones while maintaining a single point of administration. This guide covers how to set up a distributed LiteLLM deployment with:
+When scaling Dheera AI for production use, you may want to deploy multiple instances across different regions or availability zones while maintaining a single point of administration. This guide covers how to set up a distributed Dheera AI deployment with:
 
 - **Regional Worker Instances**: Handle LLM requests for users in specific regions
 - **Centralized Admin Instance**: Manages configuration, users, keys, and monitoring
@@ -49,8 +49,8 @@ The admin instance handles all management operations and provides the UI.
 # DISABLE_ADMIN_UI=false          # Admin UI available
 # DISABLE_ADMIN_ENDPOINTS=false   # Management APIs available
 DISABLE_LLM_API_ENDPOINTS=true      # LLM APIs disabled
-DATABASE_URL=postgresql://user:pass@global-db:5432/litellm
-LITELLM_MASTER_KEY=your-master-key
+DATABASE_URL=postgresql://user:pass@global-db:5432/dheera_ai
+DHEERA_AI_MASTER_KEY=your-master-key
 ```
 
 ### Worker Instance Configuration
@@ -63,15 +63,15 @@ Worker instances handle LLM requests but have admin capabilities disabled.
 DISABLE_ADMIN_UI=true           # No admin UI
 DISABLE_ADMIN_ENDPOINTS=true    # No management endpoints
 
-DATABASE_URL=postgresql://user:pass@global-db:5432/litellm
-LITELLM_MASTER_KEY=your-master-key
+DATABASE_URL=postgresql://user:pass@global-db:5432/dheera_ai
+DHEERA_AI_MASTER_KEY=your-master-key
 ```
 
 ## Environment Variables Reference
 
 ### `DISABLE_ADMIN_UI`
 
-Disables the LiteLLM Admin UI interface.
+Disables the Dheera AI Admin UI interface.
 
 - **Default**: `false`
 - **Worker Instances**: Set to `true`
@@ -90,9 +90,9 @@ DISABLE_ADMIN_UI=true
 
 ✨ This is an Enterprise feature.
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Get free 7-day trial key](https://www.litellm.ai/enterprise#trial)
+[Get free 7-day trial key](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
@@ -130,9 +130,9 @@ DISABLE_ADMIN_ENDPOINTS=true
 
 ✨ This is an Enterprise feature.
 
-[Enterprise Pricing](https://www.litellm.ai/#pricing)
+[Enterprise Pricing](https://www.dheera_ai.ai/#pricing)
 
-[Get free 7-day trial key](https://www.litellm.ai/enterprise#trial)
+[Get free 7-day trial key](https://www.dheera_ai.ai/enterprise#trial)
 
 :::
 
@@ -163,7 +163,7 @@ DISABLE_LLM_API_ENDPOINTS=true
 - `/config/*` - Configuration updates
 - All other administrative endpoints
 
-### `LITELLM_UI_API_DOC_BASE_URL`
+### `DHEERA_AI_UI_API_DOC_BASE_URL`
 
 Optional override for the API Reference base URL (used in sample code/docs) when the admin UI runs on a different host than the proxy.
 
@@ -179,13 +179,13 @@ import openai
 # US users
 client_us = openai.OpenAI(
     base_url="https://us.company.com/v1",
-    api_key="your-litellm-key"
+    api_key="your-dheera_ai-key"
 )
 
 # EU users  
 client_eu = openai.OpenAI(
     base_url="https://eu.company.com/v1", 
-    api_key="your-litellm-key"
+    api_key="your-dheera_ai-key"
 )
 
 response = client_us.chat.completions.create(

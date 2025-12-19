@@ -6,21 +6,21 @@ Use OpenAI's Code Interpreter tool to execute Python code in a secure, sandboxed
 
 | Feature | Supported |
 |---------|-----------|
-| LiteLLM Python SDK | ✅ |
-| LiteLLM AI Gateway | ✅ |
+| Dheera AI Python SDK | ✅ |
+| Dheera AI AI Gateway | ✅ |
 | Supported Providers | `openai` |
 
-## LiteLLM AI Gateway
+## Dheera AI AI Gateway
 
 ### API (OpenAI SDK)
 
-Use the OpenAI SDK pointed at your LiteLLM Gateway:
+Use the OpenAI SDK pointed at your Dheera AI Gateway:
 
 ```python showLineNumbers title="code_interpreter_gateway.py"
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-1234",  # Your LiteLLM API key
+    api_key="sk-1234",  # Your Dheera AI API key
     base_url="http://localhost:4000"
 )
 
@@ -91,13 +91,13 @@ for file in files.data:
 
 ### AI Gateway UI
 
-The LiteLLM Admin UI includes built-in Code Interpreter support.
+The Dheera AI Admin UI includes built-in Code Interpreter support.
 
 <Image img={require('../../img/code_interp.png')} />
 
 **Steps:**
 
-1. Go to **Playground** in the LiteLLM UI
+1. Go to **Playground** in the Dheera AI UI
 2. Select an **OpenAI model** (e.g., `openai/gpt-4o`)
 3. Select `/v1/responses` as the endpoint under **Endpoint Type**
 4. Toggle **Code Interpreter** in the left panel
@@ -108,14 +108,14 @@ The UI will display:
 - Generated images inline
 - Download links for files (CSVs, etc.)
 
-## LiteLLM Python SDK
+## Dheera AI Python SDK
 
 ### Run Code Interpreter
 
 ```python showLineNumbers title="code_interpreter.py"
-import litellm
+import dheera_ai
 
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/gpt-4o",
     input="Generate a bar chart of quarterly sales and save as PNG",
     tools=[{"type": "code_interpreter"}]
@@ -129,10 +129,10 @@ print(response)
 After Code Interpreter runs, retrieve the generated files:
 
 ```python showLineNumbers title="get_file_content.py"
-import litellm
+import dheera_ai
 
 # 1. Run code interpreter
-response = litellm.responses(
+response = dheera_ai.responses(
     model="openai/gpt-4o",
     input="Create a pie chart of market share and save as PNG",
     tools=[{"type": "code_interpreter"}]
@@ -142,14 +142,14 @@ response = litellm.responses(
 container_id = response.output[0].container_id  # e.g. "cntr_abc123..."
 
 # 3. List files in container
-files = litellm.list_container_files(
+files = dheera_ai.list_container_files(
     container_id=container_id,
     custom_llm_provider="openai"
 )
 
 # 4. Download each file
 for file in files.data:
-    content = litellm.retrieve_container_file_content(
+    content = dheera_ai.retrieve_container_file_content(
         container_id=container_id,
         file_id=file.id,
         custom_llm_provider="openai"

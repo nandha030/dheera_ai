@@ -14,8 +14,8 @@ sys.path.insert(
 from datetime import datetime as dt_object
 import time
 import pytest
-import litellm
-from litellm.types.utils import (
+import dheera_ai
+from dheera_ai.types.utils import (
     StandardLoggingPayload,
     Usage,
     StandardLoggingMetadata,
@@ -26,11 +26,11 @@ from create_mock_standard_logging_payload import (
     create_standard_logging_payload,
     create_standard_logging_payload_with_long_content,
 )
-from litellm.litellm_core_utils.litellm_logging import (
+from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import (
     StandardLoggingPayloadSetup,
 )
 
-from litellm.integrations.custom_logger import CustomLogger
+from dheera_ai.integrations.custom_logger import CustomLogger
 
 
 @pytest.mark.parametrize(
@@ -51,7 +51,7 @@ from litellm.integrations.custom_logger import CustomLogger
             },
             (10, 20, 30),
         ),
-        # Test with litellm.Usage object
+        # Test with dheera_ai.Usage object
         (
             {"usage": Usage(prompt_tokens=15, completion_tokens=25, total_tokens=40)},
             (15, 25, 40),
@@ -248,13 +248,13 @@ def test_get_model_cost_information():
         custom_llm_provider="openai",
         init_response_obj={},
     )
-    litellm_info_gpt_3_5_turbo_model_map_value = litellm.get_model_info(
+    dheera_ai_info_gpt_3_5_turbo_model_map_value = dheera_ai.get_model_info(
         model="gpt-3.5-turbo", custom_llm_provider="openai"
     )
     print("result", result)
     assert result["model_map_key"] == "gpt-3.5-turbo"
     assert result["model_map_value"] is not None
-    assert result["model_map_value"] == litellm_info_gpt_3_5_turbo_model_map_value
+    assert result["model_map_value"] == dheera_ai_info_gpt_3_5_turbo_model_map_value
     # assert all fields in StandardLoggingModelInformation are present
     assert all(
         field in result for field in StandardLoggingModelInformation.__annotations__
@@ -305,12 +305,12 @@ def test_get_final_response_obj():
     )
     assert result == response_obj
 
-    # Test redaction when litellm.turn_off_message_logging is True
-    litellm.turn_off_message_logging = True
+    # Test redaction when dheera_ai.turn_off_message_logging is True
+    dheera_ai.turn_off_message_logging = True
     try:
-        model_response = litellm.ModelResponse(
+        model_response = dheera_ai.ModelResponse(
             choices=[
-                litellm.Choices(message=litellm.Message(content="sensitive content"))
+                dheera_ai.Choices(message=dheera_ai.Message(content="sensitive content"))
             ]
         )
         kwargs = {"messages": [{"role": "user", "content": "original message"}]}
@@ -321,51 +321,51 @@ def test_get_final_response_obj():
         print("result", result)
         print("type(result)", type(result))
         # Verify response message content was redacted
-        assert result["choices"][0]["message"]["content"] == "redacted-by-litellm"
+        assert result["choices"][0]["message"]["content"] == "redacted-by-dheera_ai"
         # Verify that redaction occurred in kwargs
-        assert kwargs["messages"][0]["content"] == "redacted-by-litellm"
+        assert kwargs["messages"][0]["content"] == "redacted-by-dheera_ai"
     finally:
-        # Reset litellm.turn_off_message_logging to its original value
-        litellm.turn_off_message_logging = False
+        # Reset dheera_ai.turn_off_message_logging to its original value
+        dheera_ai.turn_off_message_logging = False
 
 
 def test_get_standard_logging_payload_trace_id():
     """Test _get_standard_logging_payload_trace_id with different input scenarios"""
-    # Test case 1: When litellm_trace_id is provided in litellm_params
+    # Test case 1: When dheera_ai_trace_id is provided in dheera_ai_params
     from unittest.mock import MagicMock
     
     # Create a mock Logging object
     mock_logging_obj = MagicMock()
-    mock_logging_obj.litellm_trace_id = "default-trace-id"
+    mock_logging_obj.dheera_ai_trace_id = "default-trace-id"
     
-    # Test when litellm_trace_id is in litellm_params
-    litellm_params = {"litellm_trace_id": "dynamic-trace-id"}
+    # Test when dheera_ai_trace_id is in dheera_ai_params
+    dheera_ai_params = {"dheera_ai_trace_id": "dynamic-trace-id"}
     result = StandardLoggingPayloadSetup._get_standard_logging_payload_trace_id(
         logging_obj=mock_logging_obj,
-        litellm_params=litellm_params
+        dheera_ai_params=dheera_ai_params
     )
     assert result == "dynamic-trace-id"
     
-    # Test case 2: When litellm_trace_id is not provided in litellm_params
-    litellm_params = {}
+    # Test case 2: When dheera_ai_trace_id is not provided in dheera_ai_params
+    dheera_ai_params = {}
     result = StandardLoggingPayloadSetup._get_standard_logging_payload_trace_id(
         logging_obj=mock_logging_obj,
-        litellm_params=litellm_params
+        dheera_ai_params=dheera_ai_params
     )
     assert result == "default-trace-id"
     
-    # Test case 3: When litellm_params is None
+    # Test case 3: When dheera_ai_params is None
     result = StandardLoggingPayloadSetup._get_standard_logging_payload_trace_id(
         logging_obj=mock_logging_obj,
-        litellm_params={}
+        dheera_ai_params={}
     )
     assert result == "default-trace-id"
     
-    # Test case 4: When litellm_trace_id in params is not a string
-    litellm_params = {"litellm_trace_id": 12345}
+    # Test case 4: When dheera_ai_trace_id in params is not a string
+    dheera_ai_params = {"dheera_ai_trace_id": 12345}
     result = StandardLoggingPayloadSetup._get_standard_logging_payload_trace_id(
         logging_obj=mock_logging_obj,
-        litellm_params=litellm_params
+        dheera_ai_params=dheera_ai_params
     )
     assert result == "12345"
     assert isinstance(result, str)
@@ -441,22 +441,22 @@ def test_get_error_information():
     assert result["error_class"] == "Exception"
     assert result["llm_provider"] == ""
 
-    # Test with litellm exception from provider
-    litellm_exception = litellm.exceptions.RateLimitError(
+    # Test with dheera_ai exception from provider
+    dheera_ai_exception = dheera_ai.exceptions.RateLimitError(
         message="Test error",
         llm_provider="openai",
         model="gpt-3.5-turbo",
         response=None,
-        litellm_debug_info=None,
+        dheera_ai_debug_info=None,
         max_retries=None,
         num_retries=None,
     )
-    result = StandardLoggingPayloadSetup.get_error_information(litellm_exception)
+    result = StandardLoggingPayloadSetup.get_error_information(dheera_ai_exception)
     print("error_information", json.dumps(result, indent=2))
     assert result["error_code"] == "429"
     assert result["error_class"] == "RateLimitError"
     assert result["llm_provider"] == "openai"
-    assert result["error_message"] == "litellm.RateLimitError: Test error"
+    assert result["error_message"] == "dheera_ai.RateLimitError: Test error"
 
 
 def test_get_response_time():
@@ -523,8 +523,8 @@ def test_cost_breakdown_in_standard_logging_payload():
     Test that cost breakdown fields are properly included in StandardLoggingPayload.
     Tests input_cost, output_cost, tool_usage_cost, and total_cost fields.
     """
-    from litellm.litellm_core_utils.litellm_logging import get_standard_logging_object_payload, Logging
-    from litellm.types.utils import Usage
+    from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import get_standard_logging_object_payload, Logging
+    from dheera_ai.types.utils import Usage
     from datetime import datetime
     import time
     
@@ -535,7 +535,7 @@ def test_cost_breakdown_in_standard_logging_payload():
         stream=False,
         call_type="completion",
         start_time=datetime.now(),
-        litellm_call_id="test-123",
+        dheera_ai_call_id="test-123",
         function_id="test-function"
     )
     
@@ -606,7 +606,7 @@ def test_cost_breakdown_missing_in_standard_logging_payload():
     """
     Test that cost breakdown field is None when not available (e.g., for embedding calls)
     """
-    from litellm.litellm_core_utils.litellm_logging import get_standard_logging_object_payload, Logging
+    from dheera_ai.dheera_ai_core_utils.dheera_ai_logging import get_standard_logging_object_payload, Logging
     from datetime import datetime
     
     # Create a mock logging object without cost breakdown
@@ -616,7 +616,7 @@ def test_cost_breakdown_missing_in_standard_logging_payload():
         stream=False,
         call_type="embedding",  # Non-completion call type
         start_time=datetime.now(),
-        litellm_call_id="test-123",
+        dheera_ai_call_id="test-123",
         function_id="test-function"
     )
     

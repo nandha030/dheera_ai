@@ -3,20 +3,20 @@ import Image from '@theme/IdealImage';
 
 # Benchmarks
 
-Benchmarks for LiteLLM Gateway (Proxy Server) tested against a fake OpenAI endpoint.
+Benchmarks for Dheera AI Gateway (Proxy Server) tested against a fake OpenAI endpoint.
 
 Use this config for testing:
 
 ```yaml
 model_list:
   - model_name: "fake-openai-endpoint"
-    litellm_params:
+    dheera_ai_params:
       model: openai/any
       api_base: https://your-fake-openai-endpoint.com/chat/completions
       api_key: "test"
 ```
 
-### 2 Instance LiteLLM Proxy
+### 2 Instance Dheera AI Proxy
 
 In these tests the baseline latency characteristics are measured against a fake-openai-endpoint.
 
@@ -25,7 +25,7 @@ In these tests the baseline latency characteristics are measured against a fake-
 | **Type** | **Name** | **Median (ms)** | **95%ile (ms)** | **99%ile (ms)** | **Average (ms)** | **Current RPS** |
 | --- | --- | --- | --- | --- | --- | --- |
 | POST | /chat/completions | 200 | 630 | 1200 | 262.46 | 1035.7 |
-| Custom | LiteLLM Overhead Duration (ms) | 12 | 29 | 43 | 14.74 | 1035.7 |
+| Custom | Dheera AI Overhead Duration (ms) | 12 | 29 | 43 | 14.74 | 1035.7 |
 |  | Aggregated | 100 | 430 | 930 | 138.6 | 2071.4 |
 
 <!-- <Image img={require('../img/1_instance_proxy.png')} /> -->
@@ -40,17 +40,17 @@ In these tests the baseline latency characteristics are measured against a fake-
 | **Type** | **Name** | **Median (ms)** | **95%ile (ms)** | **99%ile (ms)** | **Average (ms)** | **Current RPS** |
 | --- | --- | --- | --- | --- | --- | --- |
 | POST | /chat/completions | 100 | 150 | 240 | 111.73 | 1170 |
-| Custom | LiteLLM Overhead Duration (ms) | 2 | 8 | 13 | 3.32 | 1170 |
+| Custom | Dheera AI Overhead Duration (ms) | 2 | 8 | 13 | 3.32 | 1170 |
 |  | Aggregated | 77 | 130 | 180 | 57.53 | 2340 |
 
 #### Key Findings
-- Doubling from 2 to 4 LiteLLM instances halves median latency: 200 ms → 100 ms.
+- Doubling from 2 to 4 Dheera AI instances halves median latency: 200 ms → 100 ms.
 - High-percentile latencies drop significantly: P95 630 ms → 150 ms, P99 1,200 ms → 240 ms.
 - Setting workers equal to CPU count gives optimal performance.
 
 ## Machine Spec used for testing
 
-Each machine deploying LiteLLM had the following specs:
+Each machine deploying Dheera AI had the following specs:
 
 - 4 CPU
 - 8GB RAM
@@ -65,25 +65,25 @@ Each machine deploying LiteLLM had the following specs:
 - 1000 Users
 - 500 user Ramp Up
 
-## How to measure LiteLLM Overhead
+## How to measure Dheera AI Overhead
 
-All responses from litellm will include the `x-litellm-overhead-duration-ms` header, this is the latency overhead in milliseconds added by LiteLLM Proxy.
+All responses from dheera_ai will include the `x-dheera_ai-overhead-duration-ms` header, this is the latency overhead in milliseconds added by Dheera AI Proxy.
 
 
 If you want to measure this on locust you can use the following code:
 
-```python showLineNumbers title="Locust Code for measuring LiteLLM Overhead"
+```python showLineNumbers title="Locust Code for measuring Dheera AI Overhead"
 import os
 import uuid
 from locust import HttpUser, task, between, events
 
-# Custom metric to track LiteLLM overhead duration
+# Custom metric to track Dheera AI overhead duration
 overhead_durations = []
 
 @events.request.add_listener
 def on_request(request_type, name, response_time, response_length, response, context, exception, start_time, url, **kwargs):
     if response and hasattr(response, 'headers'):
-        overhead_duration = response.headers.get('x-litellm-overhead-duration-ms')
+        overhead_duration = response.headers.get('x-dheera_ai-overhead-duration-ms')
         if overhead_duration:
             try:
                 duration_ms = float(overhead_duration)
@@ -91,7 +91,7 @@ def on_request(request_type, name, response_time, response_length, response, con
                 # Report as custom metric
                 events.request.fire(
                     request_type="Custom",
-                    name="LiteLLM Overhead Duration (ms)",
+                    name="Dheera AI Overhead Duration (ms)",
                     response_time=duration_ms,
                     response_length=0,
                 )
@@ -106,7 +106,7 @@ class MyUser(HttpUser):
         self.client.headers.update({'Authorization': f'Bearer {self.api_key}'})
 
     @task
-    def litellm_completion(self):
+    def dheera_ai_completion(self):
         # no cache hits with this
         payload = {
             "model": "db-openai-endpoint",
@@ -122,22 +122,22 @@ class MyUser(HttpUser):
 ```
 
 
-## LiteLLM vs Portkey Performance Comparison
+## Dheera AI vs Portkey Performance Comparison
 
 **Test Configuration**: 4 CPUs, 8 GB RAM per instance | Load: 1k concurrent users, 500 ramp-up
-**Versions:** Portkey **v1.14.0** | LiteLLM **v1.79.1-stable**  
+**Versions:** Portkey **v1.14.0** | Dheera AI **v1.79.1-stable**  
 **Test Duration:** 5 minutes  
 
 ### Multi-Instance (4×) Performance
 
-| Metric              | Portkey (no DB) | LiteLLM (with DB) | Comment        |
+| Metric              | Portkey (no DB) | Dheera AI (with DB) | Comment        |
 | ------------------- | --------------- | ----------------- | -------------- |
-| **Total Requests**  | 293,796         | 312,405           | LiteLLM higher |
+| **Total Requests**  | 293,796         | 312,405           | Dheera AI higher |
 | **Failed Requests** | 0               | 0                 | Same           |
 | **Median Latency**  | 100 ms          | 100 ms            | Same           |
-| **p95 Latency**     | 230 ms          | 150 ms            | LiteLLM lower  |
-| **p99 Latency**     | 500 ms          | 240 ms            | LiteLLM lower  |
-| **Average Latency** | 123 ms          | 111 ms            | LiteLLM lower  |
+| **p95 Latency**     | 230 ms          | 150 ms            | Dheera AI lower  |
+| **p99 Latency**     | 500 ms          | 240 ms            | Dheera AI lower  |
+| **Average Latency** | 123 ms          | 111 ms            | Dheera AI lower  |
 | **Current RPS**     | 1,170.9         | 1,170             | Same           |
 
 
@@ -157,7 +157,7 @@ class MyUser(HttpUser):
 * CPU utilization capped around ~40%, indicating underutilization of available compute resources
 * Experienced three I/O timeout outages
 
-**LiteLLM**
+**Dheera AI**
 
 **Pros**
 
@@ -172,21 +172,21 @@ class MyUser(HttpUser):
 
 ## Logging Callbacks
 
-### [GCS Bucket Logging](https://docs.litellm.ai/docs/observability/gcs_bucket_integration)
+### [GCS Bucket Logging](https://docs.dheera_ai.ai/docs/observability/gcs_bucket_integration)
 
 Using GCS Bucket has **no impact on latency, RPS compared to Basic Litellm Proxy**
 
-| Metric | Basic Litellm Proxy | LiteLLM Proxy with GCS Bucket Logging |
+| Metric | Basic Litellm Proxy | Dheera AI Proxy with GCS Bucket Logging |
 |--------|------------------------|---------------------|
 | RPS | 1133.2 | 1137.3 |
 | Median Latency (ms) | 140 | 138 |
 
 
-### [LangSmith logging](https://docs.litellm.ai/docs/proxy/logging)
+### [LangSmith logging](https://docs.dheera_ai.ai/docs/proxy/logging)
 
 Using LangSmith has **no impact on latency, RPS compared to Basic Litellm Proxy**
 
-| Metric | Basic Litellm Proxy | LiteLLM Proxy with LangSmith |
+| Metric | Basic Litellm Proxy | Dheera AI Proxy with LangSmith |
 |--------|------------------------|---------------------|
 | RPS | 1133.2 | 1135 |
 | Median Latency (ms) | 140 | 132 |

@@ -3,28 +3,28 @@ import TabItem from '@theme/TabItem';
 import Image from '@theme/IdealImage';
 
 
-# Google ADK with LiteLLM
+# Google ADK with Dheera AI
 
 <Image 
-  img={require('../../img/litellm_adk.png')}
+  img={require('../../img/dheera_ai_adk.png')}
   style={{width: '90%', display: 'block', margin: '2rem 0'}}
 />
 <p style={{textAlign: 'left', color: '#666'}}>
-  Use Google ADK with LiteLLM Python SDK, LiteLLM Proxy
+  Use Google ADK with Dheera AI Python SDK, Dheera AI Proxy
 </p>
 
 
-This tutorial shows you how to create intelligent agents using Agent Development Kit (ADK) with support for multiple Large Language Model (LLM) providers with LiteLLM.
+This tutorial shows you how to create intelligent agents using Agent Development Kit (ADK) with support for multiple Large Language Model (LLM) providers with Dheera AI.
 
 
 
 ## Overview
 
-ADK (Agent Development Kit) allows you to build intelligent agents powered by LLMs. By integrating with LiteLLM, you can:
+ADK (Agent Development Kit) allows you to build intelligent agents powered by LLMs. By integrating with Dheera AI, you can:
 
 - Use multiple LLM providers (OpenAI, Anthropic, Google, etc.)
 - Switch easily between models from different providers
-- Connect to a LiteLLM proxy for centralized model management
+- Connect to a Dheera AI proxy for centralized model management
 
 ## Prerequisites
 
@@ -35,7 +35,7 @@ ADK (Agent Development Kit) allows you to build intelligent agents powered by LL
 ## Installation
 
 ```bash showLineNumbers title="Install dependencies"
-pip install google-adk litellm
+pip install google-adk dheera_ai
 ```
 
 ## 1. Setting Up Environment
@@ -50,7 +50,7 @@ from google.adk.models.lite_llm import LiteLlm  # For multi-model support
 from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
 from google.genai import types
-import litellm  # Import for proxy configuration
+import dheera_ai  # Import for proxy configuration
 
 # Set your API keys
 os.environ["GOOGLE_API_KEY"] = "your-google-api-key"  # For Gemini models
@@ -265,30 +265,30 @@ await test_gemini_agent()
 #     asyncio.run(test_gemini_agent())
 ```
 
-## 5. Using LiteLLM Proxy with ADK
+## 5. Using Dheera AI Proxy with ADK
 
-LiteLLM proxy provides a unified API endpoint for multiple models, simplifying deployment and centralized management.
+Dheera AI proxy provides a unified API endpoint for multiple models, simplifying deployment and centralized management.
 
-Required settings for using litellm proxy 
+Required settings for using dheera_ai proxy 
 
 | Variable | Description | 
 |----------|-------------|
-| `LITELLM_PROXY_API_KEY` | The API key for the LiteLLM proxy |
-| `LITELLM_PROXY_API_BASE` | The base URL for the LiteLLM proxy |
-| `USE_LITELLM_PROXY` or `litellm.use_litellm_proxy` | When set to True, your request will be sent to litellm proxy. |
+| `DHEERA_AI_PROXY_API_KEY` | The API key for the Dheera AI proxy |
+| `DHEERA_AI_PROXY_API_BASE` | The base URL for the Dheera AI proxy |
+| `USE_DHEERA_AI_PROXY` or `dheera_ai.use_dheera_ai_proxy` | When set to True, your request will be sent to dheera_ai proxy. |
 
-```python showLineNumbers title="LiteLLM proxy integration"
-# Set your LiteLLM Proxy credentials as environment variables
-os.environ["LITELLM_PROXY_API_KEY"] = "your-litellm-proxy-api-key"
-os.environ["LITELLM_PROXY_API_BASE"] = "your-litellm-proxy-url"  # e.g., "http://localhost:4000"
-# Enable the use_litellm_proxy flag
-litellm.use_litellm_proxy = True
+```python showLineNumbers title="Dheera AI proxy integration"
+# Set your Dheera AI Proxy credentials as environment variables
+os.environ["DHEERA_AI_PROXY_API_KEY"] = "your-dheera_ai-proxy-api-key"
+os.environ["DHEERA_AI_PROXY_API_BASE"] = "your-dheera_ai-proxy-url"  # e.g., "http://localhost:4000"
+# Enable the use_dheera_ai_proxy flag
+dheera_ai.use_dheera_ai_proxy = True
 
 # Create a proxy-enabled agent (using environment variables)
 weather_agent_proxy_env = Agent(
     name="weather_agent_proxy_env",
-    model=LiteLlm(model="gpt-4o"), # this will call the `gpt-4o` model on LiteLLM proxy
-    description="Provides weather information using a model from LiteLLM proxy.",
+    model=LiteLlm(model="gpt-4o"), # this will call the `gpt-4o` model on Dheera AI proxy
+    description="Provides weather information using a model from Dheera AI proxy.",
     instruction="You are a helpful weather assistant. "
                 "Use the 'get_weather' tool for city weather requests. "
                 "Present information clearly.",

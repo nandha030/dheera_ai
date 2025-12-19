@@ -6,7 +6,7 @@ https://deepinfra.com/
 
 :::tip
 
-**We support ALL DeepInfra models, just set `model=deepinfra/<any-model-on-deepinfra>` as a prefix when sending litellm requests**
+**We support ALL DeepInfra models, just set `model=deepinfra/<any-model-on-deepinfra>` as a prefix when sending dheera_ai requests**
 
 :::
 
@@ -24,25 +24,25 @@ os.environ['DEEPINFRA_API_KEY']
 
 ## Sample Usage
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['DEEPINFRA_API_KEY'] = ""
 response = completion(
     model="deepinfra/meta-llama/Llama-2-70b-chat-hf", 
-    messages=[{"role": "user", "content": "write code for saying hi from LiteLLM"}]
+    messages=[{"role": "user", "content": "write code for saying hi from Dheera AI"}]
 )
 ```
 
 ## Sample Usage - Streaming
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 os.environ['DEEPINFRA_API_KEY'] = ""
 response = completion(
     model="deepinfra/meta-llama/Llama-2-70b-chat-hf", 
-    messages=[{"role": "user", "content": "write code for saying hi from LiteLLM"}],
+    messages=[{"role": "user", "content": "write code for saying hi from Dheera AI"}],
     stream=True
 )
 
@@ -64,7 +64,7 @@ for chunk in response:
 
 ## Rerank Endpoint
 
-LiteLLM provides a Cohere API compatible `/rerank` endpoint for DeepInfra rerank models.
+Dheera AI provides a Cohere API compatible `/rerank` endpoint for DeepInfra rerank models.
 
 ### Supported Rerank Models
 
@@ -74,13 +74,13 @@ LiteLLM provides a Cohere API compatible `/rerank` endpoint for DeepInfra rerank
 | `deepinfra/Qwen/Qwen3-Reranker-4B` | Medium rerank model (4B parameters) |
 | `deepinfra/Qwen/Qwen3-Reranker-8B` | Large rerank model (8B parameters) |
 
-### Usage - LiteLLM Python SDK
+### Usage - Dheera AI Python SDK
 
 <Tabs>
 <TabItem value="sdk" label="SDK">
 
 ```python
-from litellm import rerank
+from dheera_ai import rerank
 import os
 
 os.environ["DEEPINFRA_API_KEY"] = "your-api-key"
@@ -106,7 +106,7 @@ print(response)
 ```yaml
 model_list:
   - model_name: Qwen/Qwen3-Reranker-0.6B
-    litellm_params:
+    dheera_ai_params:
       model: deepinfra/Qwen/Qwen3-Reranker-0.6B
       api_key: os.environ/DEEPINFRA_API_KEY
 ```
@@ -114,7 +114,7 @@ model_list:
 2. Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml
+dheera_ai --config /path/to/config.yaml
 
 # RUNNING on http://0.0.0.0:4000/
 ```

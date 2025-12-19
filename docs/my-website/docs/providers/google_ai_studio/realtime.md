@@ -3,7 +3,7 @@
 | Feature | Description | Comments |
 | --- | --- | --- |
 | Proxy | ✅ |  |
-| SDK | ⌛️ | Experimental access via `litellm._arealtime`. |
+| SDK | ⌛️ | Experimental access via `dheera_ai._arealtime`. |
 
 
 ## Proxy Usage
@@ -13,7 +13,7 @@
 ```yaml
 model_list:
   - model_name: "gemini-2.0-flash"
-    litellm_params:
+    dheera_ai_params:
       model: gemini/gemini-2.0-flash-live-001
     model_info:
       mode: realtime
@@ -22,7 +22,7 @@ model_list:
 ### Start proxy 
 
 ```bash
-litellm --config /path/to/config.yaml 
+dheera_ai --config /path/to/config.yaml 
 
 # RUNNING on http://0.0.0.0:8000
 ```
@@ -39,7 +39,7 @@ const url = "ws://0.0.0.0:4000/v1/realtime?model=openai-gemini-2.0-flash";
 
 const ws = new WebSocket(url, {
     headers: {
-        "api-key": `${LITELLM_API_KEY}`,
+        "api-key": `${DHEERA_AI_API_KEY}`,
         "OpenAI-Beta": "realtime=v1",
     },
 });
@@ -86,7 +86,7 @@ ws.on("error", function handleError(error) {
 
 
 
-## [Supported Session Params](https://github.com/BerriAI/litellm/blob/e87b536d038f77c2a2206fd7433e275c487179ee/litellm/llms/gemini/realtime/transformation.py#L155)
+## [Supported Session Params](https://github.com/BerriAI/dheera_ai/blob/e87b536d038f77c2a2206fd7433e275c487179ee/dheera_ai/llms/gemini/realtime/transformation.py#L155)
 
 ## More Examples
 ### [Gemini Realtime API with Audio Input/Output](../../../docs/tutorials/gemini_realtime_with_audio)

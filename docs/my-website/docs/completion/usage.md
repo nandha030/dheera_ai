@@ -1,6 +1,6 @@
 # Usage 
 
-LiteLLM returns the OpenAI compatible usage object across all providers.
+Dheera AI returns the OpenAI compatible usage object across all providers.
 
 ```bash
 "usage": {
@@ -13,7 +13,7 @@ LiteLLM returns the OpenAI compatible usage object across all providers.
 ## Quick Start 
 
 ```python
-from litellm import completion
+from dheera_ai import completion
 import os
 
 ## set ENV variables
@@ -26,7 +26,7 @@ response = completion(
 
 print(response.usage)
 ```
-> **Note:** LiteLLM supports endpoint bridging—if a model does not natively support a requested endpoint, LiteLLM will automatically route the call to the correct supported endpoint (such as bridging `/chat/completions` to `/responses` or vice versa) based on the model's `mode`set in `model_prices_and_context_window`.
+> **Note:** Dheera AI supports endpoint bridging—if a model does not natively support a requested endpoint, Dheera AI will automatically route the call to the correct supported endpoint (such as bridging `/chat/completions` to `/responses` or vice versa) based on the model's `mode`set in `model_prices_and_context_window`.
 
 ## Streaming Usage
 
@@ -34,7 +34,7 @@ if `stream_options={"include_usage": True}` is set, an additional chunk will be 
 
 
 ```python
-from litellm import completion 
+from dheera_ai import completion 
 
 completion = completion(
   model="gpt-4o",
