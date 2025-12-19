@@ -8,7 +8,7 @@ generator client {
 }
 
 // Budget / Rate Limits for an org
-model LiteLLM_BudgetTable {
+model DheeraAI_BudgetTable {
   budget_id String @id @default(uuid())
   max_budget Float?
   soft_budget Float?
@@ -22,16 +22,16 @@ model LiteLLM_BudgetTable {
   created_by String
   updated_at    DateTime               @default(now()) @updatedAt @map("updated_at")
   updated_by String
-  organization LiteLLM_OrganizationTable[] // multiple orgs can have the same budget
-  keys LiteLLM_VerificationToken[] // multiple keys can have the same budget
-  end_users LiteLLM_EndUserTable[] // multiple end-users can have the same budget
-  tags LiteLLM_TagTable[] // multiple tags can have the same budget
-  team_membership LiteLLM_TeamMembership[] // budgets of Users within a Team 
-  organization_membership LiteLLM_OrganizationMembership[] // budgets of Users within a Organization 
+  organization DheeraAI_OrganizationTable[] // multiple orgs can have the same budget
+  keys DheeraAI_VerificationToken[] // multiple keys can have the same budget
+  end_users DheeraAI_EndUserTable[] // multiple end-users can have the same budget
+  tags DheeraAI_TagTable[] // multiple tags can have the same budget
+  team_membership DheeraAI_TeamMembership[] // budgets of Users within a Team 
+  organization_membership DheeraAI_OrganizationMembership[] // budgets of Users within a Organization 
 }
 
 // Models on proxy
-model LiteLLM_CredentialsTable {
+model DheeraAI_CredentialsTable {
   credential_id String @id @default(uuid())
   credential_name String @unique
   credential_values Json
@@ -43,10 +43,10 @@ model LiteLLM_CredentialsTable {
 }
 
 // Models on proxy
-model LiteLLM_ProxyModelTable {
+model DheeraAI_ProxyModelTable {
   model_id String @id @default(uuid())
   model_name String 
-  litellm_params Json
+  dheera_ai_params Json
   model_info Json? 
   created_at    DateTime               @default(now()) @map("created_at")
   created_by String
@@ -56,10 +56,10 @@ model LiteLLM_ProxyModelTable {
 
 
 // Agents on proxy
-model LiteLLM_AgentsTable {
+model DheeraAI_AgentsTable {
   agent_id String @id @default(uuid())
   agent_name String @unique
-  litellm_params Json?
+  dheera_ai_params Json?
   agent_card_params Json
   agent_access_groups String[]       @default([])
   created_at    DateTime               @default(now()) @map("created_at")
@@ -68,7 +68,7 @@ model LiteLLM_AgentsTable {
   updated_by String
 }
 
-model LiteLLM_OrganizationTable {
+model DheeraAI_OrganizationTable {
 		organization_id String @id @default(uuid())
     organization_alias  String
     budget_id String
@@ -81,28 +81,28 @@ model LiteLLM_OrganizationTable {
     created_by String
     updated_at    DateTime               @default(now()) @updatedAt @map("updated_at")
     updated_by String
-    litellm_budget_table LiteLLM_BudgetTable?   @relation(fields: [budget_id], references: [budget_id])
-    teams LiteLLM_TeamTable[] 
-    users LiteLLM_UserTable[]
-    keys LiteLLM_VerificationToken[]
-    members LiteLLM_OrganizationMembership[] @relation("OrganizationToMembership")
-    object_permission LiteLLM_ObjectPermissionTable?   @relation(fields: [object_permission_id], references: [object_permission_id])
+    dheera_ai_budget_table DheeraAI_BudgetTable?   @relation(fields: [budget_id], references: [budget_id])
+    teams DheeraAI_TeamTable[] 
+    users DheeraAI_UserTable[]
+    keys DheeraAI_VerificationToken[]
+    members DheeraAI_OrganizationMembership[] @relation("OrganizationToMembership")
+    object_permission DheeraAI_ObjectPermissionTable?   @relation(fields: [object_permission_id], references: [object_permission_id])
 }
 
 // Model info for teams, just has model aliases for now.
-model LiteLLM_ModelTable {
+model DheeraAI_ModelTable {
   id Int @id @default(autoincrement())
   model_aliases Json? @map("aliases")
   created_at    DateTime               @default(now()) @map("created_at")
   created_by String
   updated_at    DateTime               @default(now()) @updatedAt @map("updated_at")
   updated_by String
-  team LiteLLM_TeamTable?
+  team DheeraAI_TeamTable?
 }
 
 
 // Assign prod keys to groups, not individuals 
-model LiteLLM_TeamTable {
+model DheeraAI_TeamTable {
 		team_id    String @id @default(uuid())
     team_alias  String? 
     organization_id String?
@@ -125,14 +125,14 @@ model LiteLLM_TeamTable {
     model_spend      Json @default("{}")
     model_max_budget Json @default("{}")
     team_member_permissions String[] @default([])
-    model_id Int? @unique // id for LiteLLM_ModelTable -> stores team-level model aliases
-    litellm_organization_table LiteLLM_OrganizationTable?   @relation(fields: [organization_id], references: [organization_id])
-    litellm_model_table LiteLLM_ModelTable? @relation(fields: [model_id], references: [id])
-    object_permission LiteLLM_ObjectPermissionTable?   @relation(fields: [object_permission_id], references: [object_permission_id])
+    model_id Int? @unique // id for DheeraAI_ModelTable -> stores team-level model aliases
+    dheera_ai_organization_table DheeraAI_OrganizationTable?   @relation(fields: [organization_id], references: [organization_id])
+    dheera_ai_model_table DheeraAI_ModelTable? @relation(fields: [model_id], references: [id])
+    object_permission DheeraAI_ObjectPermissionTable?   @relation(fields: [object_permission_id], references: [object_permission_id])
 }
 
 // Track spend, rate limit, budget Users
-model LiteLLM_UserTable {
+model DheeraAI_UserTable {
 		user_id    String @id
     user_alias String? 
     team_id    String?
@@ -159,15 +159,15 @@ model LiteLLM_UserTable {
     updated_at      DateTime?               @default(now()) @updatedAt @map("updated_at")
 
     // relations
-    litellm_organization_table LiteLLM_OrganizationTable?                   @relation(fields: [organization_id], references: [organization_id])
-    organization_memberships LiteLLM_OrganizationMembership[]
-    invitations_created LiteLLM_InvitationLink[] @relation("CreatedBy")
-    invitations_updated LiteLLM_InvitationLink[] @relation("UpdatedBy")
-    invitations_user    LiteLLM_InvitationLink[] @relation("UserId")
-    object_permission LiteLLM_ObjectPermissionTable?   @relation(fields: [object_permission_id], references: [object_permission_id])
+    dheera_ai_organization_table DheeraAI_OrganizationTable?                   @relation(fields: [organization_id], references: [organization_id])
+    organization_memberships DheeraAI_OrganizationMembership[]
+    invitations_created DheeraAI_InvitationLink[] @relation("CreatedBy")
+    invitations_updated DheeraAI_InvitationLink[] @relation("UpdatedBy")
+    invitations_user    DheeraAI_InvitationLink[] @relation("UserId")
+    object_permission DheeraAI_ObjectPermissionTable?   @relation(fields: [object_permission_id], references: [object_permission_id])
 }
 
-model LiteLLM_ObjectPermissionTable {
+model DheeraAI_ObjectPermissionTable {
   object_permission_id  String         @id @default(uuid())
   mcp_servers           String[]       @default([])
   mcp_access_groups     String[]       @default([])
@@ -175,14 +175,14 @@ model LiteLLM_ObjectPermissionTable {
   vector_stores         String[]       @default([])
   agents                String[]       @default([])
   agent_access_groups   String[]       @default([])
-  teams                 LiteLLM_TeamTable[]
-  verification_tokens   LiteLLM_VerificationToken[]
-  organizations         LiteLLM_OrganizationTable[]
-  users                 LiteLLM_UserTable[]
+  teams                 DheeraAI_TeamTable[]
+  verification_tokens   DheeraAI_VerificationToken[]
+  organizations         DheeraAI_OrganizationTable[]
+  users                 DheeraAI_UserTable[]
 }
 
 // Holds the MCP server configuration 
-model LiteLLM_MCPServerTable {
+model DheeraAI_MCPServerTable {
   server_id    String         @id @default(uuid())
   server_name  String?
   alias        String?
@@ -211,7 +211,7 @@ model LiteLLM_MCPServerTable {
 }
 
 // Generate Tokens for Proxy
-model LiteLLM_VerificationToken {
+model DheeraAI_VerificationToken {
     token      String   @id
     key_name   String?
     key_alias   String?
@@ -248,47 +248,47 @@ model LiteLLM_VerificationToken {
     rotation_interval String?   // How often to rotate (e.g., "30d", "90d")
     last_rotation_at DateTime?  // When this key was last rotated
     key_rotation_at  DateTime?  // When this key should next be rotated
-    litellm_budget_table LiteLLM_BudgetTable?   @relation(fields: [budget_id], references: [budget_id])
-    litellm_organization_table LiteLLM_OrganizationTable?   @relation(fields: [organization_id], references: [organization_id])
-    object_permission LiteLLM_ObjectPermissionTable?   @relation(fields: [object_permission_id], references: [object_permission_id])
+    dheera_ai_budget_table DheeraAI_BudgetTable?   @relation(fields: [budget_id], references: [budget_id])
+    dheera_ai_organization_table DheeraAI_OrganizationTable?   @relation(fields: [organization_id], references: [organization_id])
+    object_permission DheeraAI_ObjectPermissionTable?   @relation(fields: [object_permission_id], references: [object_permission_id])
 }
 
-model LiteLLM_EndUserTable {
+model DheeraAI_EndUserTable {
   user_id String @id
   alias    String? // admin-facing alias
   spend      Float    @default(0.0)
   allowed_model_region String? // require all user requests to use models in this specific region
   default_model String? // use along with 'allowed_model_region'. if no available model in region, default to this model.
   budget_id String?
-  litellm_budget_table LiteLLM_BudgetTable?   @relation(fields: [budget_id], references: [budget_id])
+  dheera_ai_budget_table DheeraAI_BudgetTable?   @relation(fields: [budget_id], references: [budget_id])
   blocked Boolean @default(false)
 }
 
 // Track tags with budgets and spend
-model LiteLLM_TagTable {
+model DheeraAI_TagTable {
   tag_name String @id
   description String?
   models String[]
   model_info Json? // maps model_id to model_name
   spend Float @default(0.0)
   budget_id String?
-  litellm_budget_table LiteLLM_BudgetTable? @relation(fields: [budget_id], references: [budget_id])
+  dheera_ai_budget_table DheeraAI_BudgetTable? @relation(fields: [budget_id], references: [budget_id])
   created_at DateTime @default(now()) @map("created_at")
   created_by String?
   updated_at DateTime @default(now()) @updatedAt @map("updated_at")
 }
 
 // store proxy config.yaml
-model LiteLLM_Config {
+model DheeraAI_Config {
   param_name String @id
   param_value Json?
 }
 
 // View spend, model, api_key per request
-model LiteLLM_SpendLogs {
+model DheeraAI_SpendLogs {
   request_id          String @id
   call_type           String
-  api_key             String  @default ("") // Hashed API Token. Not the actual Virtual Key. Equivalent to 'token' column in LiteLLM_VerificationToken
+  api_key             String  @default ("") // Hashed API Token. Not the actual Virtual Key. Equivalent to 'token' column in DheeraAI_VerificationToken
   spend               Float    @default(0.0)
   total_tokens        Int     @default(0)
   prompt_tokens       Int     @default(0)
@@ -299,7 +299,7 @@ model LiteLLM_SpendLogs {
   model               String   @default("")
   model_id            String?   @default("") // the model id stored in proxy model db
   model_group         String?   @default("") // public model_name / model_group
-  custom_llm_provider String?   @default("") // litellm used custom_llm_provider
+  custom_llm_provider String?   @default("") // dheera_ai used custom_llm_provider
   api_base            String?   @default("")
   user                String?   @default("")
   metadata            Json?     @default("{}")
@@ -323,13 +323,13 @@ model LiteLLM_SpendLogs {
 }
 
 // View spend, model, api_key per request
-model LiteLLM_ErrorLogs {
+model DheeraAI_ErrorLogs {
   request_id          String   @id @default(uuid())
   startTime           DateTime // Assuming start_time is a DateTime field
   endTime             DateTime // Assuming end_time is a DateTime field
   api_base            String   @default("") 
   model_group         String   @default("")      // public model_name / model_group
-  litellm_model_name  String   @default("")      // model passed to litellm
+  dheera_ai_model_name  String   @default("")      // model passed to dheera_ai
   model_id            String   @default("")      // ID of model in ProxyModelTable
   request_kwargs      Json     @default("{}")
   exception_type      String   @default("")
@@ -338,7 +338,7 @@ model LiteLLM_ErrorLogs {
 }
 
 // Beta - allow team members to request access to a model
-model LiteLLM_UserNotifications {
+model DheeraAI_UserNotifications {
   request_id          String @id
   user_id             String 
   models              String[]
@@ -346,17 +346,17 @@ model LiteLLM_UserNotifications {
   status              String // approved, disapproved, pending
 }
 
-model LiteLLM_TeamMembership {
+model DheeraAI_TeamMembership {
   // Use this table to track the Internal User's Spend within a Team + Set Budgets, rpm limits for the user within the team
   user_id    String
   team_id    String
   spend      Float    @default(0.0)
   budget_id String?
-  litellm_budget_table LiteLLM_BudgetTable?   @relation(fields: [budget_id], references: [budget_id])
+  dheera_ai_budget_table DheeraAI_BudgetTable?   @relation(fields: [budget_id], references: [budget_id])
   @@id([user_id, team_id])
 }
 
-model LiteLLM_OrganizationMembership {
+model DheeraAI_OrganizationMembership {
   // Use this table to track Internal User and Organization membership. Helps tracking a users role within an Organization
   user_id         String
   organization_id String
@@ -367,9 +367,9 @@ model LiteLLM_OrganizationMembership {
   updated_at      DateTime?               @default(now()) @updatedAt @map("updated_at")
 
   // relations
-  user LiteLLM_UserTable @relation(fields: [user_id], references: [user_id])
-  organization LiteLLM_OrganizationTable @relation("OrganizationToMembership", fields: [organization_id], references: [organization_id])
-  litellm_budget_table LiteLLM_BudgetTable?   @relation(fields: [budget_id], references: [budget_id])
+  user DheeraAI_UserTable @relation(fields: [user_id], references: [user_id])
+  organization DheeraAI_OrganizationTable @relation("OrganizationToMembership", fields: [organization_id], references: [organization_id])
+  dheera_ai_budget_table DheeraAI_BudgetTable?   @relation(fields: [budget_id], references: [budget_id])
   
   
 
@@ -377,7 +377,7 @@ model LiteLLM_OrganizationMembership {
   @@unique([user_id, organization_id])
 }
 
-model LiteLLM_InvitationLink {
+model DheeraAI_InvitationLink {
   // use this table to track invite links sent by admin for people to join the proxy
   id String   @id @default(uuid())
   user_id String
@@ -390,13 +390,13 @@ model LiteLLM_InvitationLink {
   updated_by String // who updated the status (admin/user who accepted invite)
 
   // Relations
-  liteLLM_user_table_user    LiteLLM_UserTable  @relation("UserId", fields: [user_id], references: [user_id])
-  liteLLM_user_table_created LiteLLM_UserTable  @relation("CreatedBy", fields: [created_by], references: [user_id])
-  liteLLM_user_table_updated LiteLLM_UserTable  @relation("UpdatedBy", fields: [updated_by], references: [user_id])
+  liteLLM_user_table_user    DheeraAI_UserTable  @relation("UserId", fields: [user_id], references: [user_id])
+  liteLLM_user_table_created DheeraAI_UserTable  @relation("CreatedBy", fields: [created_by], references: [user_id])
+  liteLLM_user_table_updated DheeraAI_UserTable  @relation("UpdatedBy", fields: [updated_by], references: [user_id])
 }
 
 
-model LiteLLM_AuditLog {
+model DheeraAI_AuditLog {
   id                 String   @id @default(uuid())
   updated_at         DateTime @default(now())
   changed_by         String   @default("")   // user or system that performed the action
@@ -409,7 +409,7 @@ model LiteLLM_AuditLog {
 }
 
 // Track daily user spend metrics per model and key
-model LiteLLM_DailyUserSpend {
+model DheeraAI_DailyUserSpend {
   id                  String   @id @default(uuid())
   user_id             String? 
   date                String
@@ -438,7 +438,7 @@ model LiteLLM_DailyUserSpend {
 }
 
 // Track daily organization spend metrics per model and key
-model LiteLLM_DailyOrganizationSpend {
+model DheeraAI_DailyOrganizationSpend {
   id                  String   @id @default(uuid())
   organization_id     String?
   date                String
@@ -467,7 +467,7 @@ model LiteLLM_DailyOrganizationSpend {
 }
 
 // Track daily end user (customer) spend metrics per model and key
-model LiteLLM_DailyEndUserSpend {
+model DheeraAI_DailyEndUserSpend {
   id                  String   @id @default(uuid())
   end_user_id         String?
   date                String
@@ -495,7 +495,7 @@ model LiteLLM_DailyEndUserSpend {
 }
 
 // Track daily agent spend metrics per model and key
-model LiteLLM_DailyAgentSpend {
+model DheeraAI_DailyAgentSpend {
   id                  String   @id @default(uuid())
   agent_id            String?
   date                String
@@ -523,7 +523,7 @@ model LiteLLM_DailyAgentSpend {
 }
 
 // Track daily team spend metrics per model and key
-model LiteLLM_DailyTeamSpend {
+model DheeraAI_DailyTeamSpend {
   id                  String   @id @default(uuid())
   team_id             String?
   date                String
@@ -552,7 +552,7 @@ model LiteLLM_DailyTeamSpend {
 }
 
 // Track daily team spend metrics per model and key
-model LiteLLM_DailyTagSpend {
+model DheeraAI_DailyTagSpend {
   id                  String   @id @default(uuid())
   request_id          String?
   tag                 String?   
@@ -583,7 +583,7 @@ model LiteLLM_DailyTagSpend {
 
 
 // Track the status of cron jobs running. Only allow one pod to run the job at a time
-model LiteLLM_CronJob {
+model DheeraAI_CronJob {
   cronjob_id            String   @id @default(cuid()) // Unique ID for the record
   pod_id         String   // Unique identifier for the pod acting as the leader
   status        JobStatus @default(INACTIVE) // Status of the cron job (active or inactive)
@@ -596,7 +596,7 @@ enum JobStatus {
   INACTIVE
 }
 
-model LiteLLM_ManagedFileTable {
+model DheeraAI_ManagedFileTable {
   id String @id @default(uuid())
   unified_file_id String @unique // The base64 encoded unified file ID
   file_object Json? // Stores the OpenAIFileObject
@@ -612,7 +612,7 @@ model LiteLLM_ManagedFileTable {
   @@index([unified_file_id])
 }
 
-model LiteLLM_ManagedObjectTable { // for batches or finetuning jobs which use the 
+model DheeraAI_ManagedObjectTable { // for batches or finetuning jobs which use the 
   id String @id @default(uuid())
   unified_object_id String @unique // The base64 encoded unified file ID
   model_object_id String @unique // the id returned by the backend API provider 
@@ -628,7 +628,7 @@ model LiteLLM_ManagedObjectTable { // for batches or finetuning jobs which use t
   @@index([model_object_id])
 }
 
-model LiteLLM_ManagedVectorStoresTable {
+model DheeraAI_ManagedVectorStoresTable {
   vector_store_id String @id
   custom_llm_provider String
   vector_store_name String?
@@ -636,26 +636,26 @@ model LiteLLM_ManagedVectorStoresTable {
   vector_store_metadata Json?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  litellm_credential_name String?
-  litellm_params Json?
+  dheera_ai_credential_name String?
+  dheera_ai_params Json?
 }
 
 // Guardrails table for storing guardrail configurations
-model LiteLLM_GuardrailsTable {
+model DheeraAI_GuardrailsTable {
   guardrail_id String @id @default(uuid())
   guardrail_name String @unique
-  litellm_params Json
+  dheera_ai_params Json
   guardrail_info Json?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
 
 // Prompt table for storing prompt configurations
-model LiteLLM_PromptTable {
+model DheeraAI_PromptTable {
   id String @id @default(uuid())
   prompt_id String
   version Int @default(1)
-  litellm_params Json
+  dheera_ai_params Json
   prompt_info Json?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -664,7 +664,7 @@ model LiteLLM_PromptTable {
   @@index([prompt_id])
 }
 
-model LiteLLM_HealthCheckTable {
+model DheeraAI_HealthCheckTable {
   health_check_id String @id @default(uuid())
   model_name String
   model_id String?
@@ -685,27 +685,27 @@ model LiteLLM_HealthCheckTable {
 }
 
 // Search Tools table for storing search tool configurations
-model LiteLLM_SearchToolsTable {
+model DheeraAI_SearchToolsTable {
   search_tool_id String @id @default(uuid())
   search_tool_name String @unique
-  litellm_params Json
+  dheera_ai_params Json
   search_tool_info Json?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
 
 // SSO configuration table
-model LiteLLM_SSOConfig {
+model DheeraAI_SSOConfig {
   id String @id @default("sso_config")
   sso_settings Json
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
 
-model LiteLLM_ManagedVectorStoreIndexTable {
+model DheeraAI_ManagedVectorStoreIndexTable {
   id String @id @default(uuid())
   index_name String @unique
-  litellm_params Json
+  dheera_ai_params Json
   index_info Json?
   created_at DateTime @default(now())
   created_by String?
@@ -714,7 +714,7 @@ model LiteLLM_ManagedVectorStoreIndexTable {
 }
 
 // Cache configuration table
-model LiteLLM_CacheConfig {
+model DheeraAI_CacheConfig {
   id String @id @default("cache_config")
   cache_settings Json
   created_at DateTime @default(now())
@@ -722,7 +722,7 @@ model LiteLLM_CacheConfig {
 }
 
 // UI Settings configuration table
-model LiteLLM_UISettings {
+model DheeraAI_UISettings {
   id String @id @default("ui_settings")
   ui_settings Json
   created_at DateTime @default(now())

@@ -3,7 +3,7 @@
     </h1>
     <p align="center">
         <p align="center">
-        <a href="https://render.com/deploy?repo=https://github.com/BerriAI/dheera_ai" target="_blank" rel="nofollow"><img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render"></a>
+        <a href="https://render.com/deploy?repo=https://github.com/nandha030/dheera_ai" target="_blank" rel="nofollow"><img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render"></a>
         <a href="https://railway.app/template/HLP0Ub?referralCode=jch2ME">
           <img src="https://railway.app/button.svg" alt="Deploy on Railway">
         </a>
@@ -11,7 +11,7 @@
         <p align="center">Call all LLM APIs using the OpenAI format [Bedrock, Huggingface, VertexAI, TogetherAI, Azure, OpenAI, Groq etc.]
         <br>
     </p>
-<h4 align="center"><a href="https://docs.dheera_ai.ai/docs/simple_proxy" target="_blank">Dheera AI Proxy Server (LLM Gateway)</a> | <a href="https://docs.dheera_ai.ai/docs/enterprise#hosted-dheera_ai-proxy" target="_blank"> Hosted Proxy</a> | <a href="https://docs.dheera_ai.ai/docs/enterprise"target="_blank">Enterprise Tier</a></h4>
+<h4 align="center"><a href="https://docs.dheeraai.com/docs/simple_proxy" target="_blank">Dheera AI Proxy Server (LLM Gateway)</a> | <a href="https://docs.dheeraai.com/docs/enterprise#hosted-dheera_ai-proxy" target="_blank"> Hosted Proxy</a> | <a href="https://docs.dheeraai.com/docs/enterprise"target="_blank">Enterprise Tier</a></h4>
 <h4 align="center">
     <a href="https://pypi.org/project/dheera_ai/" target="_blank">
         <img src="https://img.shields.io/pypi/v/dheera_ai.svg" alt="PyPI Version">
@@ -25,7 +25,7 @@
     <a href="https://discord.gg/wuPM9dRgDw">
         <img src="https://img.shields.io/static/v1?label=Chat%20on&message=Discord&color=blue&logo=Discord&style=flat-square" alt="Discord">
     </a>
-    <a href="https://www.dheera_ai.ai/support">
+    <a href="https://www.dheeraai.com/support">
         <img src="https://img.shields.io/static/v1?label=Chat%20on&message=Slack&color=black&logo=Slack&style=flat-square" alt="Slack">
     </a>
 </h4>
@@ -33,22 +33,22 @@
 Dheera AI manages:
 
 - Translate inputs to provider's `completion`, `embedding`, and `image_generation` endpoints
-- [Consistent output](https://docs.dheera_ai.ai/docs/completion/output), text responses will always be available at `['choices'][0]['message']['content']`
-- Retry/fallback logic across multiple deployments (e.g. Azure/OpenAI) - [Router](https://docs.dheera_ai.ai/docs/routing)
-- Set Budgets & Rate limits per project, api key, model [Dheera AI Proxy Server (LLM Gateway)](https://docs.dheera_ai.ai/docs/simple_proxy)
+- [Consistent output](https://docs.dheeraai.com/docs/completion/output), text responses will always be available at `['choices'][0]['message']['content']`
+- Retry/fallback logic across multiple deployments (e.g. Azure/OpenAI) - [Router](https://docs.dheeraai.com/docs/routing)
+- Set Budgets & Rate limits per project, api key, model [Dheera AI Proxy Server (LLM Gateway)](https://docs.dheeraai.com/docs/simple_proxy)
 
-Dheera AI Performance: **8ms P95 latency** at 1k RPS (See benchmarks [here](https://docs.dheera_ai.ai/docs/benchmarks))
+Dheera AI Performance: **8ms P95 latency** at 1k RPS (See benchmarks [here](https://docs.dheeraai.com/docs/benchmarks))
 
-[**Jump to Dheera AI Proxy (LLM Gateway) Docs**](https://github.com/BerriAI/dheera_ai?tab=readme-ov-file#dheera_ai-proxy-server-llm-gateway---docs) <br>
-[**Jump to Supported LLM Providers**](https://docs.dheera_ai.ai/docs/providers)
+[**Jump to Dheera AI Proxy (LLM Gateway) Docs**](https://github.com/nandha030/dheera_ai?tab=readme-ov-file#dheera_ai-proxy-server-llm-gateway---docs) <br>
+[**Jump to Supported LLM Providers**](https://docs.dheeraai.com/docs/providers)
 
-🚨 **Stable Release:** Use docker images with the `-stable` tag. These have undergone 12 hour load tests, before being published. [More information about the release cycle here](https://docs.dheera_ai.ai/docs/proxy/release_cycle)
+🚨 **Stable Release:** Use docker images with the `-stable` tag. These have undergone 12 hour load tests, before being published. [More information about the release cycle here](https://docs.dheeraai.com/docs/proxy/release_cycle)
 
-Support for more providers. Missing a provider or LLM Platform, raise a [feature request](https://github.com/BerriAI/dheera_ai/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.yml&title=%5BFeature%5D%3A+).
+Support for more providers. Missing a provider or LLM Platform, raise a [feature request](https://github.com/nandha030/dheera_ai/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.yml&title=%5BFeature%5D%3A+).
 
-# Usage ([**Docs**](https://docs.dheera_ai.ai/docs/))
+# Usage ([**Docs**](https://docs.dheeraai.com/docs/))
 
-<a target="_blank" href="https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/liteLLM_Getting_Started.ipynb">
+<a target="_blank" href="https://colab.research.google.com/github/BerriAI/dheera_ai/blob/main/cookbook/DheeraAI_Getting_Started.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 
@@ -110,11 +110,11 @@ print(response)
 }
 ```
 
-> **Note:** Dheera AI also supports the [Responses API](https://docs.dheera_ai.ai/docs/response_api) (`dheera_ai.responses()`)
+> **Note:** Dheera AI also supports the [Responses API](https://docs.dheeraai.com/docs/response_api) (`dheera_ai.responses()`)
 
-Call any model supported by a provider, with `model=<provider_name>/<model_name>`. There might be provider-specific details here, so refer to [provider docs for more information](https://docs.dheera_ai.ai/docs/providers)
+Call any model supported by a provider, with `model=<provider_name>/<model_name>`. There might be provider-specific details here, so refer to [provider docs for more information](https://docs.dheeraai.com/docs/providers)
 
-## Async ([Docs](https://docs.dheera_ai.ai/docs/completion/stream#async-completion))
+## Async ([Docs](https://docs.dheeraai.com/docs/completion/stream#async-completion))
 
 ```python
 from dheera_ai import acompletion
@@ -130,7 +130,7 @@ response = asyncio.run(test_get_response())
 print(response)
 ```
 
-## Streaming ([Docs](https://docs.dheera_ai.ai/docs/completion/stream))
+## Streaming ([Docs](https://docs.dheeraai.com/docs/completion/stream))
 
 Dheera AI supports streaming the model response back, pass `stream=True` to get a streaming iterator in response.
 Streaming is supported for all models (Bedrock, Huggingface, TogetherAI, Azure, OpenAI, etc.)
@@ -181,7 +181,7 @@ for part in response:
 }
 ```
 
-## Logging Observability ([Docs](https://docs.dheera_ai.ai/docs/observability/callbacks))
+## Logging Observability ([Docs](https://docs.dheeraai.com/docs/observability/callbacks))
 
 Dheera AI exposes pre defined callbacks to send data to Lunary, MLflow, Langfuse, DynamoDB, s3 Buckets, Helicone, Promptlayer, Traceloop, Athina, Slack
 
@@ -204,18 +204,18 @@ dheera_ai.success_callback = ["lunary", "mlflow", "langfuse", "athina", "helicon
 response = completion(model="openai/gpt-4o", messages=[{"role": "user", "content": "Hi 👋 - i'm openai"}])
 ```
 
-# Dheera AI Proxy Server (LLM Gateway) - ([Docs](https://docs.dheera_ai.ai/docs/simple_proxy))
+# Dheera AI Proxy Server (LLM Gateway) - ([Docs](https://docs.dheeraai.com/docs/simple_proxy))
 
 Track spend + Load Balance across multiple projects
 
-[Hosted Proxy](https://docs.dheera_ai.ai/docs/enterprise#hosted-dheera_ai-proxy)
+[Hosted Proxy](https://docs.dheeraai.com/docs/enterprise#hosted-dheera_ai-proxy)
 
 The proxy provides:
 
-1. [Hooks for auth](https://docs.dheera_ai.ai/docs/proxy/virtual_keys#custom-auth)
-2. [Hooks for logging](https://docs.dheera_ai.ai/docs/proxy/logging#step-1---create-your-custom-dheera_ai-callback-class)
-3. [Cost tracking](https://docs.dheera_ai.ai/docs/proxy/virtual_keys#tracking-spend)
-4. [Rate Limiting](https://docs.dheera_ai.ai/docs/proxy/users#set-rate-limits)
+1. [Hooks for auth](https://docs.dheeraai.com/docs/proxy/virtual_keys#custom-auth)
+2. [Hooks for logging](https://docs.dheeraai.com/docs/proxy/logging#step-1---create-your-custom-dheera_ai-callback-class)
+3. [Cost tracking](https://docs.dheeraai.com/docs/proxy/virtual_keys#tracking-spend)
+4. [Rate Limiting](https://docs.dheeraai.com/docs/proxy/users#set-rate-limits)
 
 ## 📖 Proxy Endpoints - [Swagger Docs](https://dheera_ai-api.up.railway.app/)
 
@@ -238,7 +238,7 @@ $ dheera_ai --model huggingface/bigcode/starcoder
 
 
 > [!IMPORTANT]
-> 💡 [Use Dheera AI Proxy with Langchain (Python, JS), OpenAI SDK (Python, JS) Anthropic SDK, Mistral SDK, LlamaIndex, Instructor, Curl](https://docs.dheera_ai.ai/docs/proxy/user_keys)
+> 💡 [Use Dheera AI Proxy with Langchain (Python, JS), OpenAI SDK (Python, JS) Anthropic SDK, Mistral SDK, LlamaIndex, Instructor, Curl](https://docs.dheeraai.com/docs/proxy/user_keys)
 
 ```python
 import openai # openai v1.0.0+
@@ -254,13 +254,13 @@ response = client.chat.completions.create(model="gpt-3.5-turbo", messages = [
 print(response)
 ```
 
-## Proxy Key Management ([Docs](https://docs.dheera_ai.ai/docs/proxy/virtual_keys))
+## Proxy Key Management ([Docs](https://docs.dheeraai.com/docs/proxy/virtual_keys))
 
 Connect the proxy with a Postgres DB to create proxy keys
 
 ```bash
 # Get the code
-git clone https://github.com/BerriAI/dheera_ai
+git clone https://github.com/nandha030/dheera_ai
 
 # Go to folder
 cd dheera_ai
@@ -280,7 +280,7 @@ docker compose up
 
 
 UI on `/ui` on your proxy server
-![ui_3](https://github.com/BerriAI/dheera_ai/assets/29436595/47c97d5e-b9be-4839-b28c-43d7f4f10033)
+![ui_3](https://github.com/nandha030/dheera_ai/assets/29436595/47c97d5e-b9be-4839-b28c-43d7f4f10033)
 
 Set budgets and rate limits across multiple projects
 `POST /key/generate`
@@ -303,110 +303,110 @@ curl 'http://0.0.0.0:4000/key/generate' \
 }
 ```
 
-## Supported Providers ([Website Supported Models](https://models.dheera_ai.ai/) | [Docs](https://docs.dheera_ai.ai/docs/providers))
+## Supported Providers ([Website Supported Models](https://models.dheera_ai.ai/) | [Docs](https://docs.dheeraai.com/docs/providers))
 
 | Provider                                                                            | `/chat/completions` | `/messages` | `/responses` | `/embeddings` | `/image/generations` | `/audio/transcriptions` | `/audio/speech` | `/moderations` | `/batches` | `/rerank` |
 |-------------------------------------------------------------------------------------|---------------------|-------------|--------------|---------------|----------------------|-------------------------|-----------------|----------------|-----------|-----------|
-| [AI/ML API (`aiml`)](https://docs.dheera_ai.ai/docs/providers/aiml) | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |
-| [AI21 (`ai21`)](https://docs.dheera_ai.ai/docs/providers/ai21) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [AI21 Chat (`ai21_chat`)](https://docs.dheera_ai.ai/docs/providers/ai21) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Aleph Alpha](https://docs.dheera_ai.ai/docs/providers/aleph_alpha) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Anthropic (`anthropic`)](https://docs.dheera_ai.ai/docs/providers/anthropic) | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |  |
-| [Anthropic Text (`anthropic_text`)](https://docs.dheera_ai.ai/docs/providers/anthropic) | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |  |
-| [Anyscale](https://docs.dheera_ai.ai/docs/providers/anyscale) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [AssemblyAI (`assemblyai`)](https://docs.dheera_ai.ai/docs/pass_through/assembly_ai) | ✅ | ✅ | ✅ |  |  | ✅ |  |  |  |  |
-| [Auto Router (`auto_router`)](https://docs.dheera_ai.ai/docs/proxy/auto_routing) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [AWS - Bedrock (`bedrock`)](https://docs.dheera_ai.ai/docs/providers/bedrock) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |
-| [AWS - Sagemaker (`sagemaker`)](https://docs.dheera_ai.ai/docs/providers/aws_sagemaker) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [Azure (`azure`)](https://docs.dheera_ai.ai/docs/providers/azure) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
-| [Azure AI (`azure_ai`)](https://docs.dheera_ai.ai/docs/providers/azure_ai) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
-| [Azure Text (`azure_text`)](https://docs.dheera_ai.ai/docs/providers/azure) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
-| [Baseten (`baseten`)](https://docs.dheera_ai.ai/docs/providers/baseten) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Bytez (`bytez`)](https://docs.dheera_ai.ai/docs/providers/bytez) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Cerebras (`cerebras`)](https://docs.dheera_ai.ai/docs/providers/cerebras) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Clarifai (`clarifai`)](https://docs.dheera_ai.ai/docs/providers/clarifai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Cloudflare AI Workers (`cloudflare`)](https://docs.dheera_ai.ai/docs/providers/cloudflare_workers) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Codestral (`codestral`)](https://docs.dheera_ai.ai/docs/providers/codestral) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Cohere (`cohere`)](https://docs.dheera_ai.ai/docs/providers/cohere) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |
-| [Cohere Chat (`cohere_chat`)](https://docs.dheera_ai.ai/docs/providers/cohere) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [CometAPI (`cometapi`)](https://docs.dheera_ai.ai/docs/providers/cometapi) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [CompactifAI (`compactifai`)](https://docs.dheera_ai.ai/docs/providers/compactifai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Custom (`custom`)](https://docs.dheera_ai.ai/docs/providers/custom_llm_server) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Custom OpenAI (`custom_openai`)](https://docs.dheera_ai.ai/docs/providers/openai_compatible) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
-| [Dashscope (`dashscope`)](https://docs.dheera_ai.ai/docs/providers/dashscope) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Databricks (`databricks`)](https://docs.dheera_ai.ai/docs/providers/databricks) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [DataRobot (`datarobot`)](https://docs.dheera_ai.ai/docs/providers/datarobot) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Deepgram (`deepgram`)](https://docs.dheera_ai.ai/docs/providers/deepgram) | ✅ | ✅ | ✅ |  |  | ✅ |  |  |  |  |
-| [DeepInfra (`deepinfra`)](https://docs.dheera_ai.ai/docs/providers/deepinfra) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Deepseek (`deepseek`)](https://docs.dheera_ai.ai/docs/providers/deepseek) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [ElevenLabs (`elevenlabs`)](https://docs.dheera_ai.ai/docs/providers/elevenlabs) | ✅ | ✅ | ✅ |  |  |  | ✅ |  |  |  |
-| [Empower (`empower`)](https://docs.dheera_ai.ai/docs/providers/empower) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Fal AI (`fal_ai`)](https://docs.dheera_ai.ai/docs/providers/fal_ai) | ✅ | ✅ | ✅ |  | ✅ |  |  |  |  |  |
-| [Featherless AI (`featherless_ai`)](https://docs.dheera_ai.ai/docs/providers/featherless_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Fireworks AI (`fireworks_ai`)](https://docs.dheera_ai.ai/docs/providers/fireworks_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [FriendliAI (`friendliai`)](https://docs.dheera_ai.ai/docs/providers/friendliai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Galadriel (`galadriel`)](https://docs.dheera_ai.ai/docs/providers/galadriel) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [GitHub Copilot (`github_copilot`)](https://docs.dheera_ai.ai/docs/providers/github_copilot) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [GitHub Models (`github`)](https://docs.dheera_ai.ai/docs/providers/github) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Google - PaLM](https://docs.dheera_ai.ai/docs/providers/palm) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Google - Vertex AI (`vertex_ai`)](https://docs.dheera_ai.ai/docs/providers/vertex) | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |
-| [Google AI Studio - Gemini (`gemini`)](https://docs.dheera_ai.ai/docs/providers/gemini) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [GradientAI (`gradient_ai`)](https://docs.dheera_ai.ai/docs/providers/gradient_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Groq AI (`groq`)](https://docs.dheera_ai.ai/docs/providers/groq) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Heroku (`heroku`)](https://docs.dheera_ai.ai/docs/providers/heroku) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Hosted VLLM (`hosted_vllm`)](https://docs.dheera_ai.ai/docs/providers/vllm) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Huggingface (`huggingface`)](https://docs.dheera_ai.ai/docs/providers/huggingface) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |
-| [Hyperbolic (`hyperbolic`)](https://docs.dheera_ai.ai/docs/providers/hyperbolic) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [IBM - Watsonx.ai (`watsonx`)](https://docs.dheera_ai.ai/docs/providers/watsonx) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [Infinity (`infinity`)](https://docs.dheera_ai.ai/docs/providers/infinity) |  |  |  | ✅ |  |  |  |  |  |  |
-| [Jina AI (`jina_ai`)](https://docs.dheera_ai.ai/docs/providers/jina_ai) |  |  |  | ✅ |  |  |  |  |  |  |
-| [Lambda AI (`lambda_ai`)](https://docs.dheera_ai.ai/docs/providers/lambda_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Lemonade (`lemonade`)](https://docs.dheera_ai.ai/docs/providers/lemonade) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Dheera AI Proxy (`dheera_ai_proxy`)](https://docs.dheera_ai.ai/docs/providers/dheera_ai_proxy) | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |
-| [Llamafile (`llamafile`)](https://docs.dheera_ai.ai/docs/providers/llamafile) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [LM Studio (`lm_studio`)](https://docs.dheera_ai.ai/docs/providers/lm_studio) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Maritalk (`maritalk`)](https://docs.dheera_ai.ai/docs/providers/maritalk) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Meta - Llama API (`meta_llama`)](https://docs.dheera_ai.ai/docs/providers/meta_llama) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Mistral AI API (`mistral`)](https://docs.dheera_ai.ai/docs/providers/mistral) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [Moonshot (`moonshot`)](https://docs.dheera_ai.ai/docs/providers/moonshot) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Morph (`morph`)](https://docs.dheera_ai.ai/docs/providers/morph) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Nebius AI Studio (`nebius`)](https://docs.dheera_ai.ai/docs/providers/nebius) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [NLP Cloud (`nlp_cloud`)](https://docs.dheera_ai.ai/docs/providers/nlp_cloud) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [AI/ML API (`aiml`)](https://docs.dheeraai.com/docs/providers/aiml) | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |
+| [AI21 (`ai21`)](https://docs.dheeraai.com/docs/providers/ai21) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [AI21 Chat (`ai21_chat`)](https://docs.dheeraai.com/docs/providers/ai21) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Aleph Alpha](https://docs.dheeraai.com/docs/providers/aleph_alpha) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Anthropic (`anthropic`)](https://docs.dheeraai.com/docs/providers/anthropic) | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |  |
+| [Anthropic Text (`anthropic_text`)](https://docs.dheeraai.com/docs/providers/anthropic) | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |  |
+| [Anyscale](https://docs.dheeraai.com/docs/providers/anyscale) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [AssemblyAI (`assemblyai`)](https://docs.dheeraai.com/docs/pass_through/assembly_ai) | ✅ | ✅ | ✅ |  |  | ✅ |  |  |  |  |
+| [Auto Router (`auto_router`)](https://docs.dheeraai.com/docs/proxy/auto_routing) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [AWS - Bedrock (`bedrock`)](https://docs.dheeraai.com/docs/providers/bedrock) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |
+| [AWS - Sagemaker (`sagemaker`)](https://docs.dheeraai.com/docs/providers/aws_sagemaker) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [Azure (`azure`)](https://docs.dheeraai.com/docs/providers/azure) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
+| [Azure AI (`azure_ai`)](https://docs.dheeraai.com/docs/providers/azure_ai) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
+| [Azure Text (`azure_text`)](https://docs.dheeraai.com/docs/providers/azure) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
+| [Baseten (`baseten`)](https://docs.dheeraai.com/docs/providers/baseten) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Bytez (`bytez`)](https://docs.dheeraai.com/docs/providers/bytez) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Cerebras (`cerebras`)](https://docs.dheeraai.com/docs/providers/cerebras) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Clarifai (`clarifai`)](https://docs.dheeraai.com/docs/providers/clarifai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Cloudflare AI Workers (`cloudflare`)](https://docs.dheeraai.com/docs/providers/cloudflare_workers) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Codestral (`codestral`)](https://docs.dheeraai.com/docs/providers/codestral) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Cohere (`cohere`)](https://docs.dheeraai.com/docs/providers/cohere) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |
+| [Cohere Chat (`cohere_chat`)](https://docs.dheeraai.com/docs/providers/cohere) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [CometAPI (`cometapi`)](https://docs.dheeraai.com/docs/providers/cometapi) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [CompactifAI (`compactifai`)](https://docs.dheeraai.com/docs/providers/compactifai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Custom (`custom`)](https://docs.dheeraai.com/docs/providers/custom_llm_server) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Custom OpenAI (`custom_openai`)](https://docs.dheeraai.com/docs/providers/openai_compatible) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
+| [Dashscope (`dashscope`)](https://docs.dheeraai.com/docs/providers/dashscope) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Databricks (`databricks`)](https://docs.dheeraai.com/docs/providers/databricks) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [DataRobot (`datarobot`)](https://docs.dheeraai.com/docs/providers/datarobot) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Deepgram (`deepgram`)](https://docs.dheeraai.com/docs/providers/deepgram) | ✅ | ✅ | ✅ |  |  | ✅ |  |  |  |  |
+| [DeepInfra (`deepinfra`)](https://docs.dheeraai.com/docs/providers/deepinfra) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Deepseek (`deepseek`)](https://docs.dheeraai.com/docs/providers/deepseek) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [ElevenLabs (`elevenlabs`)](https://docs.dheeraai.com/docs/providers/elevenlabs) | ✅ | ✅ | ✅ |  |  |  | ✅ |  |  |  |
+| [Empower (`empower`)](https://docs.dheeraai.com/docs/providers/empower) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Fal AI (`fal_ai`)](https://docs.dheeraai.com/docs/providers/fal_ai) | ✅ | ✅ | ✅ |  | ✅ |  |  |  |  |  |
+| [Featherless AI (`featherless_ai`)](https://docs.dheeraai.com/docs/providers/featherless_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Fireworks AI (`fireworks_ai`)](https://docs.dheeraai.com/docs/providers/fireworks_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [FriendliAI (`friendliai`)](https://docs.dheeraai.com/docs/providers/friendliai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Galadriel (`galadriel`)](https://docs.dheeraai.com/docs/providers/galadriel) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [GitHub Copilot (`github_copilot`)](https://docs.dheeraai.com/docs/providers/github_copilot) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [GitHub Models (`github`)](https://docs.dheeraai.com/docs/providers/github) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Google - PaLM](https://docs.dheeraai.com/docs/providers/palm) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Google - Vertex AI (`vertex_ai`)](https://docs.dheeraai.com/docs/providers/vertex) | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |
+| [Google AI Studio - Gemini (`gemini`)](https://docs.dheeraai.com/docs/providers/gemini) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [GradientAI (`gradient_ai`)](https://docs.dheeraai.com/docs/providers/gradient_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Groq AI (`groq`)](https://docs.dheeraai.com/docs/providers/groq) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Heroku (`heroku`)](https://docs.dheeraai.com/docs/providers/heroku) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Hosted VLLM (`hosted_vllm`)](https://docs.dheeraai.com/docs/providers/vllm) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Huggingface (`huggingface`)](https://docs.dheeraai.com/docs/providers/huggingface) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  | ✅ |
+| [Hyperbolic (`hyperbolic`)](https://docs.dheeraai.com/docs/providers/hyperbolic) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [IBM - Watsonx.ai (`watsonx`)](https://docs.dheeraai.com/docs/providers/watsonx) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [Infinity (`infinity`)](https://docs.dheeraai.com/docs/providers/infinity) |  |  |  | ✅ |  |  |  |  |  |  |
+| [Jina AI (`jina_ai`)](https://docs.dheeraai.com/docs/providers/jina_ai) |  |  |  | ✅ |  |  |  |  |  |  |
+| [Lambda AI (`lambda_ai`)](https://docs.dheeraai.com/docs/providers/lambda_ai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Lemonade (`lemonade`)](https://docs.dheeraai.com/docs/providers/lemonade) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Dheera AI Proxy (`dheera_ai_proxy`)](https://docs.dheeraai.com/docs/providers/dheera_ai_proxy) | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |
+| [Llamafile (`llamafile`)](https://docs.dheeraai.com/docs/providers/llamafile) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [LM Studio (`lm_studio`)](https://docs.dheeraai.com/docs/providers/lm_studio) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Maritalk (`maritalk`)](https://docs.dheeraai.com/docs/providers/maritalk) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Meta - Llama API (`meta_llama`)](https://docs.dheeraai.com/docs/providers/meta_llama) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Mistral AI API (`mistral`)](https://docs.dheeraai.com/docs/providers/mistral) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [Moonshot (`moonshot`)](https://docs.dheeraai.com/docs/providers/moonshot) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Morph (`morph`)](https://docs.dheeraai.com/docs/providers/morph) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Nebius AI Studio (`nebius`)](https://docs.dheeraai.com/docs/providers/nebius) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [NLP Cloud (`nlp_cloud`)](https://docs.dheeraai.com/docs/providers/nlp_cloud) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
 | [Novita AI (`novita`)](https://novita.ai/models/llm?utm_source=github_dheera_ai&utm_medium=github_readme&utm_campaign=github_link) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Nscale (`nscale`)](https://docs.dheera_ai.ai/docs/providers/nscale) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Nvidia NIM (`nvidia_nim`)](https://docs.dheera_ai.ai/docs/providers/nvidia_nim) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [OCI (`oci`)](https://docs.dheera_ai.ai/docs/providers/oci) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Ollama (`ollama`)](https://docs.dheera_ai.ai/docs/providers/ollama) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
-| [Ollama Chat (`ollama_chat`)](https://docs.dheera_ai.ai/docs/providers/ollama) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Oobabooga (`oobabooga`)](https://docs.dheera_ai.ai/docs/providers/openai_compatible) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
-| [OpenAI (`openai`)](https://docs.dheera_ai.ai/docs/providers/openai) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
-| [OpenAI-like (`openai_like`)](https://docs.dheera_ai.ai/docs/providers/openai_compatible) |  |  |  | ✅ |  |  |  |  |  |  |
-| [OpenRouter (`openrouter`)](https://docs.dheera_ai.ai/docs/providers/openrouter) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [OVHCloud AI Endpoints (`ovhcloud`)](https://docs.dheera_ai.ai/docs/providers/ovhcloud) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Perplexity AI (`perplexity`)](https://docs.dheera_ai.ai/docs/providers/perplexity) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Petals (`petals`)](https://docs.dheera_ai.ai/docs/providers/petals) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Predibase (`predibase`)](https://docs.dheera_ai.ai/docs/providers/predibase) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Recraft (`recraft`)](https://docs.dheera_ai.ai/docs/providers/recraft) |  |  |  |  | ✅ |  |  |  |  |  |
-| [Replicate (`replicate`)](https://docs.dheera_ai.ai/docs/providers/replicate) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Sagemaker Chat (`sagemaker_chat`)](https://docs.dheera_ai.ai/docs/providers/aws_sagemaker) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Sambanova (`sambanova`)](https://docs.dheera_ai.ai/docs/providers/sambanova) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Snowflake (`snowflake`)](https://docs.dheera_ai.ai/docs/providers/snowflake) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Text Completion Codestral (`text-completion-codestral`)](https://docs.dheera_ai.ai/docs/providers/codestral) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Text Completion OpenAI (`text-completion-openai`)](https://docs.dheera_ai.ai/docs/providers/text_completion_openai) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
-| [Together AI (`together_ai`)](https://docs.dheera_ai.ai/docs/providers/togetherai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Topaz (`topaz`)](https://docs.dheera_ai.ai/docs/providers/topaz) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Triton (`triton`)](https://docs.dheera_ai.ai/docs/providers/triton-inference-server) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [V0 (`v0`)](https://docs.dheera_ai.ai/docs/providers/v0) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Vercel AI Gateway (`vercel_ai_gateway`)](https://docs.dheera_ai.ai/docs/providers/vercel_ai_gateway) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [VLLM (`vllm`)](https://docs.dheera_ai.ai/docs/providers/vllm) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Volcengine (`volcengine`)](https://docs.dheera_ai.ai/docs/providers/volcano) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Voyage AI (`voyage`)](https://docs.dheera_ai.ai/docs/providers/voyage) |  |  |  | ✅ |  |  |  |  |  |  |
-| [WandB Inference (`wandb`)](https://docs.dheera_ai.ai/docs/providers/wandb_inference) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Watsonx Text (`watsonx_text`)](https://docs.dheera_ai.ai/docs/providers/watsonx) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [xAI (`xai`)](https://docs.dheera_ai.ai/docs/providers/xai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
-| [Xinference (`xinference`)](https://docs.dheera_ai.ai/docs/providers/xinference) |  |  |  | ✅ |  |  |  |  |  |  |
+| [Nscale (`nscale`)](https://docs.dheeraai.com/docs/providers/nscale) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Nvidia NIM (`nvidia_nim`)](https://docs.dheeraai.com/docs/providers/nvidia_nim) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [OCI (`oci`)](https://docs.dheeraai.com/docs/providers/oci) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Ollama (`ollama`)](https://docs.dheeraai.com/docs/providers/ollama) | ✅ | ✅ | ✅ | ✅ |  |  |  |  |  |  |
+| [Ollama Chat (`ollama_chat`)](https://docs.dheeraai.com/docs/providers/ollama) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Oobabooga (`oobabooga`)](https://docs.dheeraai.com/docs/providers/openai_compatible) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
+| [OpenAI (`openai`)](https://docs.dheeraai.com/docs/providers/openai) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
+| [OpenAI-like (`openai_like`)](https://docs.dheeraai.com/docs/providers/openai_compatible) |  |  |  | ✅ |  |  |  |  |  |  |
+| [OpenRouter (`openrouter`)](https://docs.dheeraai.com/docs/providers/openrouter) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [OVHCloud AI Endpoints (`ovhcloud`)](https://docs.dheeraai.com/docs/providers/ovhcloud) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Perplexity AI (`perplexity`)](https://docs.dheeraai.com/docs/providers/perplexity) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Petals (`petals`)](https://docs.dheeraai.com/docs/providers/petals) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Predibase (`predibase`)](https://docs.dheeraai.com/docs/providers/predibase) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Recraft (`recraft`)](https://docs.dheeraai.com/docs/providers/recraft) |  |  |  |  | ✅ |  |  |  |  |  |
+| [Replicate (`replicate`)](https://docs.dheeraai.com/docs/providers/replicate) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Sagemaker Chat (`sagemaker_chat`)](https://docs.dheeraai.com/docs/providers/aws_sagemaker) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Sambanova (`sambanova`)](https://docs.dheeraai.com/docs/providers/sambanova) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Snowflake (`snowflake`)](https://docs.dheeraai.com/docs/providers/snowflake) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Text Completion Codestral (`text-completion-codestral`)](https://docs.dheeraai.com/docs/providers/codestral) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Text Completion OpenAI (`text-completion-openai`)](https://docs.dheeraai.com/docs/providers/text_completion_openai) | ✅ | ✅ | ✅ |  |  | ✅ | ✅ | ✅ | ✅ |  |
+| [Together AI (`together_ai`)](https://docs.dheeraai.com/docs/providers/togetherai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Topaz (`topaz`)](https://docs.dheeraai.com/docs/providers/topaz) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Triton (`triton`)](https://docs.dheeraai.com/docs/providers/triton-inference-server) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [V0 (`v0`)](https://docs.dheeraai.com/docs/providers/v0) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Vercel AI Gateway (`vercel_ai_gateway`)](https://docs.dheeraai.com/docs/providers/vercel_ai_gateway) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [VLLM (`vllm`)](https://docs.dheeraai.com/docs/providers/vllm) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Volcengine (`volcengine`)](https://docs.dheeraai.com/docs/providers/volcano) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Voyage AI (`voyage`)](https://docs.dheeraai.com/docs/providers/voyage) |  |  |  | ✅ |  |  |  |  |  |  |
+| [WandB Inference (`wandb`)](https://docs.dheeraai.com/docs/providers/wandb_inference) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Watsonx Text (`watsonx_text`)](https://docs.dheeraai.com/docs/providers/watsonx) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [xAI (`xai`)](https://docs.dheeraai.com/docs/providers/xai) | ✅ | ✅ | ✅ |  |  |  |  |  |  |  |
+| [Xinference (`xinference`)](https://docs.dheeraai.com/docs/providers/xinference) |  |  |  | ✅ |  |  |  |  |  |  |
 
-[**Read the Docs**](https://docs.dheera_ai.ai/docs/)
+[**Read the Docs**](https://docs.dheeraai.com/docs/)
 
 ## Run in Developer mode
 ### Services
@@ -430,7 +430,7 @@ For companies that need better security, user management and professional suppor
 [Talk to founders](https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat)
 
 This covers:
-- ✅ **Features under the [Dheera AI Commercial License](https://docs.dheera_ai.ai/docs/proxy/enterprise):**
+- ✅ **Features under the [Dheera AI Commercial License](https://docs.dheeraai.com/docs/proxy/enterprise):**
 - ✅ **Feature Prioritization**
 - ✅ **Custom Integrations**
 - ✅ **Professional Support - Dedicated discord + slack**
@@ -446,7 +446,7 @@ We welcome contributions to Dheera AI! Whether you're fixing bugs, adding featur
 This requires poetry to be installed.
 
 ```bash
-git clone https://github.com/BerriAI/dheera_ai.git
+git clone https://github.com/nandha030/dheera_ai.git
 cd dheera_ai
 make install-dev    # Install development dependencies
 make format         # Format your code
@@ -476,7 +476,7 @@ All these checks must pass before your PR can be merged.
 
 - [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/berriai-1-1-onboarding-dheera_ai-hosted-version)
 - [Community Discord 💭](https://discord.gg/wuPM9dRgDw)
-- [Community Slack 💭](https://www.dheera_ai.ai/support)
+- [Community Slack 💭](https://www.dheeraai.com/support)
 - Our numbers 📞 +1 (770) 8783-106 / ‭+1 (412) 618-6238‬
 - Our emails ✉️ ishaan@berri.ai / krrish@berri.ai
 
@@ -495,7 +495,7 @@ All these checks must pass before your PR can be merged.
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-<a href="https://github.com/BerriAI/dheera_ai/graphs/contributors">
+<a href="https://github.com/nandha030/dheera_ai/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=BerriAI/dheera_ai" />
 </a>
 
