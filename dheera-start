@@ -1,0 +1,62 @@
+#!/bin/bash
+# DheeraLLM v0.3.0 - Server Management Script
+
+# Colors for output
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Configuration
+VENV_PATH="/Users/nandhavignesh/Freedom_AI/Dheera_AI/venv"
+CONFIG_FILE="/Users/nandhavignesh/Freedom_AI/Dheera_AI/dheera_ai/proxy_server_config.yaml"
+DATABASE_URL="postgresql://nandhavignesh@localhost:5432/dheera_ai"
+PORT=4000
+
+echo -e "${BLUE}"
+echo "   ██████╗ ██╗  ██╗███████╗███████╗██████╗  █████╗ ██╗     ██╗     ███╗   ███╗"
+echo "   ██╔══██╗██║  ██║██╔════╝██╔════╝██╔══██╗██╔══██╗██║     ██║     ████╗ ████║"
+echo "   ██║  ██║███████║█████╗  █████╗  ██████╔╝███████║██║     ██║     ██╔████╔██║"
+echo "   ██║  ██║██╔══██║██╔══╝  ██╔══╝  ██╔══██╗██╔══██║██║     ██║     ██║╚██╔╝██║"
+echo "   ██████╔╝██║  ██║███████╗███████╗██║  ██║██║  ██║███████╗███████╗██║ ╚═╝ ██║"
+echo "   ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝     ╚═╝"
+echo -e "${NC}"
+echo -e "${GREEN}DheeraLLM v0.3.0 - Server Management${NC}"
+echo ""
+
+# Check if virtual environment exists
+if [ ! -d "$VENV_PATH" ]; then
+    echo -e "${RED}Error: Virtual environment not found at $VENV_PATH${NC}"
+    exit 1
+fi
+
+# Check if config file exists
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo -e "${RED}Error: Config file not found at $CONFIG_FILE${NC}"
+    exit 1
+fi
+
+# Activate virtual environment
+echo -e "${YELLOW}Activating virtual environment...${NC}"
+source "$VENV_PATH/bin/activate"
+
+# Set environment variables
+export DATABASE_URL="$DATABASE_URL"
+
+# Check if PostgreSQL is running
+if ! pg_isready -q; then
+    echo -e "${YELLOW}Warning: PostgreSQL does not appear to be running${NC}"
+    echo -e "${YELLOW}Make sure PostgreSQL is started before using the server${NC}"
+fi
+
+# Start the server
+echo -e "${GREEN}Starting DheeraLLM server on port $PORT...${NC}"
+echo -e "${BLUE}UI will be available at: http://localhost:$PORT/ui${NC}"
+echo -e "${BLUE}API endpoint: http://localhost:$PORT${NC}"
+echo ""
+echo -e "${YELLOW}Press Ctrl+C to stop the server${NC}"
+echo ""
+
+cd /Users/nandhavignesh/Freedom_AI/Dheera_AI/dheera_ai
+dheera-ai --config "$CONFIG_FILE"
