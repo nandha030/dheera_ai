@@ -129,17 +129,17 @@ def generate_feedback_box():
     print("\033[1;37m" + "# {:^59} #\033[0m".format(message))  # noqa
     print(  # noqa
         "\033[1;37m"
-        + "# {:^59} #\033[0m".format("https://github.com/BerriAI/dheera_ai/issues/new")
+        + "# {:^59} #\033[0m".format("https://github.com/nandha030/dheera_ai/issues/new")
     )  # noqa
     print("\033[1;37m" + "#" + " " * box_width + "#\033[0m")  # noqa
     print("\033[1;37m" + "#" + "-" * box_width + "#\033[0m")  # noqa
     print()  # noqa
-    print(" Thank you for using DheeraAI! - Krrish & Ishaan")  # noqa
+    print(" Thank you for using DheeraAI! - Nandhavignesh")  # noqa
     print()  # noqa
     print()  # noqa
     print()  # noqa
     print(  # noqa
-        "\033[1;31mGive Feedback / Get Help: https://github.com/BerriAI/dheera_ai/issues/new\033[0m"
+        "\033[1;31mGive Feedback / Get Help: https://github.com/nandha030/dheera_ai/issues/new\033[0m"
     )  # noqa
     print()  # noqa
     print()  # noqa
