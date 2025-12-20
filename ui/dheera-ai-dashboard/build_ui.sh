@@ -35,7 +35,7 @@ if [ $? -eq 0 ]; then
   pwd
 
   # Specify the destination directory
-  destination_dir="../../litellm/proxy/_experimental/out"
+  destination_dir="../../dheera_ai/proxy/_experimental/out"
 
   # Remove existing files in the destination directory
   rm -rf "$destination_dir"/*

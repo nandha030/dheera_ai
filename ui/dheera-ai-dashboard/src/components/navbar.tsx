@@ -165,9 +165,10 @@ const Navbar: React.FC<NavbarProps> = ({
 
             <div className="flex items-center">
               <Link href="/" className="flex items-center">
-                <div className="relative">
-                  <img src={imageUrl} alt="DheeraAI Brand" className="h-10 w-auto" />
-                  <span 
+                <div className="relative flex items-center">
+                  <img src={imageUrl} alt="DheeraLLM Brand" className="h-10 w-auto" />
+                  <span className="ml-2 text-xl font-bold text-gray-800">DheeraLLM</span>
+                  <span
                     className="absolute -top-1 -right-2 text-lg animate-bounce"
                     style={{ animationDuration: '2s' }}
                     title="Happy Holidays!"
@@ -176,22 +177,20 @@ const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 </div>
               </Link>
-              {version && (
-                <a
-                  href="https://docs.dheera_ai.ai/release_notes"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-gray-500 border border-gray-200 rounded-lg px-2 py-0.5 bg-gray-50 font-medium -ml-2 hover:bg-gray-100 transition-colors cursor-pointer z-10"
-                >
-                  v{version}
-                </a>
-              )}
+              <a
+                href="https://docs.dheeraai.com/release_notes"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-gray-500 border border-gray-200 rounded-lg px-2 py-0.5 bg-gray-50 font-medium ml-2 hover:bg-gray-100 transition-colors cursor-pointer z-10"
+              >
+                v0.3.0
+              </a>
             </div>
           </div>
           {/* Right side nav items */}
           <div className="flex items-center space-x-5 ml-auto">
             <a
-              href="https://docs.dheera_ai.ai/docs/"
+              href="https://docs.dheeraai.com/docs/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
