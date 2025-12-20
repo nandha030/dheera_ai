@@ -88,7 +88,7 @@ def missing_keys_form(missing_key_names: str):
             <div class="container">
             <h1>Need Help? Support</h1>
             <p>Discord: <a href="https://discord.com/invite/wuPM9dRgDw" target="_blank">https://discord.com/invite/wuPM9dRgDw</a></p>
-            <p>Docs: <a href="https://docs.dheera_ai.ai/docs/" target="_blank">https://docs.dheera_ai.ai/docs/</a></p>
+            <p>Docs: <a href="https://docs.dheeraai.com/docs/" target="_blank">https://docs.dheeraai.com/docs/</a></p>
             </div>
         </body>
         </html>
@@ -157,7 +157,7 @@ def admin_ui_disabled():
             <div class="container">
             <h1>Need Help? Support</h1>
             <p>Discord: <a href="https://discord.com/invite/wuPM9dRgDw" target="_blank">https://discord.com/invite/wuPM9dRgDw</a></p>
-            <p>Docs: <a href="https://docs.dheera_ai.ai/docs/" target="_blank">https://docs.dheera_ai.ai/docs/</a></p>
+            <p>Docs: <a href="https://docs.dheeraai.com/docs/" target="_blank">https://docs.dheeraai.com/docs/</a></p>
             </div>
         </body>
         </html>

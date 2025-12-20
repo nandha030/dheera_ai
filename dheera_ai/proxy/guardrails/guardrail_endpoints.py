@@ -68,7 +68,7 @@ async def list_guardrails():
     """
     List the guardrails that are available on the proxy server
 
-    👉 [Guardrail docs](https://docs.dheera_ai.ai/docs/proxy/guardrails/quick_start)
+    👉 [Guardrail docs](https://docs.dheeraai.com/docs/proxy/guardrails/quick_start)
 
     Example Request:
     ```bash
@@ -121,7 +121,7 @@ async def list_guardrails_v2():
     """
     List the guardrails that are available in the database using GuardrailRegistry
 
-    👉 [Guardrail docs](https://docs.dheera_ai.ai/docs/proxy/guardrails/quick_start)
+    👉 [Guardrail docs](https://docs.dheeraai.com/docs/proxy/guardrails/quick_start)
 
     Example Request:
     ```bash
@@ -212,7 +212,7 @@ async def create_guardrail(request: CreateGuardrailRequest):
     """
     Create a new guardrail
 
-    👉 [Guardrail docs](https://docs.dheera_ai.ai/docs/proxy/guardrails/quick_start)
+    👉 [Guardrail docs](https://docs.dheeraai.com/docs/proxy/guardrails/quick_start)
 
     Example Request:
     ```bash
@@ -301,7 +301,7 @@ async def update_guardrail(guardrail_id: str, request: UpdateGuardrailRequest):
     """
     Update an existing guardrail
 
-    👉 [Guardrail docs](https://docs.dheera_ai.ai/docs/proxy/guardrails/quick_start)
+    👉 [Guardrail docs](https://docs.dheeraai.com/docs/proxy/guardrails/quick_start)
 
     Example Request:
     ```bash
@@ -398,7 +398,7 @@ async def delete_guardrail(guardrail_id: str):
     """
     Delete a guardrail
 
-    👉 [Guardrail docs](https://docs.dheera_ai.ai/docs/proxy/guardrails/quick_start)
+    👉 [Guardrail docs](https://docs.dheeraai.com/docs/proxy/guardrails/quick_start)
 
     Example Request:
     ```bash
@@ -464,7 +464,7 @@ async def patch_guardrail(guardrail_id: str, request: PatchGuardrailRequest):
     """
     Partially update an existing guardrail
 
-    👉 [Guardrail docs](https://docs.dheera_ai.ai/docs/proxy/guardrails/quick_start)
+    👉 [Guardrail docs](https://docs.dheeraai.com/docs/proxy/guardrails/quick_start)
 
     This endpoint allows updating specific fields of a guardrail without sending the entire object.
     Only the following fields can be updated:
@@ -598,7 +598,7 @@ async def get_guardrail_info(guardrail_id: str):
     """
     Get detailed information about a specific guardrail by ID
 
-    👉 [Guardrail docs](https://docs.dheera_ai.ai/docs/proxy/guardrails/quick_start)
+    👉 [Guardrail docs](https://docs.dheeraai.com/docs/proxy/guardrails/quick_start)
 
     Example Request:
     ```bash

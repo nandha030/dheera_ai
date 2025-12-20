@@ -199,7 +199,7 @@ class ResponsesIDSecurity(CustomLogger):
                 "Response ID encryption is enabled but no signing key is configured. "
                 "Please set DHEERA_AI_SALT_KEY environment variable or configure a master_key. "
                 "Skipping response ID encryption. "
-                "See: https://docs.dheera_ai.ai/docs/proxy/prod#5-set-dheera_ai-salt-key"
+                "See: https://docs.dheeraai.com/docs/proxy/prod#5-set-dheera_ai-salt-key"
             )
             return response
 

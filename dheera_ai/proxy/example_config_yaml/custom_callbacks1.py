@@ -10,7 +10,7 @@ from dheera_ai.types.utils import CallTypesLiteral
 # Once defined, these can be passed in proxy_config.yaml
 class MyCustomHandler(
     CustomLogger
-):  # https://docs.dheera_ai.ai/docs/observability/custom_callback#callback-class
+):  # https://docs.dheeraai.com/docs/observability/custom_callback#callback-class
     # Class variables or attributes
     def __init__(self):
         pass

@@ -985,7 +985,7 @@ async def generate_key_fn(
     """
     Generate an API key based on the provided data.
 
-    Docs: https://docs.dheera_ai.ai/docs/proxy/virtual_keys
+    Docs: https://docs.dheeraai.com/docs/proxy/virtual_keys
 
     Parameters:
     - duration: Optional[str] - Specify the length of time the token is valid for. You can set duration as seconds ("30s"), minutes ("30m"), hours ("30h"), days ("30d").
@@ -996,9 +996,9 @@ async def generate_key_fn(
     - organization_id: Optional[str] - The organization id of the key. If not set, and team_id is set, the organization id will be the same as the team id. If conflict, an error will be raised.
     - budget_id: Optional[str] - The budget id associated with the key. Created by calling `/budget/new`.
     - models: Optional[list] - Model_name's a user is allowed to call. (if empty, key is allowed to call all models)
-    - aliases: Optional[dict] - Any alias mappings, on top of anything in the config.yaml model list. - https://docs.dheera_ai.ai/docs/proxy/virtual_keys#managing-auth---upgradedowngrade-models
+    - aliases: Optional[dict] - Any alias mappings, on top of anything in the config.yaml model list. - https://docs.dheeraai.com/docs/proxy/virtual_keys#managing-auth---upgradedowngrade-models
     - config: Optional[dict] - any key-specific configs, overrides config in config.yaml
-    - spend: Optional[int] - Amount spent by key. Default is 0. Will be updated by proxy whenever key is used. https://docs.dheera_ai.ai/docs/proxy/virtual_keys#managing-auth---tracking-spend
+    - spend: Optional[int] - Amount spent by key. Default is 0. Will be updated by proxy whenever key is used. https://docs.dheeraai.com/docs/proxy/virtual_keys#managing-auth---tracking-spend
     - send_invite_email: Optional[bool] - Whether to send an invite email to the user_id, with the generate key
     - max_budget: Optional[float] - Specify max budget for a given key.
     - budget_duration: Optional[str] - Budget is reset at the end of specified duration. If not set, budget is never reset. You can set duration as seconds ("30s"), minutes ("30m"), hours ("30h"), days ("30d").
@@ -1012,14 +1012,14 @@ async def generate_key_fn(
     - model_tpm_limit: Optional[dict] - key-specific model tpm limit. Example - {"text-davinci-002": 1000, "gpt-3.5-turbo": 1000}. IF null or {} then no model specific tpm limit.
     - tpm_limit_type: Optional[str] - Type of tpm limit. Options: "best_effort_throughput" (no error if we're overallocating tpm), "guaranteed_throughput" (raise an error if we're overallocating tpm), "dynamic" (dynamically exceed limit when no 429 errors). Defaults to "best_effort_throughput".
     - rpm_limit_type: Optional[str] - Type of rpm limit. Options: "best_effort_throughput" (no error if we're overallocating rpm), "guaranteed_throughput" (raise an error if we're overallocating rpm), "dynamic" (dynamically exceed limit when no 429 errors). Defaults to "best_effort_throughput".
-    - allowed_cache_controls: Optional[list] - List of allowed cache control values. Example - ["no-cache", "no-store"]. See all values - https://docs.dheera_ai.ai/docs/proxy/caching#turn-on--off-caching-per-request
+    - allowed_cache_controls: Optional[list] - List of allowed cache control values. Example - ["no-cache", "no-store"]. See all values - https://docs.dheeraai.com/docs/proxy/caching#turn-on--off-caching-per-request
     - blocked: Optional[bool] - Whether the key is blocked.
     - rpm_limit: Optional[int] - Specify rpm limit for a given key (Requests per minute)
     - tpm_limit: Optional[int] - Specify tpm limit for a given key (Tokens per minute)
     - soft_budget: Optional[float] - Specify soft budget for a given key. Will trigger a slack alert when this soft budget is reached.
     - tags: Optional[List[str]] - Tags for [tracking spend](https://dheera_ai.vercel.app/docs/proxy/enterprise#tracking-spend-for-custom-tags) and/or doing [tag-based routing](https://dheera_ai.vercel.app/docs/proxy/tag_routing).
     - prompts: Optional[List[str]] - List of prompts that the key is allowed to use.
-    - enforced_params: Optional[List[str]] - List of enforced params for the key (Enterprise only). [Docs](https://docs.dheera_ai.ai/docs/proxy/enterprise#enforce-required-params-for-llm-requests)
+    - enforced_params: Optional[List[str]] - List of enforced params for the key (Enterprise only). [Docs](https://docs.dheeraai.com/docs/proxy/enterprise#enforce-required-params-for-llm-requests)
     - prompts: Optional[List[str]] - List of prompts that the key is allowed to use.
     - allowed_routes: Optional[list] - List of allowed routes for the key. Store the actual route or store a wildcard pattern for a set of routes. Example - ["/chat/completions", "/embeddings", "/keys/*"]
     - allowed_passthrough_routes: Optional[list] - List of allowed pass through endpoints for the key. Store the actual endpoint or store a wildcard pattern for a set of endpoints. Example - ["/my-custom-endpoint"]. Use this instead of allowed_routes, if you just want to specify which pass through endpoints the key can access, without specifying the routes. If allowed_routes is specified, allowed_pass_through_endpoints is ignored.
@@ -1142,7 +1142,7 @@ async def generate_service_account_key_fn(
     - Prevent key from being deleted when user is deleted.
     - Apply team limits, not team member limits to key.
 
-    Docs: https://docs.dheera_ai.ai/docs/proxy/virtual_keys
+    Docs: https://docs.dheeraai.com/docs/proxy/virtual_keys
 
     Parameters:
     - duration: Optional[str] - Specify the length of time the token is valid for. You can set duration as seconds ("30s"), minutes ("30m"), hours ("30h"), days ("30d").
@@ -1152,9 +1152,9 @@ async def generate_service_account_key_fn(
     - user_id: Optional[str] - [NON-FUNCTIONAL] THIS WILL BE IGNORED. The user id of the key
     - budget_id: Optional[str] - The budget id associated with the key. Created by calling `/budget/new`.
     - models: Optional[list] - Model_name's a user is allowed to call. (if empty, key is allowed to call all models)
-    - aliases: Optional[dict] - Any alias mappings, on top of anything in the config.yaml model list. - https://docs.dheera_ai.ai/docs/proxy/virtual_keys#managing-auth---upgradedowngrade-models
+    - aliases: Optional[dict] - Any alias mappings, on top of anything in the config.yaml model list. - https://docs.dheeraai.com/docs/proxy/virtual_keys#managing-auth---upgradedowngrade-models
     - config: Optional[dict] - any key-specific configs, overrides config in config.yaml
-    - spend: Optional[int] - Amount spent by key. Default is 0. Will be updated by proxy whenever key is used. https://docs.dheera_ai.ai/docs/proxy/virtual_keys#managing-auth---tracking-spend
+    - spend: Optional[int] - Amount spent by key. Default is 0. Will be updated by proxy whenever key is used. https://docs.dheeraai.com/docs/proxy/virtual_keys#managing-auth---tracking-spend
     - send_invite_email: Optional[bool] - Whether to send an invite email to the user_id, with the generate key
     - max_budget: Optional[float] - Specify max budget for a given key.
     - budget_duration: Optional[str] - Budget is reset at the end of specified duration. If not set, budget is never reset. You can set duration as seconds ("30s"), minutes ("30m"), hours ("30h"), days ("30d").
@@ -1167,13 +1167,13 @@ async def generate_service_account_key_fn(
     - model_tpm_limit: Optional[dict] - key-specific model tpm limit. Example - {"text-davinci-002": 1000, "gpt-3.5-turbo": 1000}. IF null or {} then no model specific tpm limit.
     - tpm_limit_type: Optional[str] - TPM rate limit type - "best_effort_throughput", "guaranteed_throughput", or "dynamic"
     - rpm_limit_type: Optional[str] - RPM rate limit type - "best_effort_throughput", "guaranteed_throughput", or "dynamic"
-    - allowed_cache_controls: Optional[list] - List of allowed cache control values. Example - ["no-cache", "no-store"]. See all values - https://docs.dheera_ai.ai/docs/proxy/caching#turn-on--off-caching-per-request
+    - allowed_cache_controls: Optional[list] - List of allowed cache control values. Example - ["no-cache", "no-store"]. See all values - https://docs.dheeraai.com/docs/proxy/caching#turn-on--off-caching-per-request
     - blocked: Optional[bool] - Whether the key is blocked.
     - rpm_limit: Optional[int] - Specify rpm limit for a given key (Requests per minute)
     - tpm_limit: Optional[int] - Specify tpm limit for a given key (Tokens per minute)
     - soft_budget: Optional[float] - Specify soft budget for a given key. Will trigger a slack alert when this soft budget is reached.
     - tags: Optional[List[str]] - Tags for [tracking spend](https://dheera_ai.vercel.app/docs/proxy/enterprise#tracking-spend-for-custom-tags) and/or doing [tag-based routing](https://dheera_ai.vercel.app/docs/proxy/tag_routing).
-    - enforced_params: Optional[List[str]] - List of enforced params for the key (Enterprise only). [Docs](https://docs.dheera_ai.ai/docs/proxy/enterprise#enforce-required-params-for-llm-requests)
+    - enforced_params: Optional[List[str]] - List of enforced params for the key (Enterprise only). [Docs](https://docs.dheeraai.com/docs/proxy/enterprise#enforce-required-params-for-llm-requests)
     - allowed_routes: Optional[list] - List of allowed routes for the key. Store the actual route or store a wildcard pattern for a set of routes. Example - ["/chat/completions", "/embeddings", "/keys/*"]
     - object_permission: Optional[DheeraAI_ObjectPermissionBase] - key-specific object permission. Example - {"vector_stores": ["vector_store_1", "vector_store_2"], "agents": ["agent_1", "agent_2"], "agent_access_groups": ["dev_group"]}. IF null or {} then no object permission.
     Examples:
@@ -1437,7 +1437,7 @@ async def update_key_fn(
     - models: Optional[list] - Model_name's a user is allowed to call
     - tags: Optional[List[str]] - Tags for organizing keys (Enterprise only)
     - prompts: Optional[List[str]] - List of prompts that the key is allowed to use.
-    - enforced_params: Optional[List[str]] - List of enforced params for the key (Enterprise only). [Docs](https://docs.dheera_ai.ai/docs/proxy/enterprise#enforce-required-params-for-llm-requests)
+    - enforced_params: Optional[List[str]] - List of enforced params for the key (Enterprise only). [Docs](https://docs.dheeraai.com/docs/proxy/enterprise#enforce-required-params-for-llm-requests)
     - spend: Optional[float] - Amount spent by key
     - max_budget: Optional[float] - Max budget for key
     - model_max_budget: Optional[Dict[str, BudgetConfig]] - Model-specific budgets {"gpt-4": {"budget_limit": 0.0005, "time_period": "30d"}}
@@ -1861,7 +1861,7 @@ async def info_key_fn_v2(
     try:
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
         if data is None:
             raise HTTPException(
@@ -1925,7 +1925,7 @@ async def info_key_fn(
     try:
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
 
         # default to using Auth token if no key is passed in
@@ -2059,7 +2059,7 @@ async def generate_key_helper_fn(  # noqa: PLR0915
 
     if prisma_client is None:
         raise Exception(
-            "Connect Proxy to database to generate keys - https://docs.dheera_ai.ai/docs/proxy/virtual_keys "
+            "Connect Proxy to database to generate keys - https://docs.dheeraai.com/docs/proxy/virtual_keys "
         )
 
     if token is None:
@@ -3803,5 +3803,5 @@ def validate_model_max_budget(model_max_budget: Optional[Dict]) -> None:
                 BudgetConfig(**_budget_info)
     except Exception as e:
         raise ValueError(
-            f"Invalid model_max_budget: {str(e)}. Example of valid model_max_budget: https://docs.dheera_ai.ai/docs/proxy/users"
+            f"Invalid model_max_budget: {str(e)}. Example of valid model_max_budget: https://docs.dheeraai.com/docs/proxy/users"
         )

@@ -183,7 +183,7 @@ ROUTER_SETTINGS_FIELDS: List[RouterSettingsField] = [
         field_description="Enable tag-based routing to route requests based on tags",
         field_default=False,
         ui_field_name="Enable Tag Filtering",
-        link="https://docs.dheera_ai.ai/docs/proxy/tag_routing",
+        link="https://docs.dheeraai.com/docs/proxy/tag_routing",
     ),
     RouterSettingsField(
         field_name="disable_cooldowns",

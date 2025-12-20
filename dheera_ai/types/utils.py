@@ -65,7 +65,7 @@ def _generate_id():  # private helper function
 
 class DheeraAICommonStrings(Enum):
     redacted_by_dheera_ai = "redacted by dheera_ai. 'dheera_ai.turn_off_message_logging=True'"
-    llm_provider_not_provided = "Unmapped LLM provider for this endpoint. You passed model={model}, custom_llm_provider={custom_llm_provider}. Check supported provider and route: https://docs.dheera_ai.ai/docs/providers"
+    llm_provider_not_provided = "Unmapped LLM provider for this endpoint. You passed model={model}, custom_llm_provider={custom_llm_provider}. Check supported provider and route: https://docs.dheeraai.com/docs/providers"
 
 
 SupportedCacheControls = ["ttl", "s-maxage", "no-cache", "no-store"]

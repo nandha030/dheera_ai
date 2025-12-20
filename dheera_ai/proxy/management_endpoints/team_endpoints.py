@@ -652,7 +652,7 @@ async def new_team(  # noqa: PLR0915
     """
     Allow users to create a new team. Apply user permissions to their team.
 
-    👉 [Detailed Doc on setting team budgets](https://docs.dheera_ai.ai/docs/proxy/team_budgets)
+    👉 [Detailed Doc on setting team budgets](https://docs.dheeraai.com/docs/proxy/team_budgets)
 
 
     Parameters:
@@ -668,15 +668,15 @@ async def new_team(  # noqa: PLR0915
     - rpm_limit_type: Optional[Literal["guaranteed_throughput", "best_effort_throughput"]] - The type of RPM limit enforcement. Use "guaranteed_throughput" to raise an error if overallocating RPM, or "best_effort_throughput" for best effort enforcement.
     - tpm_limit_type: Optional[Literal["guaranteed_throughput", "best_effort_throughput"]] - The type of TPM limit enforcement. Use "guaranteed_throughput" to raise an error if overallocating TPM, or "best_effort_throughput" for best effort enforcement.
     - max_budget: Optional[float] - The maximum budget allocated to the team - all keys for this team_id will have at max this max_budget
-    - budget_duration: Optional[str] - The duration of the budget for the team. Doc [here](https://docs.dheera_ai.ai/docs/proxy/team_budgets)
+    - budget_duration: Optional[str] - The duration of the budget for the team. Doc [here](https://docs.dheeraai.com/docs/proxy/team_budgets)
     - models: Optional[list] - A list of models associated with the team - all keys for this team_id will have at most, these models. If empty, assumes all models are allowed.
     - blocked: bool - Flag indicating if the team is blocked or not - will stop all calls from keys with this team_id.
     - members: Optional[List] - Control team members via `/team/member/add` and `/team/member/delete`.
     - tags: Optional[List[str]] - Tags for [tracking spend](https://dheera_ai.vercel.app/docs/proxy/enterprise#tracking-spend-for-custom-tags) and/or doing [tag-based routing](https://dheera_ai.vercel.app/docs/proxy/tag_routing).
     - prompts: Optional[List[str]] - List of prompts that the team is allowed to use.
     - organization_id: Optional[str] - The organization id of the team. Default is None. Create via `/organization/new`.
-    - model_aliases: Optional[dict] - Model aliases for the team. [Docs](https://docs.dheera_ai.ai/docs/proxy/team_based_routing#create-team-with-model-alias)
-    - guardrails: Optional[List[str]] - Guardrails for the team. [Docs](https://docs.dheera_ai.ai/docs/proxy/guardrails)
+    - model_aliases: Optional[dict] - Model aliases for the team. [Docs](https://docs.dheeraai.com/docs/proxy/team_based_routing#create-team-with-model-alias)
+    - guardrails: Optional[List[str]] - Guardrails for the team. [Docs](https://docs.dheeraai.com/docs/proxy/guardrails)
     - disable_global_guardrails: Optional[bool] - Whether to disable global guardrails for the key.
     - prompts: Optional[List[str]] - List of prompts that the team is allowed to use.
     - object_permission: Optional[DheeraAI_ObjectPermissionBase] - team-specific object permission. Example - {"vector_stores": ["vector_store_1", "vector_store_2"], "agents": ["agent_1", "agent_2"], "agent_access_groups": ["dev_group"]}. IF null or {} then no object permission.
@@ -1192,14 +1192,14 @@ async def update_team(
     - tpm_limit: Optional[int] - The TPM (Tokens Per Minute) limit for this team - all keys with this team_id will have at max this TPM limit
     - rpm_limit: Optional[int] - The RPM (Requests Per Minute) limit for this team - all keys associated with this team_id will have at max this RPM limit
     - max_budget: Optional[float] - The maximum budget allocated to the team - all keys for this team_id will have at max this max_budget
-    - budget_duration: Optional[str] - The duration of the budget for the team. Doc [here](https://docs.dheera_ai.ai/docs/proxy/team_budgets)
+    - budget_duration: Optional[str] - The duration of the budget for the team. Doc [here](https://docs.dheeraai.com/docs/proxy/team_budgets)
     - models: Optional[list] - A list of models associated with the team - all keys for this team_id will have at most, these models. If empty, assumes all models are allowed.
     - prompts: Optional[List[str]] - List of prompts that the team is allowed to use.
     - blocked: bool - Flag indicating if the team is blocked or not - will stop all calls from keys with this team_id.
     - tags: Optional[List[str]] - Tags for [tracking spend](https://dheera_ai.vercel.app/docs/proxy/enterprise#tracking-spend-for-custom-tags) and/or doing [tag-based routing](https://dheera_ai.vercel.app/docs/proxy/tag_routing).
     - organization_id: Optional[str] - The organization id of the team. Default is None. Create via `/organization/new`.
-    - model_aliases: Optional[dict] - Model aliases for the team. [Docs](https://docs.dheera_ai.ai/docs/proxy/team_based_routing#create-team-with-model-alias)
-    - guardrails: Optional[List[str]] - Guardrails for the team. [Docs](https://docs.dheera_ai.ai/docs/proxy/guardrails)
+    - model_aliases: Optional[dict] - Model aliases for the team. [Docs](https://docs.dheeraai.com/docs/proxy/team_based_routing#create-team-with-model-alias)
+    - guardrails: Optional[List[str]] - Guardrails for the team. [Docs](https://docs.dheeraai.com/docs/proxy/guardrails)
     - disable_global_guardrails: Optional[bool] - Whether to disable global guardrails for the key.
     - prompts: Optional[List[str]] - List of prompts that the team is allowed to use.
     - object_permission: Optional[DheeraAI_ObjectPermissionBase] - team-specific object permission. Example - {"vector_stores": ["vector_store_1", "vector_store_2"], "agents": ["agent_1", "agent_2"], "agent_access_groups": ["dev_group"]}. IF null or {} then no object permission.
@@ -2513,7 +2513,7 @@ async def team_info(
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail={
-                    "error": "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                    "error": "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
                 },
             )
         if team_id is None:
@@ -2745,7 +2745,7 @@ async def list_available_teams(
         raise HTTPException(
             status_code=400,
             detail={
-                "error": "No available teams for user to join. See how to set available teams here: https://docs.dheera_ai.ai/docs/proxy/self_serve#all-settings-for-self-serve--sso-flow"
+                "error": "No available teams for user to join. See how to set available teams here: https://docs.dheeraai.com/docs/proxy/self_serve#all-settings-for-self-serve--sso-flow"
             },
         )
 

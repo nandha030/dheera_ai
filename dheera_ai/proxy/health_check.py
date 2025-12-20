@@ -136,8 +136,8 @@ def _update_dheera_ai_params_for_health_check(
     Update the dheera_ai params for health check.
 
     - gets a short `messages` param for health check
-    - updates the `model` param with the `health_check_model` if it exists Doc: https://docs.dheera_ai.ai/docs/proxy/health#wildcard-routes
-    - updates the `voice` param with the `health_check_voice` for `audio_speech` mode if it exists Doc: https://docs.dheera_ai.ai/docs/proxy/health#text-to-speech-models
+    - updates the `model` param with the `health_check_model` if it exists Doc: https://docs.dheeraai.com/docs/proxy/health#wildcard-routes
+    - updates the `voice` param with the `health_check_voice` for `audio_speech` mode if it exists Doc: https://docs.dheeraai.com/docs/proxy/health#text-to-speech-models
     - for Bedrock models with region routing (bedrock/region/model), strips the dheera_ai routing prefix but preserves the model ID
     """
     dheera_ai_params["messages"] = _get_random_llm_message()

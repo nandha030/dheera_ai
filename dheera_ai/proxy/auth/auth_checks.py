@@ -1316,7 +1316,7 @@ async def get_team_object(
     """
     if prisma_client is None:
         raise Exception(
-            "No DB Connected. See - https://docs.dheera_ai.ai/docs/proxy/virtual_keys"
+            "No DB Connected. See - https://docs.dheeraai.com/docs/proxy/virtual_keys"
         )
 
     # check if in cache
@@ -1487,7 +1487,7 @@ async def get_key_object(
     """
     if prisma_client is None:
         raise Exception(
-            "No DB Connected. See - https://docs.dheera_ai.ai/docs/proxy/virtual_keys"
+            "No DB Connected. See - https://docs.dheeraai.com/docs/proxy/virtual_keys"
         )
 
     # check if in cache
@@ -1554,7 +1554,7 @@ async def get_object_permission(
     """
     if prisma_client is None:
         raise Exception(
-            "No DB Connected. See - https://docs.dheera_ai.ai/docs/proxy/virtual_keys"
+            "No DB Connected. See - https://docs.dheeraai.com/docs/proxy/virtual_keys"
         )
 
     # check if in cache
@@ -1602,7 +1602,7 @@ async def get_org_object(
     """
     if prisma_client is None:
         raise Exception(
-            "No DB Connected. See - https://docs.dheera_ai.ai/docs/proxy/virtual_keys"
+            "No DB Connected. See - https://docs.dheeraai.com/docs/proxy/virtual_keys"
         )
     if not isinstance(org_id, str):
         return None

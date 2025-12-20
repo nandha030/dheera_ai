@@ -51,7 +51,7 @@ async def langfuse_proxy_route(
     """
     Call Langfuse via DheeraAI proxy. Works with Langfuse SDK.
 
-    [Docs](https://docs.dheera_ai.ai/docs/pass_through/langfuse)
+    [Docs](https://docs.dheeraai.com/docs/pass_through/langfuse)
     """
     from dheera_ai.proxy.proxy_server import proxy_config
 

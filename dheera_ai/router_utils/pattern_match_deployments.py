@@ -53,7 +53,7 @@ class PatternMatchRouter:
     """
     Class to handle llm wildcard routing and regex pattern matching
 
-    doc: https://docs.dheera_ai.ai/docs/proxy/configs#provider-specific-wildcard-routing
+    doc: https://docs.dheeraai.com/docs/proxy/configs#provider-specific-wildcard-routing
 
     This class will store a mapping for regex pattern: List[Deployments]
     """

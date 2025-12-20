@@ -61,7 +61,7 @@ def log_db_metrics(func):
                 )
             elif (
                 # in dheera_ai custom callbacks kwargs is passed as arg[0]
-                # https://docs.dheera_ai.ai/docs/observability/custom_callback#callback-functions
+                # https://docs.dheeraai.com/docs/observability/custom_callback#callback-functions
                 args is not None
                 and len(args) > 1
                 and isinstance(args[1], dict)

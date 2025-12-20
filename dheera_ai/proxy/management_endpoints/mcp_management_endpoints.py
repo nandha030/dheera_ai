@@ -770,7 +770,7 @@ if MCP_AVAILABLE:
         ```
         """
         prisma_client = get_prisma_client_or_throw(
-            "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+            "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
         )
 
         # Authz - restrict only admins to delete mcp servers
@@ -836,7 +836,7 @@ if MCP_AVAILABLE:
         ```
         """
         prisma_client = get_prisma_client_or_throw(
-            "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+            "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
         )
 
         # Validate and normalize payload fields

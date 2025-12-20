@@ -1872,7 +1872,7 @@ class ConfigGeneralSettings(DheeraAIPydanticObjectBase):
     )
     custom_auth: Optional[str] = Field(
         None,
-        description="override user_api_key_auth with your own auth script - https://docs.dheera_ai.ai/docs/proxy/virtual_keys#custom-auth",
+        description="override user_api_key_auth with your own auth script - https://docs.dheeraai.com/docs/proxy/virtual_keys#custom-auth",
     )
     max_parallel_requests: Optional[int] = Field(
         None,
@@ -1934,7 +1934,7 @@ class ConfigGeneralSettings(DheeraAIPydanticObjectBase):
     )
     pass_through_endpoints: Optional[List[PassThroughGenericEndpoint]] = Field(
         default=None,
-        description="Set-up pass-through endpoints for provider-specific endpoints. Docs - https://docs.dheera_ai.ai/docs/proxy/pass_through",
+        description="Set-up pass-through endpoints for provider-specific endpoints. Docs - https://docs.dheeraai.com/docs/proxy/pass_through",
     )
     user_header_name: Optional[str] = Field(
         None,
@@ -2820,7 +2820,7 @@ class ProxyException(Exception):
 
 class CommonProxyErrors(str, enum.Enum):
     db_not_connected_error = (
-        "DB not connected. See https://docs.dheera_ai.ai/docs/proxy/virtual_keys"
+        "DB not connected. See https://docs.dheeraai.com/docs/proxy/virtual_keys"
     )
     no_llm_router = "No models configured on proxy"
     not_allowed_access = "Admin-only endpoint. Not allowed to access this."
@@ -3300,7 +3300,7 @@ class UserManagementEndpointParamDocStringEnums(str, enum.Enum):
     auto_create_key_doc_str = """bool - Default=True. Flag used for returning a key as part of the /user/new response"""
     aliases_doc_str = """Optional[dict] - Model aliases for the user - [Docs](https://dheera_ai.vercel.app/docs/proxy/virtual_keys#model-aliases)"""
     config_doc_str = """Optional[dict] - [DEPRECATED PARAM] User-specific config."""
-    allowed_cache_controls_doc_str = """Optional[list] - List of allowed cache control values. Example - ["no-cache", "no-store"]. See all values - https://docs.dheera_ai.ai/docs/proxy/caching#turn-on--off-caching-per-request-"""
+    allowed_cache_controls_doc_str = """Optional[list] - List of allowed cache control values. Example - ["no-cache", "no-store"]. See all values - https://docs.dheeraai.com/docs/proxy/caching#turn-on--off-caching-per-request-"""
     blocked_doc_str = (
         """Optional[bool] - [Not Implemented Yet] Whether the user is blocked."""
     )
@@ -3309,9 +3309,9 @@ class UserManagementEndpointParamDocStringEnums(str, enum.Enum):
     metadata_doc_str = """Optional[dict] - Metadata for user, store information for user. Example metadata = {"team": "core-infra", "app": "app2", "email": "ishaan@berri.ai" }"""
     max_parallel_requests_doc_str = """Optional[int] - Rate limit a user based on the number of parallel requests. Raises 429 error, if user's parallel requests > x."""
     soft_budget_doc_str = """Optional[float] - Get alerts when user crosses given budget, doesn't block requests."""
-    model_max_budget_doc_str = """Optional[dict] - Model-specific max budget for user. [Docs](https://docs.dheera_ai.ai/docs/proxy/users#add-model-specific-budgets-to-keys)"""
-    model_rpm_limit_doc_str = """Optional[float] - Model-specific rpm limit for user. [Docs](https://docs.dheera_ai.ai/docs/proxy/users#add-model-specific-limits-to-keys)"""
-    model_tpm_limit_doc_str = """Optional[float] - Model-specific tpm limit for user. [Docs](https://docs.dheera_ai.ai/docs/proxy/users#add-model-specific-limits-to-keys)"""
+    model_max_budget_doc_str = """Optional[dict] - Model-specific max budget for user. [Docs](https://docs.dheeraai.com/docs/proxy/users#add-model-specific-budgets-to-keys)"""
+    model_rpm_limit_doc_str = """Optional[float] - Model-specific rpm limit for user. [Docs](https://docs.dheeraai.com/docs/proxy/users#add-model-specific-limits-to-keys)"""
+    model_tpm_limit_doc_str = """Optional[float] - Model-specific tpm limit for user. [Docs](https://docs.dheeraai.com/docs/proxy/users#add-model-specific-limits-to-keys)"""
     spend_doc_str = """Optional[float] - Amount spent by user. Default is 0. Will be updated by proxy whenever user is used."""
     team_id_doc_str = """Optional[str] - [DEPRECATED PARAM] The team id of the user. Default is None."""
     duration_doc_str = """Optional[str] - Duration for the key auto-created on `/user/new`. Default is None."""

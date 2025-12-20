@@ -242,7 +242,7 @@ def build_ui_login_form(show_deprecation_banner: bool = False) -> str:
                 Default Credentials
             </div>
             <p>By default, Username is <code>admin</code> and Password is your set DheeraAI Proxy <code>MASTER_KEY</code>.</p>
-            <p>Need to set UI credentials or SSO? <a href="https://docs.dheera_ai.ai/docs/proxy/ui" target="_blank">Check the documentation</a>.</p>
+            <p>Need to set UI credentials or SSO? <a href="https://docs.dheeraai.com/docs/proxy/ui" target="_blank">Check the documentation</a>.</p>
         </div>
         <label for="username">Username<span class="required">*</span></label>
         <input type="text" id="username" name="username" required placeholder="Enter your username" autocomplete="username">

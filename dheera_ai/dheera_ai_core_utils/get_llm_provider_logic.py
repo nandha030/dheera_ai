@@ -412,10 +412,10 @@ def get_llm_provider(  # noqa: PLR0915
             if dheera_ai.suppress_debug_info is False:
                 print()  # noqa
                 print(  # noqa
-                    "\033[1;31mProvider List: https://docs.dheera_ai.ai/docs/providers\033[0m"  # noqa
+                    "\033[1;31mProvider List: https://docs.dheeraai.com/docs/providers\033[0m"  # noqa
                 )  # noqa
                 print()  # noqa
-            error_str = f"LLM Provider NOT provided. Pass in the LLM provider you are trying to call. You passed model={model}\n Pass model as E.g. For 'Huggingface' inference endpoints pass in `completion(model='huggingface/starcoder',..)` Learn more: https://docs.dheera_ai.ai/docs/providers"
+            error_str = f"LLM Provider NOT provided. Pass in the LLM provider you are trying to call. You passed model={model}\n Pass model as E.g. For 'Huggingface' inference endpoints pass in `completion(model='huggingface/starcoder',..)` Learn more: https://docs.dheeraai.com/docs/providers"
             # maps to openai.NotFoundError, this is raised when openai does not recognize the llm
             raise dheera_ai.exceptions.BadRequestError(  # type: ignore
                 message=error_str,

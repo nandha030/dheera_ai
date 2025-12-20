@@ -323,7 +323,7 @@ class Cache:
         """
         Handles getting the value for the 'model' param from kwargs
 
-        1. If caching groups are set, then return the caching group as the model https://docs.dheera_ai.ai/docs/routing#caching-across-model-groups
+        1. If caching groups are set, then return the caching group as the model https://docs.dheeraai.com/docs/routing#caching-across-model-groups
         2. Else if a model_group is set, then return the model_group as the model. This is used for all requests sent through the dheera_ai.Router()
         3. Else use the `model` passed in kwargs
         """

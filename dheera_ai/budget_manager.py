@@ -149,7 +149,7 @@ class BudgetManager:
             ]  # if this throws an error try, model = completion_obj['model']
         else:
             raise ValueError(
-                "Either a chat completion object or the text response needs to be passed in. Learn more - https://docs.dheera_ai.ai/docs/budget_manager"
+                "Either a chat completion object or the text response needs to be passed in. Learn more - https://docs.dheeraai.com/docs/budget_manager"
             )
 
         self.user_dict[user]["current_cost"] = cost + self.user_dict[user].get(

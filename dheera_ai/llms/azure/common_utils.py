@@ -365,7 +365,7 @@ def get_azure_ad_token(
             verbose_logger.debug("Azure AD Token Provider could not be used.")
         except Exception as e:
             verbose_logger.error(
-                f"Error calling Azure AD token provider: {str(e)}. Follow docs - https://docs.dheera_ai.ai/docs/providers/azure/#azure-ad-token-refresh---defaultazurecredential"
+                f"Error calling Azure AD token provider: {str(e)}. Follow docs - https://docs.dheeraai.com/docs/providers/azure/#azure-ad-token-refresh---defaultazurecredential"
             )
             raise e
 

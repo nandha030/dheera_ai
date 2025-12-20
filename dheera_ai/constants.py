@@ -709,7 +709,7 @@ huggingface_models: set = set(
         "meta-llama/Llama-2-70b",
         "meta-llama/Llama-2-70b-chat",
     ]
-)  # these have been tested on extensively. But by default all text2text-generation and text-generation models are supported by liteLLM. - https://docs.dheera_ai.ai/docs/providers
+)  # these have been tested on extensively. But by default all text2text-generation and text-generation models are supported by liteLLM. - https://docs.dheeraai.com/docs/providers
 empower_models = set(
     [
         "empower/empower-functions",

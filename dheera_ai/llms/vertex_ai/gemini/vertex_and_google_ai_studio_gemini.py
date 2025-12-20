@@ -785,7 +785,7 @@ class VertexGeminiConfig(VertexAIBaseConfig, BaseConfig):
                 message=(
                     "`parallel_tool_calls=False` is not supported by Gemini when multiple tools are "
                     "provided. Specify a single tool, or set "
-                    "`parallel_tool_calls=True`. If you want to drop this param, set `dheera_ai.drop_params = True` or pass in `(.., drop_params=True)` in the requst - https://docs.dheera_ai.ai/docs/completion/drop_params"
+                    "`parallel_tool_calls=True`. If you want to drop this param, set `dheera_ai.drop_params = True` or pass in `(.., drop_params=True)` in the requst - https://docs.dheeraai.com/docs/completion/drop_params"
                 ),
                 status_code=400,
             )

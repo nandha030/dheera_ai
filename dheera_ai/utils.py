@@ -366,7 +366,7 @@ last_fetched_at_keys = None
 ######## Model Response #########################
 
 # All liteLLM Model responses will be in this format, Follows the OpenAI Format
-# https://docs.dheera_ai.ai/docs/completion/output
+# https://docs.dheeraai.com/docs/completion/output
 # {
 #   'choices': [
 #      {

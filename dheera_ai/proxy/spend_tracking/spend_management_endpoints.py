@@ -54,7 +54,7 @@ async def spend_key_fn():
     try:
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
 
         key_info = await prisma_client.get_data(table_name="key", query_type="find_all")
@@ -99,7 +99,7 @@ async def spend_user_fn(
     try:
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
 
         if user_id is not None:
@@ -160,7 +160,7 @@ async def view_spend_tags(
     try:
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
 
         # run the following SQL query on prisma
@@ -280,7 +280,7 @@ async def get_global_activity(
     try:
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
 
         if (
@@ -446,7 +446,7 @@ async def get_global_activity_model(
     try:
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
 
         if (
@@ -598,7 +598,7 @@ async def get_global_activity_exceptions_per_deployment(
     try:
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
 
         sql_query = """
@@ -730,7 +730,7 @@ async def get_global_activity_exceptions(
     try:
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
 
         sql_query = """
@@ -835,7 +835,7 @@ async def get_global_spend_provider(
     try:
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
 
         if (
@@ -994,7 +994,7 @@ async def get_global_spend_report(
     try:
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
 
         if premium_user is not True:
@@ -1285,7 +1285,7 @@ async def global_get_all_tag_names():
 
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
 
         sql_query = """
@@ -1366,7 +1366,7 @@ async def global_view_spend_tags(
     try:
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
 
         if end_date is None or start_date is None:
@@ -1476,7 +1476,7 @@ async def calculate_spend(request: SpendCalculateRequest):
 
     Calculate spend **before** making call:
 
-    Note: If you see a spend of $0.0 you need to set custom_pricing for your model: https://docs.dheera_ai.ai/docs/proxy/custom_pricing
+    Note: If you see a spend of $0.0 you need to set custom_pricing for your model: https://docs.dheeraai.com/docs/proxy/custom_pricing
 
     ```
     curl --location 'http://localhost:4000/spend/calculate'
@@ -1966,7 +1966,7 @@ async def view_spend_logs(  # noqa: PLR0915
         verbose_proxy_logger.debug("inside view_spend_logs")
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
         spend_logs = []
         if (
@@ -2781,7 +2781,7 @@ async def global_spend_models(
 @router.get("/provider/budgets", response_model=ProviderBudgetResponse)
 async def provider_budgets() -> ProviderBudgetResponse:
     """
-    Provider Budget Routing - Get Budget, Spend Details https://docs.dheera_ai.ai/docs/proxy/provider_budget_routing
+    Provider Budget Routing - Get Budget, Spend Details https://docs.dheeraai.com/docs/proxy/provider_budget_routing
 
     Use this endpoint to check current budget, spend and budget reset time for a provider
 
@@ -2838,7 +2838,7 @@ async def provider_budgets() -> ProviderBudgetResponse:
         provider_budget_config = llm_router.provider_budget_config
         if provider_budget_config is None:
             raise ValueError(
-                "No provider budget config found. Please set a provider budget config in the router settings. https://docs.dheera_ai.ai/docs/proxy/provider_budget_routing"
+                "No provider budget config found. Please set a provider budget config in the router settings. https://docs.dheeraai.com/docs/proxy/provider_budget_routing"
             )
 
         provider_budget_response_dict: Dict[str, ProviderBudgetResponseObject] = {}

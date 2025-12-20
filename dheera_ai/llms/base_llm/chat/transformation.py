@@ -64,7 +64,7 @@ class BaseLLMException(Exception):
             self.request = request
         else:
             self.request = httpx.Request(
-                method="POST", url="https://docs.dheera_ai.ai/docs"
+                method="POST", url="https://docs.dheeraai.com/docs"
             )
         if response:
             self.response = response

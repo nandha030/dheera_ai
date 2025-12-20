@@ -657,7 +657,7 @@ async def delete_model(
             raise HTTPException(
                 status_code=500,
                 detail={
-                    "error": "No DB Connected. Here's how to do it - https://docs.dheera_ai.ai/docs/proxy/virtual_keys"
+                    "error": "No DB Connected. Here's how to do it - https://docs.dheeraai.com/docs/proxy/virtual_keys"
                 },
             )
 
@@ -869,7 +869,7 @@ async def add_new_model(
             raise HTTPException(
                 status_code=500,
                 detail={
-                    "error": "No DB Connected. Here's how to do it - https://docs.dheera_ai.ai/docs/proxy/virtual_keys"
+                    "error": "No DB Connected. Here's how to do it - https://docs.dheeraai.com/docs/proxy/virtual_keys"
                 },
             )
 
@@ -1006,7 +1006,7 @@ async def update_model(
             raise HTTPException(
                 status_code=500,
                 detail={
-                    "error": "No DB Connected. Here's how to do it - https://docs.dheera_ai.ai/docs/proxy/virtual_keys"
+                    "error": "No DB Connected. Here's how to do it - https://docs.dheeraai.com/docs/proxy/virtual_keys"
                 },
             )
 

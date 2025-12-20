@@ -16,7 +16,7 @@ router = APIRouter()
     "/config/pass_through_endpoints/settings",
     dependencies=[Depends(user_api_key_auth)],
     tags=["pass-through-endpoints"],
-    summary="Create pass-through endpoints for provider specific endpoints - https://docs.dheera_ai.ai/docs/proxy/pass_through",
+    summary="Create pass-through endpoints for provider specific endpoints - https://docs.dheeraai.com/docs/proxy/pass_through",
 )
 async def create_fine_tuning_job(
     request: Request,

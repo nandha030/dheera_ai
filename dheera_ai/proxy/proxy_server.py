@@ -570,9 +570,9 @@ ui_message = (
 )
 ui_message += "\n\n💸 [```DheeraAI Model Cost Map```](https://models.dheera_ai.ai/)."
 
-ui_message += f"\n\n🔎 [```DheeraAI Model Hub```]({model_hub_link}). See available models on the proxy. [**Docs**](https://docs.dheera_ai.ai/docs/proxy/ai_hub)"
+ui_message += f"\n\n🔎 [```DheeraAI Model Hub```]({model_hub_link}). See available models on the proxy. [**Docs**](https://docs.dheeraai.com/docs/proxy/ai_hub)"
 
-custom_swagger_message = "[**Customize Swagger Docs**](https://docs.dheera_ai.ai/docs/proxy/enterprise#swagger-docs---custom-routes--branding)"
+custom_swagger_message = "[**Customize Swagger Docs**](https://docs.dheeraai.com/docs/proxy/enterprise#swagger-docs---custom-routes--branding)"
 
 ### CUSTOM BRANDING [ENTERPRISE FEATURE] ###
 _title = os.getenv("DOCS_TITLE", "DheeraAI API") if premium_user else "DheeraAI API"
@@ -2419,7 +2419,7 @@ class ProxyConfig:
                     )  # noqa
                 elif key == "cache_params":
                     # this is set in the cache branch
-                    # see usage here: https://docs.dheera_ai.ai/docs/proxy/caching
+                    # see usage here: https://docs.dheeraai.com/docs/proxy/caching
                     pass
                 elif key == "responses":
                     # Initialize global polling via cache settings
@@ -7903,7 +7903,7 @@ async def model_info_v1(  # noqa: PLR0915
         raise HTTPException(
             status_code=500,
             detail={
-                "error": "LLM Model List not loaded in. Make sure you passed models in your config.yaml or on the DheeraAI Admin UI. - https://docs.dheera_ai.ai/docs/proxy/configs"
+                "error": "LLM Model List not loaded in. Make sure you passed models in your config.yaml or on the DheeraAI Admin UI. - https://docs.dheeraai.com/docs/proxy/configs"
             },
         )
 
@@ -7911,7 +7911,7 @@ async def model_info_v1(  # noqa: PLR0915
         raise HTTPException(
             status_code=500,
             detail={
-                "error": "LLM Router is not loaded in. Make sure you passed models in your config.yaml or on the DheeraAI Admin UI. - https://docs.dheera_ai.ai/docs/proxy/configs"
+                "error": "LLM Router is not loaded in. Make sure you passed models in your config.yaml or on the DheeraAI Admin UI. - https://docs.dheeraai.com/docs/proxy/configs"
             },
         )
 
@@ -8050,7 +8050,7 @@ async def model_group_info(
     -H 'Authorization: Bearersk-1234'
     ```
 
-    Learn how to use and set wildcard models [here](https://docs.dheera_ai.ai/docs/wildcard_routing)
+    Learn how to use and set wildcard models [here](https://docs.dheeraai.com/docs/wildcard_routing)
 
     Example Response:
     ```json
@@ -8605,7 +8605,7 @@ async def onboarding(invite_link: str, request: Request):
 
     if master_key is None:
         raise ProxyException(
-            message="Master Key not set for Proxy. Please set Master Key to use Admin UI. Set `DHEERA_AI_MASTER_KEY` in .env or set general_settings:master_key in config.yaml.  https://docs.dheera_ai.ai/docs/proxy/virtual_keys. If set, use `--detailed_debug` to debug issue.",
+            message="Master Key not set for Proxy. Please set Master Key to use Admin UI. Set `DHEERA_AI_MASTER_KEY` in .env or set general_settings:master_key in config.yaml.  https://docs.dheeraai.com/docs/proxy/virtual_keys. If set, use `--detailed_debug` to debug issue.",
             type=ProxyErrorTypes.auth_error,
             param="master_key",
             code=status.HTTP_500_INTERNAL_SERVER_ERROR,

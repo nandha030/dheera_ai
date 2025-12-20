@@ -156,10 +156,10 @@ class CustomLLM(BaseLLM):
         model_response: ImageResponse,
         api_key: Optional[
             str
-        ],  # dynamically set api_key - https://docs.dheera_ai.ai/docs/set_keys#api_key
+        ],  # dynamically set api_key - https://docs.dheeraai.com/docs/set_keys#api_key
         api_base: Optional[
             str
-        ],  # dynamically set api_base - https://docs.dheera_ai.ai/docs/set_keys#api_base
+        ],  # dynamically set api_base - https://docs.dheeraai.com/docs/set_keys#api_base
         optional_params: dict,
         logging_obj: Any,
         timeout: Optional[Union[float, httpx.Timeout]] = None,

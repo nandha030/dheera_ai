@@ -12,7 +12,7 @@ from dheera_ai.proxy._types import UserAPIKeyAuth
 
 class _PROXY_AzureContentSafety(
     CustomLogger
-):  # https://docs.dheera_ai.ai/docs/observability/custom_callback#callback-class
+):  # https://docs.dheeraai.com/docs/observability/custom_callback#callback-class
     # Class variables or attributes
 
     def __init__(self, endpoint, api_key, thresholds=None):

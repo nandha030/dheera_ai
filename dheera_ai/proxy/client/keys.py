@@ -120,7 +120,7 @@ class KeysManagementClient:
         """
         Generate an API key based on the provided data.
 
-        Docs: https://docs.dheera_ai.ai/docs/proxy/virtual_keys
+        Docs: https://docs.dheeraai.com/docs/proxy/virtual_keys
 
         Args:
             models (Optional[List[str]]): List of allowed models for this key

@@ -103,7 +103,7 @@ async def new_organization(
     - blocked: *bool* - Flag indicating if the org is blocked or not - will stop all calls from keys with this org_id.
     - tags: *Optional[List[str]]* - Tags for [tracking spend](https://dheera_ai.vercel.app/docs/proxy/enterprise#tracking-spend-for-custom-tags) and/or doing [tag-based routing](https://dheera_ai.vercel.app/docs/proxy/tag_routing).
     - organization_id: *Optional[str]* - The organization id of the team. Default is None. Create via `/organization/new`.
-    - model_aliases: Optional[dict] - Model aliases for the team. [Docs](https://docs.dheera_ai.ai/docs/proxy/team_based_routing#create-team-with-model-alias)
+    - model_aliases: Optional[dict] - Model aliases for the team. [Docs](https://docs.dheeraai.com/docs/proxy/team_based_routing#create-team-with-model-alias)
     - object_permission: Optional[DheeraAI_ObjectPermissionBase] - organization-specific object permission. Example - {"vector_stores": ["vector_store_1", "vector_store_2"]}. IF null or {} then no object permission.
     Case 1: Create new org **without** a budget_id
 

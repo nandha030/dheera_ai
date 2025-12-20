@@ -185,7 +185,7 @@ async def gemini_proxy_route(
     fastapi_response: Response,
 ):
     """
-    [Docs](https://docs.dheera_ai.ai/docs/pass_through/google_ai_studio)
+    [Docs](https://docs.dheeraai.com/docs/pass_through/google_ai_studio)
     """
     ## CHECK FOR LITELLM API KEY IN THE QUERY PARAMS - ?..key=DHEERA_AI_API_KEY
     google_ai_studio_api_key = request.query_params.get("key") or request.headers.get(
@@ -256,7 +256,7 @@ async def cohere_proxy_route(
     user_api_key_dict: UserAPIKeyAuth = Depends(user_api_key_auth),
 ):
     """
-    [Docs](https://docs.dheera_ai.ai/docs/pass_through/cohere)
+    [Docs](https://docs.dheeraai.com/docs/pass_through/cohere)
     """
     base_target_url = os.getenv("COHERE_API_BASE") or "https://api.cohere.com"
     encoded_endpoint = httpx.URL(endpoint).path
@@ -308,7 +308,7 @@ async def vllm_proxy_route(
     user_api_key_dict: UserAPIKeyAuth = Depends(user_api_key_auth),
 ):
     """
-    [Docs](https://docs.dheera_ai.ai/docs/pass_through/vllm)
+    [Docs](https://docs.dheeraai.com/docs/pass_through/vllm)
     """
     from dheera_ai.proxy.proxy_server import llm_router
 
@@ -382,7 +382,7 @@ async def mistral_proxy_route(
     user_api_key_dict: UserAPIKeyAuth = Depends(user_api_key_auth),
 ):
     """
-    [Docs](https://docs.dheera_ai.ai/docs/pass_through/mistral)
+    [Docs](https://docs.dheeraai.com/docs/pass_through/mistral)
     """
     base_target_url = os.getenv("MISTRAL_API_BASE") or "https://api.mistral.ai"
     encoded_endpoint = httpx.URL(endpoint).path
@@ -578,7 +578,7 @@ async def anthropic_proxy_route(
     user_api_key_dict: UserAPIKeyAuth = Depends(user_api_key_auth),
 ):
     """
-    [Docs](https://docs.dheera_ai.ai/docs/pass_through/anthropic_completion)
+    [Docs](https://docs.dheeraai.com/docs/pass_through/anthropic_completion)
     """
     base_target_url = os.getenv("ANTHROPIC_API_BASE") or "https://api.anthropic.com"
     encoded_endpoint = httpx.URL(endpoint).path
@@ -968,7 +968,7 @@ async def bedrock_proxy_route(
     """
     This is the v1 passthrough for Bedrock.
     V2 is handled by the `/bedrock/v2` endpoint.
-    [Docs](https://docs.dheera_ai.ai/docs/pass_through/bedrock)
+    [Docs](https://docs.dheeraai.com/docs/pass_through/bedrock)
     """
     create_request_copy(request)
 
@@ -1729,7 +1729,7 @@ async def vertex_proxy_route(
     """
     Call DheeraAI proxy via Vertex AI SDK.
 
-    [Docs](https://docs.dheera_ai.ai/docs/pass_through/vertex_ai)
+    [Docs](https://docs.dheeraai.com/docs/pass_through/vertex_ai)
     """
     ai_platform_handler = get_vertex_pass_through_handler(call_type="aiplatform")
 

@@ -10,7 +10,7 @@ from ..common_utils import FireworksAIMixin
 class FireworksAITextCompletionConfig(FireworksAIMixin, BaseTextCompletionConfig):
     def get_supported_openai_params(self, model: str) -> list:
         """
-        See how DheeraAI supports Provider-specific parameters - https://docs.dheera_ai.ai/docs/completion/provider_specific_params#proxy-usage
+        See how DheeraAI supports Provider-specific parameters - https://docs.dheeraai.com/docs/completion/provider_specific_params#proxy-usage
         """
         return [
             "max_tokens",

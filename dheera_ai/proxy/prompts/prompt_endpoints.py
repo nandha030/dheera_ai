@@ -280,7 +280,7 @@ async def list_prompts(
     """
     List the prompts that are available on the proxy server
 
-    👉 [Prompt docs](https://docs.dheera_ai.ai/docs/proxy/prompt_management)
+    👉 [Prompt docs](https://docs.dheeraai.com/docs/proxy/prompt_management)
 
     Example Request:
     ```bash
@@ -367,7 +367,7 @@ async def get_prompt_versions(
     """
     Get all versions of a specific prompt by base prompt ID
     
-    👉 [Prompt docs](https://docs.dheera_ai.ai/docs/proxy/prompt_management)
+    👉 [Prompt docs](https://docs.dheeraai.com/docs/proxy/prompt_management)
     
     Example Request:
     ```bash
@@ -469,7 +469,7 @@ async def get_prompt_info(
     """
     Get detailed information about a specific prompt by ID, including prompt content
 
-    👉 [Prompt docs](https://docs.dheera_ai.ai/docs/proxy/prompt_management)
+    👉 [Prompt docs](https://docs.dheeraai.com/docs/proxy/prompt_management)
 
     Example Request:
     ```bash
@@ -591,7 +591,7 @@ async def create_prompt(
     """
     Create a new prompt
 
-    👉 [Prompt docs](https://docs.dheera_ai.ai/docs/proxy/prompt_management)
+    👉 [Prompt docs](https://docs.dheeraai.com/docs/proxy/prompt_management)
 
     Example Request:
     ```bash
@@ -682,7 +682,7 @@ async def update_prompt(
     """
     Update an existing prompt
 
-    👉 [Prompt docs](https://docs.dheera_ai.ai/docs/proxy/prompt_management)
+    👉 [Prompt docs](https://docs.dheeraai.com/docs/proxy/prompt_management)
 
     Example Request:
     ```bash
@@ -793,7 +793,7 @@ async def delete_prompt(
     """
     Delete a prompt
 
-    👉 [Prompt docs](https://docs.dheera_ai.ai/docs/proxy/prompt_management)
+    👉 [Prompt docs](https://docs.dheeraai.com/docs/proxy/prompt_management)
 
     Example Request:
     ```bash
@@ -882,7 +882,7 @@ async def patch_prompt(
     """
     Partially update an existing prompt
 
-    👉 [Prompt docs](https://docs.dheera_ai.ai/docs/proxy/prompt_management)
+    👉 [Prompt docs](https://docs.dheeraai.com/docs/proxy/prompt_management)
 
     This endpoint allows updating specific fields of a prompt without sending the entire object.
     Only the following fields can be updated:
@@ -1000,7 +1000,7 @@ async def test_prompt(
     This endpoint allows testing prompts before saving them to the database.
     The response is always streamed.
     
-    👉 [Prompt docs](https://docs.dheera_ai.ai/docs/proxy/prompt_management)
+    👉 [Prompt docs](https://docs.dheeraai.com/docs/proxy/prompt_management)
     
     Example Request:
     ```bash

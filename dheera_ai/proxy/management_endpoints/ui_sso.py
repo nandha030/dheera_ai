@@ -730,7 +730,7 @@ async def auth_callback(request: Request, state: Optional[str] = None):  # noqa:
     # get url from request
     if master_key is None:
         raise ProxyException(
-            message="Master Key not set for Proxy. Please set Master Key to use Admin UI. Set `DHEERA_AI_MASTER_KEY` in .env or set general_settings:master_key in config.yaml.  https://docs.dheera_ai.ai/docs/proxy/virtual_keys. If set, use `--detailed_debug` to debug issue.",
+            message="Master Key not set for Proxy. Please set Master Key to use Admin UI. Set `DHEERA_AI_MASTER_KEY` in .env or set general_settings:master_key in config.yaml.  https://docs.dheeraai.com/docs/proxy/virtual_keys. If set, use `--detailed_debug` to debug issue.",
             type=ProxyErrorTypes.auth_error,
             param="master_key",
             code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -1261,7 +1261,7 @@ class SSOAuthenticationHandler:
                 generic_authorization_endpoint=generic_authorization_endpoint,
             )
         raise ValueError(
-            "Unknown SSO provider. Please setup SSO with client IDs https://docs.dheera_ai.ai/docs/proxy/admin_ui_sso"
+            "Unknown SSO provider. Please setup SSO with client IDs https://docs.dheeraai.com/docs/proxy/admin_ui_sso"
         )
 
     @staticmethod

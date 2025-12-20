@@ -111,7 +111,7 @@ async def update_cost_discount_config(
         raise HTTPException(
             status_code=400,
             detail={
-                "error": f"Invalid provider(s): {', '.join(invalid_providers)}. Must be valid DheeraAI providers. See https://docs.dheera_ai.ai/docs/providers for the full list."
+                "error": f"Invalid provider(s): {', '.join(invalid_providers)}. Must be valid DheeraAI providers. See https://docs.dheeraai.com/docs/providers for the full list."
             },
         )
     

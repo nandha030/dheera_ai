@@ -63,7 +63,7 @@ _BASE64_INLINE_PATTERN = re.compile(
 )
 
 
-class CustomLogger:  # https://docs.dheera_ai.ai/docs/observability/custom_callback#callback-class
+class CustomLogger:  # https://docs.dheeraai.com/docs/observability/custom_callback#callback-class
     # Class variables or attributes
     def __init__(
         self,
@@ -395,7 +395,7 @@ class CustomLogger:  # https://docs.dheera_ai.ai/docs/observability/custom_callb
         async for item in response:
             yield item
 
-    #### SINGLE-USE #### - https://docs.dheera_ai.ai/docs/observability/custom_callback#using-your-custom-callback-function
+    #### SINGLE-USE #### - https://docs.dheeraai.com/docs/observability/custom_callback#using-your-custom-callback-function
 
     def log_input_event(self, model, messages, kwargs, print_verbose, callback_func):
         try:

@@ -102,7 +102,7 @@ class _PROXY_DynamicRateLimitHandlerV3(CustomLogger):
         elif priority is not None and dheera_ai.priority_reservation is not None:
             if os.getenv("DHEERA_AI_LICENSE", None) is None:
                 verbose_proxy_logger.error(
-                    "PREMIUM FEATURE: Reserving tpm/rpm by priority is a premium feature. Please add a 'DHEERA_AI_LICENSE' to your .env to enable this.\nGet a license: https://docs.dheera_ai.ai/docs/proxy/enterprise."
+                    "PREMIUM FEATURE: Reserving tpm/rpm by priority is a premium feature. Please add a 'DHEERA_AI_LICENSE' to your .env to enable this.\nGet a license: https://docs.dheeraai.com/docs/proxy/enterprise."
                 )
             else:
                 value = dheera_ai.priority_reservation[priority]

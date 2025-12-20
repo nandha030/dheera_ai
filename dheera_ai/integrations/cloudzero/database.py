@@ -33,7 +33,7 @@ class DheeraAIDatabase:
         """Ensure prisma client is available."""
         if prisma_client is None:
             raise Exception(
-                "Database not connected. Connect a database to your proxy - https://docs.dheera_ai.ai/docs/simple_proxy#managing-auth---virtual-keys"
+                "Database not connected. Connect a database to your proxy - https://docs.dheeraai.com/docs/simple_proxy#managing-auth---virtual-keys"
             )
         return prisma_client
 

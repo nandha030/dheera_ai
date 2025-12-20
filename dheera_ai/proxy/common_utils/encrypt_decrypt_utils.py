@@ -61,7 +61,7 @@ def decrypt_value_helper(
         return value
     except Exception as e:
 
-        error_message = f"Error decrypting value for key: {key}, Did your master_key/salt key change recently? \nError: {str(e)}\nSet permanent salt key - https://docs.dheera_ai.ai/docs/proxy/prod#5-set-dheera_ai-salt-key"
+        error_message = f"Error decrypting value for key: {key}, Did your master_key/salt key change recently? \nError: {str(e)}\nSet permanent salt key - https://docs.dheeraai.com/docs/proxy/prod#5-set-dheera_ai-salt-key"
         if exception_type == "debug":
             verbose_proxy_logger.debug(error_message)
             return value if return_original_value else None
