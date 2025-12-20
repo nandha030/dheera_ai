@@ -62,7 +62,7 @@ async def block_user(data: BlockUsers):
         records = []
         if prisma_client is not None:
             for id in data.user_ids:
-                record = await prisma_client.db.dheera_ai_endusertable.upsert(
+                record = await prisma_client.db.dheeraai_endusertable.upsert(
                     where={"user_id": id},  # type: ignore
                     data={
                         "create": {"user_id": id, "blocked": True},  # type: ignore
@@ -268,7 +268,7 @@ async def new_end_user(
         _new_budget = new_budget_request(data)
         if _new_budget is not None:
             try:
-                budget_record = await prisma_client.db.dheera_ai_budgettable.create(
+                budget_record = await prisma_client.db.dheeraai_budgettable.create(
                     data={
                         **_new_budget.model_dump(exclude_unset=True),
                         "created_by": user_api_key_dict.user_id or dheera_ai_proxy_admin_name,  # type: ignore
@@ -290,7 +290,7 @@ async def new_end_user(
                 new_end_user_obj[k] = v
 
         ## WRITE TO DB ##
-        end_user_record = await prisma_client.db.dheera_ai_endusertable.create(
+        end_user_record = await prisma_client.db.dheeraai_endusertable.create(
             data=new_end_user_obj,  # type: ignore
             include={"dheera_ai_budget_table": True},
         )
@@ -350,7 +350,7 @@ async def end_user_info(
                 detail={"error": CommonProxyErrors.db_not_connected_error.value},
             )
 
-        user_info = await prisma_client.db.dheera_ai_endusertable.find_first(
+        user_info = await prisma_client.db.dheeraai_endusertable.find_first(
             where={"user_id": end_user_id}, include={"dheera_ai_budget_table": True}
         )
 
@@ -435,7 +435,7 @@ async def update_end_user(
                 non_default_values[k] = v
 
         ## Get end user table data ##
-        end_user_table_data = await prisma_client.db.dheera_ai_endusertable.find_first(
+        end_user_table_data = await prisma_client.db.dheeraai_endusertable.find_first(
             where={"user_id": data.user_id}, include={"dheera_ai_budget_table": True}
         )
 
@@ -472,7 +472,7 @@ async def update_end_user(
             if end_user_budget_table is None:
                 ## Create new budget ##
                 budget_table_data_record = (
-                    await prisma_client.db.dheera_ai_budgettable.create(
+                    await prisma_client.db.dheeraai_budgettable.create(
                         data={
                             **budget_table_data,
                             "created_by": user_api_key_dict.user_id
@@ -490,7 +490,7 @@ async def update_end_user(
             else:
                 ## Update existing budget ##
                 budget_table_data_record = (
-                    await prisma_client.db.dheera_ai_budgettable.update(
+                    await prisma_client.db.dheeraai_budgettable.update(
                         where={"budget_id": end_user_budget_table.budget_id},
                         data=budget_table_data,
                     )
@@ -501,7 +501,7 @@ async def update_end_user(
         if data.user_id is not None and len(data.user_id) > 0:
             update_end_user_table_data["user_id"] = data.user_id  # type: ignore
             verbose_proxy_logger.debug("In update customer, user_id condition block.")
-            response = await prisma_client.db.dheera_ai_endusertable.update(
+            response = await prisma_client.db.dheeraai_endusertable.update(
                 where={"user_id": data.user_id}, data=update_end_user_table_data, include={"dheera_ai_budget_table": True}  # type: ignore
             )
             if response is None:
@@ -572,7 +572,7 @@ async def delete_end_user(
             and len(data.user_ids) > 0
         ):
             # First check if all users exist
-            existing_users = await prisma_client.db.dheera_ai_endusertable.find_many(
+            existing_users = await prisma_client.db.dheeraai_endusertable.find_many(
                 where={"user_id": {"in": data.user_ids}}
             )
             existing_user_ids = {user.user_id for user in existing_users}
@@ -591,7 +591,7 @@ async def delete_end_user(
                 )
 
             # All users exist, proceed with deletion
-            response = await prisma_client.db.dheera_ai_endusertable.delete_many(
+            response = await prisma_client.db.dheeraai_endusertable.delete_many(
                 where={"user_id": {"in": data.user_ids}}
             )
             verbose_proxy_logger.debug(
@@ -662,7 +662,7 @@ async def list_end_user(
                 detail={"error": CommonProxyErrors.db_not_connected_error.value},
             )
 
-        response = await prisma_client.db.dheera_ai_endusertable.find_many(
+        response = await prisma_client.db.dheeraai_endusertable.find_many(
             include={"dheera_ai_budget_table": True}
         )
 
@@ -729,7 +729,7 @@ async def get_customer_daily_activity(
     where_condition = {}
     if end_user_ids_list:
         where_condition["user_id"] = {"in": list(end_user_ids_list)}
-    end_user_aliases = await prisma_client.db.dheera_ai_endusertable.find_many(
+    end_user_aliases = await prisma_client.db.dheeraai_endusertable.find_many(
         where=where_condition
     )
     end_user_alias_metadata = {

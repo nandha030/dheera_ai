@@ -293,7 +293,7 @@ async def get_api_key_metadata(
     api_keys: Set[str],
 ) -> Dict[str, Dict[str, Any]]:
     """Update api key metadata for a single record."""
-    key_records = await prisma_client.db.dheera_ai_verificationtoken.find_many(
+    key_records = await prisma_client.db.dheeraai_verificationtoken.find_many(
         where={"token": {"in": list(api_keys)}}
     )
     return {

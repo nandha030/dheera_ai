@@ -45,7 +45,7 @@ router = APIRouter()
 async def _get_model_names(prisma_client, model_ids: list) -> Dict[str, str]:
     """Helper function to get model names from model IDs"""
     try:
-        models = await prisma_client.db.dheera_ai_proxymodeltable.find_many(
+        models = await prisma_client.db.dheeraai_proxymodeltable.find_many(
             where={"model_id": {"in": model_ids}}
         )
         return {model.model_id: model.model_name for model in models}
@@ -125,7 +125,7 @@ async def new_tag(
         )
     try:
         # Check if tag already exists
-        existing_tag = await prisma_client.db.dheera_ai_tagtable.find_unique(
+        existing_tag = await prisma_client.db.dheeraai_tagtable.find_unique(
             where={"tag_name": tag.name}
         )
         if existing_tag is not None:
@@ -146,7 +146,7 @@ async def new_tag(
         model_info = await _get_model_names(prisma_client, tag.models or [])
 
         # Create new tag in database
-        new_tag_record = await prisma_client.db.dheera_ai_tagtable.create(
+        new_tag_record = await prisma_client.db.dheeraai_tagtable.create(
             data={
                 "tag_name": tag.name,
                 "description": tag.description,
@@ -207,7 +207,7 @@ async def _add_tag_to_deployment(deployment: "Deployment", tag: str):
     dheera_ai_params["tags"].append(tag)
 
     try:
-        await prisma_client.db.dheera_ai_proxymodeltable.update(
+        await prisma_client.db.dheeraai_proxymodeltable.update(
             where={"model_id": deployment.model_info.id},
             data={"dheera_ai_params": safe_dumps(dheera_ai_params)},
         )
@@ -250,7 +250,7 @@ async def update_tag(
 
     try:
         # Check if tag exists
-        existing_tag = await prisma_client.db.dheera_ai_tagtable.find_unique(
+        existing_tag = await prisma_client.db.dheeraai_tagtable.find_unique(
             where={"tag_name": tag.name}
         )
         if existing_tag is None:
@@ -282,7 +282,7 @@ async def update_tag(
             update_data["budget_id"] = budget_id
 
         # Update tag in database
-        updated_tag_record = await prisma_client.db.dheera_ai_tagtable.update(
+        updated_tag_record = await prisma_client.db.dheeraai_tagtable.update(
             where={"tag_name": tag.name},
             data=update_data,
         )
@@ -329,7 +329,7 @@ async def info_tag(
 
     try:
         # Query tags from database with budget info
-        tag_records = await prisma_client.db.dheera_ai_tagtable.find_many(
+        tag_records = await prisma_client.db.dheeraai_tagtable.find_many(
             where={"tag_name": {"in": data.names}},
             include={"dheera_ai_budget_table": True},
         )
@@ -392,7 +392,7 @@ async def list_tags(
 
     try:
         ## QUERY STORED TAGS ##
-        tag_records = await prisma_client.db.dheera_ai_tagtable.find_many(
+        tag_records = await prisma_client.db.dheeraai_tagtable.find_many(
             include={"dheera_ai_budget_table": True}
         )
 
@@ -425,7 +425,7 @@ async def list_tags(
             list_of_tags.append(tag_dict)
 
         ## QUERY DYNAMIC TAGS ##
-        dynamic_tags = await prisma_client.db.dheera_ai_dailytagspend.find_many(
+        dynamic_tags = await prisma_client.db.dheeraai_dailytagspend.find_many(
             distinct=["tag"],
         )
 
@@ -473,14 +473,14 @@ async def delete_tag(
 
     try:
         # Check if tag exists
-        existing_tag = await prisma_client.db.dheera_ai_tagtable.find_unique(
+        existing_tag = await prisma_client.db.dheeraai_tagtable.find_unique(
             where={"tag_name": data.name}
         )
         if existing_tag is None:
             raise HTTPException(status_code=404, detail=f"Tag {data.name} not found")
 
         # Delete tag from database
-        await prisma_client.db.dheera_ai_tagtable.delete(where={"tag_name": data.name})
+        await prisma_client.db.dheeraai_tagtable.delete(where={"tag_name": data.name})
 
         return {"message": f"Tag {data.name} deleted successfully"}
     except Exception as e:

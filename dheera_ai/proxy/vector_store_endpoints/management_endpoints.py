@@ -66,7 +66,7 @@ async def new_vector_store(
     try:
         # Check if vector store already exists
         existing_vector_store = (
-            await prisma_client.db.dheera_ai_managedvectorstorestable.find_unique(
+            await prisma_client.db.dheeraai_managedvectorstorestable.find_unique(
                 where={"vector_store_id": vector_store.get("vector_store_id")}
             )
         )
@@ -92,7 +92,7 @@ async def new_vector_store(
             del vector_store["dheera_ai_params"]
 
         _new_vector_store = (
-            await prisma_client.db.dheera_ai_managedvectorstorestable.create(
+            await prisma_client.db.dheeraai_managedvectorstorestable.create(
                 data={
                     **vector_store,
                     "dheera_ai_params": dheera_ai_params_json,
@@ -205,7 +205,7 @@ async def delete_vector_store(
     try:
         # Check if vector store exists
         existing_vector_store = (
-            await prisma_client.db.dheera_ai_managedvectorstorestable.find_unique(
+            await prisma_client.db.dheeraai_managedvectorstorestable.find_unique(
                 where={"vector_store_id": data.vector_store_id}
             )
         )
@@ -216,7 +216,7 @@ async def delete_vector_store(
             )
 
         # Delete vector store
-        await prisma_client.db.dheera_ai_managedvectorstorestable.delete(
+        await prisma_client.db.dheeraai_managedvectorstorestable.delete(
             where={"vector_store_id": data.vector_store_id}
         )
 
@@ -278,7 +278,7 @@ async def get_vector_store_info(
                 return {"vector_store": vector_store_pydantic_obj}
 
         vector_store = (
-            await prisma_client.db.dheera_ai_managedvectorstorestable.find_unique(
+            await prisma_client.db.dheeraai_managedvectorstorestable.find_unique(
                 where={"vector_store_id": data.vector_store_id}
             )
         )
@@ -318,7 +318,7 @@ async def update_vector_store(
                 update_data["vector_store_metadata"]
             )
 
-        updated = await prisma_client.db.dheera_ai_managedvectorstorestable.update(
+        updated = await prisma_client.db.dheeraai_managedvectorstorestable.update(
             where={"vector_store_id": vector_store_id},
             data=update_data,
         )

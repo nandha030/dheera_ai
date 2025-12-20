@@ -201,7 +201,7 @@ async def get_next_version_for_prompt(prisma_client, prompt_id: str) -> int:
     Returns:
         Next version number (1 if no versions exist, max_version + 1 otherwise)
     """
-    existing_prompts = await prisma_client.db.dheera_ai_prompttable.find_many(
+    existing_prompts = await prisma_client.db.dheeraai_prompttable.find_many(
         where={"prompt_id": prompt_id}
     )
     
@@ -638,7 +638,7 @@ async def create_prompt(
         )
 
         # Store prompt in db with version
-        prompt_db_entry = await prisma_client.db.dheera_ai_prompttable.create(
+        prompt_db_entry = await prisma_client.db.dheeraai_prompttable.create(
             data={
                 "prompt_id": request.prompt_id,
                 "version": new_version,
@@ -725,7 +725,7 @@ async def update_prompt(
         base_prompt_id = get_base_prompt_id(prompt_id=prompt_id)
         
         # Check if any version exists
-        existing_prompts = await prisma_client.db.dheera_ai_prompttable.find_many(
+        existing_prompts = await prisma_client.db.dheeraai_prompttable.find_many(
             where={"prompt_id": base_prompt_id}
         )
         
@@ -748,7 +748,7 @@ async def update_prompt(
         )
 
         # Store new version in db
-        prompt_db_entry = await prisma_client.db.dheera_ai_prompttable.create(
+        prompt_db_entry = await prisma_client.db.dheeraai_prompttable.create(
             data={
                 "prompt_id": base_prompt_id,
                 "version": new_version,
@@ -851,7 +851,7 @@ async def delete_prompt(
             )
 
         # Delete the prompt from the database
-        await prisma_client.db.dheera_ai_prompttable.delete(
+        await prisma_client.db.dheeraai_prompttable.delete(
             where={"prompt_id": prompt_id}
         )
 
@@ -951,7 +951,7 @@ async def patch_prompt(
             raise HTTPException(status_code=400, detail="dheera_ai_params cannot be None")
 
         # Create updated prompt spec - cast to satisfy typing
-        updated_prompt_db_entry = await prisma_client.db.dheera_ai_prompttable.update(
+        updated_prompt_db_entry = await prisma_client.db.dheeraai_prompttable.update(
             where={"prompt_id": prompt_id},
             data={
                 "dheera_ai_params": updated_dheera_ai_params.model_dump_json(),

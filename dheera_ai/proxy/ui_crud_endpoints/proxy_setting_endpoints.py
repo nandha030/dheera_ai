@@ -423,7 +423,7 @@ async def get_sso_settings():
         )
 
     # Get SSO config from dedicated table
-    sso_db_record = await prisma_client.db.dheera_ai_ssoconfig.find_unique(
+    sso_db_record = await prisma_client.db.dheeraai_ssoconfig.find_unique(
         where={"id": "sso_config"}
     )
 
@@ -548,7 +548,7 @@ async def update_sso_settings(sso_config: SSOConfig):
     encrypted_sso_data = proxy_config._encrypt_env_variables(environment_variables=sso_data)
 
     # Save to dedicated SSO table
-    await prisma_client.db.dheera_ai_ssoconfig.upsert(
+    await prisma_client.db.dheeraai_ssoconfig.upsert(
         where={"id": "sso_config"},
         data={
             "create": {
@@ -563,7 +563,7 @@ async def update_sso_settings(sso_config: SSOConfig):
 
     # Remove SSO-related env vars from config.environment_variables
     try:
-        env_var_entry = await prisma_client.db.dheera_ai_config.find_unique(
+        env_var_entry = await prisma_client.db.dheeraai_config.find_unique(
             where={"param_name": "environment_variables"}
         )
 
@@ -584,7 +584,7 @@ async def update_sso_settings(sso_config: SSOConfig):
                 if key not in env_vars_to_remove
             }
 
-            await prisma_client.db.dheera_ai_config.update(
+            await prisma_client.db.dheeraai_config.update(
                 where={"param_name": "environment_variables"},
                 data={
                     "param_value": json.dumps(filtered_env_vars, default=str),
@@ -723,7 +723,7 @@ async def get_ui_settings():
 
     ui_settings: Dict[str, Any] = {}
 
-    db_record = await prisma_client.db.dheera_ai_uisettings.find_unique(
+    db_record = await prisma_client.db.dheeraai_uisettings.find_unique(
         where={"id": "ui_settings"}
     )
 
@@ -787,7 +787,7 @@ async def update_ui_settings(
         k: v for k, v in settings_dict.items() if k in ALLOWED_UI_SETTINGS_FIELDS
     }
 
-    await prisma_client.db.dheera_ai_uisettings.upsert(
+    await prisma_client.db.dheeraai_uisettings.upsert(
         where={"id": "ui_settings"},
         data={
             "create": {

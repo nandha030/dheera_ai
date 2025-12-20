@@ -258,7 +258,7 @@ async def get_all_team_memberships(
     # else:
     #     where_obj = {"user_id": str(user_id), "team_id": {"in": team_id}}
 
-    team_memberships = await prisma_client.db.dheera_ai_teammembership.find_many(
+    team_memberships = await prisma_client.db.dheeraai_teammembership.find_many(
         where=where_obj,
         include={"dheera_ai_budget_table": True},
     )
@@ -537,7 +537,7 @@ async def _check_org_team_limits(
     # calculate allocated tpm/rpm limit
     # check if specified tpm/rpm limit is greater than allocated tpm/rpm limit
 
-    teams = await prisma_client.db.dheera_ai_teamtable.find_many(
+    teams = await prisma_client.db.dheeraai_teamtable.find_many(
         where={"organization_id": org_table.organization_id},
     )
 
@@ -734,7 +734,7 @@ async def new_team(  # noqa: PLR0915
             raise HTTPException(status_code=500, detail={"error": "No db connected"})
 
         # Check if license is over limit
-        total_teams = await prisma_client.db.dheera_ai_teamtable.count()
+        total_teams = await prisma_client.db.dheeraai_teamtable.count()
         if total_teams and _license_check.is_team_count_over_limit(
             team_count=total_teams
         ):
@@ -823,7 +823,7 @@ async def new_team(  # noqa: PLR0915
                 created_by=user_api_key_dict.user_id or dheera_ai_proxy_admin_name,
                 updated_by=user_api_key_dict.user_id or dheera_ai_proxy_admin_name,
             )
-            model_dict = await prisma_client.db.dheera_ai_modeltable.create(
+            model_dict = await prisma_client.db.dheeraai_modeltable.create(
                 {**dheera_ai_modeltable.json(exclude_none=True)}  # type: ignore
             )  # type: ignore
 
@@ -894,7 +894,7 @@ async def new_team(  # noqa: PLR0915
             db_data=complete_team_data_dict
         )
 
-        team_row: DheeraAI_TeamTable = await prisma_client.db.dheera_ai_teamtable.create(
+        team_row: DheeraAI_TeamTable = await prisma_client.db.dheeraai_teamtable.create(
             data=complete_team_data_dict,
             include={"dheera_ai_model_table": True},  # type: ignore
         )
@@ -1007,11 +1007,11 @@ async def _update_model_table(
             updated_by=user_api_key_dict.user_id or dheera_ai_proxy_admin_name,
         )
         if model_id is None:
-            model_dict = await prisma_client.db.dheera_ai_modeltable.create(
+            model_dict = await prisma_client.db.dheeraai_modeltable.create(
                 data={**dheera_ai_modeltable.json(exclude_none=True)}  # type: ignore
             )
         else:
-            model_dict = await prisma_client.db.dheera_ai_modeltable.upsert(
+            model_dict = await prisma_client.db.dheeraai_modeltable.upsert(
                 where={"id": model_id},
                 data={
                     "update": {**dheera_ai_modeltable.json(exclude_none=True)},  # type: ignore
@@ -1050,7 +1050,7 @@ async def fetch_and_validate_organization(
             status_code=500, detail={"error": CommonProxyErrors.no_llm_router.value}
         )
 
-    organization_row = await prisma_client.db.dheera_ai_organizationtable.find_unique(
+    organization_row = await prisma_client.db.dheeraai_organizationtable.find_unique(
         where={"organization_id": organization_id},
         include={"dheera_ai_budget_table": True, "members": True, "teams": True},
     )
@@ -1255,7 +1255,7 @@ async def update_team(
             raise HTTPException(status_code=400, detail={"error": "No team id passed in"})
         verbose_proxy_logger.debug("/team/update - %s", data)
 
-        existing_team_row = await prisma_client.db.dheera_ai_teamtable.find_unique(
+        existing_team_row = await prisma_client.db.dheeraai_teamtable.find_unique(
             where={"team_id": data.team_id}
         )
 
@@ -1362,7 +1362,7 @@ async def update_team(
 
         updated_kv = prisma_client.jsonify_team_object(db_data=updated_kv)
         team_row: Optional[DheeraAI_TeamTable] = (
-            await prisma_client.db.dheera_ai_teamtable.update(
+            await prisma_client.db.dheeraai_teamtable.update(
                 where={"team_id": data.team_id},
                 data=updated_kv,
                 include={"dheera_ai_model_table": True},  # type: ignore
@@ -1709,7 +1709,7 @@ async def _add_team_members_to_team(
 
     # ADD MEMBER TO TEAM
     _db_team_members = [m.model_dump() for m in complete_team_data.members_with_roles]
-    updated_team = await prisma_client.db.dheera_ai_teamtable.update(
+    updated_team = await prisma_client.db.dheeraai_teamtable.update(
         where={"team_id": data.team_id},
         data={"members_with_roles": json.dumps(_db_team_members)},  # type: ignore
     )
@@ -1883,7 +1883,7 @@ async def team_member_delete(
             detail={"error": "Either user_id or user_email needs to be passed in"},
         )
 
-    _existing_team_row = await prisma_client.db.dheera_ai_teamtable.find_unique(
+    _existing_team_row = await prisma_client.db.dheeraai_teamtable.find_unique(
         where={"team_id": data.team_id}
     )
 
@@ -1924,7 +1924,7 @@ async def team_member_delete(
 
     _db_new_team_members: List[dict] = [m.model_dump() for m in new_team_members]
 
-    _ = await prisma_client.db.dheera_ai_teamtable.update(
+    _ = await prisma_client.db.dheeraai_teamtable.update(
         where={
             "team_id": data.team_id,
         },
@@ -1938,7 +1938,7 @@ async def team_member_delete(
         key_val["user_id"] = data.user_id
     elif data.user_email is not None:
         key_val["user_email"] = data.user_email
-    existing_user_rows = await prisma_client.db.dheera_ai_usertable.find_many(
+    existing_user_rows = await prisma_client.db.dheeraai_usertable.find_many(
         where=key_val  # type: ignore
     )
 
@@ -1950,7 +1950,7 @@ async def team_member_delete(
             if data.team_id in existing_user.teams:
                 team_list = existing_user.teams
                 team_list.remove(data.team_id)
-                await prisma_client.db.dheera_ai_usertable.update(
+                await prisma_client.db.dheeraai_usertable.update(
                     where={
                         "user_id": existing_user.user_id,
                     },
@@ -1967,13 +1967,13 @@ async def team_member_delete(
                 user_ids_to_delete.add(existing_user.user_id)
 
     for _uid in user_ids_to_delete:
-        await prisma_client.db.dheera_ai_teammembership.delete_many(
+        await prisma_client.db.dheeraai_teammembership.delete_many(
             where={"team_id": data.team_id, "user_id": _uid}
         )
 
     ## DELETE KEYS CREATED BY USER FOR THIS TEAM
     if user_ids_to_delete:
-        await prisma_client.db.dheera_ai_verificationtoken.delete_many(
+        await prisma_client.db.dheeraai_verificationtoken.delete_many(
             where={
                 "user_id": {"in": list(user_ids_to_delete)},
                 "team_id": data.team_id,
@@ -2020,7 +2020,7 @@ async def team_member_update(
             detail={"error": "Either user_id or user_email needs to be passed in"},
         )
 
-    _existing_team_row = await prisma_client.db.dheera_ai_teamtable.find_unique(
+    _existing_team_row = await prisma_client.db.dheeraai_teamtable.find_unique(
         where={"team_id": data.team_id}
     )
 
@@ -2111,7 +2111,7 @@ async def team_member_update(
         team_table.members_with_roles = team_members
 
         _db_team_members: List[dict] = [m.model_dump() for m in team_members]
-        await prisma_client.db.dheera_ai_teamtable.update(
+        await prisma_client.db.dheeraai_teamtable.update(
             where={"team_id": data.team_id},
             data={"members_with_roles": json.dumps(_db_team_members)},  # type: ignore
         )
@@ -2226,7 +2226,7 @@ async def bulk_team_member_add(
 
     if data.all_users:
         # get all users from the database
-        all_users_in_db = await prisma_client.db.dheera_ai_usertable.find_many(
+        all_users_in_db = await prisma_client.db.dheeraai_usertable.find_many(
             order={"created_at": "desc"}
         )
         data.members = [
@@ -2344,7 +2344,7 @@ async def delete_team(
     for team_id in data.team_ids:
         try:
             team_row_base: Optional[BaseModel] = (
-                await prisma_client.db.dheera_ai_teamtable.find_unique(
+                await prisma_client.db.dheeraai_teamtable.find_unique(
                     where={"team_id": team_id}
                 )
             )
@@ -2471,7 +2471,7 @@ async def _add_team_member_budget_table(
     team_info_response_object: TeamInfoResponseObjectTeamTable,
 ) -> TeamInfoResponseObjectTeamTable:
     try:
-        team_budget = await prisma_client.db.dheera_ai_budgettable.find_unique(
+        team_budget = await prisma_client.db.dheeraai_budgettable.find_unique(
             where={"budget_id": team_member_budget_id}
         )
         team_info_response_object.team_member_budget_table = team_budget
@@ -2524,7 +2524,7 @@ async def team_info(
 
         try:
             team_info: Optional[BaseModel] = (
-                await prisma_client.db.dheera_ai_teamtable.find_unique(
+                await prisma_client.db.dheeraai_teamtable.find_unique(
                     where={"team_id": team_id},
                     include={"object_permission": True},
                 )
@@ -2663,7 +2663,7 @@ async def block_team(
     if prisma_client is None:
         raise Exception("No DB Connected.")
 
-    record = await prisma_client.db.dheera_ai_teamtable.update(
+    record = await prisma_client.db.dheeraai_teamtable.update(
         where={"team_id": data.team_id}, data={"blocked": True}  # type: ignore
     )
 
@@ -2706,7 +2706,7 @@ async def unblock_team(
     if prisma_client is None:
         raise Exception("No DB Connected.")
 
-    record = await prisma_client.db.dheera_ai_teamtable.update(
+    record = await prisma_client.db.dheeraai_teamtable.update(
         where={"team_id": data.team_id}, data={"blocked": False}  # type: ignore
     )
 
@@ -2750,7 +2750,7 @@ async def list_available_teams(
         )
 
     # filter out teams that the user is already a member of
-    user_info = await prisma_client.db.dheera_ai_usertable.find_unique(
+    user_info = await prisma_client.db.dheeraai_usertable.find_unique(
         where={"user_id": user_api_key_dict.user_id}
     )
     if user_info is None:
@@ -2764,7 +2764,7 @@ async def list_available_teams(
         team for team in available_teams if team not in user_info_correct_type.teams
     ]
 
-    available_teams_db = await prisma_client.db.dheera_ai_teamtable.find_many(
+    available_teams_db = await prisma_client.db.dheeraai_teamtable.find_many(
         where={"team_id": {"in": available_teams}}
     )
 
@@ -2877,7 +2877,7 @@ async def list_team_v2(
 
     if user_id:
         try:
-            user_object = await prisma_client.db.dheera_ai_usertable.find_unique(
+            user_object = await prisma_client.db.dheeraai_usertable.find_unique(
                 where={"user_id": user_id}
             )
         except Exception:
@@ -2911,14 +2911,14 @@ async def list_team_v2(
         order_by = {sort_by: sort_order.lower()}
 
     # Get teams with pagination
-    teams = await prisma_client.db.dheera_ai_teamtable.find_many(
+    teams = await prisma_client.db.dheeraai_teamtable.find_many(
         where=where_conditions,
         skip=skip,
         take=page_size,
         order=order_by if order_by else {"created_at": "desc"},  # Default sort
     )
     # Get total count for pagination
-    total_count = await prisma_client.db.dheera_ai_teamtable.count(where=where_conditions)
+    total_count = await prisma_client.db.dheeraai_teamtable.count(where=where_conditions)
 
     # Calculate total pages
     total_pages = -(-total_count // page_size)  # Ceiling division
@@ -2974,7 +2974,7 @@ async def list_team(
             detail={"error": CommonProxyErrors.db_not_connected_error.value},
         )
 
-    response = await prisma_client.db.dheera_ai_teamtable.find_many(
+    response = await prisma_client.db.dheeraai_teamtable.find_many(
         include={
             "dheera_ai_model_table": True,
         }
@@ -3008,7 +3008,7 @@ async def list_team(
                 _team_memberships.append(tm)
 
         # add all keys that belong to the team
-        keys = await prisma_client.db.dheera_ai_verificationtoken.find_many(
+        keys = await prisma_client.db.dheeraai_verificationtoken.find_many(
             where={"team_id": team.team_id}
         )
 
@@ -3066,10 +3066,10 @@ async def get_paginated_teams(
         # Calculate skip for pagination
         skip = (page - 1) * page_size
         # Get total count
-        total_count = await prisma_client.db.dheera_ai_teamtable.count()
+        total_count = await prisma_client.db.dheeraai_teamtable.count()
 
         # Get paginated teams
-        teams = await prisma_client.db.dheera_ai_teamtable.find_many(
+        teams = await prisma_client.db.dheeraai_teamtable.find_many(
             skip=skip, take=page_size, order={"team_alias": "asc"}  # Sort by team_alias
         )
         return teams, total_count
@@ -3142,7 +3142,7 @@ async def ui_view_teams(
             }
 
         # Query users with pagination and filters
-        teams = await prisma_client.db.dheera_ai_teamtable.find_many(
+        teams = await prisma_client.db.dheeraai_teamtable.find_many(
             where=where_conditions,
             skip=skip,
             take=page_size,
@@ -3210,7 +3210,7 @@ async def team_model_add(
         raise HTTPException(status_code=500, detail={"error": "No db connected"})
 
     # Get existing team
-    team_row = await prisma_client.db.dheera_ai_teamtable.find_unique(
+    team_row = await prisma_client.db.dheeraai_teamtable.find_unique(
         where={"team_id": data.team_id}
     )
 
@@ -3236,7 +3236,7 @@ async def team_model_add(
 
     updated_models = add_new_models_to_team(team_obj=team_obj, new_models=data.models)
     # Update team
-    updated_team = await prisma_client.db.dheera_ai_teamtable.update(
+    updated_team = await prisma_client.db.dheeraai_teamtable.update(
         where={"team_id": data.team_id}, data={"models": updated_models}
     )
 
@@ -3278,7 +3278,7 @@ async def team_model_delete(
         raise HTTPException(status_code=500, detail={"error": "No db connected"})
 
     # Get existing team
-    team_row = await prisma_client.db.dheera_ai_teamtable.find_unique(
+    team_row = await prisma_client.db.dheeraai_teamtable.find_unique(
         where={"team_id": data.team_id}
     )
 
@@ -3309,7 +3309,7 @@ async def team_model_delete(
     updated_models = [m for m in current_models if m not in data.models]
 
     # Update team
-    updated_team = await prisma_client.db.dheera_ai_teamtable.update(
+    updated_team = await prisma_client.db.dheeraai_teamtable.update(
         where={"team_id": data.team_id}, data={"models": updated_models}
     )
 
@@ -3442,7 +3442,7 @@ async def update_team_member_permissions(
             },
         )
     # Update the team member permissions
-    updated_team = await prisma_client.db.dheera_ai_teamtable.update(
+    updated_team = await prisma_client.db.dheeraai_teamtable.update(
         where={"team_id": data.team_id},
         data={"team_member_permissions": data.team_member_permissions},
     )
@@ -3539,7 +3539,7 @@ async def get_team_daily_activity(
     where_condition = {}
     if team_ids_list:
         where_condition["team_id"] = {"in": list(team_ids_list)}
-    team_aliases = await prisma_client.db.dheera_ai_teamtable.find_many(
+    team_aliases = await prisma_client.db.dheeraai_teamtable.find_many(
         where=where_condition
     )
     team_alias_metadata = {

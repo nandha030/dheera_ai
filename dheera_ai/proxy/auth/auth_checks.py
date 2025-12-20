@@ -515,7 +515,7 @@ async def get_default_end_user_budget(
     
     # Fetch from database
     try:
-        budget_record = await prisma_client.db.dheera_ai_budgettable.find_unique(
+        budget_record = await prisma_client.db.dheeraai_budgettable.find_unique(
             where={"budget_id": dheera_ai.max_end_user_budget_id}
         )
         
@@ -667,7 +667,7 @@ async def get_end_user_object(
 
     # Fetch from database
     try:
-        response = await prisma_client.db.dheera_ai_endusertable.find_unique(
+        response = await prisma_client.db.dheeraai_endusertable.find_unique(
             where={"user_id": end_user_id},
             include={"dheera_ai_budget_table": True},
         )
@@ -753,7 +753,7 @@ async def get_tag_objects_batch(
     # Batch fetch uncached tags from DB in one query
     if uncached_tags:
         try:
-            db_tags = await prisma_client.db.dheera_ai_tagtable.find_many(
+            db_tags = await prisma_client.db.dheeraai_tagtable.find_many(
                 where={"tag_name": {"in": uncached_tags}},
                 include={"dheera_ai_budget_table": True},
             )
@@ -842,7 +842,7 @@ async def get_team_membership(
 
     # else, check db
     try:
-        response = await prisma_client.db.dheera_ai_teammembership.find_unique(
+        response = await prisma_client.db.dheeraai_teammembership.find_unique(
             where={"user_id_team_id": {"user_id": user_id, "team_id": team_id}},
             include={"dheera_ai_budget_table": True},
         )
@@ -993,20 +993,20 @@ async def _get_fuzzy_user_object(
 
     response = None
     if sso_user_id is not None:
-        response = await prisma_client.db.dheera_ai_usertable.find_unique(
+        response = await prisma_client.db.dheeraai_usertable.find_unique(
             where={"sso_user_id": sso_user_id},
             include={"organization_memberships": True},
         )
 
     if response is None and user_email is not None:
-        response = await prisma_client.db.dheera_ai_usertable.find_first(
+        response = await prisma_client.db.dheeraai_usertable.find_first(
             where={"user_email": user_email},
             include={"organization_memberships": True},
         )
 
         if response is not None and sso_user_id is not None:  # update sso_user_id
             asyncio.create_task(  # background task to update user with sso id
-                prisma_client.db.dheera_ai_usertable.update(
+                prisma_client.db.dheeraai_usertable.update(
                     where={"user_id": response.user_id},
                     data={"sso_user_id": sso_user_id},
                 )
@@ -1056,7 +1056,7 @@ async def get_user_object(
         )
 
         if should_check_db:
-            response = await prisma_client.db.dheera_ai_usertable.find_unique(
+            response = await prisma_client.db.dheeraai_usertable.find_unique(
                 where={"user_id": user_id}, include={"organization_memberships": True}
             )
 
@@ -1078,7 +1078,7 @@ async def get_user_object(
                 if dheera_ai.default_internal_user_params is not None:
                     new_user_params.update(dheera_ai.default_internal_user_params)
 
-                response = await prisma_client.db.dheera_ai_usertable.create(
+                response = await prisma_client.db.dheeraai_usertable.create(
                     data=new_user_params,
                     include={"organization_memberships": True},
                 )
@@ -1193,7 +1193,7 @@ async def _delete_cache_key_object(
 async def _get_team_db_check(
     team_id: str, prisma_client: PrismaClient, team_id_upsert: Optional[bool] = None
 ):
-    response = await prisma_client.db.dheera_ai_teamtable.find_unique(
+    response = await prisma_client.db.dheeraai_teamtable.find_unique(
         where={"team_id": team_id}
     )
 
@@ -1215,7 +1215,7 @@ async def _get_team_db_check(
 
 
 async def _get_team_object_from_db(team_id: str, prisma_client: PrismaClient):
-    return await prisma_client.db.dheera_ai_teamtable.find_unique(
+    return await prisma_client.db.dheeraai_teamtable.find_unique(
         where={"team_id": team_id}
     )
 
@@ -1568,7 +1568,7 @@ async def get_object_permission(
 
     # else, check db
     try:
-        response = await prisma_client.db.dheera_ai_objectpermissiontable.find_unique(
+        response = await prisma_client.db.dheeraai_objectpermissiontable.find_unique(
             where={"object_permission_id": object_permission_id}
         )
 
@@ -1616,7 +1616,7 @@ async def get_org_object(
             return cached_org_obj
     # else, check db
     try:
-        response = await prisma_client.db.dheera_ai_organizationtable.find_unique(
+        response = await prisma_client.db.dheeraai_organizationtable.find_unique(
             where={"organization_id": org_id}
         )
 
@@ -2253,7 +2253,7 @@ async def vector_store_access_check(
     # Check if the key can access the vector store
     if valid_token is not None and valid_token.object_permission_id is not None:
         key_object_permission = (
-            await prisma_client.db.dheera_ai_objectpermissiontable.find_unique(
+            await prisma_client.db.dheeraai_objectpermissiontable.find_unique(
                 where={"object_permission_id": valid_token.object_permission_id},
             )
         )
@@ -2267,7 +2267,7 @@ async def vector_store_access_check(
     # Check if the team can access the vector store
     if team_object is not None and team_object.object_permission_id is not None:
         team_object_permission = (
-            await prisma_client.db.dheera_ai_objectpermissiontable.find_unique(
+            await prisma_client.db.dheeraai_objectpermissiontable.find_unique(
                 where={"object_permission_id": team_object.object_permission_id},
             )
         )

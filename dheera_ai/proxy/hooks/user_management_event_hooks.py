@@ -57,7 +57,7 @@ class UserManagementEventHooks:
         try:
             if prisma_client is None:
                 raise Exception(CommonProxyErrors.db_not_connected_error.value)
-            user_row: BaseModel = await prisma_client.db.dheera_ai_usertable.find_first(
+            user_row: BaseModel = await prisma_client.db.dheeraai_usertable.find_first(
                 where={"user_id": response.user_id}
             )
 

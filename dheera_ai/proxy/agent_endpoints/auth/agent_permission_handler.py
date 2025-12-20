@@ -278,7 +278,7 @@ class AgentRequestHandler:
         agent_ids: Set[str] = set()
         if access_groups and prisma_client is not None:
             try:
-                agents = await prisma_client.db.dheera_ai_agentstable.find_many(
+                agents = await prisma_client.db.dheeraai_agentstable.find_many(
                     where={"agent_access_groups": {"hasSome": access_groups}}
                 )
                 for agent in agents:

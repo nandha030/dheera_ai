@@ -69,7 +69,7 @@ class KeyRotationManager:
         """
         now = datetime.now(timezone.utc)
         
-        keys_with_rotation = await self.prisma_client.db.dheera_ai_verificationtoken.find_many(
+        keys_with_rotation = await self.prisma_client.db.dheeraai_verificationtoken.find_many(
             where={
                 "auto_rotate": True,  # Only keys marked for auto rotation
                 "OR": [
@@ -120,7 +120,7 @@ class KeyRotationManager:
             # Calculate next rotation time using helper function
             now = datetime.now(timezone.utc)
             next_rotation_time = _calculate_key_rotation_time(key.rotation_interval)
-            await self.prisma_client.db.dheera_ai_verificationtoken.update(
+            await self.prisma_client.db.dheeraai_verificationtoken.update(
                 where={"token": response.token_id},
                 data={
                     "rotation_count": (key.rotation_count or 0) + 1,

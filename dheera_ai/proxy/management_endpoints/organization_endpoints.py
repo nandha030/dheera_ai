@@ -172,7 +172,7 @@ async def new_organization(
 
     if user_api_key_dict.user_id is not None:
         try:
-            user_object = await prisma_client.db.dheera_ai_usertable.find_unique(
+            user_object = await prisma_client.db.dheeraai_usertable.find_unique(
                 where={"user_id": user_api_key_dict.user_id}
             )
             user_object_correct_type = DheeraAI_UserTable(**user_object.model_dump())
@@ -194,7 +194,7 @@ async def new_organization(
 
         new_budget = prisma_client.jsonify_object(budget_row.json(exclude_none=True))
 
-        _budget = await prisma_client.db.dheera_ai_budgettable.create(
+        _budget = await prisma_client.db.dheeraai_budgettable.create(
             data={
                 **new_budget,  # type: ignore
                 "created_by": user_api_key_dict.user_id or dheera_ai_proxy_admin_name,
@@ -250,7 +250,7 @@ async def new_organization(
     verbose_proxy_logger.info(
         f"new_organization_row: {json.dumps(new_organization_row, indent=2)}"
     )
-    response = await prisma_client.db.dheera_ai_organizationtable.create(
+    response = await prisma_client.db.dheeraai_organizationtable.create(
         data={
             **new_organization_row,  # type: ignore
         },
@@ -299,7 +299,7 @@ async def get_organization_daily_activity(
 
     # Restrict non-proxy-admins to only organizations where they are org_admin
     if not _user_has_admin_view(user_api_key_dict):
-        memberships = await prisma_client.db.dheera_ai_organizationmembership.find_many(
+        memberships = await prisma_client.db.dheeraai_organizationmembership.find_many(
             where={"user_id": user_api_key_dict.user_id}
         )
         admin_org_ids = [
@@ -327,7 +327,7 @@ async def get_organization_daily_activity(
     where_condition = {}
     if org_ids_list:
         where_condition["organization_id"] = {"in": list(org_ids_list)}
-    org_aliases = await prisma_client.db.dheera_ai_organizationtable.find_many(
+    org_aliases = await prisma_client.db.dheeraai_organizationtable.find_many(
         where=where_condition
     )
     org_alias_metadata = {
@@ -367,7 +367,7 @@ async def _set_object_permission(
 
     if data.object_permission is not None:
         created_object_permission = (
-            await prisma_client.db.dheera_ai_objectpermissiontable.create(
+            await prisma_client.db.dheeraai_objectpermissiontable.create(
                 data=data.object_permission.model_dump(exclude_none=True),
             )
         )
@@ -418,7 +418,7 @@ async def update_organization(
         data.updated_by = user_api_key_dict.user_id
 
     existing_organization_row = (
-        await prisma_client.db.dheera_ai_organizationtable.find_unique(
+        await prisma_client.db.dheeraai_organizationtable.find_unique(
             where={"organization_id": data.organization_id},
         )
     )
@@ -466,7 +466,7 @@ async def update_organization(
     for field in DheeraAI_BudgetTable.model_fields.keys():
         updated_organization_row.pop(field, None)
 
-    response = await prisma_client.db.dheera_ai_organizationtable.update(
+    response = await prisma_client.db.dheeraai_organizationtable.update(
         where={"organization_id": data.organization_id},
         data=updated_organization_row,
         include={"members": True, "teams": True, "dheera_ai_budget_table": True},
@@ -536,19 +536,19 @@ async def delete_organization(
     deleted_orgs = []
     for organization_id in data.organization_ids:
         # delete all teams in the organization
-        await prisma_client.db.dheera_ai_teamtable.delete_many(
+        await prisma_client.db.dheeraai_teamtable.delete_many(
             where={"organization_id": organization_id}
         )
         # delete all members in the organization
-        await prisma_client.db.dheera_ai_organizationmembership.delete_many(
+        await prisma_client.db.dheeraai_organizationmembership.delete_many(
             where={"organization_id": organization_id}
         )
         # delete all keys in the organization
-        await prisma_client.db.dheera_ai_verificationtoken.delete_many(
+        await prisma_client.db.dheeraai_verificationtoken.delete_many(
             where={"organization_id": organization_id}
         )
         # delete the organization
-        deleted_org = await prisma_client.db.dheera_ai_organizationtable.delete(
+        deleted_org = await prisma_client.db.dheeraai_organizationtable.delete(
             where={"organization_id": organization_id},
             include={"members": True, "teams": True, "dheera_ai_budget_table": True},
         )
@@ -590,17 +590,17 @@ async def list_organization(
 
     # if proxy admin - get all orgs
     if user_api_key_dict.user_role == LitellmUserRoles.PROXY_ADMIN:
-        response = await prisma_client.db.dheera_ai_organizationtable.find_many(
+        response = await prisma_client.db.dheeraai_organizationtable.find_many(
             include={"dheera_ai_budget_table": True, "members": True, "teams": True}
         )
     # if internal user - get orgs they are a member of
     else:
         org_memberships = (
-            await prisma_client.db.dheera_ai_organizationmembership.find_many(
+            await prisma_client.db.dheeraai_organizationmembership.find_many(
                 where={"user_id": user_api_key_dict.user_id}
             )
         )
-        org_objects = await prisma_client.db.dheera_ai_organizationtable.find_many(
+        org_objects = await prisma_client.db.dheeraai_organizationtable.find_many(
             where={
                 "organization_id": {
                     "in": [membership.organization_id for membership in org_memberships]
@@ -630,7 +630,7 @@ async def info_organization(organization_id: str):
         raise HTTPException(status_code=500, detail={"error": "No db connected"})
 
     response: Optional[DheeraAI_OrganizationTableWithMembers] = (
-        await prisma_client.db.dheera_ai_organizationtable.find_unique(
+        await prisma_client.db.dheeraai_organizationtable.find_unique(
             where={"organization_id": organization_id},
             include={
                 "dheera_ai_budget_table": True,
@@ -672,7 +672,7 @@ async def deprecated_info_organization(data: OrganizationRequest):
                 "error": f"Specify list of organization id's to query. Passed in={data.organizations}"
             },
         )
-    response = await prisma_client.db.dheera_ai_organizationtable.find_many(
+    response = await prisma_client.db.dheeraai_organizationtable.find_many(
         where={"organization_id": {"in": data.organizations}},
         include={"dheera_ai_budget_table": True},
     )
@@ -740,7 +740,7 @@ async def organization_member_add(
 
         # Check if organization exists
         existing_organization_row = (
-            await prisma_client.db.dheera_ai_organizationtable.find_unique(
+            await prisma_client.db.dheeraai_organizationtable.find_unique(
                 where={"organization_id": data.organization_id}
             )
         )
@@ -807,7 +807,7 @@ async def find_member_if_email(
 
     try:
         existing_user_email_row: BaseModel = (
-            await prisma_client.db.dheera_ai_usertable.find_unique(
+            await prisma_client.db.dheeraai_usertable.find_unique(
                 where={"user_email": user_email}
             )
         )
@@ -849,7 +849,7 @@ async def organization_member_update(
 
         # Check if organization exists
         existing_organization_row = (
-            await prisma_client.db.dheera_ai_organizationtable.find_unique(
+            await prisma_client.db.dheeraai_organizationtable.find_unique(
                 where={"organization_id": data.organization_id}
             )
         )
@@ -870,7 +870,7 @@ async def organization_member_update(
 
         try:
             existing_organization_membership = (
-                await prisma_client.db.dheera_ai_organizationmembership.find_unique(
+                await prisma_client.db.dheeraai_organizationmembership.find_unique(
                     where={
                         "user_id_organization_id": {
                             "user_id": data.user_id,
@@ -896,7 +896,7 @@ async def organization_member_update(
 
         # Update member role
         if data.role is not None:
-            await prisma_client.db.dheera_ai_organizationmembership.update(
+            await prisma_client.db.dheeraai_organizationmembership.update(
                 where={
                     "user_id_organization_id": {
                         "user_id": data.user_id,
@@ -925,7 +925,7 @@ async def organization_member_update(
                 )
 
             # update organization membership with new budget_id
-            await prisma_client.db.dheera_ai_organizationmembership.update(
+            await prisma_client.db.dheeraai_organizationmembership.update(
                 where={
                     "user_id_organization_id": {
                         "user_id": data.user_id,
@@ -935,7 +935,7 @@ async def organization_member_update(
                 data={"budget_id": budget_id},
             )
         final_organization_membership: Optional[BaseModel] = (
-            await prisma_client.db.dheera_ai_organizationmembership.find_unique(
+            await prisma_client.db.dheeraai_organizationmembership.find_unique(
                 where={
                     "user_id_organization_id": {
                         "user_id": data.user_id,
@@ -990,7 +990,7 @@ async def organization_member_delete(
             )
             data.user_id = existing_user_email_row.user_id
 
-        member_to_delete = await prisma_client.db.dheera_ai_organizationmembership.delete(
+        member_to_delete = await prisma_client.db.dheeraai_organizationmembership.delete(
             where={
                 "user_id_organization_id": {
                     "user_id": data.user_id,
@@ -1024,14 +1024,14 @@ async def add_member_to_organization(
         existing_user_email_row = None
         ## Check if user exists in DheeraAI_UserTable - user exists - either the user_id or user_email is in DheeraAI_UserTable
         if member.user_id is not None:
-            existing_user_id_row = await prisma_client.db.dheera_ai_usertable.find_unique(
+            existing_user_id_row = await prisma_client.db.dheeraai_usertable.find_unique(
                 where={"user_id": member.user_id}
             )
 
         if existing_user_id_row is None and member.user_email is not None:
             try:
                 existing_user_email_row = (
-                    await prisma_client.db.dheera_ai_usertable.find_unique(
+                    await prisma_client.db.dheeraai_usertable.find_unique(
                         where={"user_email": member.user_email}
                     )
                 )
@@ -1078,7 +1078,7 @@ async def add_member_to_organization(
 
         # Add user to organization
         _organization_membership = (
-            await prisma_client.db.dheera_ai_organizationmembership.create(
+            await prisma_client.db.dheeraai_organizationmembership.create(
                 data={
                     "organization_id": organization_id,
                     "user_id": user_object.user_id,

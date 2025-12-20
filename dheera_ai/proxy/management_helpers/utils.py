@@ -106,7 +106,7 @@ async def handle_budget_for_entity(
                 budget_row.model_dump(exclude_none=True)
             )
 
-            _budget = await prisma_client.db.dheera_ai_budgettable.create(
+            _budget = await prisma_client.db.dheeraai_budgettable.create(
                 data={
                     **new_budget_data,  # type: ignore
                     "created_by": user_api_key_dict.user_id or dheera_ai_proxy_admin_name,
@@ -160,7 +160,7 @@ async def add_new_member(
     ## ADD TEAM ID, to USER TABLE IF NEW ##
     if new_member.user_id is not None:
         new_user_defaults = get_new_internal_user_defaults(user_id=new_member.user_id)
-        _returned_user = await prisma_client.db.dheera_ai_usertable.upsert(
+        _returned_user = await prisma_client.db.dheeraai_usertable.upsert(
             where={"user_id": new_member.user_id},
             data={
                 "update": {"teams": {"push": [team_id]}},
@@ -190,7 +190,7 @@ async def add_new_member(
                 returned_user = DheeraAI_UserTable(**_returned_user.model_dump())
         elif len(existing_user_row) == 1:
             user_info = existing_user_row[0]
-            _returned_user = await prisma_client.db.dheera_ai_usertable.update(
+            _returned_user = await prisma_client.db.dheeraai_usertable.update(
                 where={"user_id": user_info.user_id},  # type: ignore
                 data={"teams": {"push": [team_id]}},
             )
@@ -208,7 +208,7 @@ async def add_new_member(
 
     if max_budget_in_team is not None:
         # create a new budget item for this member
-        response = await prisma_client.db.dheera_ai_budgettable.create(
+        response = await prisma_client.db.dheeraai_budgettable.create(
             data={
                 "max_budget": max_budget_in_team,
                 "created_by": user_api_key_dict.user_id or dheera_ai_proxy_admin_name,
@@ -222,7 +222,7 @@ async def add_new_member(
 
     if _budget_id and returned_user is not None and returned_user.user_id is not None:
         _returned_team_membership = (
-            await prisma_client.db.dheera_ai_teammembership.create(
+            await prisma_client.db.dheeraai_teammembership.create(
                 data={
                     "team_id": team_id,
                     "user_id": returned_user.user_id,

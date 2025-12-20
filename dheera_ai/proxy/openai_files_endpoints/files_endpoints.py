@@ -620,7 +620,7 @@ async def get_file_content(  # noqa: PLR0915
             
             # Check if file is stored in a storage backend (check DB)
             if hasattr(managed_files_obj, "prisma_client") and managed_files_obj.prisma_client:
-                db_file = await managed_files_obj.prisma_client.db.dheera_ai_managedfiletable.find_first(
+                db_file = await managed_files_obj.prisma_client.db.dheeraai_managedfiletable.find_first(
                     where={"unified_file_id": file_id}
                 )
                 if db_file and db_file.storage_backend and db_file.storage_url:

@@ -1798,12 +1798,12 @@ async def ui_view_spend_logs(  # noqa: PLR0915
         skip = (page - 1) * page_size
 
         # Get total count of records
-        total_records = await prisma_client.db.dheera_ai_spendlogs.count(
+        total_records = await prisma_client.db.dheeraai_spendlogs.count(
             where=where_conditions,
         )
 
         # Get paginated data
-        data = await prisma_client.db.dheera_ai_spendlogs.find_many(
+        data = await prisma_client.db.dheeraai_spendlogs.find_many(
             where=where_conditions,
             order={
                 "startTime": "desc",
@@ -2004,7 +2004,7 @@ async def view_spend_logs(  # noqa: PLR0915
             # Check if user wants unsummarized data
             if not summarize:
                 # Return filtered individual log entries (similar to UI endpoint)
-                data = await prisma_client.db.dheera_ai_spendlogs.find_many(
+                data = await prisma_client.db.dheeraai_spendlogs.find_many(
                     where=filter_query,  # type: ignore
                     order={
                         "startTime": "desc",
@@ -2014,7 +2014,7 @@ async def view_spend_logs(  # noqa: PLR0915
 
             # Legacy behavior: return summarized data (when summarize=true)
             # SQL query
-            response = await prisma_client.db.dheera_ai_spendlogs.group_by(
+            response = await prisma_client.db.dheeraai_spendlogs.group_by(
                 by=["api_key", "user", "model", "startTime"],
                 where=filter_query,  # type: ignore
                 sum={
@@ -2163,10 +2163,10 @@ async def global_spend_reset():
             code=status.HTTP_401_UNAUTHORIZED,
         )
 
-    await prisma_client.db.dheera_ai_verificationtoken.update_many(
+    await prisma_client.db.dheeraai_verificationtoken.update_many(
         data={"spend": 0.0}, where={}
     )
-    await prisma_client.db.dheera_ai_teamtable.update_many(data={"spend": 0.0}, where={})
+    await prisma_client.db.dheeraai_teamtable.update_many(data={"spend": 0.0}, where={})
 
     return {
         "message": "Spend for all API Keys and Teams reset successfully",
@@ -3037,12 +3037,12 @@ async def ui_view_session_spend_logs(
         skip = (page - 1) * page_size
 
         # Get total count for pagination metadata
-        total_records = await prisma_client.db.dheera_ai_spendlogs.count(
+        total_records = await prisma_client.db.dheeraai_spendlogs.count(
             where=where_conditions
         )
 
         # Query the database with pagination
-        result = await prisma_client.db.dheera_ai_spendlogs.find_many(
+        result = await prisma_client.db.dheeraai_spendlogs.find_many(
             where=where_conditions,
             order={"startTime": "asc"},
             skip=skip,
@@ -3109,7 +3109,7 @@ async def _can_team_member_view_log(
     """
     if team_id is None:
         return False
-    team_obj = await prisma_client.db.dheera_ai_teamtable.find_unique(
+    team_obj = await prisma_client.db.dheeraai_teamtable.find_unique(
         where={"team_id": team_id}
     )
     if team_obj is None:

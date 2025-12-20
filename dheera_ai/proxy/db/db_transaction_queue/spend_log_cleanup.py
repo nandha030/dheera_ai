@@ -77,7 +77,7 @@ class SpendLogCleanup:
                 )
                 break
             # Step 1: Find logs to delete
-            logs_to_delete = await prisma_client.db.dheera_ai_spendlogs.find_many(
+            logs_to_delete = await prisma_client.db.dheeraai_spendlogs.find_many(
                 where={"startTime": {"lt": cutoff_date}},
                 take=self.batch_size,
             )
@@ -92,7 +92,7 @@ class SpendLogCleanup:
             request_ids = [log.request_id for log in logs_to_delete]
 
             # Step 2: Delete them in one go
-            await prisma_client.db.dheera_ai_spendlogs.delete_many(
+            await prisma_client.db.dheeraai_spendlogs.delete_many(
                 where={"request_id": {"in": request_ids}}
             )
 

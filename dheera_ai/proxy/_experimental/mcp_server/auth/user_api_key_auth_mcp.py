@@ -641,7 +641,7 @@ class MCPRequestHandler:
         server_ids: Set[str] = set()
         if access_groups and prisma_client is not None:
             try:
-                mcp_servers = await prisma_client.db.dheera_ai_mcpservertable.find_many(
+                mcp_servers = await prisma_client.db.dheeraai_mcpservertable.find_many(
                     where={"mcp_access_groups": {"hasSome": access_groups}}
                 )
                 for server in mcp_servers:

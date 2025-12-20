@@ -244,7 +244,7 @@ class GuardrailRegistry:
             guardrail_info: str = safe_dumps(guardrail.get("guardrail_info", {}))
 
             # Create guardrail in DB
-            created_guardrail = await prisma_client.db.dheera_ai_guardrailstable.create(
+            created_guardrail = await prisma_client.db.dheeraai_guardrailstable.create(
                 data={
                     "guardrail_name": guardrail_name,
                     "dheera_ai_params": dheera_ai_params,
@@ -270,7 +270,7 @@ class GuardrailRegistry:
         """
         try:
             # Delete from DB
-            await prisma_client.db.dheera_ai_guardrailstable.delete(
+            await prisma_client.db.dheeraai_guardrailstable.delete(
                 where={"guardrail_id": guardrail_id}
             )
 
@@ -298,7 +298,7 @@ class GuardrailRegistry:
             guardrail_info: str = safe_dumps(guardrail.get("guardrail_info", {}))
 
             # Update in DB
-            updated_guardrail = await prisma_client.db.dheera_ai_guardrailstable.update(
+            updated_guardrail = await prisma_client.db.dheeraai_guardrailstable.update(
                 where={"guardrail_id": guardrail_id},
                 data={
                     "guardrail_name": guardrail_name,
@@ -322,7 +322,7 @@ class GuardrailRegistry:
         """
         try:
             guardrails_from_db = (
-                await prisma_client.db.dheera_ai_guardrailstable.find_many(
+                await prisma_client.db.dheeraai_guardrailstable.find_many(
                     order={"created_at": "desc"},
                 )
             )
@@ -342,7 +342,7 @@ class GuardrailRegistry:
         Get a guardrail by its ID from the database
         """
         try:
-            guardrail = await prisma_client.db.dheera_ai_guardrailstable.find_unique(
+            guardrail = await prisma_client.db.dheeraai_guardrailstable.find_unique(
                 where={"guardrail_id": guardrail_id}
             )
 
@@ -360,7 +360,7 @@ class GuardrailRegistry:
         Get a guardrail by its name from the database
         """
         try:
-            guardrail = await prisma_client.db.dheera_ai_guardrailstable.find_unique(
+            guardrail = await prisma_client.db.dheeraai_guardrailstable.find_unique(
                 where={"guardrail_name": guardrail_name}
             )
 

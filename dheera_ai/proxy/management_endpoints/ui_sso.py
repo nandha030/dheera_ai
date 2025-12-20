@@ -159,7 +159,7 @@ async def google_login(
         if premium_user is not True:
             # Check if under 'free SSO user' limit
             if prisma_client is not None:
-                total_users = await prisma_client.db.dheera_ai_usertable.count()
+                total_users = await prisma_client.db.dheeraai_usertable.count()
                 if total_users and total_users > 5:
                     raise ProxyException(
                         message="You must be a DheeraAI Enterprise user to use SSO for more than 5 users. If you have a license please set `DHEERA_AI_LICENSE` in your env. If you want to obtain a license meet with us here: https://calendly.com/d/4mp-gd3-k5k/dheera_ai-1-1-onboarding-chat You are seeing this error message because You set one of `MICROSOFT_CLIENT_ID`, `GOOGLE_CLIENT_ID`, or `GENERIC_CLIENT_ID` in your env. Please unset this",
@@ -676,7 +676,7 @@ async def check_and_update_if_proxy_admin_id(
             return user_role
 
         if prisma_client:
-            await prisma_client.db.dheera_ai_usertable.update(
+            await prisma_client.db.dheeraai_usertable.update(
                 where={"user_id": user_id},
                 data={"user_role": LitellmUserRoles.PROXY_ADMIN.value},
             )
@@ -866,7 +866,7 @@ async def cli_sso_callback(
         team_details: List[Dict[str, Any]] = []
         try:
             if teams:
-                prisma_teams = await prisma_client.db.dheera_ai_teamtable.find_many(
+                prisma_teams = await prisma_client.db.dheeraai_teamtable.find_many(
                     where={"team_id": {"in": teams}}
                 )
                 for team_row in prisma_teams:
@@ -1454,7 +1454,7 @@ class SSOAuthenticationHandler:
                     user_id=user_id,
                 )
 
-                await prisma_client.db.dheera_ai_usertable.update_many(
+                await prisma_client.db.dheeraai_usertable.update_many(
                     where={"user_id": user_id}, data=update_data
                 )
             else:
@@ -1556,7 +1556,7 @@ class SSOAuthenticationHandler:
                 code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         try:
-            team_obj = await prisma_client.db.dheera_ai_teamtable.find_first(
+            team_obj = await prisma_client.db.dheeraai_teamtable.find_first(
                 where={"team_id": dheera_ai_team_id}
             )
             verbose_proxy_logger.debug(f"Team object: {team_obj}")

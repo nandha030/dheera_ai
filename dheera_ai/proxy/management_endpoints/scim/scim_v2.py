@@ -71,7 +71,7 @@ class UserProvisionerHelpers:
         if not new_user_request.user_email:
             return None
 
-        existing_user = await prisma_client.db.dheera_ai_usertable.find_first(
+        existing_user = await prisma_client.db.dheeraai_usertable.find_first(
             where={"user_email": new_user_request.user_email}
         )
 
@@ -79,7 +79,7 @@ class UserProvisionerHelpers:
             return None
 
         # Update the user
-        updated_user = await prisma_client.db.dheera_ai_usertable.update(
+        updated_user = await prisma_client.db.dheeraai_usertable.update(
             where={"user_id": existing_user.user_id},
             data={
                 "user_id": new_user_request.user_id,
@@ -136,7 +136,7 @@ async def _check_user_exists(user_id: str):
     """Check if user exists and return user, raise 404 if not found."""
     prisma_client = await _get_prisma_client_or_raise_exception()
 
-    user = await prisma_client.db.dheera_ai_usertable.find_unique(
+    user = await prisma_client.db.dheeraai_usertable.find_unique(
         where={"user_id": user_id}
     )
 
@@ -152,7 +152,7 @@ async def _check_team_exists(team_id: str):
     """Check if team exists and return team, raise 404 if not found."""
     prisma_client = await _get_prisma_client_or_raise_exception()
 
-    team = await prisma_client.db.dheera_ai_teamtable.find_unique(
+    team = await prisma_client.db.dheeraai_teamtable.find_unique(
         where={"team_id": team_id}
     )
 
@@ -223,7 +223,7 @@ async def _extract_group_member_ids(group: SCIMGroup) -> GroupMemberExtractionRe
             user_id = member.value
 
             # Check if user exists
-            user = await prisma_client.db.dheera_ai_usertable.find_unique(
+            user = await prisma_client.db.dheeraai_usertable.find_unique(
                 where={"user_id": user_id}
             )
 
@@ -254,7 +254,7 @@ async def _get_team_members_display(member_ids: List[str]) -> List[SCIMMember]:
     members: List[SCIMMember] = []
 
     for member_id in member_ids:
-        user = await prisma_client.db.dheera_ai_usertable.find_unique(
+        user = await prisma_client.db.dheeraai_usertable.find_unique(
             where={"user_id": member_id}
         )
         if user:
@@ -412,7 +412,7 @@ async def get_users(
 
         # Get users from database
         users: List[DheeraAI_UserTable] = (
-            await prisma_client.db.dheera_ai_usertable.find_many(
+            await prisma_client.db.dheeraai_usertable.find_many(
                 where=where_conditions,
                 skip=(startIndex - 1),
                 take=count,
@@ -421,7 +421,7 @@ async def get_users(
         )
 
         # Get total count for pagination
-        total_count = await prisma_client.db.dheera_ai_usertable.count(
+        total_count = await prisma_client.db.dheeraai_usertable.count(
             where=where_conditions
         )
 
@@ -489,7 +489,7 @@ async def create_user(
 
         # Check if user already exists
         if user.userName:
-            existing_user = await prisma_client.db.dheera_ai_usertable.find_unique(
+            existing_user = await prisma_client.db.dheeraai_usertable.find_unique(
                 where={"user_id": user.userName}
             )
             if existing_user:
@@ -604,7 +604,7 @@ async def update_user(
 
             update_data["metadata"] = safe_dumps(update_data["metadata"])
 
-        updated_user = await prisma_client.db.dheera_ai_usertable.update(
+        updated_user = await prisma_client.db.dheeraai_usertable.update(
             where={"user_id": user_id},
             data=update_data,
         )
@@ -640,7 +640,7 @@ async def delete_user(
         teams = []
         if existing_user.teams:
             for team_id in existing_user.teams:
-                team = await prisma_client.db.dheera_ai_teamtable.find_unique(
+                team = await prisma_client.db.dheeraai_teamtable.find_unique(
                     where={"team_id": team_id}
                 )
                 if team:
@@ -651,12 +651,12 @@ async def delete_user(
             current_members = team.members or []
             if user_id in current_members:
                 new_members = [m for m in current_members if m != user_id]
-                await prisma_client.db.dheera_ai_teamtable.update(
+                await prisma_client.db.dheeraai_teamtable.update(
                     where={"team_id": team.team_id}, data={"members": new_members}
                 )
 
         # Delete user
-        await prisma_client.db.dheera_ai_usertable.delete(where={"user_id": user_id})
+        await prisma_client.db.dheeraai_usertable.delete(where={"user_id": user_id})
 
         return Response(status_code=204)
     except Exception as e:
@@ -886,7 +886,7 @@ async def patch_user(
 
             update_data["metadata"] = safe_dumps(update_data["metadata"])
 
-        updated_user = await prisma_client.db.dheera_ai_usertable.update(
+        updated_user = await prisma_client.db.dheeraai_usertable.update(
             where={"user_id": user_id},
             data=update_data,
         )
@@ -933,7 +933,7 @@ async def get_groups(
                 where_conditions["team_alias"] = team_alias
 
         # Get teams from database
-        teams = await prisma_client.db.dheera_ai_teamtable.find_many(
+        teams = await prisma_client.db.dheeraai_teamtable.find_many(
             where=where_conditions,
             skip=(startIndex - 1),
             take=count,
@@ -941,7 +941,7 @@ async def get_groups(
         )
 
         # Get total count for pagination
-        total_count = await prisma_client.db.dheera_ai_teamtable.count(
+        total_count = await prisma_client.db.dheeraai_teamtable.count(
             where=where_conditions
         )
 
@@ -1029,7 +1029,7 @@ async def create_group(
         team_id = group.id or group.externalId or str(uuid.uuid4())
 
         # Check if team already exists
-        existing_team = await prisma_client.db.dheera_ai_teamtable.find_unique(
+        existing_team = await prisma_client.db.dheeraai_teamtable.find_unique(
             where={"team_id": team_id}
         )
 
@@ -1106,7 +1106,7 @@ async def update_group(
         }
 
         # Update team in database
-        updated_team = await prisma_client.db.dheera_ai_teamtable.update(
+        updated_team = await prisma_client.db.dheeraai_teamtable.update(
             where={"team_id": group_id},
             data=update_data,
         )
@@ -1151,19 +1151,19 @@ async def delete_group(
 
         # For each member, remove this team from their teams list
         for member_id in existing_team.members or []:
-            user = await prisma_client.db.dheera_ai_usertable.find_unique(
+            user = await prisma_client.db.dheeraai_usertable.find_unique(
                 where={"user_id": member_id}
             )
             if user:
                 current_teams = user.teams or []
                 if group_id in current_teams:
                     new_teams = [t for t in current_teams if t != group_id]
-                    await prisma_client.db.dheera_ai_usertable.update(
+                    await prisma_client.db.dheeraai_usertable.update(
                         where={"user_id": member_id}, data={"teams": new_teams}
                     )
 
         # Delete team
-        await prisma_client.db.dheera_ai_teamtable.delete(where={"team_id": group_id})
+        await prisma_client.db.dheeraai_teamtable.delete(where={"team_id": group_id})
 
         return Response(status_code=204)
 
@@ -1207,7 +1207,7 @@ async def _process_group_patch_operations(
             # Create users that don't exist and get all valid member IDs
             valid_members = []
             for member_id in member_values:
-                user = await prisma_client.db.dheera_ai_usertable.find_unique(
+                user = await prisma_client.db.dheeraai_usertable.find_unique(
                     where={"user_id": member_id}
                 )
                 if user:
@@ -1255,7 +1255,7 @@ async def _apply_group_patch_updates(
     update_data["members"] = list(final_members)
 
     # Update team in database
-    updated_team = await prisma_client.db.dheera_ai_teamtable.update(
+    updated_team = await prisma_client.db.dheeraai_teamtable.update(
         where={"team_id": group_id},
         data=update_data,
     )
@@ -1327,7 +1327,7 @@ async def patch_group(
 
         # Refresh team data from database to get the latest state after concurrent updates
         # This prevents race conditions when multiple PATCH requests come in simultaneously
-        refreshed_team = await prisma_client.db.dheera_ai_teamtable.find_unique(
+        refreshed_team = await prisma_client.db.dheeraai_teamtable.find_unique(
             where={"team_id": group_id}
         )
         if refreshed_team:
@@ -1344,7 +1344,7 @@ async def patch_group(
         await _handle_group_membership_changes(group_id, current_members, final_members)
 
         # Refresh team one more time to get final state after membership changes
-        final_team = await prisma_client.db.dheera_ai_teamtable.find_unique(
+        final_team = await prisma_client.db.dheeraai_teamtable.find_unique(
             where={"team_id": group_id}
         )
         if final_team:

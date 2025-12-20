@@ -81,7 +81,7 @@ async def get_mcp_server_ids(
     # Make a direct SQL query to get just the mcp_servers
     try:
 
-        result = await prisma_client.db.dheera_ai_objectpermissiontable.find_unique(
+        result = await prisma_client.db.dheeraai_objectpermissiontable.find_unique(
             where={"object_permission_id": user_api_key_dict.object_permission_id},
         )
         if result and result.mcp_servers:

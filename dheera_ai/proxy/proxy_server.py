@@ -3232,7 +3232,7 @@ class ProxyConfig:
         4. Update router settings
         """
         if llm_router is not None and prisma_client is not None:
-            db_router_settings = await prisma_client.db.dheera_ai_config.find_first(
+            db_router_settings = await prisma_client.db.dheeraai_config.find_first(
                 where={"param_name": "router_settings"}
             )
 
@@ -3517,7 +3517,7 @@ class ProxyConfig:
 
     async def _get_models_from_db(self, prisma_client: PrismaClient) -> list:
         try:
-            new_models = await prisma_client.db.dheera_ai_proxymodeltable.find_many()
+            new_models = await prisma_client.db.dheeraai_proxymodeltable.find_many()
         except Exception as e:
             verbose_proxy_logger.exception(
                 "dheera_ai.proxy_server.py::add_deployment() - Error getting new models from DB - {}".format(
@@ -3550,7 +3550,7 @@ class ProxyConfig:
                     new_models=new_models, proxy_logging_obj=proxy_logging_obj
                 )
 
-            db_general_settings = await prisma_client.db.dheera_ai_config.find_first(
+            db_general_settings = await prisma_client.db.dheeraai_config.find_first(
                 where={"param_name": "general_settings"}
             )
 
@@ -3620,7 +3620,7 @@ class ProxyConfig:
         """
 
         try:
-            sso_settings = await prisma_client.db.dheera_ai_ssoconfig.find_unique(
+            sso_settings = await prisma_client.db.dheeraai_ssoconfig.find_unique(
                 where={"id": "sso_config"}
             )
             if sso_settings is not None:
@@ -3646,7 +3646,7 @@ class ProxyConfig:
         """
         try:
             # Get model cost map reload configuration from database
-            config_record = await prisma_client.db.dheera_ai_config.find_unique(
+            config_record = await prisma_client.db.dheeraai_config.find_unique(
                 where={"param_name": "model_cost_map_reload_config"}
             )
 
@@ -3715,7 +3715,7 @@ class ProxyConfig:
                 last_model_cost_map_reload = current_time.isoformat()
 
                 # Clear force reload flag in database
-                await prisma_client.db.dheera_ai_config.upsert(
+                await prisma_client.db.dheeraai_config.upsert(
                     where={"param_name": "model_cost_map_reload_config"},
                     data={
                         "create": {
@@ -3761,7 +3761,7 @@ class ProxyConfig:
         from dheera_ai.types.prompts.init_prompts import PromptSpec
 
         try:
-            prompts_in_db = await prisma_client.db.dheera_ai_prompttable.find_many()
+            prompts_in_db = await prisma_client.db.dheeraai_prompttable.find_many()
             for prompt in prompts_in_db:
                 # Convert DB object to dict and create versioned prompt_id
                 prompt_spec = self._get_prompt_spec_for_db_prompt(db_prompt=prompt)
@@ -3991,7 +3991,7 @@ class ProxyConfig:
 
     async def get_credentials(self, prisma_client: PrismaClient):
         try:
-            credentials = await prisma_client.db.dheera_ai_credentialstable.find_many()
+            credentials = await prisma_client.db.dheeraai_credentialstable.find_many()
             credentials = [self.decrypt_credentials(cred) for cred in credentials]
             await self.delete_credentials(
                 credentials
@@ -6989,7 +6989,7 @@ async def _check_if_model_is_user_added(
         id = model.get("model_info", {}).get("id", None)
         if id is None:
             continue
-        db_model = await prisma_client.db.dheera_ai_proxymodeltable.find_unique(
+        db_model = await prisma_client.db.dheeraai_proxymodeltable.find_unique(
             where={"model_id": id}
         )
         if db_model is not None:
@@ -7046,7 +7046,7 @@ async def non_admin_all_models(
 
     if user_api_key_dict.user_id:
         try:
-            user_row = await prisma_client.db.dheera_ai_usertable.find_unique(
+            user_row = await prisma_client.db.dheeraai_usertable.find_unique(
                 where={"user_id": user_api_key_dict.user_id}
             )
         except Exception:
@@ -7124,13 +7124,13 @@ async def get_all_team_models(
     team_db_objects_typed: List[DheeraAI_TeamTable] = []
 
     if user_teams == "*":
-        team_db_objects = await prisma_client.db.dheera_ai_teamtable.find_many()
+        team_db_objects = await prisma_client.db.dheeraai_teamtable.find_many()
         team_db_objects_typed = [
             DheeraAI_TeamTable(**team_db_object.model_dump())
             for team_db_object in team_db_objects
         ]
     else:
-        team_db_objects = await prisma_client.db.dheera_ai_teamtable.find_many(
+        team_db_objects = await prisma_client.db.dheeraai_teamtable.find_many(
             where={"team_id": {"in": user_teams}}
         )
 
@@ -7189,7 +7189,7 @@ async def get_all_team_and_direct_access_models(
             exclude_team_models=True
         )  # has access to all models
     elif user_api_key_dict.user_id is not None:
-        user_db_object = await prisma_client.db.dheera_ai_usertable.find_unique(
+        user_db_object = await prisma_client.db.dheeraai_usertable.find_unique(
             where={"user_id": user_api_key_dict.user_id}
         )
         if user_db_object is not None:
@@ -8273,7 +8273,7 @@ async def alerting_settings(
         )
 
     ## get general settings from db
-    db_general_settings = await prisma_client.db.dheera_ai_config.find_first(
+    db_general_settings = await prisma_client.db.dheeraai_config.find_first(
         where={"param_name": "general_settings"}
     )
 
@@ -8617,7 +8617,7 @@ async def onboarding(invite_link: str, request: Request):
             detail={"error": CommonProxyErrors.db_not_connected_error.value},
         )
 
-    invite_obj = await prisma_client.db.dheera_ai_invitationlink.find_unique(
+    invite_obj = await prisma_client.db.dheeraai_invitationlink.find_unique(
         where={"id": invite_link}
     )
     if invite_obj is None:
@@ -8636,7 +8636,7 @@ async def onboarding(invite_link: str, request: Request):
     #### INVALIDATE LINK
     current_time = dheera_ai.utils.get_utc_datetime()
 
-    _ = await prisma_client.db.dheera_ai_invitationlink.update(
+    _ = await prisma_client.db.dheeraai_invitationlink.update(
         where={"id": invite_link},
         data={
             "accepted_at": current_time,
@@ -8647,7 +8647,7 @@ async def onboarding(invite_link: str, request: Request):
     )
 
     ### GET USER OBJECT ###
-    user_obj = await prisma_client.db.dheera_ai_usertable.find_unique(
+    user_obj = await prisma_client.db.dheeraai_usertable.find_unique(
         where={"user_id": invite_obj.user_id}
     )
 
@@ -8733,7 +8733,7 @@ async def claim_onboarding_link(data: InvitationClaim):
             detail={"error": CommonProxyErrors.db_not_connected_error.value},
         )
 
-    invite_obj = await prisma_client.db.dheera_ai_invitationlink.find_unique(
+    invite_obj = await prisma_client.db.dheeraai_invitationlink.find_unique(
         where={"id": data.invitation_link}
     )
     if invite_obj is None:
@@ -8776,7 +8776,7 @@ async def claim_onboarding_link(data: InvitationClaim):
         )
     ### UPDATE USER OBJECT ###
     hash_password = hash_token(token=data.password)
-    user_obj = await prisma_client.db.dheera_ai_usertable.update(
+    user_obj = await prisma_client.db.dheeraai_usertable.update(
         where={"user_id": invite_obj.user_id}, data={"password": hash_password}
     )
 
@@ -8937,7 +8937,7 @@ async def invitation_info(
             },
         )
 
-    response = await prisma_client.db.dheera_ai_invitationlink.find_unique(
+    response = await prisma_client.db.dheeraai_invitationlink.find_unique(
         where={"id": invitation_id}
     )
 
@@ -8991,7 +8991,7 @@ async def invitation_update(
         )
 
     current_time = dheera_ai.utils.get_utc_datetime()
-    response = await prisma_client.db.dheera_ai_invitationlink.update(
+    response = await prisma_client.db.dheeraai_invitationlink.update(
         where={"id": data.invitation_id},
         data={
             "id": data.invitation_id,
@@ -9051,7 +9051,7 @@ async def invitation_delete(
             },
         )
 
-    response = await prisma_client.db.dheera_ai_invitationlink.delete(
+    response = await prisma_client.db.dheeraai_invitationlink.delete(
         where={"id": data.invitation_id}
     )
 
@@ -9099,7 +9099,7 @@ async def update_config(config_info: ConfigYAML):  # noqa: PLR0915
         updated_settings = prisma_client.jsonify_object(updated_settings)
         for k, v in updated_settings.items():
             if k == "router_settings":
-                await prisma_client.db.dheera_ai_config.upsert(
+                await prisma_client.db.dheeraai_config.upsert(
                     where={"param_name": k},
                     data={
                         "create": {"param_name": k, "param_value": v},
@@ -9272,7 +9272,7 @@ async def update_config_general_settings(
         )
 
     ## get general settings from db
-    db_general_settings = await prisma_client.db.dheera_ai_config.find_first(
+    db_general_settings = await prisma_client.db.dheeraai_config.find_first(
         where={"param_name": "general_settings"}
     )
     ### update value
@@ -9286,7 +9286,7 @@ async def update_config_general_settings(
 
     general_settings[data.field_name] = data.field_value
 
-    response = await prisma_client.db.dheera_ai_config.upsert(
+    response = await prisma_client.db.dheeraai_config.upsert(
         where={"param_name": "general_settings"},
         data={
             "create": {"param_name": "general_settings", "param_value": json.dumps(general_settings)},  # type: ignore
@@ -9335,7 +9335,7 @@ async def get_config_general_settings(
         )
 
     ## get general settings from db
-    db_general_settings = await prisma_client.db.dheera_ai_config.find_first(
+    db_general_settings = await prisma_client.db.dheeraai_config.find_first(
         where={"param_name": "general_settings"}
     )
     ### pop the value
@@ -9398,7 +9398,7 @@ async def get_config_list(
         )
 
     ## get general settings from db
-    db_general_settings = await prisma_client.db.dheera_ai_config.find_first(
+    db_general_settings = await prisma_client.db.dheeraai_config.find_first(
         where={"param_name": "general_settings"}
     )
 
@@ -9540,7 +9540,7 @@ async def delete_config_general_settings(
         )
 
     ## get general settings from db
-    db_general_settings = await prisma_client.db.dheera_ai_config.find_first(
+    db_general_settings = await prisma_client.db.dheeraai_config.find_first(
         where={"param_name": "general_settings"}
     )
     ### pop the value
@@ -9557,7 +9557,7 @@ async def delete_config_general_settings(
 
     general_settings.pop(data.field_name, None)
 
-    response = await prisma_client.db.dheera_ai_config.upsert(
+    response = await prisma_client.db.dheeraai_config.upsert(
         where={"param_name": "general_settings"},
         data={
             "create": {"param_name": "general_settings", "param_value": json.dumps(general_settings)},  # type: ignore
@@ -9879,7 +9879,7 @@ async def reload_model_cost_map(
         last_model_cost_map_reload = current_time.isoformat()
 
         # Set force reload flag in database for other pods
-        await prisma_client.db.dheera_ai_config.upsert(
+        await prisma_client.db.dheeraai_config.upsert(
             where={"param_name": "model_cost_map_reload_config"},
             data={
                 "create": {
@@ -9944,7 +9944,7 @@ async def schedule_model_cost_map_reload(
             )
 
         # Update database with new reload configuration
-        await prisma_client.db.dheera_ai_config.upsert(
+        await prisma_client.db.dheeraai_config.upsert(
             where={"param_name": "model_cost_map_reload_config"},
             data={
                 "create": {
@@ -10010,7 +10010,7 @@ async def cancel_model_cost_map_reload(
             )
 
         # Remove reload configuration from database
-        await prisma_client.db.dheera_ai_config.delete(
+        await prisma_client.db.dheeraai_config.delete(
             where={"param_name": "model_cost_map_reload_config"}
         )
 
@@ -10068,7 +10068,7 @@ async def get_model_cost_map_reload_status(
             }
 
         # Get reload configuration from database
-        config_record = await prisma_client.db.dheera_ai_config.find_unique(
+        config_record = await prisma_client.db.dheeraai_config.find_unique(
             where={"param_name": "model_cost_map_reload_config"}
         )
 

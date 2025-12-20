@@ -212,7 +212,7 @@ async def index_create(
         )
     ## 1. check if index already exists
     existing_index = (
-        await prisma_client.db.dheera_ai_managedvectorstoreindextable.find_unique(
+        await prisma_client.db.dheeraai_managedvectorstoreindextable.find_unique(
             where={"index_name": index_create_request.index_name}
         )
     )
@@ -229,7 +229,7 @@ async def index_create(
     index_data = index_create_request.model_dump(exclude_none=True)
     index_data["created_by"] = user_api_key_dict.user_id
     index_data["updated_by"] = user_api_key_dict.user_id
-    new_index = await prisma_client.db.dheera_ai_managedvectorstoreindextable.create(
+    new_index = await prisma_client.db.dheeraai_managedvectorstoreindextable.create(
         data=jsonify_object(index_data)
     )
 

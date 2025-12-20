@@ -41,7 +41,7 @@ async def attach_object_permission_to_dict(
         
     object_permission_id = data_dict.get("object_permission_id")
     if object_permission_id:
-        object_permission = await prisma_client.db.dheera_ai_objectpermissiontable.find_unique(
+        object_permission = await prisma_client.db.dheeraai_objectpermissiontable.find_unique(
             where={"object_permission_id": object_permission_id},
         )
         if object_permission:
@@ -98,7 +98,7 @@ async def handle_update_object_permission_common(
     existing_object_permissions_dict: Dict = {}
 
     existing_object_permission = (
-        await prisma_client.db.dheera_ai_objectpermissiontable.find_unique(
+        await prisma_client.db.dheeraai_objectpermissiontable.find_unique(
             where={"object_permission_id": object_permission_id_to_use},
         )
     )
@@ -129,7 +129,7 @@ async def handle_update_object_permission_common(
     # Commit the update to the DheeraAI_ObjectPermissionTable
     #########################################################
     created_object_permission_row = (
-        await prisma_client.db.dheera_ai_objectpermissiontable.upsert(
+        await prisma_client.db.dheeraai_objectpermissiontable.upsert(
             where={"object_permission_id": object_permission_id_to_use},
             data={
                 "create": existing_object_permissions_dict,
@@ -171,7 +171,7 @@ async def _set_object_permission(
     if "mcp_tool_permissions" in clean_data:
         clean_data["mcp_tool_permissions"] = safe_dumps(clean_data["mcp_tool_permissions"])
     
-    created_permission = await prisma_client.db.dheera_ai_objectpermissiontable.create(
+    created_permission = await prisma_client.db.dheeraai_objectpermissiontable.create(
         data=clean_data
     )
     

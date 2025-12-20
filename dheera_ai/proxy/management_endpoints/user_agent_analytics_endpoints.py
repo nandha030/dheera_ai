@@ -656,7 +656,7 @@ async def get_per_user_analytics(
             where_clause["tag"] = {"contains": tag_filter}
         
         # Get all tag records in the date range with optional tag filtering
-        tag_records = await prisma_client.db.dheera_ai_dailytagspend.find_many(
+        tag_records = await prisma_client.db.dheeraai_dailytagspend.find_many(
             where=where_clause
         )
         
@@ -673,7 +673,7 @@ async def get_per_user_analytics(
             )
         
         # Lookup user_id for each api_key
-        api_key_records = await prisma_client.db.dheera_ai_verificationtoken.find_many(
+        api_key_records = await prisma_client.db.dheeraai_verificationtoken.find_many(
             where={"token": {"in": list(api_keys)}}
         )
         
@@ -686,7 +686,7 @@ async def get_per_user_analytics(
         
         # Get user emails for the user_ids
         user_ids = list(set(api_key_to_user_id.values()))
-        user_records = await prisma_client.db.dheera_ai_usertable.find_many(
+        user_records = await prisma_client.db.dheeraai_usertable.find_many(
             where={"user_id": {"in": user_ids}}
         )
         

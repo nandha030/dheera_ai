@@ -95,7 +95,7 @@ async def create_audit_log_for_update(request_data: DheeraAI_AuditLogs):
     _request_data = request_data.model_dump(exclude_none=True)
 
     try:
-        await prisma_client.db.dheera_ai_auditlog.create(
+        await prisma_client.db.dheeraai_auditlog.create(
             data={
                 **_request_data,  # type: ignore
             }

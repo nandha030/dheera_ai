@@ -233,7 +233,7 @@ async def get_agent_by_id(agent_id: str):
     try:
         agent = AGENT_REGISTRY.get_agent_by_id(agent_id=agent_id)
         if agent is None:
-            agent = await prisma_client.db.dheera_ai_agentstable.find_unique(
+            agent = await prisma_client.db.dheeraai_agentstable.find_unique(
                 where={"agent_id": agent_id}
             )
             if agent is not None:
@@ -303,7 +303,7 @@ async def update_agent(
 
     try:
         # Check if agent exists
-        existing_agent = await prisma_client.db.dheera_ai_agentstable.find_unique(
+        existing_agent = await prisma_client.db.dheeraai_agentstable.find_unique(
             where={"agent_id": agent_id}
         )
         if existing_agent is not None:
@@ -392,7 +392,7 @@ async def patch_agent(
 
     try:
         # Check if agent exists
-        existing_agent = await prisma_client.db.dheera_ai_agentstable.find_unique(
+        existing_agent = await prisma_client.db.dheeraai_agentstable.find_unique(
             where={"agent_id": agent_id}
         )
         if existing_agent is not None:
@@ -459,7 +459,7 @@ async def delete_agent(agent_id: str):
 
     try:
         # Check if agent exists
-        existing_agent = await prisma_client.db.dheera_ai_agentstable.find_unique(
+        existing_agent = await prisma_client.db.dheeraai_agentstable.find_unique(
             where={"agent_id": agent_id}
         )
         if existing_agent is not None:
@@ -549,7 +549,7 @@ async def make_agent_public(
         agent = AGENT_REGISTRY.get_agent_by_id(agent_id=agent_id)
         if agent is None:
             # check if agent exists in DB
-            agent = await prisma_client.db.dheera_ai_agentstable.find_unique(
+            agent = await prisma_client.db.dheeraai_agentstable.find_unique(
                 where={"agent_id": agent_id}
             )
             if agent is not None:
@@ -672,7 +672,7 @@ async def make_agents_public(
             agent = AGENT_REGISTRY.get_agent_by_id(agent_id=agent_id)
             if agent is None:
                 # check if agent exists in DB
-                agent = await prisma_client.db.dheera_ai_agentstable.find_unique(
+                agent = await prisma_client.db.dheeraai_agentstable.find_unique(
                     where={"agent_id": agent_id}
                 )
                 if agent is not None:
@@ -748,7 +748,7 @@ async def get_agent_daily_activity(
     if agent_ids_list:
         where_condition["agent_id"] = {"in": list(agent_ids_list)}
 
-    agent_records = await prisma_client.db.dheera_ai_agentstable.find_many(
+    agent_records = await prisma_client.db.dheeraai_agentstable.find_many(
         where=where_condition
     )
     agent_metadata = {

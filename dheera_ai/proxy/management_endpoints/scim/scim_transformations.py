@@ -29,7 +29,7 @@ class ScimTransformations:
         # Get user's teams/groups
         groups = []
         for team_id in user.teams or []:
-            team = await prisma_client.db.dheera_ai_teamtable.find_unique(
+            team = await prisma_client.db.dheeraai_teamtable.find_unique(
                 where={"team_id": team_id}
             )
             if team:

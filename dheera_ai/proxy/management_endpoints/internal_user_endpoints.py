@@ -119,7 +119,7 @@ async def _check_duplicate_user_email(
         if prisma_client is None:
             raise Exception("Database not connected")
 
-        existing_user = await prisma_client.db.dheera_ai_usertable.find_first(
+        existing_user = await prisma_client.db.dheeraai_usertable.find_first(
             where={"user_email": {"equals": user_email.strip(), "mode": "insensitive"}}
         )
 
@@ -365,7 +365,7 @@ async def new_user(
         await _check_duplicate_user_email(data.user_email, prisma_client)
 
         # Check if license is over limit
-        total_users = await prisma_client.db.dheera_ai_usertable.count()
+        total_users = await prisma_client.db.dheeraai_usertable.count()
         if total_users and _license_check.is_over_limit(total_users=total_users):
             raise HTTPException(
                 status_code=403,
@@ -834,11 +834,11 @@ async def _update_single_user_helper(
     # Get existing user data for audit logging and metadata preparation
     existing_user_row: Optional[BaseModel] = None
     if user_request.user_id:
-        existing_user_row = await prisma_client.db.dheera_ai_usertable.find_first(
+        existing_user_row = await prisma_client.db.dheeraai_usertable.find_first(
             where={"user_id": user_request.user_id}
         )
     elif user_request.user_email:
-        existing_user_row = await prisma_client.db.dheera_ai_usertable.find_first(
+        existing_user_row = await prisma_client.db.dheeraai_usertable.find_first(
             where={"user_email": user_request.user_email}
         )
 
@@ -911,7 +911,7 @@ async def _update_single_user_helper(
     # Create audit log for successful update
     if response is not None:
         try:
-            updated_user_row = await prisma_client.db.dheera_ai_usertable.find_first(
+            updated_user_row = await prisma_client.db.dheeraai_usertable.find_first(
                 where={"user_id": response["user_id"]}
             )
 
@@ -1198,7 +1198,7 @@ async def bulk_user_update(
 
     if data.all_users and data.user_updates:
         # Optimized path for updating all users directly in database
-        all_users_in_db = await prisma_client.db.dheera_ai_usertable.find_many(
+        all_users_in_db = await prisma_client.db.dheeraai_usertable.find_many(
             order={"created_at": "desc"}
         )
 
@@ -1234,7 +1234,7 @@ async def bulk_user_update(
 
         try:
             # Perform bulk database update
-            await prisma_client.db.dheera_ai_usertable.update_many(
+            await prisma_client.db.dheeraai_usertable.update_many(
                 where={}, data=non_default_values  # Update all users
             )
 
@@ -1341,7 +1341,7 @@ async def get_user_key_counts(
 
     # Get count for each user_id individually
     for user_id in user_ids:
-        count = await prisma_client.db.dheera_ai_verificationtoken.count(
+        count = await prisma_client.db.dheeraai_verificationtoken.count(
             where={
                 "user_id": user_id,
                 "OR": [
@@ -1509,7 +1509,7 @@ async def get_users(
         else None
     )
 
-    users = await prisma_client.db.dheera_ai_usertable.find_many(
+    users = await prisma_client.db.dheeraai_usertable.find_many(
         where=where_conditions,
         skip=skip,
         take=page_size,
@@ -1519,7 +1519,7 @@ async def get_users(
     )
 
     # Get total count of user rows
-    total_count = await prisma_client.db.dheera_ai_usertable.count(where=where_conditions)
+    total_count = await prisma_client.db.dheeraai_usertable.count(where=where_conditions)
 
     # Get key count for each user
     if users is not None:
@@ -1604,7 +1604,7 @@ async def delete_user(
 
     # check that all teams passed exist
     for user_id in data.user_ids:
-        user_row = await prisma_client.db.dheera_ai_usertable.find_unique(
+        user_row = await prisma_client.db.dheeraai_usertable.find_unique(
             where={"user_id": user_id}
         )
 
@@ -1639,7 +1639,7 @@ async def delete_user(
                 )
 
         ## CLEANUP MEMBERS_WITH_ROLES
-        fetch_all_teams = await prisma_client.db.dheera_ai_teamtable.find_many(
+        fetch_all_teams = await prisma_client.db.dheeraai_teamtable.find_many(
             where={"team_id": {"in": user_row.teams}}
         )
         teams_to_update = []
@@ -1662,34 +1662,34 @@ async def delete_user(
         ## update teams
 
         for team in teams_to_update:
-            await prisma_client.db.dheera_ai_teamtable.update(
+            await prisma_client.db.dheeraai_teamtable.update(
                 where={"team_id": team.team_id},
                 data={"members_with_roles": team.members_with_roles},
             )
     # End of Audit logging
 
     ## DELETE ASSOCIATED KEYS
-    await prisma_client.db.dheera_ai_verificationtoken.delete_many(
+    await prisma_client.db.dheeraai_verificationtoken.delete_many(
         where={"user_id": {"in": data.user_ids}}
     )
 
     ## DELETE ASSOCIATED INVITATION LINKS
-    await prisma_client.db.dheera_ai_invitationlink.delete_many(
+    await prisma_client.db.dheeraai_invitationlink.delete_many(
         where={"user_id": {"in": data.user_ids}}
     )
 
     ## DELETE ASSOCIATED ORGANIZATION MEMBERSHIPS
-    await prisma_client.db.dheera_ai_organizationmembership.delete_many(
+    await prisma_client.db.dheeraai_organizationmembership.delete_many(
         where={"user_id": {"in": data.user_ids}}
     )
 
     ## DELETE ASSOCIATED TEAM MEMBERSHIPS
-    await prisma_client.db.dheera_ai_teammembership.delete_many(
+    await prisma_client.db.dheeraai_teammembership.delete_many(
         where={"user_id": {"in": data.user_ids}}
     )
 
     ## DELETE USERS
-    deleted_users = await prisma_client.db.dheera_ai_usertable.delete_many(
+    deleted_users = await prisma_client.db.dheeraai_usertable.delete_many(
         where={"user_id": {"in": data.user_ids}}
     )
 
@@ -1719,7 +1719,7 @@ async def add_internal_user_to_organization(
 
     try:
         # Check if organization_id exists
-        organization_row = await prisma_client.db.dheera_ai_organizationtable.find_unique(
+        organization_row = await prisma_client.db.dheeraai_organizationtable.find_unique(
             where={"organization_id": organization_id}
         )
         if organization_row is None:
@@ -1728,7 +1728,7 @@ async def add_internal_user_to_organization(
             )
 
         # Create a new organization membership entry
-        new_membership = await prisma_client.db.dheera_ai_organizationmembership.create(
+        new_membership = await prisma_client.db.dheeraai_organizationmembership.create(
             data={
                 "user_id": user_id,
                 "organization_id": organization_id,
@@ -1805,7 +1805,7 @@ async def ui_view_users(
 
         # Query users with pagination and filters
         users: Optional[List[BaseModel]] = (
-            await prisma_client.db.dheera_ai_usertable.find_many(
+            await prisma_client.db.dheeraai_usertable.find_many(
                 where=where_conditions,
                 skip=skip,
                 take=page_size,

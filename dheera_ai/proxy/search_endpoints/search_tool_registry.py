@@ -60,7 +60,7 @@ class SearchToolRegistry:
             search_tool_info: str = safe_dumps(search_tool.get("search_tool_info", {}))
 
             # Create search tool in DB
-            created_search_tool = await prisma_client.db.dheera_ai_searchtoolstable.create(
+            created_search_tool = await prisma_client.db.dheeraai_searchtoolstable.create(
                 data={
                     "search_tool_name": search_tool_name,
                     "dheera_ai_params": dheera_ai_params,
@@ -96,7 +96,7 @@ class SearchToolRegistry:
         """
         try:
             # Get search tool before deletion for response
-            existing_tool = await prisma_client.db.dheera_ai_searchtoolstable.find_unique(
+            existing_tool = await prisma_client.db.dheeraai_searchtoolstable.find_unique(
                 where={"search_tool_id": search_tool_id}
             )
             
@@ -104,7 +104,7 @@ class SearchToolRegistry:
                 raise Exception(f"Search tool with ID {search_tool_id} not found")
             
             # Delete from DB
-            await prisma_client.db.dheera_ai_searchtoolstable.delete(
+            await prisma_client.db.dheeraai_searchtoolstable.delete(
                 where={"search_tool_id": search_tool_id}
             )
 
@@ -136,7 +136,7 @@ class SearchToolRegistry:
             search_tool_info: str = safe_dumps(search_tool.get("search_tool_info", {}))
 
             # Update in DB
-            updated_search_tool = await prisma_client.db.dheera_ai_searchtoolstable.update(
+            updated_search_tool = await prisma_client.db.dheeraai_searchtoolstable.update(
                 where={"search_tool_id": search_tool_id},
                 data={
                     "search_tool_name": search_tool_name,
@@ -167,7 +167,7 @@ class SearchToolRegistry:
         """
         try:
             search_tools_from_db = (
-                await prisma_client.db.dheera_ai_searchtoolstable.find_many(
+                await prisma_client.db.dheeraai_searchtoolstable.find_many(
                     order={"created_at": "desc"},
                 )
             )
@@ -197,7 +197,7 @@ class SearchToolRegistry:
             Search tool configuration or None if not found
         """
         try:
-            search_tool = await prisma_client.db.dheera_ai_searchtoolstable.find_unique(
+            search_tool = await prisma_client.db.dheeraai_searchtoolstable.find_unique(
                 where={"search_tool_id": search_tool_id}
             )
 
@@ -225,7 +225,7 @@ class SearchToolRegistry:
             Search tool configuration or None if not found
         """
         try:
-            search_tool = await prisma_client.db.dheera_ai_searchtoolstable.find_unique(
+            search_tool = await prisma_client.db.dheeraai_searchtoolstable.find_unique(
                 where={"search_tool_name": search_tool_name}
             )
 

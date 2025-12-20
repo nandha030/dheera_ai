@@ -83,7 +83,7 @@ async def _upsert_budget_and_membership(
     """
     if max_budget is None and tpm_limit is None and rpm_limit is None:
         # disconnect the budget since all limits are None
-        await tx.dheera_ai_teammembership.update(
+        await tx.dheeraai_teammembership.update(
             where={"user_id_team_id": {"user_id": user_id, "team_id": team_id}},
             data={"dheera_ai_budget_table": {"disconnect": True}},
         )
@@ -101,12 +101,12 @@ async def _upsert_budget_and_membership(
     if rpm_limit is not None:
         create_data["rpm_limit"] = rpm_limit
 
-    new_budget = await tx.dheera_ai_budgettable.create(
+    new_budget = await tx.dheeraai_budgettable.create(
         data=create_data,
         include={"team_membership": True},
     )
     # upsert the team membership with the new/updated budget
-    await tx.dheera_ai_teammembership.upsert(
+    await tx.dheeraai_teammembership.upsert(
         where={
             "user_id_team_id": {
                 "user_id": user_id,

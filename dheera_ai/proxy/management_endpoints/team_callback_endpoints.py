@@ -128,7 +128,7 @@ async def add_team_callbacks(
         team_metadata["logging"] = team_callback_settings
         team_metadata_json = json.dumps(team_metadata)  # update team_metadata
 
-        new_team_row = await prisma_client.db.dheera_ai_teamtable.update(
+        new_team_row = await prisma_client.db.dheeraai_teamtable.update(
             where={"team_id": team_id}, data={"metadata": team_metadata_json}  # type: ignore
         )
 
@@ -210,7 +210,7 @@ async def disable_team_logging(
         team_metadata_json = json.dumps(team_metadata)
 
         # Update team in database
-        updated_team = await prisma_client.db.dheera_ai_teamtable.update(
+        updated_team = await prisma_client.db.dheeraai_teamtable.update(
             where={"team_id": team_id}, data={"metadata": team_metadata_json}  # type: ignore
         )
 

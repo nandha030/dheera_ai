@@ -282,7 +282,7 @@ if MCP_AVAILABLE:
         # Get from DB
         if prisma_client is not None:
             try:
-                mcp_servers = await prisma_client.db.dheera_ai_mcpservertable.find_many()
+                mcp_servers = await prisma_client.db.dheeraai_mcpservertable.find_many()
                 for server in mcp_servers:
                     if (
                         hasattr(server, "mcp_access_groups")

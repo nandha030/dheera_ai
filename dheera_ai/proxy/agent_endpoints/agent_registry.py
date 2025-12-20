@@ -118,7 +118,7 @@ class AgentRegistry:
             agent_card_params: str = safe_dumps(agent_card_params_dict)
 
             # Create agent in DB
-            created_agent = await prisma_client.db.dheera_ai_agentstable.create(
+            created_agent = await prisma_client.db.dheeraai_agentstable.create(
                 data={
                     "agent_name": agent_name,
                     "dheera_ai_params": dheera_ai_params,
@@ -141,7 +141,7 @@ class AgentRegistry:
         Delete an agent from the database
         """
         try:
-            deleted_agent = await prisma_client.db.dheera_ai_agentstable.delete(
+            deleted_agent = await prisma_client.db.dheeraai_agentstable.delete(
                 where={"agent_id": agent_id}
             )
             return dict(deleted_agent)
@@ -171,7 +171,7 @@ class AgentRegistry:
         """
         try:
 
-            existing_agent = await prisma_client.db.dheera_ai_agentstable.find_unique(
+            existing_agent = await prisma_client.db.dheeraai_agentstable.find_unique(
                 where={"agent_id": agent_id}
             )
             if existing_agent is not None:
@@ -193,7 +193,7 @@ class AgentRegistry:
                     augment_agent.get("agent_card_params")
                 )
             # Patch agent in DB
-            patched_agent = await prisma_client.db.dheera_ai_agentstable.update(
+            patched_agent = await prisma_client.db.dheeraai_agentstable.update(
                 where={"agent_id": agent_id},
                 data={
                     **update_data,
@@ -239,7 +239,7 @@ class AgentRegistry:
             agent_card_params: str = safe_dumps(agent_card_params_dict)
 
             # Update agent in DB
-            updated_agent = await prisma_client.db.dheera_ai_agentstable.update(
+            updated_agent = await prisma_client.db.dheeraai_agentstable.update(
                 where={"agent_id": agent_id},
                 data={
                     "agent_name": agent_name,
@@ -262,7 +262,7 @@ class AgentRegistry:
         Get all agents from the database
         """
         try:
-            agents_from_db = await prisma_client.db.dheera_ai_agentstable.find_many(
+            agents_from_db = await prisma_client.db.dheeraai_agentstable.find_many(
                 order={"created_at": "desc"},
             )
 

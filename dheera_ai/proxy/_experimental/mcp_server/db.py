@@ -96,7 +96,7 @@ async def get_all_mcp_servers(
     Returns all of the mcp servers from the db
     """
     try:
-        mcp_servers = await prisma_client.db.dheera_ai_mcpservertable.find_many()
+        mcp_servers = await prisma_client.db.dheeraai_mcpservertable.find_many()
 
         return [
             DheeraAI_MCPServerTable(**mcp_server.model_dump())
@@ -119,7 +119,7 @@ async def get_mcp_server(
     """
     mcp_server: Optional[
         DheeraAI_MCPServerTable
-    ] = await prisma_client.db.dheera_ai_mcpservertable.find_unique(
+    ] = await prisma_client.db.dheeraai_mcpservertable.find_unique(
         where={
             "server_id": server_id,
         }
@@ -135,7 +135,7 @@ async def get_mcp_servers(
     """
     _mcp_servers: List[
         DheeraAI_MCPServerTable
-    ] = await prisma_client.db.dheera_ai_mcpservertable.find_many(
+    ] = await prisma_client.db.dheeraai_mcpservertable.find_many(
         where={
             "server_id": {"in": server_ids},
         }
@@ -154,7 +154,7 @@ async def get_mcp_servers_by_verificationtoken(
     Returns the mcp servers from the db for the verification token
     """
     verification_token_record: DheeraAI_TeamTable = (
-        await prisma_client.db.dheera_ai_verificationtoken.find_unique(
+        await prisma_client.db.dheeraai_verificationtoken.find_unique(
             where={
                 "token": token,
             },
@@ -180,7 +180,7 @@ async def get_mcp_servers_by_team(
     Returns the mcp servers from the db for the team id
     """
     team_record: DheeraAI_TeamTable = (
-        await prisma_client.db.dheera_ai_teamtable.find_unique(
+        await prisma_client.db.dheeraai_teamtable.find_unique(
             where={
                 "team_id": team_id,
             },
@@ -239,7 +239,7 @@ async def get_objectpermissions_for_mcp_server(
     Get all the object permissions records and the associated team and verficiationtoken records that have access to the mcp server
     """
     object_permission_records = (
-        await prisma_client.db.dheera_ai_objectpermissiontable.find_many(
+        await prisma_client.db.dheeraai_objectpermissiontable.find_many(
             where={
                 "mcp_servers": {"has": mcp_server_id},
             },
@@ -259,7 +259,7 @@ async def get_virtualkeys_for_mcp_server(
     """
     Get all the virtual keys that have access to the mcp server
     """
-    virtual_keys = await prisma_client.db.dheera_ai_verificationtoken.find_many(
+    virtual_keys = await prisma_client.db.dheeraai_verificationtoken.find_many(
         where={
             "mcp_servers": {"has": server_id},
         },
@@ -292,7 +292,7 @@ async def delete_mcp_server(
 
     Returns the deleted mcp server record if it exists, otherwise None
     """
-    deleted_server = await prisma_client.db.dheera_ai_mcpservertable.delete(
+    deleted_server = await prisma_client.db.dheeraai_mcpservertable.delete(
         where={
             "server_id": server_id,
         },
@@ -316,7 +316,7 @@ async def create_mcp_server(
     data_dict["created_by"] = touched_by
     data_dict["updated_by"] = touched_by
 
-    new_mcp_server = await prisma_client.db.dheera_ai_mcpservertable.create(
+    new_mcp_server = await prisma_client.db.dheeraai_mcpservertable.create(
         data=data_dict  # type: ignore
     )
 
@@ -335,7 +335,7 @@ async def update_mcp_server(
     # Add audit fields
     data_dict["updated_by"] = touched_by
 
-    updated_mcp_server = await prisma_client.db.dheera_ai_mcpservertable.update(
+    updated_mcp_server = await prisma_client.db.dheeraai_mcpservertable.update(
         where={"server_id": data.server_id}, data=data_dict  # type: ignore
     )
 
@@ -345,7 +345,7 @@ async def update_mcp_server(
 async def rotate_mcp_server_credentials_master_key(
     prisma_client: PrismaClient, touched_by: str, new_master_key: str
 ):
-    mcp_servers = await prisma_client.db.dheera_ai_mcpservertable.find_many()
+    mcp_servers = await prisma_client.db.dheeraai_mcpservertable.find_many()
 
     for mcp_server in mcp_servers:
         credentials = mcp_server.credentials
@@ -362,7 +362,7 @@ async def rotate_mcp_server_credentials_master_key(
 
         serialized_credentials = safe_dumps(encrypted_credentials)
 
-        await prisma_client.db.dheera_ai_mcpservertable.update(
+        await prisma_client.db.dheeraai_mcpservertable.update(
             where={"server_id": mcp_server.server_id},
             data={
                 "credentials": serialized_credentials,

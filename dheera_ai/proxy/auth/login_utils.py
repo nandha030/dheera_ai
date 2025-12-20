@@ -134,7 +134,7 @@ async def authenticate_user(
     if prisma_client is not None:
         _user_row = cast(
             Optional[DheeraAI_UserTable],
-            await prisma_client.db.dheera_ai_usertable.find_first(
+            await prisma_client.db.dheeraai_usertable.find_first(
                 where={"user_email": {"equals": username}}
             ),
         )

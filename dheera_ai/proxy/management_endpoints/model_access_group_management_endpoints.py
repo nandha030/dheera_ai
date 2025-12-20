@@ -99,7 +99,7 @@ async def update_deployments_with_access_group(
         )
         
         # Get all deployments with this model_name
-        deployments = await prisma_client.db.dheera_ai_proxymodeltable.find_many(
+        deployments = await prisma_client.db.dheeraai_proxymodeltable.find_many(
             where={"model_name": model_name}
         )
         
@@ -128,7 +128,7 @@ async def update_deployments_with_access_group(
             
             # Only update in DB if modified
             if was_modified:
-                await prisma_client.db.dheera_ai_proxymodeltable.update(
+                await prisma_client.db.dheeraai_proxymodeltable.update(
                     where={"model_id": deployment.model_id},
                     data={"model_info": json.dumps(updated_model_info)},
                 )
@@ -177,7 +177,7 @@ async def get_all_access_groups_from_db(
         Dict[str, AccessGroupInfo]: Dictionary mapping access_group name to info
     """
     # Get all deployments
-    deployments = await prisma_client.db.dheera_ai_proxymodeltable.find_many()
+    deployments = await prisma_client.db.dheeraai_proxymodeltable.find_many()
     
     # Build access group map
     access_group_map: Dict[str, Dict[str, Any]] = {}
@@ -535,7 +535,7 @@ async def update_access_group(
     
     try:
         # Step 1: Remove access group from ALL DB deployments (skip config models)
-        all_deployments = await prisma_client.db.dheera_ai_proxymodeltable.find_many()
+        all_deployments = await prisma_client.db.dheeraai_proxymodeltable.find_many()
         
         for deployment in all_deployments:
             model_info = deployment.model_info or {}
@@ -547,7 +547,7 @@ async def update_access_group(
             )
             
             if was_modified:
-                await prisma_client.db.dheera_ai_proxymodeltable.update(
+                await prisma_client.db.dheeraai_proxymodeltable.update(
                     where={"model_id": deployment.model_id},
                     data={"model_info": json.dumps(updated_model_info)},
                 )
@@ -644,7 +644,7 @@ async def delete_access_group(
     
     try:
         # Remove access group from all DB deployments (skip config models)
-        all_deployments = await prisma_client.db.dheera_ai_proxymodeltable.find_many()
+        all_deployments = await prisma_client.db.dheeraai_proxymodeltable.find_many()
         models_updated = 0
         
         for deployment in all_deployments:
@@ -656,7 +656,7 @@ async def delete_access_group(
             )
             
             if was_modified:
-                await prisma_client.db.dheera_ai_proxymodeltable.update(
+                await prisma_client.db.dheeraai_proxymodeltable.update(
                     where={"model_id": deployment.model_id},
                     data={"model_info": json.dumps(updated_model_info)},
                 )

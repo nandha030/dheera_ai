@@ -54,7 +54,7 @@ class ResetBudgetJob:
         """
         Resets the budget for all DheeraAI Team Members if their budget has expired
         """
-        return await self.prisma_client.db.dheera_ai_teammembership.update_many(
+        return await self.prisma_client.db.dheeraai_teammembership.update_many(
             where={
                 "budget_id": {
                     "in": [

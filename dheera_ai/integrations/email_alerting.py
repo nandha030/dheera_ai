@@ -24,7 +24,7 @@ async def get_all_team_member_emails(team_id: Optional[str] = None) -> list:
     if prisma_client is None:
         raise Exception("Not connected to DB!")
 
-    team_row = await prisma_client.db.dheera_ai_teamtable.find_unique(
+    team_row = await prisma_client.db.dheeraai_teamtable.find_unique(
         where={
             "team_id": team_id,
         }

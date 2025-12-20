@@ -1939,15 +1939,15 @@ class PrismaClient:
         start_time = time.time()
         try:
             if table_name == "users":
-                response = await self.db.dheera_ai_usertable.find_first(
+                response = await self.db.dheeraai_usertable.find_first(
                     where={key: value}  # type: ignore
                 )
             elif table_name == "keys":
-                response = await self.db.dheera_ai_verificationtoken.find_first(  # type: ignore
+                response = await self.db.dheeraai_verificationtoken.find_first(  # type: ignore
                     where={key: value}  # type: ignore
                 )
             elif table_name == "config":
-                response = await self.db.dheera_ai_config.find_first(  # type: ignore
+                response = await self.db.dheeraai_config.find_first(  # type: ignore
                     where={key: value}  # type: ignore
                 )
             elif table_name == "spend":
@@ -2036,7 +2036,7 @@ class PrismaClient:
                             status_code=400,
                             detail={"error": f"No token passed in. Token={token}"},
                         )
-                    response = await self.db.dheera_ai_verificationtoken.find_unique(
+                    response = await self.db.dheeraai_verificationtoken.find_unique(
                         where={"token": hashed_token},  # type: ignore
                         include={"dheera_ai_budget_table": True},
                     )
@@ -2053,7 +2053,7 @@ class PrismaClient:
                             detail=f"Authentication Error: invalid user key - user key does not exist in db. User Key={token}",
                         )
                 elif query_type == "find_all" and user_id is not None:
-                    response = await self.db.dheera_ai_verificationtoken.find_many(
+                    response = await self.db.dheeraai_verificationtoken.find_many(
                         where={"user_id": user_id},
                         include={"dheera_ai_budget_table": True},
                     )
@@ -2062,7 +2062,7 @@ class PrismaClient:
                             if isinstance(r.expires, datetime):
                                 r.expires = r.expires.isoformat()
                 elif query_type == "find_all" and team_id is not None:
-                    response = await self.db.dheera_ai_verificationtoken.find_many(
+                    response = await self.db.dheeraai_verificationtoken.find_many(
                         where={"team_id": team_id},
                         include={"dheera_ai_budget_table": True},
                     )
@@ -2075,7 +2075,7 @@ class PrismaClient:
                     and expires is not None
                     and reset_at is not None
                 ):
-                    response = await self.db.dheera_ai_verificationtoken.find_many(
+                    response = await self.db.dheeraai_verificationtoken.find_many(
                         where={  # type:ignore
                             "OR": [
                                 {"expires": None},
@@ -2105,7 +2105,7 @@ class PrismaClient:
                                 else:
                                     hashed_tokens.append(t)
                             where_filter["token"]["in"] = hashed_tokens
-                    response = await self.db.dheera_ai_verificationtoken.find_many(
+                    response = await self.db.dheeraai_verificationtoken.find_many(
                         order={"spend": "desc"},
                         where=where_filter,  # type: ignore
                         include={"dheera_ai_budget_table": True},
@@ -2125,28 +2125,28 @@ class PrismaClient:
                     if key_val is None:
                         key_val = {"user_id": user_id}
 
-                    response = await self.db.dheera_ai_usertable.find_unique(  # type: ignore
+                    response = await self.db.dheeraai_usertable.find_unique(  # type: ignore
                         where=key_val,  # type: ignore
                         include={"organization_memberships": True},
                     )
 
                 elif query_type == "find_all" and key_val is not None:
-                    response = await self.db.dheera_ai_usertable.find_many(
+                    response = await self.db.dheeraai_usertable.find_many(
                         where=key_val  # type: ignore
                     )  # type: ignore
                 elif query_type == "find_all" and reset_at is not None:
-                    response = await self.db.dheera_ai_usertable.find_many(
+                    response = await self.db.dheeraai_usertable.find_many(
                         where={  # type:ignore
                             "budget_reset_at": {"lt": reset_at},
                         }
                     )
                 elif query_type == "find_all" and user_id_list is not None:
-                    response = await self.db.dheera_ai_usertable.find_many(
+                    response = await self.db.dheeraai_usertable.find_many(
                         where={"user_id": {"in": user_id_list}}
                     )
                 elif query_type == "find_all":
                     if expires is not None:
-                        response = await self.db.dheera_ai_usertable.find_many(  # type: ignore
+                        response = await self.db.dheeraai_usertable.find_many(  # type: ignore
                             order={"spend": "desc"},
                             where={  # type:ignore
                                 "OR": [
@@ -2178,26 +2178,26 @@ class PrismaClient:
                 )
                 if key_val is not None:
                     if query_type == "find_unique":
-                        response = await self.db.dheera_ai_spendlogs.find_unique(  # type: ignore
+                        response = await self.db.dheeraai_spendlogs.find_unique(  # type: ignore
                             where={  # type: ignore
                                 key_val["key"]: key_val["value"],  # type: ignore
                             }
                         )
                     elif query_type == "find_all":
-                        response = await self.db.dheera_ai_spendlogs.find_many(  # type: ignore
+                        response = await self.db.dheeraai_spendlogs.find_many(  # type: ignore
                             where={
                                 key_val["key"]: key_val["value"],  # type: ignore
                             }
                         )
                     return response
                 else:
-                    response = await self.db.dheera_ai_spendlogs.find_many(  # type: ignore
+                    response = await self.db.dheeraai_spendlogs.find_many(  # type: ignore
                         order={"startTime": "desc"},
                     )
                     return response
             elif table_name == "budget" and reset_at is not None:
                 if query_type == "find_all":
-                    response = await self.db.dheera_ai_budgettable.find_many(
+                    response = await self.db.dheeraai_budgettable.find_many(
                         where={  # type:ignore
                             "OR": [
                                 {
@@ -2214,45 +2214,45 @@ class PrismaClient:
 
             elif table_name == "enduser" and budget_id_list is not None:
                 if query_type == "find_all":
-                    response = await self.db.dheera_ai_endusertable.find_many(
+                    response = await self.db.dheeraai_endusertable.find_many(
                         where={"budget_id": {"in": budget_id_list}}
                     )
                     return response
             elif table_name == "team":
                 if query_type == "find_unique":
-                    response = await self.db.dheera_ai_teamtable.find_unique(
+                    response = await self.db.dheeraai_teamtable.find_unique(
                         where={"team_id": team_id},  # type: ignore
                         include={"dheera_ai_model_table": True},  # type: ignore
                     )
                 elif query_type == "find_all" and reset_at is not None:
-                    response = await self.db.dheera_ai_teamtable.find_many(
+                    response = await self.db.dheeraai_teamtable.find_many(
                         where={  # type:ignore
                             "budget_reset_at": {"lt": reset_at},
                         }
                     )
                 elif query_type == "find_all" and user_id is not None:
-                    response = await self.db.dheera_ai_teamtable.find_many(
+                    response = await self.db.dheeraai_teamtable.find_many(
                         where={
                             "members": {"has": user_id},
                         },
                         include={"dheera_ai_budget_table": True},
                     )
                 elif query_type == "find_all" and team_id_list is not None:
-                    response = await self.db.dheera_ai_teamtable.find_many(
+                    response = await self.db.dheeraai_teamtable.find_many(
                         where={"team_id": {"in": team_id_list}}
                     )
                 elif query_type == "find_all" and team_id_list is None:
-                    response = await self.db.dheera_ai_teamtable.find_many(
+                    response = await self.db.dheeraai_teamtable.find_many(
                         take=MAX_TEAM_LIST_LIMIT
                     )
                 return response
             elif table_name == "user_notification":
                 if query_type == "find_unique":
-                    response = await self.db.dheera_ai_usernotifications.find_unique(  # type: ignore
+                    response = await self.db.dheeraai_usernotifications.find_unique(  # type: ignore
                         where={"user_id": user_id}  # type: ignore
                     )
                 elif query_type == "find_all":
-                    response = await self.db.dheera_ai_usernotifications.find_many()  # type: ignore
+                    response = await self.db.dheeraai_usernotifications.find_many()  # type: ignore
                 return response
             elif table_name == "combined_view":
                 # check if plain text or hash
@@ -2407,7 +2407,7 @@ class PrismaClient:
                 print_verbose(
                     "PrismaClient: Before upsert into dheera_ai_verificationtoken"
                 )
-                new_verification_token = await self.db.dheera_ai_verificationtoken.upsert(  # type: ignore
+                new_verification_token = await self.db.dheeraai_verificationtoken.upsert(  # type: ignore
                     where={
                         "token": hashed_token,
                     },
@@ -2422,7 +2422,7 @@ class PrismaClient:
             elif table_name == "user":
                 db_data = self.jsonify_object(data=data)
                 try:
-                    new_user_row = await self.db.dheera_ai_usertable.upsert(
+                    new_user_row = await self.db.dheeraai_usertable.upsert(
                         where={"user_id": data["user_id"]},
                         data={
                             "create": {**db_data},  # type: ignore
@@ -2445,7 +2445,7 @@ class PrismaClient:
                 return new_user_row
             elif table_name == "team":
                 db_data = self.jsonify_team_object(db_data=data)
-                new_team_row = await self.db.dheera_ai_teamtable.upsert(
+                new_team_row = await self.db.dheeraai_teamtable.upsert(
                     where={"team_id": data["team_id"]},
                     data={
                         "create": {**db_data},  # type: ignore
@@ -2467,7 +2467,7 @@ class PrismaClient:
                 for k, v in data.items():
                     updated_data = v
                     updated_data = json.dumps(updated_data)
-                    updated_table_row = self.db.dheera_ai_config.upsert(
+                    updated_table_row = self.db.dheeraai_config.upsert(
                         where={"param_name": k},  # type: ignore
                         data={
                             "create": {"param_name": k, "param_value": updated_data},  # type: ignore
@@ -2480,7 +2480,7 @@ class PrismaClient:
                 verbose_proxy_logger.info("Data Inserted into Config Table")
             elif table_name == "spend":
                 db_data = self.jsonify_object(data=data)
-                new_spend_row = await self.db.dheera_ai_spendlogs.upsert(
+                new_spend_row = await self.db.dheeraai_spendlogs.upsert(
                     where={"request_id": data["request_id"]},
                     data={
                         "create": {**db_data},  # type: ignore
@@ -2492,7 +2492,7 @@ class PrismaClient:
             elif table_name == "user_notification":
                 db_data = self.jsonify_object(data=data)
                 new_user_notification_row = (
-                    await self.db.dheera_ai_usernotifications.upsert(  # type: ignore
+                    await self.db.dheeraai_usernotifications.upsert(  # type: ignore
                         where={"request_id": data["request_id"]},
                         data={
                             "create": {**db_data},  # type: ignore
@@ -2559,7 +2559,7 @@ class PrismaClient:
                 # check if plain text or hash
                 token = _hash_token_if_needed(token=token)
                 db_data["token"] = token
-                response = await self.db.dheera_ai_verificationtoken.update(
+                response = await self.db.dheeraai_verificationtoken.update(
                     where={"token": token},  # type: ignore
                     data={**db_data},  # type: ignore
                 )
@@ -2590,7 +2590,7 @@ class PrismaClient:
                         update_key_values = update_key_values_custom_query
                     else:
                         update_key_values = db_data
-                update_user_row = await self.db.dheera_ai_usertable.upsert(
+                update_user_row = await self.db.dheeraai_usertable.upsert(
                     where={"user_id": user_id},  # type: ignore
                     data={
                         "create": {**db_data},  # type: ignore
@@ -2631,7 +2631,7 @@ class PrismaClient:
                     update_key_values["members_with_roles"] = json.dumps(
                         update_key_values["members_with_roles"]
                     )
-                update_team_row = await self.db.dheera_ai_teamtable.upsert(
+                update_team_row = await self.db.dheeraai_teamtable.upsert(
                     where={"team_id": team_id},  # type: ignore
                     data={
                         "create": {**db_data},  # type: ignore
@@ -2667,7 +2667,7 @@ class PrismaClient:
                         )
                     except Exception:
                         data_json = self.jsonify_object(data=t.dict(exclude_none=True))
-                    batcher.dheera_ai_verificationtoken.update(
+                    batcher.dheeraai_verificationtoken.update(
                         where={"token": t.token},  # type: ignore
                         data={**data_json},  # type: ignore
                     )
@@ -2693,7 +2693,7 @@ class PrismaClient:
                         )
                     except Exception:
                         data_json = self.jsonify_object(data=user.dict())
-                    batcher.dheera_ai_usertable.upsert(
+                    batcher.dheeraai_usertable.upsert(
                         where={"user_id": user.user_id},  # type: ignore
                         data={
                             "create": {**data_json},  # type: ignore
@@ -2724,7 +2724,7 @@ class PrismaClient:
                         )
                     except Exception:
                         data_json = self.jsonify_object(data=enduser.dict())
-                    batcher.dheera_ai_endusertable.upsert(
+                    batcher.dheeraai_endusertable.upsert(
                         where={"user_id": enduser.user_id},  # type: ignore
                         data={
                             "create": {**data_json},  # type: ignore
@@ -2755,7 +2755,7 @@ class PrismaClient:
                         )
                     except Exception:
                         data_json = self.jsonify_object(data=budget.dict())
-                    batcher.dheera_ai_budgettable.upsert(
+                    batcher.dheeraai_budgettable.upsert(
                         where={"budget_id": budget.budget_id},  # type: ignore
                         data={
                             "create": {**data_json},  # type: ignore
@@ -2786,7 +2786,7 @@ class PrismaClient:
                         data_json = self.jsonify_object(
                             data=team.dict(exclude_none=True)
                         )
-                    batcher.dheera_ai_teamtable.upsert(
+                    batcher.dheeraai_teamtable.upsert(
                         where={"team_id": team.team_id},  # type: ignore
                         data={
                             "create": {**data_json},  # type: ignore
@@ -2856,7 +2856,7 @@ class PrismaClient:
                 else:
                     filter_query = {"token": {"in": hashed_tokens}}
 
-                deleted_tokens = await self.db.dheera_ai_verificationtoken.delete_many(
+                deleted_tokens = await self.db.dheeraai_verificationtoken.delete_many(
                     where=filter_query  # type: ignore
                 )
                 verbose_proxy_logger.debug("deleted_tokens: %s", deleted_tokens)
@@ -2867,7 +2867,7 @@ class PrismaClient:
                 and isinstance(team_id_list, List)
             ):
                 # admin only endpoint -> `/team/delete`
-                await self.db.dheera_ai_teamtable.delete_many(
+                await self.db.dheeraai_teamtable.delete_many(
                     where={"team_id": {"in": team_id_list}}
                 )
                 return {"deleted_teams": team_id_list}
@@ -2877,7 +2877,7 @@ class PrismaClient:
                 and isinstance(team_id_list, List)
             ):
                 # admin only endpoint -> `/team/delete`
-                await self.db.dheera_ai_verificationtoken.delete_many(
+                await self.db.dheeraai_verificationtoken.delete_many(
                     where={"team_id": {"in": team_id_list}}
                 )
         except Exception as e:
@@ -3119,7 +3119,7 @@ class PrismaClient:
             )
 
             verbose_proxy_logger.debug(f"Saving health check data: {health_check_data}")
-            return await self.db.dheera_ai_healthchecktable.create(data=health_check_data)
+            return await self.db.dheeraai_healthchecktable.create(data=health_check_data)
 
         except Exception as e:
             verbose_proxy_logger.error(
@@ -3144,7 +3144,7 @@ class PrismaClient:
             if status_filter:
                 where_clause["status"] = status_filter
 
-            results = await self.db.dheera_ai_healthchecktable.find_many(
+            results = await self.db.dheeraai_healthchecktable.find_many(
                 where=where_clause,
                 order={"checked_at": "desc"},
                 take=limit,
@@ -3161,7 +3161,7 @@ class PrismaClient:
         """
         try:
             # Get all unique model names first
-            all_checks = await self.db.dheera_ai_healthchecktable.find_many(
+            all_checks = await self.db.dheeraai_healthchecktable.find_many(
                 order={"checked_at": "desc"}
             )
 
@@ -3324,7 +3324,7 @@ class ProxyUpdateSpend:
                         ) in end_user_list_transactions.items():
                             if dheera_ai.max_end_user_budget is not None:
                                 pass
-                            batcher.dheera_ai_endusertable.upsert(
+                            batcher.dheeraai_endusertable.upsert(
                                 where={"user_id": end_user_id},
                                 data={
                                     "create": {
@@ -3397,7 +3397,7 @@ class ProxyUpdateSpend:
                                 prisma_client.jsonify_object({**entry})
                                 for entry in batch
                             ]
-                            await prisma_client.db.dheera_ai_spendlogs.create_many(
+                            await prisma_client.db.dheeraai_spendlogs.create_many(
                                 data=batch_with_dates, skip_duplicates=True
                             )
                             verbose_proxy_logger.debug(

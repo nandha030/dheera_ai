@@ -65,7 +65,7 @@ class CacheSettingsManager:
         import json
         
         try:
-            cache_config = await prisma_client.db.dheera_ai_cacheconfig.find_unique(
+            cache_config = await prisma_client.db.dheeraai_cacheconfig.find_unique(
                 where={"id": "cache_config"}
             )
             if cache_config is not None and cache_config.cache_settings:
@@ -177,7 +177,7 @@ async def get_cache_settings(
         # Try to get cache settings from database
         current_values = {}
         if prisma_client is not None:
-            cache_config = await prisma_client.db.dheera_ai_cacheconfig.find_unique(
+            cache_config = await prisma_client.db.dheeraai_cacheconfig.find_unique(
                 where={"id": "cache_config"}
             )
             if cache_config is not None and cache_config.cache_settings:
@@ -319,7 +319,7 @@ async def update_cache_settings(
         )
         
         # Save to database
-        await prisma_client.db.dheera_ai_cacheconfig.upsert(
+        await prisma_client.db.dheeraai_cacheconfig.upsert(
             where={"id": "cache_config"},
             data={
                 "create": {

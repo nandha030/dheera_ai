@@ -2238,7 +2238,7 @@ class MCPServerManager:
             and not _user_has_admin_view(user_api_key_auth)
             and prisma_client is not None
         ):
-            teams = await prisma_client.db.dheera_ai_teamtable.find_many(
+            teams = await prisma_client.db.dheeraai_teamtable.find_many(
                 include={"object_permission": True}
             )
 

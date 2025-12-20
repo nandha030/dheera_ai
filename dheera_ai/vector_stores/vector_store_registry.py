@@ -91,7 +91,7 @@ class VectorStoreIndexRegistry:
         vector_stores_from_db: List[DheeraAI_ManagedVectorStoreIndex] = []
         if prisma_client is not None:
             _vector_stores_from_db = (
-                await prisma_client.db.dheera_ai_managedvectorstoreindextable.find_many(
+                await prisma_client.db.dheeraai_managedvectorstoreindextable.find_many(
                     order={"created_at": "desc"},
                 )
             )
@@ -365,7 +365,7 @@ class VectorStoreRegistry:
             if vector_store is not None and prisma_client is not None:
                 try:
                     # Check if it still exists in database
-                    db_vector_store = await prisma_client.db.dheera_ai_managedvectorstorestable.find_unique(
+                    db_vector_store = await prisma_client.db.dheeraai_managedvectorstorestable.find_unique(
                         where={"vector_store_id": vector_store_id}
                     )
                     if db_vector_store is None:
@@ -530,7 +530,7 @@ class VectorStoreRegistry:
         vector_stores_from_db: List[DheeraAI_ManagedVectorStore] = []
         if prisma_client is not None:
             _vector_stores_from_db = (
-                await prisma_client.db.dheera_ai_managedvectorstorestable.find_many(
+                await prisma_client.db.dheeraai_managedvectorstorestable.find_many(
                     order={"created_at": "desc"},
                 )
             )

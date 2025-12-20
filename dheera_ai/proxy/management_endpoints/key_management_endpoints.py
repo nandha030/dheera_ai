@@ -416,7 +416,7 @@ async def validate_team_id_used_in_service_account_request(
         )
 
     # check if team_id exists in the database
-    team = await prisma_client.db.dheera_ai_teamtable.find_unique(
+    team = await prisma_client.db.dheeraai_teamtable.find_unique(
         where={"team_id": team_id},
     )
     if team is None:
@@ -540,7 +540,7 @@ async def _common_key_generation_helper(  # noqa: PLR0915
         )
         new_budget = prisma_client.jsonify_object(budget_row.json(exclude_none=True))
 
-        _budget = await prisma_client.db.dheera_ai_budgettable.create(
+        _budget = await prisma_client.db.dheeraai_budgettable.create(
             data={
                 **new_budget,  # type: ignore
                 "created_by": user_api_key_dict.user_id or dheera_ai_proxy_admin_name,
@@ -853,7 +853,7 @@ async def _check_team_key_limits(
     # calculate allocated tpm/rpm limit
     # check if specified tpm/rpm limit is greater than allocated tpm/rpm limit
 
-    keys = await prisma_client.db.dheera_ai_verificationtoken.find_many(
+    keys = await prisma_client.db.dheeraai_verificationtoken.find_many(
         where={"team_id": team_table.team_id},
     )
     check_team_key_model_specific_limits(
@@ -952,7 +952,7 @@ async def _check_org_key_limits(
     # get all organization keys
     # calculate allocated tpm/rpm limit
     # check if specified tpm/rpm limit is greater than allocated tpm/rpm limit
-    keys = await prisma_client.db.dheera_ai_verificationtoken.find_many(
+    keys = await prisma_client.db.dheeraai_verificationtoken.find_many(
         where={"organization_id": org_table.organization_id},
     )
     check_org_key_model_specific_limits(
@@ -1933,7 +1933,7 @@ async def info_key_fn(
         hashed_key: Optional[str] = key
         if key is not None:
             hashed_key = _hash_token_if_needed(token=key)
-        key_info = await prisma_client.db.dheera_ai_verificationtoken.find_unique(
+        key_info = await prisma_client.db.dheeraai_verificationtoken.find_unique(
             where={"token": hashed_key},  # type: ignore
             include={"dheera_ai_budget_table": True},
         )
@@ -2366,7 +2366,7 @@ async def delete_verification_tokens(
         if prisma_client:
             tokens = [_hash_token_if_needed(token=key) for key in tokens]
             _keys_being_deleted: List[DheeraAI_VerificationToken] = (
-                await prisma_client.db.dheera_ai_verificationtoken.find_many(
+                await prisma_client.db.dheeraai_verificationtoken.find_many(
                     where={"token": {"in": tokens}}
                 )
             )
@@ -2442,7 +2442,7 @@ async def delete_key_aliases(
     prisma_client: PrismaClient,
     user_api_key_dict: UserAPIKeyAuth,
 ) -> Tuple[Optional[Dict], List[DheeraAI_VerificationToken]]:
-    _keys_being_deleted = await prisma_client.db.dheera_ai_verificationtoken.find_many(
+    _keys_being_deleted = await prisma_client.db.dheeraai_verificationtoken.find_many(
         where={"key_alias": {"in": key_aliases}}
     )
 
@@ -2477,7 +2477,7 @@ async def _rotate_master_key(
 
     try:
         models: Optional[List] = (
-            await prisma_client.db.dheera_ai_proxymodeltable.find_many()
+            await prisma_client.db.dheeraai_proxymodeltable.find_many()
         )
     except Exception:
         models = None
@@ -2499,14 +2499,14 @@ async def _rotate_master_key(
             if new_model:
                 new_models.append(jsonify_object(new_model.model_dump()))
         verbose_proxy_logger.debug("Resetting proxy model table")
-        await prisma_client.db.dheera_ai_proxymodeltable.delete_many()
+        await prisma_client.db.dheeraai_proxymodeltable.delete_many()
         verbose_proxy_logger.debug("Creating %s models", len(new_models))
-        await prisma_client.db.dheera_ai_proxymodeltable.create_many(
+        await prisma_client.db.dheeraai_proxymodeltable.create_many(
             data=new_models,
         )
     # 3. process config table
     try:
-        config = await prisma_client.db.dheera_ai_config.find_many()
+        config = await prisma_client.db.dheeraai_config.find_many()
     except Exception:
         config = None
 
@@ -2527,7 +2527,7 @@ async def _rotate_master_key(
             )
 
             if encrypted_env_vars:
-                await prisma_client.db.dheera_ai_config.update(
+                await prisma_client.db.dheeraai_config.update(
                     where={"param_name": "environment_variables"},
                     data={"param_value": jsonify_object(encrypted_env_vars)},
                 )
@@ -2541,7 +2541,7 @@ async def _rotate_master_key(
 
     # 5. process credentials table
     try:
-        credentials = await prisma_client.db.dheera_ai_credentialstable.find_many()
+        credentials = await prisma_client.db.dheeraai_credentialstable.find_many()
     except Exception:
         credentials = None
     if credentials:
@@ -2556,7 +2556,7 @@ async def _rotate_master_key(
                     new_encryption_key=new_master_key,
                 )
                 credential_object_jsonified = jsonify_object(encrypted_cred.model_dump())
-                await prisma_client.db.dheera_ai_credentialstable.update(
+                await prisma_client.db.dheeraai_credentialstable.update(
                     where={"credential_name": cred.credential_name},
                     data={
                         **credential_object_jsonified,
@@ -2721,7 +2721,7 @@ async def regenerate_key_fn(
         else:
             hashed_api_key = hash_token(key)
 
-        _key_in_db = await prisma_client.db.dheera_ai_verificationtoken.find_unique(
+        _key_in_db = await prisma_client.db.dheeraai_verificationtoken.find_unique(
             where={"token": hashed_api_key},
         )
         if _key_in_db is None:
@@ -2763,7 +2763,7 @@ async def regenerate_key_fn(
         update_data.update(non_default_values)
         update_data = prisma_client.jsonify_object(data=update_data)
         # Update the token in the database
-        updated_token = await prisma_client.db.dheera_ai_verificationtoken.update(
+        updated_token = await prisma_client.db.dheeraai_verificationtoken.update(
             where={"token": hashed_api_key},
             data=update_data,  # type: ignore
         )
@@ -2831,7 +2831,7 @@ async def validate_key_list_check(
             code=status.HTTP_403_FORBIDDEN,
         )
     complete_user_info_db_obj: Optional[BaseModel] = (
-        await prisma_client.db.dheera_ai_usertable.find_unique(
+        await prisma_client.db.dheeraai_usertable.find_unique(
             where={"user_id": user_api_key_dict.user_id},
             include={"organization_memberships": True},
         )
@@ -2884,7 +2884,7 @@ async def validate_key_list_check(
 
     if key_hash:
         try:
-            key_info = await prisma_client.db.dheera_ai_verificationtoken.find_unique(
+            key_info = await prisma_client.db.dheeraai_verificationtoken.find_unique(
                 where={"token": key_hash},
             )
         except Exception:
@@ -2921,7 +2921,7 @@ async def get_admin_team_ids(
         return []
     # Get all teams that user is an admin of
     teams: Optional[List[BaseModel]] = (
-        await prisma_client.db.dheera_ai_teamtable.find_many(
+        await prisma_client.db.dheeraai_teamtable.find_many(
             where={"team_id": {"in": complete_user_info.teams}}
         )
     )
@@ -3084,7 +3084,7 @@ async def key_aliases() -> Dict[str, List[str]]:
             # Helper may not exist in some builds; ignore if missing
             pass
 
-        rows = await prisma_client.db.dheera_ai_verificationtoken.find_many(
+        rows = await prisma_client.db.dheeraai_verificationtoken.find_many(
             where=where,
             order=[{"key_alias": "asc"}],
         )
@@ -3255,7 +3255,7 @@ async def _list_key_helper(
     )
 
     # Fetch keys with pagination
-    keys = await prisma_client.db.dheera_ai_verificationtoken.find_many(
+    keys = await prisma_client.db.dheeraai_verificationtoken.find_many(
         where=where,  # type: ignore
         skip=skip,  # type: ignore
         take=size,  # type: ignore
@@ -3273,7 +3273,7 @@ async def _list_key_helper(
     verbose_proxy_logger.debug(f"Fetched {len(keys)} keys")
 
     # Get total count of keys
-    total_count = await prisma_client.db.dheera_ai_verificationtoken.count(
+    total_count = await prisma_client.db.dheeraai_verificationtoken.count(
         where=where  # type: ignore
     )
 
@@ -3373,7 +3373,7 @@ async def block_key(
 
     if dheera_ai.store_audit_logs is True:
         # make an audit log for key update
-        record = await prisma_client.db.dheera_ai_verificationtoken.find_unique(
+        record = await prisma_client.db.dheeraai_verificationtoken.find_unique(
             where={"token": hashed_token}
         )
         if record is None:
@@ -3401,7 +3401,7 @@ async def block_key(
             )
         )
 
-    record = await prisma_client.db.dheera_ai_verificationtoken.update(
+    record = await prisma_client.db.dheeraai_verificationtoken.update(
         where={"token": hashed_token}, data={"blocked": True}  # type: ignore
     )
 
@@ -3487,7 +3487,7 @@ async def unblock_key(
 
     if dheera_ai.store_audit_logs is True:
         # make an audit log for key update
-        record = await prisma_client.db.dheera_ai_verificationtoken.find_unique(
+        record = await prisma_client.db.dheeraai_verificationtoken.find_unique(
             where={"token": hashed_token}
         )
         if record is None:
@@ -3515,7 +3515,7 @@ async def unblock_key(
             )
         )
 
-    record = await prisma_client.db.dheera_ai_verificationtoken.update(
+    record = await prisma_client.db.dheeraai_verificationtoken.update(
         where={"token": hashed_token}, data={"blocked": False}  # type: ignore
     )
 
@@ -3763,7 +3763,7 @@ async def _enforce_unique_key_alias(
             # Exclude the current key from the uniqueness check
             where_clause["NOT"] = {"token": existing_key_token}
 
-        existing_key = await prisma_client.db.dheera_ai_verificationtoken.find_first(
+        existing_key = await prisma_client.db.dheeraai_verificationtoken.find_first(
             where=where_clause
         )
         if existing_key is not None:

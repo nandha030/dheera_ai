@@ -52,7 +52,7 @@ async def _set_cloudzero_settings(api_key: str, connection_id: str, timezone: st
         "timezone": timezone,
     }
 
-    await prisma_client.db.dheera_ai_config.upsert(
+    await prisma_client.db.dheeraai_config.upsert(
         where={"param_name": "cloudzero_settings"},
         data={
             "create": {
@@ -79,7 +79,7 @@ async def _get_cloudzero_settings():
             detail={"error": CommonProxyErrors.db_not_connected_error.value},
         )
 
-    cloudzero_config = await prisma_client.db.dheera_ai_config.find_first(
+    cloudzero_config = await prisma_client.db.dheeraai_config.find_first(
         where={"param_name": "cloudzero_settings"}
     )
     if cloudzero_config is None:
@@ -269,7 +269,7 @@ async def is_cloudzero_setup_in_db() -> bool:
             return False
 
         # Check for CloudZero settings in database
-        cloudzero_config = await prisma_client.db.dheera_ai_config.find_first(
+        cloudzero_config = await prisma_client.db.dheeraai_config.find_first(
             where={"param_name": "cloudzero_settings"}
         )
 

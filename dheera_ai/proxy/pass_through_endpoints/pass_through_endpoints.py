@@ -2232,7 +2232,7 @@ async def _filter_endpoints_by_team_allowed_routes(
         HTTPException: If team is not found
     """
     # retrieve team from db
-    team = await prisma_client.db.dheera_ai_teamtable.find_unique(
+    team = await prisma_client.db.dheeraai_teamtable.find_unique(
         where={"team_id": team_id},
     )
     if team is None:

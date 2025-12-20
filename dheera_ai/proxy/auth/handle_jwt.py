@@ -1146,7 +1146,7 @@ class JWTAuthManager:
         # Update user role
         new_role = jwt_handler.map_jwt_role_to_dheera_ai_role(jwt_valid_token)
         if new_role and user_object.user_role != new_role.value:
-            await prisma_client.db.dheera_ai_usertable.update(
+            await prisma_client.db.dheeraai_usertable.update(
                 where={"user_id": user_object.user_id},
                 data={"user_role": new_role.value},
             )

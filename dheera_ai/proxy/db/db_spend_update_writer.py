@@ -734,7 +734,7 @@ class DBSpendUpdateWriter:
                                 user_id,
                                 response_cost,
                             ) in user_list_transactions.items():
-                                batcher.dheera_ai_usertable.update_many(
+                                batcher.dheeraai_usertable.update_many(
                                     where={"user_id": user_id},
                                     data={"spend": {"increment": response_cost}},
                                 )
@@ -789,7 +789,7 @@ class DBSpendUpdateWriter:
                                 token,
                                 response_cost,
                             ) in key_list_transactions.items():
-                                batcher.dheera_ai_verificationtoken.update_many(  # 'update_many' prevents error from being raised if no row exists
+                                batcher.dheeraai_verificationtoken.update_many(  # 'update_many' prevents error from being raised if no row exists
                                     where={"token": token},
                                     data={"spend": {"increment": response_cost}},
                                 )
@@ -835,7 +835,7 @@ class DBSpendUpdateWriter:
                                         team_id, response_cost
                                     )
                                 )
-                                batcher.dheera_ai_teamtable.update_many(  # 'update_many' prevents error from being raised if no row exists
+                                batcher.dheeraai_teamtable.update_many(  # 'update_many' prevents error from being raised if no row exists
                                     where={"team_id": team_id},
                                     data={"spend": {"increment": response_cost}},
                                 )
@@ -884,7 +884,7 @@ class DBSpendUpdateWriter:
                                 team_id = key.split("::")[1]
                                 user_id = key.split("::")[3]
 
-                                batcher.dheera_ai_teammembership.update_many(  # 'update_many' prevents error from being raised if no row exists
+                                batcher.dheeraai_teammembership.update_many(  # 'update_many' prevents error from being raised if no row exists
                                     where={"team_id": team_id, "user_id": user_id},
                                     data={"spend": {"increment": response_cost}},
                                 )
@@ -922,7 +922,7 @@ class DBSpendUpdateWriter:
                                 org_id,
                                 response_cost,
                             ) in org_list_transactions.items():
-                                batcher.dheera_ai_organizationtable.update_many(  # 'update_many' prevents error from being raised if no row exists
+                                batcher.dheeraai_organizationtable.update_many(  # 'update_many' prevents error from being raised if no row exists
                                     where={"organization_id": org_id},
                                     data={"spend": {"increment": response_cost}},
                                 )
@@ -978,7 +978,7 @@ class DBSpendUpdateWriter:
         Args:
             entity_name: Name of entity for logging (e.g., "Team", "Org", "Tag")
             transactions: Dictionary of {entity_id: response_cost}
-            table_accessor: Prisma table accessor (e.g., prisma_client.db.dheera_ai_teamtable)
+            table_accessor: Prisma table accessor (e.g., prisma_client.db.dheeraai_teamtable)
             where_field: Field name for where clause (e.g., "team_id", "organization_id", "tag_name")
             n_retry_times: Number of retries on failure
             prisma_client: Prisma client instance

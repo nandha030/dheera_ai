@@ -92,7 +92,7 @@ async def create_credential(
         )
         credentials_dict = encrypted_credential.model_dump()
         credentials_dict_jsonified = jsonify_object(credentials_dict)
-        await prisma_client.db.dheera_ai_credentialstable.create(
+        await prisma_client.db.dheeraai_credentialstable.create(
             data={
                 **credentials_dict_jsonified,
                 "created_by": user_api_key_dict.user_id,
@@ -230,7 +230,7 @@ async def delete_credential(
                 status_code=500,
                 detail={"error": CommonProxyErrors.db_not_connected_error.value},
             )
-        await prisma_client.db.dheera_ai_credentialstable.delete(
+        await prisma_client.db.dheeraai_credentialstable.delete(
             where={"credential_name": credential_name}
         )
 
@@ -307,14 +307,14 @@ async def update_credential(
                 status_code=500,
                 detail={"error": CommonProxyErrors.db_not_connected_error.value},
             )
-        db_credential = await prisma_client.db.dheera_ai_credentialstable.find_unique(
+        db_credential = await prisma_client.db.dheeraai_credentialstable.find_unique(
             where={"credential_name": credential_name},
         )
         if db_credential is None:
             raise HTTPException(status_code=404, detail="Credential not found in DB.")
         merged_credential = update_db_credential(db_credential, credential)
         credential_object_jsonified = jsonify_object(merged_credential.model_dump())
-        await prisma_client.db.dheera_ai_credentialstable.update(
+        await prisma_client.db.dheeraai_credentialstable.update(
             where={"credential_name": credential_name},
             data={
                 **credential_object_jsonified,

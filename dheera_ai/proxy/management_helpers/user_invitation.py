@@ -25,7 +25,7 @@ async def create_invitation_for_user(
     expires_at = current_time + timedelta(days=7)
 
     try:
-        response = await prisma_client.db.dheera_ai_invitationlink.create(
+        response = await prisma_client.db.dheeraai_invitationlink.create(
             data={
                 "user_id": data.user_id,
                 "created_at": current_time,
