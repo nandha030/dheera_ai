@@ -148,6 +148,16 @@ model_list:
       model: gpt-4o
       api_key: os.environ/OPENAI_API_KEY
 
+  # Ollama Models - Local LLMs
+  - model_name: ollama/phi3:mini
+    dheera_ai_params:
+      model: ollama/phi3:mini
+      api_base: http://localhost:11434
+  - model_name: "ollama/*"  # Wildcard for any Ollama model
+    dheera_ai_params:
+      model: "ollama/*"
+      api_base: http://localhost:11434
+
 
 dheera_ai_settings:
   # set_verbose: True  # Uncomment this if you want to see verbose logs; not recommended in production
