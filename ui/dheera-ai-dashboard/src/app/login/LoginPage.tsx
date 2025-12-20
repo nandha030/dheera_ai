@@ -64,12 +64,19 @@ function LoginPageContent() {
       <Card className="w-full max-w-lg shadow-md">
         <Space direction="vertical" size="middle" className="w-full">
           <div className="text-center">
-            <Title level={2}>🚅 DheeraAI</Title>
+            <img
+              src={`${getProxyBaseUrl()}/get_image`}
+              alt="DheeraLLM Logo"
+              className="mx-auto mb-4"
+              style={{ maxWidth: '300px', height: 'auto' }}
+            />
+            <Title level={2} className="mb-0">DheeraLLM</Title>
+            <Text type="secondary" className="text-sm">v0.3.0</Text>
           </div>
 
           <div className="text-center">
             <Title level={3}>Login</Title>
-            <Text type="secondary">Access your DheeraAI Admin UI.</Text>
+            <Text type="secondary">Access your DheeraLLM Admin UI.</Text>
           </div>
 
           <Alert
@@ -83,7 +90,7 @@ function LoginPageContent() {
                 </Paragraph>
                 <Paragraph className="text-sm">
                   Need to set UI credentials or SSO?{" "}
-                  <a href="https://docs.dheera_ai.ai/docs/proxy/ui" target="_blank" rel="noopener noreferrer">
+                  <a href="https://docs.dheeraai.com/docs/proxy/ui" target="_blank" rel="noopener noreferrer">
                     Check the documentation
                   </a>
                   .

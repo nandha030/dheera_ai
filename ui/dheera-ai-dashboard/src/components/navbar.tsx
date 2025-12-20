@@ -166,8 +166,8 @@ const Navbar: React.FC<NavbarProps> = ({
             <div className="flex items-center">
               <Link href="/" className="flex items-center">
                 <div className="relative flex items-center">
-                  <img src={imageUrl} alt="DheeraLLM Brand" className="h-10 w-auto" />
-                  <span className="ml-2 text-xl font-bold text-gray-800">DheeraLLM</span>
+                  <img src={imageUrl} alt="DheeraLLM Brand" className="h-14 w-auto" />
+                  <span className="ml-3 text-2xl font-bold text-gray-800">DheeraLLM</span>
                   <span
                     className="absolute -top-1 -right-2 text-lg animate-bounce"
                     style={{ animationDuration: '2s' }}
